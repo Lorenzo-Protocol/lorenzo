@@ -5,8 +5,8 @@ import (
 	"io"
 	"os"
 
-	"github.com/AnyVM/lorenzo/app"
-	appparams "github.com/AnyVM/lorenzo/app/params"
+	"github.com/Lorenzo-Protocol/lorenzo/app"
+	appparams "github.com/Lorenzo-Protocol/lorenzo/app/params"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/config"

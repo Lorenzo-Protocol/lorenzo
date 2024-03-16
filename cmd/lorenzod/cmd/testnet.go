@@ -25,7 +25,7 @@ import (
 	"os"
 	"path/filepath"
 
-	appparams "github.com/AnyVM/lorenzo/app/params"
+	appparams "github.com/Lorenzo-Protocol/lorenzo/app/params"
 
 	"github.com/ethereum/go-ethereum/common"
 

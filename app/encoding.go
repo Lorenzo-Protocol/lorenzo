@@ -5,7 +5,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/std"
 	"github.com/cosmos/cosmos-sdk/x/auth/tx"
 
-	"github.com/AnyVM/lorenzo/app/params"
+	"github.com/Lorenzo-Protocol/lorenzo/app/params"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 

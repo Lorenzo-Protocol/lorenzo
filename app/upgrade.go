@@ -1,7 +1,7 @@
 package app
 
 import (
-	upgrades "github.com/AnyVM/lorenzo/app/upgrades"
+	upgrades "github.com/Lorenzo-Protocol/lorenzo/app/upgrades"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 )

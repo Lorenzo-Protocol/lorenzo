@@ -1,7 +1,7 @@
 package app
 
 import (
-	appparams "github.com/AnyVM/lorenzo/app/params"
+	appparams "github.com/Lorenzo-Protocol/lorenzo/app/params"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"

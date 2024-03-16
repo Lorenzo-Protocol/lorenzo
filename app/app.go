@@ -3,7 +3,7 @@ package app
 import (
 	"encoding/json"
 
-	"github.com/AnyVM/lorenzo/app/ante"
+	"github.com/Lorenzo-Protocol/lorenzo/app/ante"
 
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 
@@ -75,7 +75,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	appparams "github.com/AnyVM/lorenzo/app/params"
+	appparams "github.com/Lorenzo-Protocol/lorenzo/app/params"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"

@@ -1,4 +1,4 @@
-module github.com/AnyVM/lorenzo
+module github.com/Lorenzo-Protocol/lorenzo
 
 go 1.20
 

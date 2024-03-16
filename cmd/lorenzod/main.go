@@ -3,8 +3,8 @@ package main
 import (
 	"os"
 
-	"github.com/AnyVM/lorenzo/app"
-	"github.com/AnyVM/lorenzo/cmd/lorenzod/cmd"
+	"github.com/Lorenzo-Protocol/lorenzo/app"
+	"github.com/Lorenzo-Protocol/lorenzo/cmd/lorenzod/cmd"
 	"github.com/cosmos/cosmos-sdk/server"
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 )
