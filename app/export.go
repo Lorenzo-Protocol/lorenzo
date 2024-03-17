@@ -8,6 +8,7 @@ import (
 // file.
 func (app *LorenzoApp) ExportAppStateAndValidators(
 	forZeroHeight bool, jailAllowedAddrs []string,
+	modulesToExport []string,
 ) (servertypes.ExportedApp, error) {
 	return servertypes.ExportedApp{}, nil
 }

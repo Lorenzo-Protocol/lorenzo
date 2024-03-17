@@ -1,6 +1,7 @@
 package upgrades
 
 import (
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	store "github.com/cosmos/cosmos-sdk/store/types"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
@@ -11,7 +12,6 @@ import (
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	evmkeeper "github.com/evmos/ethermint/x/evm/keeper"
 	feemarketkeeper "github.com/evmos/ethermint/x/feemarket/keeper"
-	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 // Upgrade defines a struct containing necessary fields that a SoftwareUpgradeProposal
@@ -30,8 +30,8 @@ type Upgrade struct {
 }
 
 type ConsensusParamsReaderWriter interface {
-	StoreConsensusParams(ctx sdk.Context, cp *abci.ConsensusParams)
-	GetConsensusParams(ctx sdk.Context) *abci.ConsensusParams
+	StoreConsensusParams(ctx sdk.Context, cp *tmproto.ConsensusParams)
+	GetConsensusParams(ctx sdk.Context) *tmproto.ConsensusParams
 }
 
 type AppKeepers struct {
