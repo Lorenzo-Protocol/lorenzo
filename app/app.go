@@ -90,6 +90,10 @@ import (
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
+	lrztypes "github.com/Lorenzo-Protocol/lorenzo/types"
+	btclightclientkeeper "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/keeper"
+	btclightclienttypes "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/types"
+
 	// ibc
 	ibctransfer "github.com/cosmos/ibc-go/v7/modules/apps/transfer"
 	ibctransferkeeper "github.com/cosmos/ibc-go/v7/modules/apps/transfer/keeper"
@@ -160,6 +164,8 @@ type LorenzoApp struct {
 	FeeGrantKeeper        feegrantkeeper.Keeper
 	ConsensusParamsKeeper consensuskeeper.Keeper
 
+	BTCLightClientKeeper btclightclientkeeper.Keeper
+
 	// Ethermint keepers
 	EvmKeeper       *evmkeeper.Keeper
 	FeeMarketKeeper feemarketkeeper.Keeper
@@ -193,6 +199,7 @@ func NewLorenzoApp(
 	appCodec := encodingConfig.Codec
 	cdc := encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
+	btcConfig := lrztypes.ParseBtcOptionsFromConfig(appOpts)
 
 	eip712.SetEncodingConfig(simappparams.EncodingConfig{
 		InterfaceRegistry: interfaceRegistry,
@@ -230,7 +237,10 @@ func NewLorenzoApp(
 		capabilitytypes.StoreKey,
 
 		// ethermint keys
-		evmtypes.StoreKey, feemarkettypes.StoreKey,
+		evmtypes.StoreKey,
+		feemarkettypes.StoreKey,
+
+		btclightclienttypes.StoreKey,
 	)
 
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey, evmtypes.TransientKey, feemarkettypes.TransientKey)
@@ -430,6 +440,16 @@ func NewLorenzoApp(
 	app.GovKeeper.SetLegacyRouter(govRouter)
 
 	app.transferModule = ibctransfer.NewAppModule(app.TransferKeeper)
+
+	btclightclientKeeper := btclightclientkeeper.NewKeeper(
+		appCodec,
+		keys[btclightclienttypes.StoreKey],
+		btcConfig,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+	app.BTCLightClientKeeper = *btclightclientKeeper.SetHooks(
+		btclightclienttypes.NewMultiBTCLightClientHooks(),
+	)
 
 	var transferStack ibcporttypes.IBCModule
 	transferStack = ibctransfer.NewIBCModule(app.TransferKeeper)

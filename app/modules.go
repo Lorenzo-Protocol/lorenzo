@@ -2,6 +2,7 @@ package app
 
 import (
 	appparams "github.com/Lorenzo-Protocol/lorenzo/app/params"
+	"github.com/Lorenzo-Protocol/lorenzo/x/btclightclient"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	authsims "github.com/cosmos/cosmos-sdk/x/auth/simulation"
@@ -190,6 +191,7 @@ func appModules(
 		params.NewAppModule(app.ParamsKeeper),
 
 		app.transferModule,
+		btclightclient.NewAppModule(appCodec, app.BTCLightClientKeeper),
 
 		// this line is used by starport scaffolding # stargate/app/appModule
 
