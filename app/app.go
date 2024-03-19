@@ -2,17 +2,15 @@ package app
 
 import (
 	"encoding/json"
-	"github.com/cosmos/cosmos-sdk/runtime"
-	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
-
-	"github.com/Lorenzo-Protocol/lorenzo/app/ante"
-
-	"github.com/cosmos/cosmos-sdk/x/crisis"
-
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
+
+	"github.com/Lorenzo-Protocol/lorenzo/app/ante"
+	"github.com/cosmos/cosmos-sdk/runtime"
+	"github.com/cosmos/cosmos-sdk/x/crisis"
+	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
 
 	"github.com/cosmos/cosmos-sdk/x/authz"
 	"github.com/cosmos/cosmos-sdk/x/params"
@@ -220,17 +218,21 @@ func NewLorenzoApp(
 		minttypes.StoreKey,
 		distrtypes.StoreKey,
 		slashingtypes.StoreKey,
+		crisistypes.StoreKey,
 		govtypes.StoreKey,
 		paramstypes.StoreKey,
 		ibcexported.StoreKey,
 		upgradetypes.StoreKey,
 		feegrant.StoreKey,
+		consensustypes.StoreKey,
+
 		evidencetypes.StoreKey,
 		ibctransfertypes.StoreKey,
 		capabilitytypes.StoreKey,
 
 		// ethermint keys
-		evmtypes.StoreKey, feemarkettypes.StoreKey,
+		evmtypes.StoreKey,
+		feemarkettypes.StoreKey,
 	)
 
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey, evmtypes.TransientKey, feemarkettypes.TransientKey)
