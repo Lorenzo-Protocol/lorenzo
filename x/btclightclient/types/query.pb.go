@@ -10,7 +10,7 @@ import (
 	query "github.com/cosmos/cosmos-sdk/types/query"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	grpc1 "github.com/cosmos/gogoproto/grpc"
-	proto "github.com/golang/protobuf/proto"
+	proto "github.com/cosmos/gogoproto/proto"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
@@ -29,13 +29,10 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
+const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // QueryParamsRequest is the request type for the Query/Params RPC method.
 type QueryParamsRequest struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *QueryParamsRequest) Reset()         { *m = QueryParamsRequest{} }
@@ -74,10 +71,7 @@ var xxx_messageInfo_QueryParamsRequest proto.InternalMessageInfo
 // QueryParamsResponse is the response type for the Query/Params RPC method.
 type QueryParamsResponse struct {
 	// params holds all the parameters of this module.
-	Params               Params   `protobuf:"bytes,1,opt,name=params,proto3" json:"params"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Params Params `protobuf:"bytes,1,opt,name=params,proto3" json:"params"`
 }
 
 func (m *QueryParamsResponse) Reset()         { *m = QueryParamsResponse{} }
@@ -123,10 +117,7 @@ func (m *QueryParamsResponse) GetParams() Params {
 // QueryHashesRequest is request type for the Query/Hashes RPC method.
 // It involves retrieving all hashes that are maintained by the module.
 type QueryHashesRequest struct {
-	Pagination           *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
-	XXX_unrecognized     []byte             `json:"-"`
-	XXX_sizecache        int32              `json:"-"`
+	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
 func (m *QueryHashesRequest) Reset()         { *m = QueryHashesRequest{} }
@@ -171,11 +162,8 @@ func (m *QueryHashesRequest) GetPagination() *query.PageRequest {
 
 // QueryHashesResponse is response type for the Query/Hashes RPC method.
 type QueryHashesResponse struct {
-	Hashes               []github_com_Lorenzo_Protocol_lorenzo_types.BTCHeaderHashBytes `protobuf:"bytes,1,rep,name=hashes,proto3,customtype=github.com/Lorenzo-Protocol/lorenzo/types.BTCHeaderHashBytes" json:"hashes,omitempty"`
-	Pagination           *query.PageResponse                                            `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}                                                       `json:"-"`
-	XXX_unrecognized     []byte                                                         `json:"-"`
-	XXX_sizecache        int32                                                          `json:"-"`
+	Hashes     []github_com_Lorenzo_Protocol_lorenzo_types.BTCHeaderHashBytes `protobuf:"bytes,1,rep,name=hashes,proto3,customtype=github.com/Lorenzo-Protocol/lorenzo/types.BTCHeaderHashBytes" json:"hashes,omitempty"`
+	Pagination *query.PageResponse                                            `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
 func (m *QueryHashesResponse) Reset()         { *m = QueryHashesResponse{} }
@@ -221,10 +209,7 @@ func (m *QueryHashesResponse) GetPagination() *query.PageResponse {
 // QueryContainsRequest is request type for the Query/Contains RPC method.
 // It involves checking whether a hash is maintained by the module.
 type QueryContainsRequest struct {
-	Hash                 *github_com_Lorenzo_Protocol_lorenzo_types.BTCHeaderHashBytes `protobuf:"bytes,1,opt,name=hash,proto3,customtype=github.com/Lorenzo-Protocol/lorenzo/types.BTCHeaderHashBytes" json:"hash,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}                                                      `json:"-"`
-	XXX_unrecognized     []byte                                                        `json:"-"`
-	XXX_sizecache        int32                                                         `json:"-"`
+	Hash *github_com_Lorenzo_Protocol_lorenzo_types.BTCHeaderHashBytes `protobuf:"bytes,1,opt,name=hash,proto3,customtype=github.com/Lorenzo-Protocol/lorenzo/types.BTCHeaderHashBytes" json:"hash,omitempty"`
 }
 
 func (m *QueryContainsRequest) Reset()         { *m = QueryContainsRequest{} }
@@ -262,10 +247,7 @@ var xxx_messageInfo_QueryContainsRequest proto.InternalMessageInfo
 
 // QueryContainsResponse is response type for the Query/Contains RPC method.
 type QueryContainsResponse struct {
-	Contains             bool     `protobuf:"varint,1,opt,name=contains,proto3" json:"contains,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Contains bool `protobuf:"varint,1,opt,name=contains,proto3" json:"contains,omitempty"`
 }
 
 func (m *QueryContainsResponse) Reset()         { *m = QueryContainsResponse{} }
@@ -311,10 +293,7 @@ func (m *QueryContainsResponse) GetContains() bool {
 // QueryContainsRequest is request type for the temporary Query/ContainsBytes
 // RPC method. It involves checking whether a hash is maintained by the module.
 type QueryContainsBytesRequest struct {
-	Hash                 []byte   `protobuf:"bytes,1,opt,name=hash,proto3" json:"hash,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Hash []byte `protobuf:"bytes,1,opt,name=hash,proto3" json:"hash,omitempty"`
 }
 
 func (m *QueryContainsBytesRequest) Reset()         { *m = QueryContainsBytesRequest{} }
@@ -360,10 +339,7 @@ func (m *QueryContainsBytesRequest) GetHash() []byte {
 // QueryContainsResponse is response type for the temporary Query/ContainsBytes
 // RPC method.
 type QueryContainsBytesResponse struct {
-	Contains             bool     `protobuf:"varint,1,opt,name=contains,proto3" json:"contains,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Contains bool `protobuf:"varint,1,opt,name=contains,proto3" json:"contains,omitempty"`
 }
 
 func (m *QueryContainsBytesResponse) Reset()         { *m = QueryContainsBytesResponse{} }
@@ -409,10 +385,7 @@ func (m *QueryContainsBytesResponse) GetContains() bool {
 // QueryMainChainRequest is request type for the Query/MainChain RPC method.
 // It involves retrieving the canonical chain maintained by the module.
 type QueryMainChainRequest struct {
-	Pagination           *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
-	XXX_unrecognized     []byte             `json:"-"`
-	XXX_sizecache        int32              `json:"-"`
+	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
 func (m *QueryMainChainRequest) Reset()         { *m = QueryMainChainRequest{} }
@@ -457,11 +430,8 @@ func (m *QueryMainChainRequest) GetPagination() *query.PageRequest {
 
 // QueryMainChainResponse is response type for the Query/MainChain RPC method.
 type QueryMainChainResponse struct {
-	Headers              []*BTCHeaderInfo    `protobuf:"bytes,1,rep,name=headers,proto3" json:"headers,omitempty"`
-	Pagination           *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}            `json:"-"`
-	XXX_unrecognized     []byte              `json:"-"`
-	XXX_sizecache        int32               `json:"-"`
+	Headers    []*BTCHeaderInfo    `protobuf:"bytes,1,rep,name=headers,proto3" json:"headers,omitempty"`
+	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
 func (m *QueryMainChainResponse) Reset()         { *m = QueryMainChainResponse{} }
@@ -513,9 +483,6 @@ func (m *QueryMainChainResponse) GetPagination() *query.PageResponse {
 
 // QueryTipRequest is the request type for the Query/Tip RPC method.
 type QueryTipRequest struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *QueryTipRequest) Reset()         { *m = QueryTipRequest{} }
@@ -553,10 +520,7 @@ var xxx_messageInfo_QueryTipRequest proto.InternalMessageInfo
 
 // QueryTipResponse is the response type for the Query/Tip RPC method.
 type QueryTipResponse struct {
-	Header               *BTCHeaderInfo `protobuf:"bytes,1,opt,name=header,proto3" json:"header,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
-	XXX_unrecognized     []byte         `json:"-"`
-	XXX_sizecache        int32          `json:"-"`
+	Header *BTCHeaderInfo `protobuf:"bytes,1,opt,name=header,proto3" json:"header,omitempty"`
 }
 
 func (m *QueryTipResponse) Reset()         { *m = QueryTipResponse{} }
@@ -602,9 +566,6 @@ func (m *QueryTipResponse) GetHeader() *BTCHeaderInfo {
 // QueryBaseHeaderRequest is the request type for the Query/BaseHeader RPC
 // method.
 type QueryBaseHeaderRequest struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *QueryBaseHeaderRequest) Reset()         { *m = QueryBaseHeaderRequest{} }
@@ -643,10 +604,7 @@ var xxx_messageInfo_QueryBaseHeaderRequest proto.InternalMessageInfo
 // QueryBaseHeaderResponse is the response type for the Query/BaseHeader RPC
 // method.
 type QueryBaseHeaderResponse struct {
-	Header               *BTCHeaderInfo `protobuf:"bytes,1,opt,name=header,proto3" json:"header,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
-	XXX_unrecognized     []byte         `json:"-"`
-	XXX_sizecache        int32          `json:"-"`
+	Header *BTCHeaderInfo `protobuf:"bytes,1,opt,name=header,proto3" json:"header,omitempty"`
 }
 
 func (m *QueryBaseHeaderResponse) Reset()         { *m = QueryBaseHeaderResponse{} }
@@ -692,10 +650,7 @@ func (m *QueryBaseHeaderResponse) GetHeader() *BTCHeaderInfo {
 // QueryMainChainDepthRequest is the request type for the Query/MainChainDepth RPC
 // it contains hex encoded hash of btc block header as parameter
 type QueryHeaderDepthRequest struct {
-	Hash                 string   `protobuf:"bytes,1,opt,name=hash,proto3" json:"hash,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Hash string `protobuf:"bytes,1,opt,name=hash,proto3" json:"hash,omitempty"`
 }
 
 func (m *QueryHeaderDepthRequest) Reset()         { *m = QueryHeaderDepthRequest{} }
@@ -741,10 +696,7 @@ func (m *QueryHeaderDepthRequest) GetHash() string {
 // QueryMainChainDepthResponse is the response type for the Query/MainChainDepth RPC
 // it contains depth of the block in main chain
 type QueryHeaderDepthResponse struct {
-	Depth                uint64   `protobuf:"varint,1,opt,name=depth,proto3" json:"depth,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Depth uint64 `protobuf:"varint,1,opt,name=depth,proto3" json:"depth,omitempty"`
 }
 
 func (m *QueryHeaderDepthResponse) Reset()         { *m = QueryHeaderDepthResponse{} }
@@ -811,59 +763,59 @@ func init() {
 }
 
 var fileDescriptor_77da53bf36dad620 = []byte{
-	// 823 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x96, 0x4f, 0x6f, 0xd3, 0x48,
-	0x18, 0xc6, 0x3b, 0xfd, 0x93, 0x6d, 0xa7, 0xbb, 0xda, 0xdd, 0xd9, 0xec, 0x6e, 0x6a, 0xad, 0xd2,
-	0xd6, 0xdd, 0xa6, 0x69, 0x4b, 0x3c, 0x4d, 0x0a, 0x12, 0x42, 0x48, 0x54, 0x29, 0x82, 0x22, 0x15,
-	0xa9, 0x44, 0x11, 0x42, 0x80, 0x84, 0x26, 0xe9, 0xe0, 0x58, 0x4a, 0x3c, 0x6e, 0xec, 0x56, 0x14,
-	0xc4, 0x85, 0x03, 0x1f, 0x00, 0x2e, 0x88, 0x03, 0x07, 0x24, 0xc4, 0x8d, 0x33, 0x1f, 0xa1, 0x47,
-	0x24, 0x6e, 0x1c, 0x2a, 0x54, 0xf8, 0x10, 0x1c, 0x91, 0x67, 0x5e, 0x27, 0x71, 0xd2, 0xc6, 0x8e,
-	0x94, 0x4b, 0x55, 0xcf, 0xbc, 0xcf, 0xfb, 0xfc, 0xfc, 0x66, 0xfc, 0x68, 0xf0, 0x62, 0x5d, 0x34,
-	0xb9, 0xfd, 0x58, 0xd0, 0x8a, 0x57, 0xad, 0x5b, 0x66, 0xcd, 0xff, 0xcb, 0x6d, 0x8f, 0x1e, 0xe4,
-	0xe9, 0xde, 0x3e, 0x6f, 0x1e, 0x1a, 0x4e, 0x53, 0x78, 0x82, 0xcc, 0x40, 0x99, 0x11, 0x2e, 0x33,
-	0x0e, 0xf2, 0x5a, 0xd2, 0x14, 0xa6, 0x90, 0x55, 0xd4, 0xff, 0x4f, 0x09, 0xb4, 0xff, 0x4c, 0x21,
-	0xcc, 0x3a, 0xa7, 0xcc, 0xb1, 0x28, 0xb3, 0x6d, 0xe1, 0x31, 0xcf, 0x12, 0xb6, 0x0b, 0xbb, 0x2b,
-	0x55, 0xe1, 0x36, 0x84, 0x4b, 0x2b, 0xcc, 0xe5, 0xca, 0x87, 0x1e, 0xe4, 0x2b, 0xdc, 0x63, 0x79,
-	0xea, 0x30, 0xd3, 0xb2, 0x65, 0x31, 0xd4, 0x1a, 0x67, 0x13, 0x76, 0xc1, 0xa8, 0xfa, 0xcc, 0xd9,
-	0xf5, 0x0e, 0x6b, 0xb2, 0x06, 0x30, 0xe8, 0x49, 0x4c, 0x6e, 0xf9, 0xce, 0x3b, 0x72, 0xb1, 0xc4,
-	0xf7, 0xf6, 0xb9, 0xeb, 0xe9, 0xb7, 0xf1, 0x5f, 0xa1, 0x55, 0xd7, 0x11, 0xb6, 0xcb, 0xc9, 0x15,
-	0x9c, 0x50, 0xe2, 0x14, 0x9a, 0x43, 0xd9, 0xe9, 0xc2, 0xbc, 0x71, 0xe6, 0x40, 0x0c, 0x25, 0x2d,
-	0x8e, 0x1f, 0x1d, 0xcf, 0x8e, 0x94, 0x40, 0xa6, 0xdf, 0x07, 0xb7, 0x2d, 0xe6, 0xd6, 0x78, 0xe0,
-	0x46, 0xae, 0x61, 0xdc, 0x7e, 0x5f, 0x68, 0x9d, 0x31, 0xd4, 0x70, 0x0c, 0x7f, 0x38, 0x86, 0xfa,
-	0x11, 0x60, 0x38, 0xc6, 0x0e, 0x33, 0x39, 0x68, 0x4b, 0x1d, 0x4a, 0xfd, 0x23, 0x02, 0xec, 0xa0,
-	0x3d, 0x60, 0xdf, 0xc1, 0x89, 0x9a, 0x5c, 0x49, 0xa1, 0xb9, 0xb1, 0xec, 0xaf, 0xc5, 0x8d, 0x2f,
-	0xc7, 0xb3, 0x97, 0x4d, 0xcb, 0xab, 0xed, 0x57, 0x8c, 0xaa, 0x68, 0xd0, 0x6d, 0xf5, 0x12, 0xb9,
-	0x1d, 0x7f, 0x22, 0x55, 0x51, 0xa7, 0xc1, 0xec, 0xbc, 0x43, 0x87, 0xbb, 0x46, 0xb1, 0xbc, 0xb9,
-	0xc5, 0xd9, 0x2e, 0x6f, 0xfa, 0x6d, 0x8b, 0x87, 0x1e, 0x77, 0x4b, 0xd0, 0x8f, 0x5c, 0x0f, 0x91,
-	0x8f, 0x4a, 0xf2, 0xa5, 0x48, 0x72, 0x85, 0x15, 0x42, 0xaf, 0xe3, 0xa4, 0x24, 0xdf, 0x14, 0xb6,
-	0xc7, 0x2c, 0xbb, 0x35, 0x9a, 0x32, 0x1e, 0xf7, 0xad, 0xe4, 0x50, 0x86, 0x01, 0x2e, 0xbb, 0xe9,
-	0xeb, 0xf8, 0xef, 0x2e, 0x37, 0x98, 0x94, 0x86, 0x27, 0xab, 0xb0, 0x26, 0x2d, 0x27, 0x4b, 0xad,
-	0x67, 0x9d, 0xe2, 0x99, 0x90, 0x48, 0x35, 0x04, 0x4e, 0xd2, 0xc9, 0x09, 0x2e, 0x17, 0xb1, 0x76,
-	0x9a, 0x20, 0x86, 0xd5, 0x03, 0xe0, 0xbb, 0xc9, 0x2c, 0x7b, 0xb3, 0xc6, 0x2c, 0x7b, 0xd8, 0x27,
-	0xe5, 0x1d, 0xc2, 0xff, 0x74, 0x3b, 0x00, 0x57, 0x11, 0xff, 0x52, 0x93, 0x43, 0x53, 0xa7, 0x65,
-	0xba, 0x90, 0xed, 0x73, 0xc8, 0x5b, 0x13, 0xbe, 0x61, 0x3f, 0x14, 0xa5, 0x40, 0x38, 0xbc, 0x63,
-	0xf1, 0x27, 0xfe, 0x5d, 0x62, 0x96, 0x2d, 0x27, 0xf8, 0x34, 0xcb, 0xf8, 0x8f, 0xf6, 0x12, 0x30,
-	0x6f, 0xe0, 0x84, 0xb2, 0x86, 0x91, 0xc4, 0x47, 0x06, 0x9d, 0x9e, 0x82, 0x79, 0x14, 0x99, 0xcb,
-	0xd5, 0x76, 0xe0, 0x77, 0x0f, 0xff, 0xdb, 0xb3, 0x33, 0x34, 0xdb, 0x1c, 0x34, 0x57, 0x5b, 0x57,
-	0xb9, 0xe3, 0xd5, 0x4e, 0x3b, 0x51, 0x53, 0x70, 0xa2, 0xd6, 0x70, 0xaa, 0xb7, 0x1c, 0x60, 0x92,
-	0x78, 0x62, 0xd7, 0x5f, 0x90, 0x82, 0xf1, 0x92, 0x7a, 0x28, 0xfc, 0x98, 0xc2, 0x13, 0x52, 0x42,
-	0x5e, 0x20, 0x9c, 0x50, 0x99, 0x44, 0x72, 0x7d, 0x38, 0x7b, 0xc3, 0x50, 0x33, 0xe2, 0x96, 0x2b,
-	0x12, 0x7d, 0xf9, 0xd9, 0xe7, 0xef, 0x2f, 0x47, 0x17, 0xc8, 0x3c, 0x8d, 0xca, 0x60, 0x09, 0xa5,
-	0xc2, 0x2a, 0x1a, 0x2a, 0x94, 0x99, 0xd1, 0x50, 0xe1, 0x0c, 0x8c, 0x05, 0x05, 0xa1, 0xf6, 0x1a,
-	0xe1, 0xc9, 0xe0, 0x9b, 0x25, 0x34, 0xca, 0xa7, 0x2b, 0xb1, 0xb4, 0xb5, 0xf8, 0x02, 0x40, 0x5b,
-	0x95, 0x68, 0x8b, 0x64, 0xa1, 0x0f, 0x5a, 0x10, 0x0d, 0xe4, 0x03, 0xc2, 0xbf, 0x85, 0x02, 0x85,
-	0x9c, 0x8f, 0x6b, 0xd8, 0x19, 0x58, 0xda, 0x85, 0x01, 0x55, 0xc0, 0xba, 0x26, 0x59, 0x57, 0x48,
-	0x36, 0x06, 0xab, 0xc2, 0x7b, 0x83, 0xf0, 0x54, 0x2b, 0x65, 0x48, 0xe4, 0x74, 0xba, 0x23, 0x4f,
-	0xcb, 0x0f, 0xa0, 0x00, 0xc8, 0x73, 0x12, 0x32, 0x43, 0xfe, 0xef, 0x03, 0xd9, 0x60, 0x96, 0x5d,
-	0x95, 0x48, 0xcf, 0x11, 0x1e, 0x2b, 0x5b, 0x0e, 0x59, 0x89, 0x32, 0x6a, 0x87, 0x90, 0xb6, 0x1a,
-	0xab, 0x16, 0x70, 0x32, 0x12, 0x67, 0x8e, 0xa4, 0xfb, 0xe0, 0x78, 0x96, 0x43, 0xde, 0x22, 0x8c,
-	0xdb, 0x29, 0x43, 0x22, 0x5f, 0xbc, 0x27, 0xab, 0xb4, 0xc2, 0x20, 0x12, 0xa0, 0xcb, 0x49, 0xba,
-	0x25, 0xb2, 0xd8, 0x87, 0xce, 0x8f, 0x6c, 0x95, 0x58, 0xe4, 0x3d, 0xc2, 0xd3, 0x1d, 0xf1, 0x43,
-	0x22, 0x2d, 0x7b, 0xa3, 0x4d, 0x5b, 0x1f, 0x48, 0x03, 0x9c, 0x54, 0x72, 0x2e, 0x93, 0xa5, 0x3e,
-	0x9c, 0x32, 0xf3, 0xe8, 0x13, 0xff, 0x3b, 0x7e, 0x5a, 0xdc, 0x3e, 0x3a, 0x49, 0xa3, 0x4f, 0x27,
-	0x69, 0xf4, 0xf5, 0x24, 0x8d, 0x5e, 0x7d, 0x4b, 0x8f, 0xdc, 0xbd, 0x14, 0xe7, 0xea, 0xf0, 0xa8,
-	0xbb, 0xaf, 0xbc, 0x4b, 0x54, 0x12, 0xf2, 0xba, 0xb8, 0xfe, 0x33, 0x00, 0x00, 0xff, 0xff, 0x99,
-	0xc6, 0xf7, 0xb4, 0x2a, 0x0b, 0x00, 0x00,
+	// 828 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x96, 0xcf, 0x6b, 0x13, 0x4d,
+	0x18, 0xc7, 0xb3, 0xfd, 0x91, 0xb7, 0x9d, 0xbe, 0x2f, 0xaf, 0x8e, 0x51, 0xd3, 0x45, 0xd2, 0x76,
+	0x6b, 0xd3, 0xb4, 0x35, 0x3b, 0x4d, 0xaa, 0x20, 0x22, 0x58, 0x52, 0xd1, 0x0a, 0x0a, 0x35, 0x04,
+	0x11, 0x15, 0x64, 0x92, 0x8e, 0x9b, 0x85, 0x64, 0x67, 0x9b, 0xdd, 0x16, 0xab, 0x78, 0xf1, 0xe0,
+	0x59, 0xf4, 0xe6, 0xc1, 0x83, 0x20, 0xde, 0x3c, 0xfb, 0x27, 0xf4, 0x58, 0xf0, 0x22, 0x1e, 0x8a,
+	0xb4, 0xfe, 0x11, 0x1e, 0x65, 0x67, 0x9e, 0x4d, 0xb2, 0x49, 0x9b, 0xdd, 0x40, 0x2e, 0xa5, 0x3b,
+	0xf3, 0x7c, 0x9f, 0xef, 0x67, 0x9f, 0xcc, 0x7e, 0x19, 0x34, 0x57, 0xe3, 0x0d, 0x66, 0xbd, 0xe0,
+	0xa4, 0xec, 0x56, 0x6a, 0xa6, 0x51, 0xf5, 0xfe, 0x32, 0xcb, 0x25, 0x3b, 0x39, 0xb2, 0xb5, 0xcd,
+	0x1a, 0xbb, 0xba, 0xdd, 0xe0, 0x2e, 0xc7, 0x93, 0x50, 0xa6, 0x07, 0xcb, 0xf4, 0x9d, 0x9c, 0x9a,
+	0x30, 0xb8, 0xc1, 0x45, 0x15, 0xf1, 0xfe, 0x93, 0x02, 0xf5, 0x82, 0xc1, 0xb9, 0x51, 0x63, 0x84,
+	0xda, 0x26, 0xa1, 0x96, 0xc5, 0x5d, 0xea, 0x9a, 0xdc, 0x72, 0x60, 0x77, 0xb1, 0xc2, 0x9d, 0x3a,
+	0x77, 0x48, 0x99, 0x3a, 0x4c, 0xfa, 0x90, 0x9d, 0x5c, 0x99, 0xb9, 0x34, 0x47, 0x6c, 0x6a, 0x98,
+	0x96, 0x28, 0x86, 0x5a, 0xfd, 0x64, 0xc2, 0x0e, 0x18, 0x59, 0x9f, 0x3e, 0xb9, 0xde, 0xa6, 0x0d,
+	0x5a, 0x07, 0x06, 0x2d, 0x81, 0xf0, 0x7d, 0xcf, 0x79, 0x43, 0x2c, 0x16, 0xd9, 0xd6, 0x36, 0x73,
+	0x5c, 0xed, 0x01, 0x3a, 0x13, 0x58, 0x75, 0x6c, 0x6e, 0x39, 0x0c, 0xdf, 0x40, 0x71, 0x29, 0x4e,
+	0x2a, 0xd3, 0x4a, 0x66, 0x22, 0x3f, 0xa3, 0x9f, 0x38, 0x10, 0x5d, 0x4a, 0x0b, 0x23, 0x7b, 0x07,
+	0x53, 0xb1, 0x22, 0xc8, 0xb4, 0x27, 0xe0, 0xb6, 0x4e, 0x9d, 0x2a, 0xf3, 0xdd, 0xf0, 0x2d, 0x84,
+	0x5a, 0xef, 0x0b, 0xad, 0xd3, 0xba, 0x1c, 0x8e, 0xee, 0x0d, 0x47, 0x97, 0x3f, 0x02, 0x0c, 0x47,
+	0xdf, 0xa0, 0x06, 0x03, 0x6d, 0xb1, 0x4d, 0xa9, 0x7d, 0x53, 0x00, 0xdb, 0x6f, 0x0f, 0xd8, 0x0f,
+	0x51, 0xbc, 0x2a, 0x56, 0x92, 0xca, 0xf4, 0x70, 0xe6, 0xdf, 0xc2, 0xea, 0xcf, 0x83, 0xa9, 0xeb,
+	0x86, 0xe9, 0x56, 0xb7, 0xcb, 0x7a, 0x85, 0xd7, 0xc9, 0x5d, 0xf9, 0x12, 0xd9, 0x0d, 0x6f, 0x22,
+	0x15, 0x5e, 0x23, 0xfe, 0xec, 0xdc, 0x5d, 0x9b, 0x39, 0x7a, 0xa1, 0xb4, 0xb6, 0xce, 0xe8, 0x26,
+	0x6b, 0x78, 0x6d, 0x0b, 0xbb, 0x2e, 0x73, 0x8a, 0xd0, 0x0f, 0xdf, 0x0e, 0x90, 0x0f, 0x09, 0xf2,
+	0xf9, 0x50, 0x72, 0x89, 0x15, 0x40, 0xaf, 0xa1, 0x84, 0x20, 0x5f, 0xe3, 0x96, 0x4b, 0x4d, 0xab,
+	0x39, 0x9a, 0x12, 0x1a, 0xf1, 0xac, 0xc4, 0x50, 0x06, 0x01, 0x2e, 0xba, 0x69, 0x2b, 0xe8, 0x6c,
+	0x87, 0x1b, 0x4c, 0x4a, 0x45, 0x63, 0x15, 0x58, 0x13, 0x96, 0x63, 0xc5, 0xe6, 0xb3, 0x46, 0xd0,
+	0x64, 0x40, 0x24, 0x1b, 0x02, 0x27, 0x6e, 0xe7, 0x04, 0x97, 0xab, 0x48, 0x3d, 0x4e, 0x10, 0xc1,
+	0xea, 0x29, 0xf0, 0xdd, 0xa3, 0xa6, 0xb5, 0x56, 0xa5, 0xa6, 0x35, 0xe8, 0x93, 0xf2, 0x59, 0x41,
+	0xe7, 0x3a, 0x1d, 0x80, 0xab, 0x80, 0xfe, 0xa9, 0x8a, 0xa1, 0xc9, 0xd3, 0x32, 0x91, 0xcf, 0xf4,
+	0x38, 0xe4, 0xcd, 0x09, 0xdf, 0xb1, 0x9e, 0xf1, 0xa2, 0x2f, 0x1c, 0xdc, 0xb1, 0x38, 0x8d, 0xfe,
+	0x17, 0x98, 0x25, 0xd3, 0xf6, 0x3f, 0xcd, 0x12, 0x3a, 0xd5, 0x5a, 0x02, 0xe6, 0x55, 0x14, 0x97,
+	0xd6, 0x30, 0x92, 0xe8, 0xc8, 0xa0, 0xd3, 0x92, 0x30, 0x8f, 0x02, 0x75, 0x98, 0xdc, 0xf6, 0xfd,
+	0x1e, 0xa3, 0xf3, 0x5d, 0x3b, 0x03, 0xb3, 0xcd, 0x42, 0x73, 0xb9, 0x75, 0x93, 0xd9, 0x6e, 0xf5,
+	0xb8, 0x13, 0x35, 0x0e, 0x27, 0x6a, 0x19, 0x25, 0xbb, 0xcb, 0x01, 0x26, 0x81, 0x46, 0x37, 0xbd,
+	0x05, 0x21, 0x18, 0x29, 0xca, 0x87, 0xfc, 0x9f, 0x71, 0x34, 0x2a, 0x24, 0xf8, 0x9d, 0x82, 0xe2,
+	0x32, 0x93, 0x70, 0xb6, 0x07, 0x67, 0x77, 0x18, 0xaa, 0x7a, 0xd4, 0x72, 0x49, 0xa2, 0x2d, 0xbc,
+	0xfe, 0xfe, 0xfb, 0xfd, 0xd0, 0x2c, 0x9e, 0x21, 0x61, 0x19, 0x2c, 0xa0, 0x64, 0x58, 0x85, 0x43,
+	0x05, 0x32, 0x33, 0x1c, 0x2a, 0x98, 0x81, 0x91, 0xa0, 0x20, 0xd4, 0x3e, 0x28, 0x68, 0xcc, 0xff,
+	0x66, 0x31, 0x09, 0xf3, 0xe9, 0x48, 0x2c, 0x75, 0x39, 0xba, 0x00, 0xd0, 0x96, 0x04, 0xda, 0x1c,
+	0x9e, 0xed, 0x81, 0xe6, 0x47, 0x03, 0xfe, 0xaa, 0xa0, 0xff, 0x02, 0x81, 0x82, 0x2f, 0x47, 0x35,
+	0x6c, 0x0f, 0x2c, 0xf5, 0x4a, 0x9f, 0x2a, 0x60, 0x5d, 0x16, 0xac, 0x8b, 0x38, 0x13, 0x81, 0x55,
+	0xe2, 0x7d, 0x54, 0xd0, 0x78, 0x33, 0x65, 0x70, 0xe8, 0x74, 0x3a, 0x23, 0x4f, 0xcd, 0xf5, 0xa1,
+	0x00, 0xc8, 0x4b, 0x02, 0x32, 0x8d, 0x2f, 0xf6, 0x80, 0xac, 0x53, 0xd3, 0xaa, 0x08, 0xa4, 0x37,
+	0x0a, 0x1a, 0x2e, 0x99, 0x36, 0x5e, 0x0c, 0x33, 0x6a, 0x85, 0x90, 0xba, 0x14, 0xa9, 0x16, 0x70,
+	0xd2, 0x02, 0x67, 0x1a, 0xa7, 0x7a, 0xe0, 0xb8, 0xa6, 0x8d, 0x3f, 0x29, 0x08, 0xb5, 0x52, 0x06,
+	0x87, 0xbe, 0x78, 0x57, 0x56, 0xa9, 0xf9, 0x7e, 0x24, 0x40, 0x97, 0x15, 0x74, 0xf3, 0x78, 0xae,
+	0x07, 0x9d, 0x17, 0xd9, 0x32, 0xb1, 0xf0, 0x17, 0x05, 0x4d, 0xb4, 0xc5, 0x0f, 0x0e, 0xb5, 0xec,
+	0x8e, 0x36, 0x75, 0xa5, 0x2f, 0x0d, 0x70, 0x12, 0xc1, 0xb9, 0x80, 0xe7, 0x7b, 0x70, 0x8a, 0xcc,
+	0x23, 0x2f, 0xbd, 0xef, 0xf8, 0x55, 0xa1, 0xb4, 0x77, 0x98, 0x52, 0xf6, 0x0f, 0x53, 0xca, 0xaf,
+	0xc3, 0x94, 0xf2, 0xf6, 0x28, 0x15, 0xdb, 0x3f, 0x4a, 0xc5, 0x7e, 0x1c, 0xa5, 0x62, 0x8f, 0xae,
+	0x45, 0xb9, 0x42, 0x3c, 0xef, 0xec, 0x2f, 0xee, 0x14, 0xe5, 0xb8, 0xb8, 0x36, 0xae, 0xfc, 0x0d,
+	0x00, 0x00, 0xff, 0xff, 0xc8, 0x78, 0xd5, 0x10, 0x32, 0x0b, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -1244,10 +1196,6 @@ func (m *QueryParamsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	return len(dAtA) - i, nil
 }
 
@@ -1271,10 +1219,6 @@ func (m *QueryParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	{
 		size, err := m.Params.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
@@ -1308,10 +1252,6 @@ func (m *QueryHashesRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if m.Pagination != nil {
 		{
 			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
@@ -1347,10 +1287,6 @@ func (m *QueryHashesResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if m.Pagination != nil {
 		{
 			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
@@ -1400,10 +1336,6 @@ func (m *QueryContainsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if m.Hash != nil {
 		{
 			size := m.Hash.Size()
@@ -1439,10 +1371,6 @@ func (m *QueryContainsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if m.Contains {
 		i--
 		if m.Contains {
@@ -1476,10 +1404,6 @@ func (m *QueryContainsBytesRequest) MarshalToSizedBuffer(dAtA []byte) (int, erro
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if len(m.Hash) > 0 {
 		i -= len(m.Hash)
 		copy(dAtA[i:], m.Hash)
@@ -1510,10 +1434,6 @@ func (m *QueryContainsBytesResponse) MarshalToSizedBuffer(dAtA []byte) (int, err
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if m.Contains {
 		i--
 		if m.Contains {
@@ -1547,10 +1467,6 @@ func (m *QueryMainChainRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if m.Pagination != nil {
 		{
 			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
@@ -1586,10 +1502,6 @@ func (m *QueryMainChainResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) 
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if m.Pagination != nil {
 		{
 			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
@@ -1639,10 +1551,6 @@ func (m *QueryTipRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	return len(dAtA) - i, nil
 }
 
@@ -1666,10 +1574,6 @@ func (m *QueryTipResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if m.Header != nil {
 		{
 			size, err := m.Header.MarshalToSizedBuffer(dAtA[:i])
@@ -1705,10 +1609,6 @@ func (m *QueryBaseHeaderRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) 
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	return len(dAtA) - i, nil
 }
 
@@ -1732,10 +1632,6 @@ func (m *QueryBaseHeaderResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if m.Header != nil {
 		{
 			size, err := m.Header.MarshalToSizedBuffer(dAtA[:i])
@@ -1771,10 +1667,6 @@ func (m *QueryHeaderDepthRequest) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if len(m.Hash) > 0 {
 		i -= len(m.Hash)
 		copy(dAtA[i:], m.Hash)
@@ -1805,10 +1697,6 @@ func (m *QueryHeaderDepthResponse) MarshalToSizedBuffer(dAtA []byte) (int, error
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if m.Depth != 0 {
 		i = encodeVarintQuery(dAtA, i, uint64(m.Depth))
 		i--
@@ -1834,9 +1722,6 @@ func (m *QueryParamsRequest) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
 	return n
 }
 
@@ -1848,9 +1733,6 @@ func (m *QueryParamsResponse) Size() (n int) {
 	_ = l
 	l = m.Params.Size()
 	n += 1 + l + sovQuery(uint64(l))
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
 	return n
 }
 
@@ -1863,9 +1745,6 @@ func (m *QueryHashesRequest) Size() (n int) {
 	if m.Pagination != nil {
 		l = m.Pagination.Size()
 		n += 1 + l + sovQuery(uint64(l))
-	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
 	}
 	return n
 }
@@ -1886,9 +1765,6 @@ func (m *QueryHashesResponse) Size() (n int) {
 		l = m.Pagination.Size()
 		n += 1 + l + sovQuery(uint64(l))
 	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
 	return n
 }
 
@@ -1902,9 +1778,6 @@ func (m *QueryContainsRequest) Size() (n int) {
 		l = m.Hash.Size()
 		n += 1 + l + sovQuery(uint64(l))
 	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
 	return n
 }
 
@@ -1916,9 +1789,6 @@ func (m *QueryContainsResponse) Size() (n int) {
 	_ = l
 	if m.Contains {
 		n += 2
-	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
 	}
 	return n
 }
@@ -1933,9 +1803,6 @@ func (m *QueryContainsBytesRequest) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovQuery(uint64(l))
 	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
 	return n
 }
 
@@ -1947,9 +1814,6 @@ func (m *QueryContainsBytesResponse) Size() (n int) {
 	_ = l
 	if m.Contains {
 		n += 2
-	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
 	}
 	return n
 }
@@ -1963,9 +1827,6 @@ func (m *QueryMainChainRequest) Size() (n int) {
 	if m.Pagination != nil {
 		l = m.Pagination.Size()
 		n += 1 + l + sovQuery(uint64(l))
-	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
 	}
 	return n
 }
@@ -1986,9 +1847,6 @@ func (m *QueryMainChainResponse) Size() (n int) {
 		l = m.Pagination.Size()
 		n += 1 + l + sovQuery(uint64(l))
 	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
 	return n
 }
 
@@ -1998,9 +1856,6 @@ func (m *QueryTipRequest) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
 	return n
 }
 
@@ -2014,9 +1869,6 @@ func (m *QueryTipResponse) Size() (n int) {
 		l = m.Header.Size()
 		n += 1 + l + sovQuery(uint64(l))
 	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
 	return n
 }
 
@@ -2026,9 +1878,6 @@ func (m *QueryBaseHeaderRequest) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
 	return n
 }
 
@@ -2041,9 +1890,6 @@ func (m *QueryBaseHeaderResponse) Size() (n int) {
 	if m.Header != nil {
 		l = m.Header.Size()
 		n += 1 + l + sovQuery(uint64(l))
-	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
 	}
 	return n
 }
@@ -2058,9 +1904,6 @@ func (m *QueryHeaderDepthRequest) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovQuery(uint64(l))
 	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
 	return n
 }
 
@@ -2072,9 +1915,6 @@ func (m *QueryHeaderDepthResponse) Size() (n int) {
 	_ = l
 	if m.Depth != 0 {
 		n += 1 + sovQuery(uint64(m.Depth))
-	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
 	}
 	return n
 }
@@ -2126,7 +1966,6 @@ func (m *QueryParamsRequest) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -2210,7 +2049,6 @@ func (m *QueryParamsResponse) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -2297,7 +2135,6 @@ func (m *QueryHashesRequest) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -2419,7 +2256,6 @@ func (m *QueryHashesResponse) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -2505,7 +2341,6 @@ func (m *QueryContainsRequest) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -2576,7 +2411,6 @@ func (m *QueryContainsResponse) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -2661,7 +2495,6 @@ func (m *QueryContainsBytesRequest) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -2732,7 +2565,6 @@ func (m *QueryContainsBytesResponse) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -2819,7 +2651,6 @@ func (m *QueryMainChainRequest) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -2940,7 +2771,6 @@ func (m *QueryMainChainResponse) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -2991,7 +2821,6 @@ func (m *QueryTipRequest) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -3078,7 +2907,6 @@ func (m *QueryTipResponse) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -3129,7 +2957,6 @@ func (m *QueryBaseHeaderRequest) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -3216,7 +3043,6 @@ func (m *QueryBaseHeaderResponse) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -3299,7 +3125,6 @@ func (m *QueryHeaderDepthRequest) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -3369,7 +3194,6 @@ func (m *QueryHeaderDepthResponse) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}

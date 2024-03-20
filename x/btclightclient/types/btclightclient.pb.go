@@ -8,7 +8,7 @@ import (
 	fmt "fmt"
 	github_com_Lorenzo_Protocol_lorenzo_types "github.com/Lorenzo-Protocol/lorenzo/types"
 	_ "github.com/cosmos/gogoproto/gogoproto"
-	proto "github.com/golang/protobuf/proto"
+	proto "github.com/cosmos/gogoproto/proto"
 	io "io"
 	math "math"
 	math_bits "math/bits"
@@ -23,7 +23,7 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
+const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // BTCHeaderInfo is a structure that contains all relevant information about a
 // BTC header
@@ -34,13 +34,10 @@ const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 //     to the header Bits field
 //     and the total work of the header.
 type BTCHeaderInfo struct {
-	Header               *github_com_Lorenzo_Protocol_lorenzo_types.BTCHeaderBytes     `protobuf:"bytes,1,opt,name=header,proto3,customtype=github.com/Lorenzo-Protocol/lorenzo/types.BTCHeaderBytes" json:"header,omitempty"`
-	Hash                 *github_com_Lorenzo_Protocol_lorenzo_types.BTCHeaderHashBytes `protobuf:"bytes,2,opt,name=hash,proto3,customtype=github.com/Lorenzo-Protocol/lorenzo/types.BTCHeaderHashBytes" json:"hash,omitempty"`
-	Height               uint64                                                        `protobuf:"varint,3,opt,name=height,proto3" json:"height,omitempty"`
-	Work                 *cosmossdk_io_math.Uint                                       `protobuf:"bytes,4,opt,name=work,proto3,customtype=cosmossdk.io/math.Uint" json:"work,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}                                                      `json:"-"`
-	XXX_unrecognized     []byte                                                        `json:"-"`
-	XXX_sizecache        int32                                                         `json:"-"`
+	Header *github_com_Lorenzo_Protocol_lorenzo_types.BTCHeaderBytes     `protobuf:"bytes,1,opt,name=header,proto3,customtype=github.com/Lorenzo-Protocol/lorenzo/types.BTCHeaderBytes" json:"header,omitempty"`
+	Hash   *github_com_Lorenzo_Protocol_lorenzo_types.BTCHeaderHashBytes `protobuf:"bytes,2,opt,name=hash,proto3,customtype=github.com/Lorenzo-Protocol/lorenzo/types.BTCHeaderHashBytes" json:"hash,omitempty"`
+	Height uint64                                                        `protobuf:"varint,3,opt,name=height,proto3" json:"height,omitempty"`
+	Work   *cosmossdk_io_math.Uint                                       `protobuf:"bytes,4,opt,name=work,proto3,customtype=cosmossdk.io/math.Uint" json:"work,omitempty"`
 }
 
 func (m *BTCHeaderInfo) Reset()         { *m = BTCHeaderInfo{} }
@@ -92,7 +89,7 @@ func init() {
 }
 
 var fileDescriptor_2107ea75e21373d0 = []byte{
-	// 277 bytes of a gzipped FileDescriptorProto
+	// 285 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xd2, 0xcb, 0xc9, 0x2f, 0x4a,
 	0xcd, 0xab, 0xca, 0xd7, 0x4f, 0x2a, 0x49, 0xce, 0xc9, 0x4c, 0xcf, 0x00, 0x91, 0xa9, 0x79, 0x25,
 	0xfa, 0x65, 0x86, 0x68, 0x22, 0x7a, 0x05, 0x45, 0xf9, 0x25, 0xf9, 0x42, 0x92, 0x50, 0xf5, 0x7a,
@@ -107,10 +104,10 @@ var fileDescriptor_2107ea75e21373d0 = []byte{
 	0x9b, 0x12, 0xcc, 0x0a, 0x8c, 0x1a, 0x2c, 0x41, 0x50, 0x9e, 0x90, 0x1e, 0x17, 0x4b, 0x79, 0x7e,
 	0x51, 0xb6, 0x04, 0x0b, 0xd8, 0x36, 0xa9, 0x5b, 0xf7, 0xe4, 0xc5, 0x92, 0xf3, 0x8b, 0x73, 0xf3,
 	0x8b, 0x8b, 0x53, 0xb2, 0xf5, 0x32, 0xf3, 0xf5, 0x73, 0x13, 0x4b, 0x32, 0xf4, 0x42, 0x33, 0xf3,
-	0x4a, 0x82, 0xc0, 0xea, 0x9c, 0x7c, 0x4e, 0x3c, 0x92, 0x63, 0xbc, 0xf0, 0x48, 0x8e, 0xf1, 0xc1,
-	0x23, 0x39, 0xc6, 0x19, 0x8f, 0xe5, 0x18, 0xa2, 0xac, 0x88, 0x71, 0x5d, 0x05, 0x7a, 0xb4, 0x80,
-	0x9d, 0x9b, 0xc4, 0x06, 0x0e, 0x5a, 0x63, 0x40, 0x00, 0x00, 0x00, 0xff, 0xff, 0x79, 0xa0, 0x67,
-	0xd7, 0xbd, 0x01, 0x00, 0x00,
+	0x4a, 0x82, 0xc0, 0xea, 0x9c, 0x42, 0x4e, 0x3c, 0x92, 0x63, 0xbc, 0xf0, 0x48, 0x8e, 0xf1, 0xc1,
+	0x23, 0x39, 0xc6, 0x09, 0x8f, 0xe5, 0x18, 0x2e, 0x3c, 0x96, 0x63, 0xb8, 0xf1, 0x58, 0x8e, 0x21,
+	0xca, 0x8a, 0x18, 0x57, 0x56, 0xa0, 0x47, 0x0f, 0xd8, 0xd9, 0x49, 0x6c, 0xe0, 0x20, 0x36, 0x06,
+	0x04, 0x00, 0x00, 0xff, 0xff, 0xa8, 0x3f, 0x97, 0xb8, 0xc5, 0x01, 0x00, 0x00,
 }
 
 func (m *BTCHeaderInfo) Marshal() (dAtA []byte, err error) {
@@ -133,10 +130,6 @@ func (m *BTCHeaderInfo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if m.Work != nil {
 		{
 			size := m.Work.Size()
@@ -212,9 +205,6 @@ func (m *BTCHeaderInfo) Size() (n int) {
 	if m.Work != nil {
 		l = m.Work.Size()
 		n += 1 + l + sovBtclightclient(uint64(l))
-	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
 	}
 	return n
 }
@@ -390,7 +380,6 @@ func (m *BTCHeaderInfo) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}

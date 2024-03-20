@@ -30,6 +30,3 @@ lint:
     - RPC_RESPONSE_STANDARD_NAME
     - RPC_REQUEST_RESPONSE_UNIQUE
     - COMMENT_MESSAGE
-breaking:
-  use:
-    - FILE

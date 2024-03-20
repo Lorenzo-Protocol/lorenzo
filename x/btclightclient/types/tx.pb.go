@@ -11,7 +11,7 @@ import (
 	_ "github.com/cosmos/cosmos-sdk/types/msgservice"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	grpc1 "github.com/cosmos/gogoproto/grpc"
-	proto "github.com/golang/protobuf/proto"
+	proto "github.com/cosmos/gogoproto/proto"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -29,15 +29,12 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
+const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // MsgInsertHeaders defines the message for multiple incoming header bytes
 type MsgInsertHeaders struct {
-	Signer               string                                                     `protobuf:"bytes,1,opt,name=signer,proto3" json:"signer,omitempty"`
-	Headers              []github_com_Lorenzo_Protocol_lorenzo_types.BTCHeaderBytes `protobuf:"bytes,2,rep,name=headers,proto3,customtype=github.com/Lorenzo-Protocol/lorenzo/types.BTCHeaderBytes" json:"headers,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}                                                   `json:"-"`
-	XXX_unrecognized     []byte                                                     `json:"-"`
-	XXX_sizecache        int32                                                      `json:"-"`
+	Signer  string                                                     `protobuf:"bytes,1,opt,name=signer,proto3" json:"signer,omitempty"`
+	Headers []github_com_Lorenzo_Protocol_lorenzo_types.BTCHeaderBytes `protobuf:"bytes,2,rep,name=headers,proto3,customtype=github.com/Lorenzo-Protocol/lorenzo/types.BTCHeaderBytes" json:"headers,omitempty"`
 }
 
 func (m *MsgInsertHeaders) Reset()         { *m = MsgInsertHeaders{} }
@@ -82,9 +79,6 @@ func (m *MsgInsertHeaders) GetSigner() string {
 
 // MsgInsertHeadersResponse defines the response for the InsertHeaders transaction
 type MsgInsertHeadersResponse struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *MsgInsertHeadersResponse) Reset()         { *m = MsgInsertHeadersResponse{} }
@@ -130,10 +124,7 @@ type MsgUpdateParams struct {
 	// params defines the btc light client parameters to update.
 	//
 	// NOTE: All parameters must be supplied.
-	Params               Params   `protobuf:"bytes,2,opt,name=params,proto3" json:"params"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Params Params `protobuf:"bytes,2,opt,name=params,proto3" json:"params"`
 }
 
 func (m *MsgUpdateParams) Reset()         { *m = MsgUpdateParams{} }
@@ -185,9 +176,6 @@ func (m *MsgUpdateParams) GetParams() Params {
 
 // MsgUpdateParamsResponse is the response to the MsgUpdateParams message.
 type MsgUpdateParamsResponse struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *MsgUpdateParamsResponse) Reset()         { *m = MsgUpdateParamsResponse{} }
@@ -235,7 +223,7 @@ func init() {
 }
 
 var fileDescriptor_16c2a8a24fcd05e8 = []byte{
-	// 438 bytes of a gzipped FileDescriptorProto
+	// 447 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x52, 0xca, 0xc9, 0x2f, 0x4a,
 	0xcd, 0xab, 0xca, 0xd7, 0x4f, 0x2a, 0x49, 0xce, 0xc9, 0x4c, 0xcf, 0x00, 0x91, 0xa9, 0x79, 0x25,
 	0xfa, 0x65, 0x86, 0xfa, 0x25, 0x15, 0x7a, 0x05, 0x45, 0xf9, 0x25, 0xf9, 0x42, 0x92, 0x50, 0x35,
@@ -260,10 +248,10 @@ var fileDescriptor_16c2a8a24fcd05e8 = []byte{
 	0x7d, 0x64, 0xe4, 0x62, 0xf6, 0x2d, 0x4e, 0x17, 0x2a, 0xe6, 0xe2, 0x45, 0x0d, 0x69, 0x6d, 0x3c,
 	0x96, 0xa2, 0x87, 0x82, 0x94, 0x31, 0x09, 0x8a, 0xe1, 0x41, 0xc6, 0x20, 0x94, 0xc7, 0xc5, 0x83,
 	0x12, 0x60, 0x5a, 0xf8, 0x8d, 0x41, 0x56, 0x2b, 0x65, 0x44, 0xbc, 0x5a, 0x98, 0x8d, 0x52, 0xac,
-	0x0d, 0xcf, 0x37, 0x68, 0x31, 0x3a, 0xf9, 0x9c, 0x78, 0x24, 0xc7, 0x78, 0xe1, 0x91, 0x1c, 0xe3,
-	0x83, 0x47, 0x72, 0x8c, 0x33, 0x1e, 0xcb, 0x31, 0x44, 0x59, 0x11, 0x93, 0x52, 0x2a, 0xd0, 0x13,
-	0x33, 0x38, 0xe9, 0x24, 0xb1, 0x81, 0x93, 0xab, 0x31, 0x20, 0x00, 0x00, 0xff, 0xff, 0x78, 0x8d,
-	0x88, 0xf9, 0x61, 0x03, 0x00, 0x00,
+	0x0d, 0xcf, 0x37, 0x68, 0x31, 0x3a, 0x85, 0x9c, 0x78, 0x24, 0xc7, 0x78, 0xe1, 0x91, 0x1c, 0xe3,
+	0x83, 0x47, 0x72, 0x8c, 0x13, 0x1e, 0xcb, 0x31, 0x5c, 0x78, 0x2c, 0xc7, 0x70, 0xe3, 0xb1, 0x1c,
+	0x43, 0x94, 0x15, 0x31, 0x29, 0xa6, 0x02, 0x3d, 0x51, 0x83, 0x93, 0x50, 0x12, 0x1b, 0x38, 0xd9,
+	0x1a, 0x03, 0x02, 0x00, 0x00, 0xff, 0xff, 0x58, 0x5f, 0xb4, 0x43, 0x69, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -406,10 +394,6 @@ func (m *MsgInsertHeaders) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if len(m.Headers) > 0 {
 		for iNdEx := len(m.Headers) - 1; iNdEx >= 0; iNdEx-- {
 			{
@@ -454,10 +438,6 @@ func (m *MsgInsertHeadersResponse) MarshalToSizedBuffer(dAtA []byte) (int, error
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	return len(dAtA) - i, nil
 }
 
@@ -481,10 +461,6 @@ func (m *MsgUpdateParams) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	{
 		size, err := m.Params.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
@@ -525,10 +501,6 @@ func (m *MsgUpdateParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	return len(dAtA) - i, nil
 }
 
@@ -559,9 +531,6 @@ func (m *MsgInsertHeaders) Size() (n int) {
 			n += 1 + l + sovTx(uint64(l))
 		}
 	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
 	return n
 }
 
@@ -571,9 +540,6 @@ func (m *MsgInsertHeadersResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
 	return n
 }
 
@@ -589,9 +555,6 @@ func (m *MsgUpdateParams) Size() (n int) {
 	}
 	l = m.Params.Size()
 	n += 1 + l + sovTx(uint64(l))
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
 	return n
 }
 
@@ -601,9 +564,6 @@ func (m *MsgUpdateParamsResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
 	return n
 }
 
@@ -721,7 +681,6 @@ func (m *MsgInsertHeaders) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -772,7 +731,6 @@ func (m *MsgInsertHeadersResponse) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -888,7 +846,6 @@ func (m *MsgUpdateParams) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -939,7 +896,6 @@ func (m *MsgUpdateParamsResponse) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
