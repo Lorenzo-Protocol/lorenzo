@@ -1,0 +1,14 @@
+syntax = "proto3";
+package lorenzo.btclightclient.v1;
+
+import "gogoproto/gogo.proto";
+import "lorenzo/btclightclient/v1/btclightclient.proto";
+import "lorenzo/btclightclient/v1/params.proto";
+
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/types";
+
+// GenesisState defines the btclightclient module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  BTCHeaderInfo base_btc_header = 2 [ (gogoproto.nullable) = false ];
+}

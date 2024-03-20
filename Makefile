@@ -114,6 +114,4 @@ containerProtoFmt=cosmos-sdk-proto-fmt-$(protoVer)
 
 proto-gen:
 	@echo "Generating Protobuf files"
-	@if docker ps -a --format '{{.Names}}' | grep -Eq "^${containerProtoGen}$$"; then docker start -a $(containerProtoGen); else docker run --name $(containerProtoGen) -v $(CURDIR):/workspace --workdir /workspace $(protoImageName) \
-		sh ./scripts/protocgen.sh; fi
-	@go mod tidy
+	$(protoImage) sh ./scripts/protocgen.sh
