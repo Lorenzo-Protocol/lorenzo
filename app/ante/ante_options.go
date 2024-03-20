@@ -22,6 +22,7 @@ type HandlerOptions struct {
 	SignModeHandler        authsigning.SignModeHandler
 	MaxTxGasWanted         uint64
 	ExtensionOptionChecker ante.ExtensionOptionChecker
+	TxFeeChecker           ante.TxFeeChecker
 }
 
 func (options HandlerOptions) validate() error {
