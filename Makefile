@@ -104,14 +104,37 @@ e2e-test-all: e2e-test-ibc e2e-test-ibc-timeout
 .PHONY: e2e-test-ibc e2e-test-ibc-timeout e2e-test-all
 
 ###############################################################################
-###                                Proto                                    ###
+###                                Protobuf                                 ###
 ###############################################################################
 
-protoVer=v0.7
-protoImageName=tendermintdev/sdk-proto-gen:$(protoVer)
-containerProtoGen=cosmos-sdk-proto-gen-$(protoVer)
-containerProtoFmt=cosmos-sdk-proto-fmt-$(protoVer)
+protoVer=0.11.6
+protoImageName=ghcr.io/cosmos/proto-builder:$(protoVer)
+protoImage=$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace --user 0 $(protoImageName)
+
+# ------
+# NOTE: If you are experiencing problems running these commands, try deleting
+#       the docker images and execute the desired command again.
+#
+proto-all: proto-format proto-lint proto-gen
 
 proto-gen:
 	@echo "Generating Protobuf files"
 	$(protoImage) sh ./scripts/protocgen.sh
+
+proto-swagger-gen:
+	@echo "Downloading Protobuf dependencies"
+	@make proto-download-deps
+	@echo "Generating Protobuf Swagger"
+	$(protoImage) sh ./scripts/protoc-swagger-gen.sh
+
+proto-format:
+	@echo "Formatting Protobuf files"
+	$(protoImage) find ./ -name *.proto -exec clang-format -i {} \;
+
+proto-lint:
+	@echo "Linting Protobuf files"
+	@$(protoImage) buf lint --error-format=json
+
+proto-check-breaking:
+	@echo "Checking Protobuf files for breaking changes"
+	$(protoImage) buf breaking --against $(HTTPS_GIT)#branch=main
