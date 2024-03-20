@@ -1,5 +1,5 @@
 version: v1
-name: buf.build/AnyVM/lorenzo
+name: buf.build/Lorenzo-Protocol/lorenzo
 deps:
   - buf.build/cosmos/cosmos-sdk
   - buf.build/cosmos/cosmos-proto
