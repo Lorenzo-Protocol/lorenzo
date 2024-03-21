@@ -24,9 +24,26 @@ func SimnetGenesisBlock() BTCHeaderInfo {
 	)
 }
 
+func TestNetGenesisBlock() BTCHeaderInfo {
+	// By default we use the genesis block of the simnet, as it is the best for testing
+	var header = chaincfg.TestNet3Params.GenesisBlock.Header
+	var headerHash = chaincfg.TestNet3Params.GenesisHash
+
+	bytes := bbn.NewBTCHeaderBytesFromBlockHeader(&header)
+	hash := bbn.NewBTCHeaderHashBytesFromChainhash(headerHash)
+	work := CalcWork(&bytes)
+
+	return *NewBTCHeaderInfo(
+		&bytes,
+		&hash,
+		0,
+		&work,
+	)
+}
+
 // DefaultGenesis returns the default Capability genesis state
 func DefaultGenesis() *GenesisState {
-	defaultBaseHeader := SimnetGenesisBlock()
+	defaultBaseHeader := TestNetGenesisBlock()
 
 	return &GenesisState{
 		BaseBtcHeader: defaultBaseHeader,

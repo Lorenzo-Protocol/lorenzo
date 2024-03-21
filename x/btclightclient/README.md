@@ -3,8 +3,8 @@
 The BTC light client module is essentially a BTC light client that maintains
 the canonical header chain of Bitcoin.
 
-Babylon chain needs to know about different events happening on Bitcoin chain.
-To make it possible in a secure way, Babylon needs to know the current
+lorenzo chain needs to know about different events happening on Bitcoin chain.
+To make it possible in a secure way, lorenzo needs to know the current
 state of the Bitcoin chain i.e., what is the canonical chain of the Bitcoin network.
 
 ## Table of contents
@@ -12,7 +12,7 @@ state of the Bitcoin chain i.e., what is the canonical chain of the Bitcoin netw
 - [Table of contents](#table-of-contents)
 - [Concepts](#concepts)
   - [Problem statement](#problem-statement)
-  - [Babylon's BTC light client design](#babylons-btc-light-client-design)
+  - [lorenzo's BTC light client design](#lorenzos-btc-light-client-design)
 - [States](#states)
   - [Parameters](#parameters)
   - [Headers storage](#headers-storage)
@@ -28,26 +28,26 @@ state of the Bitcoin chain i.e., what is the canonical chain of the Bitcoin netw
 
 ### Problem statement
 
-The Babylon chain needs to learn and validate a number of events that had
+The lorenzo chain needs to learn and validate a number of events that had
 happened on the Bitcoin chain. Those events are:
 
 1. `New checkpoint event` - Bitcoin Timestamping protocol requires checkpoints
-on Bitcoin to be reported back to Babylon. To do it securely, each checkpoint
+on Bitcoin to be reported back to lorenzo. To do it securely, each checkpoint
 must be reported back along with the inclusion proof of transactions
 which carry this checkpoint.
 2. `New BTC delegation event` - Bitcoin Staking protocol requires staking
 transactions to be deep enough in the Bitcoin chain. Thus, the staking
 transactions also must be accompanied by the inclusion proof.
 
-To properly validate those inclusion proofs, the Babylon chain needs to know the
+To properly validate those inclusion proofs, the lorenzo chain needs to know the
 current state of BTC chain i.e., what is current canonical chain recognized by BTC.
 
-### Babylon's BTC light client design
+### lorenzo's BTC light client design
 
-Babylon maintains a BTC light client so that it can verify the inclusion
+lorenzo maintains a BTC light client so that it can verify the inclusion
 of various Bitcoin transactions.
 
-In a high-level overview, the Babylon BTC light client starts from some base BTC
+In a high-level overview, the lorenzo BTC light client starts from some base BTC
 header existing on the BTC network and allows extending this header by applying the
 same rules as a normal BTC node.
 
@@ -56,9 +56,9 @@ The base BTC header must:
 - Be at a height of BTC difficulty adjustment [boundary](https://en.bitcoin.it/wiki/Difficulty#How_often_does_the_network_difficulty_change.3F).
 This is required, to properly validate all future difficulty adjustments.
 
-The base BTC header is defined in the [genesis](../../proto/babylon/btclightclient/v1/genesis.proto) module.
+The base BTC header is defined in the [genesis](../../proto/lorenzo/btclightclient/v1/genesis.proto) module.
 
-The Babylon BTC light client module stores only BTC headers from the canonical
+The lorenzo BTC light client module stores only BTC headers from the canonical
 chain, and does not store the headers on the forks.
 The BTC canonical chain can only be extended by processing
 valid [MsgInsertHeaders](#msginsertheaders) messages.
@@ -78,7 +78,7 @@ The BTC light client module maintains the following KV stores.
 
 The [parameter storage](./keeper/params.go) maintains the BTC light client module's
 parameters. The BTC light client module's parameters are represented as a `Params`
-[object](../../proto/babylon/btclightclient/v1/params.proto) defined as follows:
+[object](../../proto/lorenzo/btclightclient/v1/params.proto) defined as follows:
 
 ```protobuf
 // Params defines the parameters for the module.
@@ -101,7 +101,7 @@ If `insert_headers_allow_list` is not empty, only addresses in the list can send
 The [Headers storage](./keeper/state.go) maintains all headers on the canonical
 chain of Bitcoin.
 The key is the header height in the BTC chain, and the value is a `BTCHeaderInfo`
-[object](../../proto/babylon/btclightclient/v1/btclightclient.proto)
+[object](../../proto/lorenzo/btclightclient/v1/btclightclient.proto)
 which contains the BTC header along with some metadata.
 
 ```protobuf
@@ -139,7 +139,7 @@ does not point to the current BTC chain tip.
 ### MsgInsertHeaders
 
 `MsgInsertHeaders` is the main message processed by the BTC light client module.
-Its purpose is to update the state of the BTC chain as viewed by Babylon chain.
+Its purpose is to update the state of the BTC chain as viewed by lorenzo chain.
 
 The handler of this message is defined
 at [x/btclightclient/keeper/msg_server.go](./keeper/msg_server.go).
@@ -157,7 +157,7 @@ message MsgInsertHeaders {
 }
 ```
 
-Upon receiving a `MsgInsertHeaders` message, a Babylon node applies the following
+Upon receiving a `MsgInsertHeaders` message, a lorenzo node applies the following
 verification rules. This is a subset of the BTC
 [protocol](https://en.bitcoin.it/wiki/Protocol_rules#.22block.22_messages) rules:
 

@@ -3,7 +3,7 @@
 set -eo pipefail
 
 cd proto
-proto_dirs=$(find ./babylon -path -prune -o -name '*.proto' -print0 | xargs -0 -n1 dirname | sort | uniq)
+proto_dirs=$(find ./lorenzo -path -prune -o -name '*.proto' -print0 | xargs -0 -n1 dirname | sort | uniq)
 
 buf mod update
 for dir in $proto_dirs; do

@@ -10,6 +10,7 @@ import (
 )
 
 var _ sdk.Msg = (*MsgInsertHeaders)(nil)
+var _ sdk.Msg = (*MsgUpdateParams)(nil)
 
 func NewMsgInsertHeaders(signer sdk.AccAddress, headersHex string) (*MsgInsertHeaders, error) {
 	if len(headersHex) == 0 {
@@ -92,4 +93,12 @@ func (msg *MsgInsertHeaders) GetSigners() []sdk.AccAddress {
 	}
 
 	return []sdk.AccAddress{signer}
+}
+
+func (msg *MsgUpdateParams) ValidateBasic() error {
+	return nil
+}
+
+func (msg *MsgUpdateParams) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{}
 }
