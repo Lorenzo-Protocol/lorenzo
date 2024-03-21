@@ -9,6 +9,7 @@ import (
 	ethante "github.com/evmos/ethermint/app/ante"
 
 	errorsmod "cosmossdk.io/errors"
+	bbn "github.com/Lorenzo-Protocol/lorenzo/types"
 	errortypes "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
@@ -22,6 +23,7 @@ type HandlerOptions struct {
 	SignModeHandler        authsigning.SignModeHandler
 	MaxTxGasWanted         uint64
 	ExtensionOptionChecker ante.ExtensionOptionChecker
+	BtcConfig              bbn.BtcConfig
 }
 
 func (options HandlerOptions) validate() error {

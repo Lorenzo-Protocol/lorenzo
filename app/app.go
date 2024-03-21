@@ -513,6 +513,7 @@ func NewLorenzoApp(
 		SignModeHandler:        encodingConfig.TxConfig.SignModeHandler(),
 		MaxTxGasWanted:         maxGasWanted,
 		ExtensionOptionChecker: nil, //uses default
+		BtcConfig:              btcConfig,
 	})
 	if err != nil {
 		panic(err)
