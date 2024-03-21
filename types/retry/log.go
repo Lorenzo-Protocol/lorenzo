@@ -1,8 +1,9 @@
 package retry
 
 import (
-	"cosmossdk.io/log"
 	"os"
+
+	"cosmossdk.io/log"
 )
 
 // TODO add log formatters

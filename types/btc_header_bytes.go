@@ -5,10 +5,11 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
-	"github.com/btcsuite/btcd/blockchain"
-	"github.com/btcsuite/btcd/wire"
 	"math/big"
 	"time"
+
+	"github.com/btcsuite/btcd/blockchain"
+	"github.com/btcsuite/btcd/wire"
 )
 
 type BTCHeaderBytes []byte

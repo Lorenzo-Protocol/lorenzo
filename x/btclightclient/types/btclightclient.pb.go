@@ -4,14 +4,15 @@
 package types
 
 import (
-	cosmossdk_io_math "cosmossdk.io/math"
 	fmt "fmt"
-	github_com_Lorenzo_Protocol_lorenzo_types "github.com/Lorenzo-Protocol/lorenzo/types"
-	_ "github.com/cosmos/gogoproto/gogoproto"
-	proto "github.com/cosmos/gogoproto/proto"
 	io "io"
 	math "math"
 	math_bits "math/bits"
+
+	cosmossdk_io_math "cosmossdk.io/math"
+	github_com_Lorenzo_Protocol_lorenzo_types "github.com/Lorenzo-Protocol/lorenzo/types"
+	_ "github.com/cosmos/gogoproto/gogoproto"
+	proto "github.com/cosmos/gogoproto/proto"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
