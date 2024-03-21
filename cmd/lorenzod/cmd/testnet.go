@@ -56,6 +56,7 @@ import (
 	mintypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
+	btclightclienttypes "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/types"
 	"github.com/evmos/ethermint/crypto/hd"
 	"github.com/evmos/ethermint/server/config"
 	srvflags "github.com/evmos/ethermint/server/flags"
@@ -66,27 +67,31 @@ import (
 )
 
 var (
-	flagNodeDirPrefix     = "node-dir-prefix"
-	flagNumValidators     = "v"
-	flagOutputDir         = "output-dir"
-	flagNodeDaemonHome    = "node-daemon-home"
-	flagStartingIPAddress = "starting-ip-address"
-	flagEnableLogging     = "enable-logging"
-	flagRPCAddress        = "rpc.address"
-	flagAPIAddress        = "api.address"
-	flagPrintMnemonic     = "print-mnemonic"
+	flagNodeDirPrefix        = "node-dir-prefix"
+	flagNumValidators        = "v"
+	flagOutputDir            = "output-dir"
+	flagNodeDaemonHome       = "node-daemon-home"
+	flagStartingIPAddress    = "starting-ip-address"
+	flagEnableLogging        = "enable-logging"
+	flagRPCAddress           = "rpc.address"
+	flagAPIAddress           = "api.address"
+	flagPrintMnemonic        = "print-mnemonic"
+	flagBaseBtcHeaderParams  = "base-btc-header-params"
+	flagBtclightclientParams = "btc-lightclient-params"
 )
 
 type initArgs struct {
-	algo              string
-	chainID           string
-	keyringBackend    string
-	minGasPrices      string
-	nodeDaemonHome    string
-	nodeDirPrefix     string
-	numValidators     int
-	outputDir         string
-	startingIPAddress string
+	algo                 string
+	chainID              string
+	keyringBackend       string
+	minGasPrices         string
+	nodeDaemonHome       string
+	nodeDirPrefix        string
+	numValidators        int
+	outputDir            string
+	startingIPAddress    string
+	baseBtcHeaderParams  string
+	btclightclientParams string
 }
 
 type startArgs struct {
@@ -112,6 +117,8 @@ func addTestnetFlagsToCmd(cmd *cobra.Command) {
 			appparams.BaseDenom),
 		"Minimum gas prices to accept for transactions; All fees in a tx must meet this minimum (e.g. 0.01photino,0.001stake)")
 	cmd.Flags().String(flags.FlagKeyType, string(hd.EthSecp256k1Type), "Key signing algorithm to generate keys for")
+	cmd.Flags().String(flagBaseBtcHeaderParams, string(hd.EthSecp256k1Type), "base btcHeader params")
+	cmd.Flags().String(flagBtclightclientParams, string(hd.EthSecp256k1Type), "btc lightclient params")
 }
 
 // NewTestnetCmd creates a root testnet command with subcommands to run an in-process testnet or initialize
@@ -165,6 +172,8 @@ Example:
 			args.startingIPAddress, _ = cmd.Flags().GetString(flagStartingIPAddress)
 			args.numValidators, _ = cmd.Flags().GetInt(flagNumValidators)
 			args.algo, _ = cmd.Flags().GetString(flags.FlagKeyType)
+			args.baseBtcHeaderParams, _ = cmd.Flags().GetString(flagBaseBtcHeaderParams)
+			args.btclightclientParams, _ = cmd.Flags().GetString(flagBtclightclientParams)
 
 			return initTestnetFiles(clientCtx, cmd, serverCtx.Config, mbm, genBalIterator, args)
 		},
@@ -374,7 +383,7 @@ func initTestnetFiles(
 		srvconfig.WriteConfigFile(filepath.Join(nodeDir, "config/app.toml"), appConfig)
 	}
 
-	if err := initGenFiles(clientCtx, mbm, args.chainID, appparams.BaseDenom, genAccounts, genBalances, genFiles, args.numValidators); err != nil {
+	if err := initGenFiles(clientCtx, mbm, args.chainID, appparams.BaseDenom, genAccounts, genBalances, genFiles, args.numValidators, args.baseBtcHeaderParams, args.btclightclientParams); err != nil {
 		return err
 	}
 
@@ -399,6 +408,8 @@ func initGenFiles(
 	genBalances []banktypes.Balance,
 	genFiles []string,
 	numValidators int,
+	_baseBtcHeaderParams string,
+	_btclightclientParams string,
 ) error {
 	appGenState := mbm.DefaultGenesis(clientCtx.Codec)
 	// set the accounts in the genesis state
@@ -449,6 +460,18 @@ func initGenFiles(
 
 	evmGenState.Params.EvmDenom = coinDenom
 	appGenState[evmtypes.ModuleName] = clientCtx.Codec.MustMarshalJSON(&evmGenState)
+
+	// btclightclient genesis
+	btclightclientGenState := btclightclienttypes.DefaultGenesis()
+	/*
+		var baseBtcHeaderParamsJson btclightclienttypes.BTCHeaderInfo
+		clientCtx.Codec.MustUnmarshalJSON([]byte(baseBtcHeaderParams), &baseBtcHeaderParamsJson)
+		btclightclientGenState.BaseBtcHeader = baseBtcHeaderParamsJson
+		var btclightclientParamsJson btclightclienttypes.Params
+		clientCtx.Codec.MustUnmarshalJSON([]byte(btclightclientParams), &btclightclientParamsJson)
+		btclightclientGenState.Params = btclightclientParamsJson
+	*/
+	appGenState[btclightclienttypes.ModuleName] = clientCtx.Codec.MustMarshalJSON(btclightclientGenState)
 
 	appGenStateJSON, err := json.MarshalIndent(appGenState, "", "  ")
 	if err != nil {

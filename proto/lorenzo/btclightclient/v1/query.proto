@@ -1,0 +1,136 @@
+syntax = "proto3";
+package lorenzo.btclightclient.v1;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "lorenzo/btclightclient/v1/btclightclient.proto";
+import "lorenzo/btclightclient/v1/params.proto";
+
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Params queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/lorenzo/btclightclient/v1/params";
+  }
+
+  // Hashes retrieves the hashes maintained by the module.
+  rpc Hashes(QueryHashesRequest) returns (QueryHashesResponse) {
+    option (google.api.http).get = "/lorenzo/btclightclient/v1/hashes";
+  }
+
+  // Contains checks whether a hash is maintained by the module.
+  rpc Contains(QueryContainsRequest) returns (QueryContainsResponse) {
+    option (google.api.http).get = "/lorenzo/btclightclient/v1/contains";
+  }
+
+  // ContainsBytes is a temporary method that
+  // checks whether a hash is maintained by the module.
+  // See discussion at https://github.com/Lorenzo-Protocol/lorenzo/pull/132
+  // for more details.
+  rpc ContainsBytes(QueryContainsBytesRequest)
+      returns (QueryContainsBytesResponse) {
+    option (google.api.http).get = "/lorenzo/btclightclient/v1/containsBytes";
+  }
+
+  // MainChain returns the canonical chain
+  rpc MainChain(QueryMainChainRequest) returns (QueryMainChainResponse) {
+    option (google.api.http).get = "/lorenzo/btclightclient/v1/mainchain";
+  }
+
+  // Tip return best header on canonical chain
+  rpc Tip(QueryTipRequest) returns (QueryTipResponse) {
+    option (google.api.http).get = "/lorenzo/btclightclient/v1/tip";
+  }
+
+  // BaseHeader returns the base BTC header of the chain. This header is defined
+  // on genesis.
+  rpc BaseHeader(QueryBaseHeaderRequest) returns (QueryBaseHeaderResponse) {
+    option (google.api.http).get = "/lorenzo/btclightclient/v1/baseheader";
+  }
+
+  // HeaderDepth returns the depth of the header in main chain or error if the
+  // block is not found or it exists on fork
+  rpc HeaderDepth(QueryHeaderDepthRequest) returns(QueryHeaderDepthResponse) {
+    option (google.api.http).get = "/lorenzo/btclightclient/v1/depth/{hash}";
+  }
+}
+
+// QueryParamsRequest is the request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is the response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  lorenzo.btclightclient.v1.Params params = 1 [ (gogoproto.nullable) = false ];
+}
+
+// QueryHashesRequest is request type for the Query/Hashes RPC method.
+// It involves retrieving all hashes that are maintained by the module.
+message QueryHashesRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+// QueryHashesResponse is response type for the Query/Hashes RPC method.
+message QueryHashesResponse {
+  repeated bytes hashes = 1
+      [ (gogoproto.customtype) =
+            "github.com/Lorenzo-Protocol/lorenzo/types.BTCHeaderHashBytes" ];
+
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+// QueryContainsRequest is request type for the Query/Contains RPC method.
+// It involves checking whether a hash is maintained by the module.
+message QueryContainsRequest {
+  bytes hash = 1
+      [ (gogoproto.customtype) =
+            "github.com/Lorenzo-Protocol/lorenzo/types.BTCHeaderHashBytes" ];
+}
+
+// QueryContainsResponse is response type for the Query/Contains RPC method.
+message QueryContainsResponse { bool contains = 1; }
+
+// QueryContainsRequest is request type for the temporary Query/ContainsBytes
+// RPC method. It involves checking whether a hash is maintained by the module.
+message QueryContainsBytesRequest { bytes hash = 1; }
+
+// QueryContainsResponse is response type for the temporary Query/ContainsBytes
+// RPC method.
+message QueryContainsBytesResponse { bool contains = 1; }
+
+// QueryMainChainRequest is request type for the Query/MainChain RPC method.
+// It involves retrieving the canonical chain maintained by the module.
+message QueryMainChainRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+// QueryMainChainResponse is response type for the Query/MainChain RPC method.
+message QueryMainChainResponse {
+  repeated BTCHeaderInfo headers = 1;
+
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryTipRequest is the request type for the Query/Tip RPC method.
+message QueryTipRequest {}
+
+// QueryTipResponse is the response type for the Query/Tip RPC method.
+message QueryTipResponse { BTCHeaderInfo header = 1; }
+
+// QueryBaseHeaderRequest is the request type for the Query/BaseHeader RPC
+// method.
+message QueryBaseHeaderRequest {}
+
+// QueryBaseHeaderResponse is the response type for the Query/BaseHeader RPC
+// method.
+message QueryBaseHeaderResponse { BTCHeaderInfo header = 1; }
+
+// QueryMainChainDepthRequest is the request type for the Query/MainChainDepth RPC
+// it contains hex encoded hash of btc block header as parameter
+message QueryHeaderDepthRequest { string hash = 1; }
+
+// QueryMainChainDepthResponse is the response type for the Query/MainChainDepth RPC
+// it contains depth of the block in main chain
+message QueryHeaderDepthResponse { uint64 depth = 1; }

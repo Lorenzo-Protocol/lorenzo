@@ -2,6 +2,8 @@ package app
 
 import (
 	appparams "github.com/Lorenzo-Protocol/lorenzo/app/params"
+	"github.com/Lorenzo-Protocol/lorenzo/x/btclightclient"
+	btclightclienttypes "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	authsims "github.com/cosmos/cosmos-sdk/x/auth/simulation"
@@ -99,6 +101,7 @@ var (
 		// Ethermint modules
 		evm.AppModuleBasic{},
 		feemarket.AppModuleBasic{},
+		btclightclient.AppModuleBasic{},
 	)
 	// module account permissions
 	maccPerms = map[string][]string{
@@ -190,6 +193,7 @@ func appModules(
 		params.NewAppModule(app.ParamsKeeper),
 
 		app.transferModule,
+		btclightclient.NewAppModule(appCodec, app.BTCLightClientKeeper),
 
 		// this line is used by starport scaffolding # stargate/app/appModule
 
@@ -232,7 +236,7 @@ func orderBeginBlockers() []string {
 		feegrant.ModuleName,
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
-
+		btclightclienttypes.ModuleName,
 		//self module
 
 	}
@@ -268,7 +272,7 @@ func orderEndBlockers() []string {
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
-
+		btclightclienttypes.ModuleName,
 		//self module
 
 	}
@@ -307,6 +311,7 @@ func orderInitBlockers() []string {
 		evidencetypes.ModuleName,
 
 		//self module
+		btclightclienttypes.ModuleName,
 
 		// NOTE: crisis module must go at the end to check for invariants on each module
 		crisistypes.ModuleName,
