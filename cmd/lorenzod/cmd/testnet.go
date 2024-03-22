@@ -76,7 +76,7 @@ var (
 	flagRPCAddress           = "rpc.address"
 	flagAPIAddress           = "api.address"
 	flagPrintMnemonic        = "print-mnemonic"
-	flagBaseBtcHeaderParams  = "base-btc-header-params"
+	flagBaseBtcHeaderParams  = "base-btc-header"
 	flagBtclightclientParams = "btc-lightclient-params"
 )
 
@@ -408,8 +408,8 @@ func initGenFiles(
 	genBalances []banktypes.Balance,
 	genFiles []string,
 	numValidators int,
-	_baseBtcHeaderParams string,
-	_btclightclientParams string,
+	baseBtcHeaderParams string,
+	btclightclientParams string,
 ) error {
 	appGenState := mbm.DefaultGenesis(clientCtx.Codec)
 	// set the accounts in the genesis state
@@ -463,14 +463,16 @@ func initGenFiles(
 
 	// btclightclient genesis
 	btclightclientGenState := btclightclienttypes.DefaultGenesis()
-	/*
-		var baseBtcHeaderParamsJson btclightclienttypes.BTCHeaderInfo
-		clientCtx.Codec.MustUnmarshalJSON([]byte(baseBtcHeaderParams), &baseBtcHeaderParamsJson)
+	var baseBtcHeaderParamsJson btclightclienttypes.BTCHeaderInfo
+	err = clientCtx.Codec.UnmarshalJSON([]byte(baseBtcHeaderParams), &baseBtcHeaderParamsJson)
+	if err == nil {
 		btclightclientGenState.BaseBtcHeader = baseBtcHeaderParamsJson
-		var btclightclientParamsJson btclightclienttypes.Params
-		clientCtx.Codec.MustUnmarshalJSON([]byte(btclightclientParams), &btclightclientParamsJson)
+	}
+	var btclightclientParamsJson btclightclienttypes.Params
+	err = clientCtx.Codec.UnmarshalJSON([]byte(btclightclientParams), &btclightclientParamsJson)
+	if err == nil {
 		btclightclientGenState.Params = btclightclientParamsJson
-	*/
+	}
 	appGenState[btclightclienttypes.ModuleName] = clientCtx.Codec.MustMarshalJSON(btclightclientGenState)
 
 	appGenStateJSON, err := json.MarshalIndent(appGenState, "", "  ")
