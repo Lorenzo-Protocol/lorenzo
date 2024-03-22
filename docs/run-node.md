@@ -116,9 +116,10 @@ lorenzod --home .testnet/node0/lorenzod --chain-id chain-test \
 
 ## Running a multi-node testnet
 
-We provide support for running a multi-node testnet using Docker. To build it
+We provide support for running a multi-node testnet using Docker. To build and run it
 
 ```console
 cp -R .testnets/* build/
+docker build -t lorenzo/node .
 docker compose up
 ```
