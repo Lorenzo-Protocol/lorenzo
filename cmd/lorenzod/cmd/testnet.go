@@ -76,6 +76,7 @@ var (
 	flagRPCAddress           = "rpc.address"
 	flagAPIAddress           = "api.address"
 	flagPrintMnemonic        = "print-mnemonic"
+	flagBtcNetwork           = "btc-network"
 	flagBaseBtcHeaderParams  = "base-btc-header"
 	flagBtclightclientParams = "btc-lightclient-params"
 )
@@ -90,6 +91,7 @@ type initArgs struct {
 	numValidators        int
 	outputDir            string
 	startingIPAddress    string
+	btcNetwork           string
 	baseBtcHeaderParams  string
 	btclightclientParams string
 }
@@ -117,8 +119,9 @@ func addTestnetFlagsToCmd(cmd *cobra.Command) {
 			appparams.BaseDenom),
 		"Minimum gas prices to accept for transactions; All fees in a tx must meet this minimum (e.g. 0.01photino,0.001stake)")
 	cmd.Flags().String(flags.FlagKeyType, string(hd.EthSecp256k1Type), "Key signing algorithm to generate keys for")
-	cmd.Flags().String(flagBaseBtcHeaderParams, string(hd.EthSecp256k1Type), "base btcHeader params")
-	cmd.Flags().String(flagBtclightclientParams, string(hd.EthSecp256k1Type), "btc lightclient params")
+	cmd.Flags().String(flagBtcNetwork, "testnet", "btc network")
+	cmd.Flags().String(flagBaseBtcHeaderParams, "", "base btcHeader params")
+	cmd.Flags().String(flagBtclightclientParams, "", "btc lightclient params")
 }
 
 // NewTestnetCmd creates a root testnet command with subcommands to run an in-process testnet or initialize
@@ -172,6 +175,7 @@ Example:
 			args.startingIPAddress, _ = cmd.Flags().GetString(flagStartingIPAddress)
 			args.numValidators, _ = cmd.Flags().GetInt(flagNumValidators)
 			args.algo, _ = cmd.Flags().GetString(flags.FlagKeyType)
+			args.btcNetwork, _ = cmd.Flags().GetString(flagBtcNetwork)
 			args.baseBtcHeaderParams, _ = cmd.Flags().GetString(flagBaseBtcHeaderParams)
 			args.btclightclientParams, _ = cmd.Flags().GetString(flagBtclightclientParams)
 
@@ -248,13 +252,14 @@ func initTestnetFiles(
 	nodeIDs := make([]string, args.numValidators)
 	valPubKeys := make([]cryptotypes.PubKey, args.numValidators)
 
-	appConfig := config.DefaultConfig()
+	appConfig := DefaultLorenzoConfig()
 	appConfig.MinGasPrices = args.minGasPrices
 	appConfig.API.Enable = true
 	appConfig.Telemetry.Enabled = true
 	appConfig.Telemetry.PrometheusRetentionTime = 60
 	appConfig.Telemetry.EnableHostnameLabel = false
 	appConfig.Telemetry.GlobalLabels = [][]string{{"chain_id", args.chainID}}
+	appConfig.BtcConfig.Network = args.btcNetwork
 
 	var (
 		genAccounts []authtypes.GenesisAccount
@@ -374,12 +379,8 @@ func initTestnetFiles(
 			return err
 		}
 
-		customAppTemplate, customAppConfig := config.AppConfig(appparams.BaseDenom)
+		customAppTemplate := DefaultLorenzoTemplate()
 		srvconfig.SetConfigTemplate(customAppTemplate)
-		if err := sdkserver.InterceptConfigsPreRunHandler(cmd, customAppTemplate, customAppConfig, tmconfig.DefaultConfig()); err != nil {
-			return err
-		}
-
 		srvconfig.WriteConfigFile(filepath.Join(nodeDir, "config/app.toml"), appConfig)
 	}
 
