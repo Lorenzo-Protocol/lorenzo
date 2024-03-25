@@ -8,6 +8,7 @@ used in its place.
 The configuration for a single node can be created through the `testnet`
 command. While the `testnet` command can create an arbitrary number of nodes that
 communicate on a testnet, here we focus on the setup of a single node.
+
 ```console
 lorenzod testnet init-files \
     --v                     1 \
@@ -30,6 +31,12 @@ The flags specify the following:
   choices include `os`, `file`, and `test`. We use `test` for convenience.
 - `--chain-id`: An identifier for the chain. Useful when perrforming operations
   later.
+
+a real example:
+
+```sh
+./build/lorenzod testnet init-files --base-btc-header '{"header": "0000202052d6336f639d03ec6f27638fd34e93d5ba4a971463a8142d0a00000000000000d1cbfdb66dd4131b77114812896e9e9f579e97afeea215fcf7563d77cc89e1103928f865434e2c193514ebdc","hash": "0000000000000023878a8e2ea4ab9d93a5cf7fb07d417dc8a899b9acb33e045f","height": "2582496","work": "96937883"}' --keyring-backend file
+```
 
 In this case, we generated a single node. If we take a look under `.testnet`:
 ```console
@@ -56,6 +63,7 @@ A brief description of the contents:
   a validator node named `node{i}` (depends on the node name), and assigns
   bbn tokens to it through a transaction written to `.testnet/gentxs/node{i}.json`.
   The keys for this node can be pointed to by the `node{i}` name.
+
 
 ### Running the node
 ```console
