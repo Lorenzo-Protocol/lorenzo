@@ -30,6 +30,10 @@ func DefaultLorenzoConfig() *LorenzoAppConfig {
 
 func DefaultLorenzoTemplate() string {
 	return serverconfig.DefaultConfigTemplate + `
+[json-rpc]
+# FeeHistoryCap sets the global cap for total number of blocks that can be fetched
+feehistory-cap = 100
+
 [btc-config]
 
 # Configures which bitcoin network should be used for checkpointing
