@@ -5,6 +5,8 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
+	"golang.org/x/exp/slices"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
@@ -17,12 +19,11 @@ var freeList = map[string]bool{
 
 func checkTxFee(ctx sdk.Context, tx sdk.Tx) (sdk.Coins, int64, error) {
 	msgs := tx.GetMsgs()
-	if len(msgs) > 1 {
-		return checkTxFeeWithValidatorMinGasPrices(ctx, tx)
-	}
 
-	msgType := sdk.MsgTypeURL(msgs[0])
-	if !freeList[msgType] {
+	hasNotZeroFeeMsg := slices.ContainsFunc(msgs, func(m sdk.Msg) bool {
+		return !freeList[sdk.MsgTypeURL(m)]
+	})
+	if hasNotZeroFeeMsg {
 		return checkTxFeeWithValidatorMinGasPrices(ctx, tx)
 	}
 
@@ -30,16 +31,11 @@ func checkTxFee(ctx sdk.Context, tx sdk.Tx) (sdk.Coins, int64, error) {
 	if !ok {
 		return nil, 0, errorsmod.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx")
 	}
-
 	feeCoins := feeTx.GetFee()
 	gas := feeTx.GetGas()
 	priority := getTxPriority(feeCoins, int64(gas))
 
-	var zeroCoins []sdk.Coin
-	for _, coin := range feeCoins {
-		zeroCoins = append(zeroCoins, sdk.NewCoin(coin.Denom, sdkmath.ZeroInt()))
-	}
-	return zeroCoins, priority, nil
+	return []sdk.Coin{}, priority, nil
 }
 
 // checkTxFeeWithValidatorMinGasPrices implements the default fee logic, where the minimum price per
