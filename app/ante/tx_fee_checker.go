@@ -23,9 +23,10 @@ func checkTxFee(ctx sdk.Context, tx sdk.Tx) (sdk.Coins, int64, error) {
 	hasNonFreeMsg := slices.ContainsFunc(msgs, func(m sdk.Msg) bool {
 		return !freeList[sdk.MsgTypeURL(m)]
 	})
-	if hasNonFreeMsg {
+	if hasNonFreeMsg  {
 		return checkTxFeeWithValidatorMinGasPrices(ctx, tx)
 	}
+
 
 	feeTx, ok := tx.(sdk.FeeTx)
 	if !ok {
