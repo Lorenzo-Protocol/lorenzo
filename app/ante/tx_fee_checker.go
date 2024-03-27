@@ -13,7 +13,7 @@ import (
 )
 
 // TODO
-var freeList = map[string]bool{
+var nonFeeMsgList = map[string]bool{
 	sdk.MsgTypeURL(&stakingtypes.MsgDelegate{}): true,
 }
 
@@ -21,12 +21,11 @@ func checkTxFee(ctx sdk.Context, tx sdk.Tx) (sdk.Coins, int64, error) {
 	msgs := tx.GetMsgs()
 
 	hasNonFreeMsg := slices.ContainsFunc(msgs, func(m sdk.Msg) bool {
-		return !freeList[sdk.MsgTypeURL(m)]
+		return !nonFeeMsgList[sdk.MsgTypeURL(m)]
 	})
-	if hasNonFreeMsg  {
+	if hasNonFreeMsg {
 		return checkTxFeeWithValidatorMinGasPrices(ctx, tx)
 	}
-
 
 	feeTx, ok := tx.(sdk.FeeTx)
 	if !ok {
