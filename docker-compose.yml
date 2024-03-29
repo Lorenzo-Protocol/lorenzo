@@ -8,11 +8,11 @@ services:
       - "26656-26657:26656-26657"
     volumes:
       - ./build/node0/lorenzod:/lorenzo:Z
-    command:
-      - /lorenzod start --home /lorenzo
+    command: >
+      lorenzod start --home /lorenzo
     networks:
       localnet:
-        ipv4_address: 192.167.10.2
+        ipv4_address: 192.167.10.1
 
   node1:
     container_name: lorenzonode1
@@ -21,11 +21,11 @@ services:
       - "26659-26660:26656-26657"
     volumes:
       - ./build/node1/lorenzod:/lorenzo:Z
-    command:
-      - /lorenzod start --home /lorenzo
+    command: >
+      lorenzod start --home /lorenzo
     networks:
       localnet:
-        ipv4_address: 192.167.10.3
+        ipv4_address: 192.167.10.2
 
   node2:
     container_name: lorenzonode2
@@ -34,11 +34,11 @@ services:
       - "26661-26662:26656-26657"
     volumes:
       - ./build/node2/lorenzod:/lorenzo:Z
-    command:
-      - /lorenzod start --home /lorenzo
+    command: >
+      lorenzod start --home /lorenzo
     networks:
       localnet:
-        ipv4_address: 192.167.10.4
+        ipv4_address: 192.167.10.3
 
   node3:
     container_name: lorenzonode3
@@ -47,11 +47,11 @@ services:
       - "26663-26664:26656-26657"
     volumes:
       - ./build/node3/lorenzod:/lorenzo:Z
-    command:
-      - /lorenzod start --home /lorenzo
+    command: >
+      lorenzod start --home /lorenzo
     networks:
       localnet:
-        ipv4_address: 192.167.10.5
+        ipv4_address: 192.167.10.4
 
 networks:
   localnet:
@@ -60,4 +60,4 @@ networks:
       driver: default
       config:
         -
-          subnet: 192.167.10.0/16
+          subnet: 192.167.10.0/24
