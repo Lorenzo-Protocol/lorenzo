@@ -13,29 +13,19 @@ import (
 )
 
 // TODO
-var nonFeeMsgList = map[string]bool{
-	sdk.MsgTypeURL(&banktypes.MsgSend{}): true,
+var nonFeeMsgList = map[string]struct{}{
+	sdk.MsgTypeURL(&banktypes.MsgSend{}): {},
 }
 
 func checkTxFee(ctx sdk.Context, tx sdk.Tx) (sdk.Coins, int64, error) {
-	msgs := tx.GetMsgs()
-
-	hasNonFreeMsg := slices.ContainsFunc(msgs, func(m sdk.Msg) bool {
-		return !nonFeeMsgList[sdk.MsgTypeURL(m)]
+	hasNonFreeMsg := slices.ContainsFunc(tx.GetMsgs(), func(m sdk.Msg) bool {
+		_, exist := nonFeeMsgList[sdk.MsgTypeURL(m)]
+		return !exist
 	})
 	if hasNonFreeMsg {
 		return checkTxFeeWithValidatorMinGasPrices(ctx, tx)
 	}
-
-	feeTx, ok := tx.(sdk.FeeTx)
-	if !ok {
-		return nil, 0, errorsmod.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx")
-	}
-	feeCoins := feeTx.GetFee()
-	gas := feeTx.GetGas()
-	priority := getTxPriority(feeCoins, int64(gas))
-
-	return []sdk.Coin{}, priority, nil
+	return []sdk.Coin{}, 0, nil
 }
 
 // checkTxFeeWithValidatorMinGasPrices implements the default fee logic, where the minimum price per
