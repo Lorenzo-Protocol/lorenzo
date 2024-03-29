@@ -92,6 +92,9 @@ import (
 	btclightclientkeeper "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/keeper"
 	btclightclienttypes "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/types"
 
+	btcstakingkeeper "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/keeper"
+	btcstakingtypes "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types"
+
 	// ibc
 	ibctransfer "github.com/cosmos/ibc-go/v7/modules/apps/transfer"
 	ibctransferkeeper "github.com/cosmos/ibc-go/v7/modules/apps/transfer/keeper"
@@ -163,6 +166,8 @@ type LorenzoApp struct {
 	ConsensusParamsKeeper consensuskeeper.Keeper
 
 	BTCLightClientKeeper btclightclientkeeper.Keeper
+
+	BTCStakingKeeper btcstakingkeeper.Keeper
 
 	// Ethermint keepers
 	EvmKeeper       *evmkeeper.Keeper
@@ -242,6 +247,7 @@ func NewLorenzoApp(
 		evmtypes.StoreKey,
 		feemarkettypes.StoreKey,
 		btclightclienttypes.StoreKey,
+		btcstakingtypes.StoreKey,
 	)
 
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey, evmtypes.TransientKey, feemarkettypes.TransientKey)
@@ -451,6 +457,8 @@ func NewLorenzoApp(
 	app.BTCLightClientKeeper = *btclightclientKeeper.SetHooks(
 		btclightclienttypes.NewMultiBTCLightClientHooks(),
 	)
+
+	app.BTCStakingKeeper = btcstakingkeeper.NewKeeper(appCodec, keys[btcstakingtypes.StoreKey], app.BTCLightClientKeeper, app.BankKeeper, authtypes.NewModuleAddress(govtypes.ModuleName).String())
 
 	var transferStack ibcporttypes.IBCModule
 	transferStack = ibctransfer.NewIBCModule(app.TransferKeeper)

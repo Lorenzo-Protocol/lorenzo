@@ -31,12 +31,15 @@ require (
 )
 
 require (
+	cosmossdk.io/core v0.5.1
 	github.com/btcsuite/btcd/btcec/v2 v2.3.2
 	github.com/btcsuite/btcd/btcutil v1.1.5
 	github.com/btcsuite/btcd/chaincfg/chainhash v1.1.0
 	github.com/cosmos/cosmos-proto v1.0.0-beta.2
 	github.com/cosmos/gogoproto v1.4.10
 	golang.org/x/exp v0.0.0-20230811145659-89c5cff77bcb
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1
+	google.golang.org/protobuf v1.33.0
 )
 
 require (
@@ -46,7 +49,6 @@ require (
 	cloud.google.com/go/iam v1.1.5 // indirect
 	cloud.google.com/go/storage v1.30.1 // indirect
 	cosmossdk.io/api v0.3.1 // indirect
-	cosmossdk.io/core v0.5.1 // indirect
 	cosmossdk.io/depinject v1.0.0-alpha.3 // indirect
 	cosmossdk.io/tools/rosetta v0.2.1 // indirect
 	filippo.io/edwards25519 v1.0.0 // indirect

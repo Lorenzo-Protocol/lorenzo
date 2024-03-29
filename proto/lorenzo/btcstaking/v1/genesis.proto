@@ -1,0 +1,11 @@
+syntax = "proto3";
+package lorenzo.btcstaking.v1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types";
+
+// GenesisState defines the btcstaking module's genesis state.
+message GenesisState {
+  string btc_receiving_addr = 1;
+}
