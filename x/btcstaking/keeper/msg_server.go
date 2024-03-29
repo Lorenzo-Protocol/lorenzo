@@ -3,8 +3,9 @@ package keeper
 import (
 	"bytes"
 	"context"
-	sdkmath "cosmossdk.io/math"
 	"fmt"
+
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types"

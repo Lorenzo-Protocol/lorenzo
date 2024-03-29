@@ -1,8 +1,6 @@
 package types
 
-import (
 //lrz "github.com/Lorenzo-Protocol/lorenzo/types"
-)
 
 /*func NewEventPowerDistUpdateWithBTCDel(ev *EventBTCDelegationStateUpdate) *EventPowerDistUpdate {
 	return &EventPowerDistUpdate{

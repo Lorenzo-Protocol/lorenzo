@@ -2,10 +2,11 @@ package btcstaking
 
 import (
 	"context"
-	"cosmossdk.io/core/appmodule"
 	"encoding/json"
 	"fmt"
 	"time"
+
+	"cosmossdk.io/core/appmodule"
 
 	"github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/keeper"
 	"github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types"
