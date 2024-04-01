@@ -16,7 +16,6 @@ import (
 	"github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types"
 )
 
-
 // GetTxCmd returns the transaction commands for this module
 func GetTxCmd() *cobra.Command {
 	cmd := &cobra.Command{

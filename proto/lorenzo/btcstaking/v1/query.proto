@@ -1,0 +1,29 @@
+syntax = "proto3";
+package lorenzo.btcstaking.v1;
+
+import "lorenzo/btcstaking/v1/staking_record.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types";
+
+service Query {
+    rpc BTCReceivingAddr(QueryBTCReceivingAddrRequest) returns (QueryBTCReceivingAddrResponse) {
+        option (google.api.http).get = "/lorenzo/btcstaking/v1/btcReceivingAddr";
+    }
+    rpc StakingRecord(QueryStakingRecordRequest) returns (QueryStakingRecordResponse) {
+        option (google.api.http).get = "/lorenzo/btcstaking/v1/stakingRecord";
+    }
+}
+message QueryBTCReceivingAddrRequest {}
+message QueryBTCReceivingAddrResponse {
+    string addr = 1;
+}
+
+message QueryStakingRecordRequest {
+    bytes txHash = 1;
+}
+message QueryStakingRecordResponse {
+    BTCStakingRecord record = 1;
+}

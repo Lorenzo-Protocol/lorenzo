@@ -153,13 +153,18 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 	if err != nil {
 		return nil, fmt.Errorf("fail to transfer to mintToAddr, %s", err)
 	}
-	err = ms.addBTCStakingRecord(ctx, &types.BTCStakingRecord{
+	stakingRecord := types.BTCStakingRecord{
 		TxHash:     stakingTxHash[:],
 		Amount:     btcAmount,
 		MintToAddr: mintToAddr,
-	})
+	}
+	err = ms.addBTCStakingRecord(ctx, &stakingRecord)
 	if err != nil {
 		return nil, fmt.Errorf("can't record staking: %s", err)
+	}
+	err = ctx.EventManager().EmitTypedEvent(types.NewEventBTCStakingCreated(&stakingRecord))
+	if err != nil {
+		panic(fmt.Errorf("fail to emit EventBTCStakingCreated : %s", err))
 	}
 	return &types.MsgCreateBTCStakingResponse{}, nil
 }

@@ -4,11 +4,10 @@ import (
 	"bytes"
 	"math"
 
-
-
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcd/wire"
 )
+
 func hashConcat(a []byte, b []byte) chainhash.Hash {
 	c := []byte{}
 	c = append(c, a...)
@@ -66,6 +65,7 @@ func traverseMerkleBlock(msg *wire.MsgMerkleBlock, hei uint32, pos uint32, bit_u
 		return hash[:], parent_of_match
 	}
 }
+
 // XXX: skip some checks
 func ParseBTCProof(msgMerkleBlk *wire.MsgMerkleBlock) (uint32, []byte, error) {
 	hei := calcHeight(int(msgMerkleBlk.Transactions))
