@@ -15,7 +15,7 @@ const (
 )
 
 var (
-	BTCReceivingAddrKey = []byte{0x01} // key prefix for the BTC receiving address
+	ParamsKey           = []byte{0x01} // key prefix for the BTC receiving address
 	BTCStakingRecordKey = []byte{0x02} // key prefix for the BTC staking record
 )
 

@@ -3,7 +3,9 @@ package types
 // DefaultGenesis returns the default genesis state
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
-		BtcReceivingAddr: "",
+		Params: &Params{
+			BtcConfirmationsDepth: 6,
+		},
 	}
 }
 

@@ -13,13 +13,13 @@ import (
 // NewMsgServerImpl returns an implementation of the MsgServer interface
 // for the provided Keeper.
 
-func (k Keeper) BTCReceivingAddr(c context.Context, req *types.QueryBTCReceivingAddrRequest) (*types.QueryBTCReceivingAddrResponse, error) {
+func (k Keeper) Params(c context.Context, req *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	// get the receiving address
-	receivingAddr := k.GetBTCReceivingAddr(ctx)
+	// get the params
+	params := k.GetParams(ctx)
 
-	return &types.QueryBTCReceivingAddrResponse{Addr: receivingAddr}, nil
+	return &types.QueryParamsResponse{Params: params}, nil
 }
 
 func (k Keeper) StakingRecord(c context.Context, req *types.QueryStakingRecordRequest) (*types.QueryStakingRecordResponse, error) {

@@ -30,21 +30,21 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type QueryBTCReceivingAddrRequest struct {
+type QueryParamsRequest struct {
 }
 
-func (m *QueryBTCReceivingAddrRequest) Reset()         { *m = QueryBTCReceivingAddrRequest{} }
-func (m *QueryBTCReceivingAddrRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryBTCReceivingAddrRequest) ProtoMessage()    {}
-func (*QueryBTCReceivingAddrRequest) Descriptor() ([]byte, []int) {
+func (m *QueryParamsRequest) Reset()         { *m = QueryParamsRequest{} }
+func (m *QueryParamsRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryParamsRequest) ProtoMessage()    {}
+func (*QueryParamsRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d9c98ee28fc92429, []int{0}
 }
-func (m *QueryBTCReceivingAddrRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryParamsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryBTCReceivingAddrRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryParamsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryBTCReceivingAddrRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryParamsRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -54,34 +54,34 @@ func (m *QueryBTCReceivingAddrRequest) XXX_Marshal(b []byte, deterministic bool)
 		return b[:n], nil
 	}
 }
-func (m *QueryBTCReceivingAddrRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryBTCReceivingAddrRequest.Merge(m, src)
+func (m *QueryParamsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryParamsRequest.Merge(m, src)
 }
-func (m *QueryBTCReceivingAddrRequest) XXX_Size() int {
+func (m *QueryParamsRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryBTCReceivingAddrRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryBTCReceivingAddrRequest.DiscardUnknown(m)
+func (m *QueryParamsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryParamsRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryBTCReceivingAddrRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryParamsRequest proto.InternalMessageInfo
 
-type QueryBTCReceivingAddrResponse struct {
-	Addr string `protobuf:"bytes,1,opt,name=addr,proto3" json:"addr,omitempty"`
+type QueryParamsResponse struct {
+	Params *Params `protobuf:"bytes,1,opt,name=params,proto3" json:"params,omitempty"`
 }
 
-func (m *QueryBTCReceivingAddrResponse) Reset()         { *m = QueryBTCReceivingAddrResponse{} }
-func (m *QueryBTCReceivingAddrResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryBTCReceivingAddrResponse) ProtoMessage()    {}
-func (*QueryBTCReceivingAddrResponse) Descriptor() ([]byte, []int) {
+func (m *QueryParamsResponse) Reset()         { *m = QueryParamsResponse{} }
+func (m *QueryParamsResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryParamsResponse) ProtoMessage()    {}
+func (*QueryParamsResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d9c98ee28fc92429, []int{1}
 }
-func (m *QueryBTCReceivingAddrResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryParamsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryBTCReceivingAddrResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryParamsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryBTCReceivingAddrResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryParamsResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -91,23 +91,23 @@ func (m *QueryBTCReceivingAddrResponse) XXX_Marshal(b []byte, deterministic bool
 		return b[:n], nil
 	}
 }
-func (m *QueryBTCReceivingAddrResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryBTCReceivingAddrResponse.Merge(m, src)
+func (m *QueryParamsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryParamsResponse.Merge(m, src)
 }
-func (m *QueryBTCReceivingAddrResponse) XXX_Size() int {
+func (m *QueryParamsResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryBTCReceivingAddrResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryBTCReceivingAddrResponse.DiscardUnknown(m)
+func (m *QueryParamsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryParamsResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryBTCReceivingAddrResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryParamsResponse proto.InternalMessageInfo
 
-func (m *QueryBTCReceivingAddrResponse) GetAddr() string {
+func (m *QueryParamsResponse) GetParams() *Params {
 	if m != nil {
-		return m.Addr
+		return m.Params
 	}
-	return ""
+	return nil
 }
 
 type QueryStakingRecordRequest struct {
@@ -199,8 +199,8 @@ func (m *QueryStakingRecordResponse) GetRecord() *BTCStakingRecord {
 }
 
 func init() {
-	proto.RegisterType((*QueryBTCReceivingAddrRequest)(nil), "lorenzo.btcstaking.v1.QueryBTCReceivingAddrRequest")
-	proto.RegisterType((*QueryBTCReceivingAddrResponse)(nil), "lorenzo.btcstaking.v1.QueryBTCReceivingAddrResponse")
+	proto.RegisterType((*QueryParamsRequest)(nil), "lorenzo.btcstaking.v1.QueryParamsRequest")
+	proto.RegisterType((*QueryParamsResponse)(nil), "lorenzo.btcstaking.v1.QueryParamsResponse")
 	proto.RegisterType((*QueryStakingRecordRequest)(nil), "lorenzo.btcstaking.v1.QueryStakingRecordRequest")
 	proto.RegisterType((*QueryStakingRecordResponse)(nil), "lorenzo.btcstaking.v1.QueryStakingRecordResponse")
 }
@@ -208,33 +208,33 @@ func init() {
 func init() { proto.RegisterFile("lorenzo/btcstaking/v1/query.proto", fileDescriptor_d9c98ee28fc92429) }
 
 var fileDescriptor_d9c98ee28fc92429 = []byte{
-	// 415 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x92, 0xc1, 0xaa, 0xd3, 0x40,
-	0x14, 0x86, 0x9b, 0xa2, 0x05, 0x47, 0x05, 0x19, 0x54, 0x34, 0xd4, 0xa0, 0x41, 0xac, 0x16, 0xcd,
-	0x98, 0x46, 0xdc, 0x8a, 0xed, 0xc6, 0x85, 0x8b, 0x1a, 0xbb, 0x12, 0x44, 0x26, 0xc9, 0x30, 0x0d,
-	0xb6, 0x73, 0xd2, 0xcc, 0x34, 0xb4, 0x2e, 0x7d, 0x02, 0xc1, 0x37, 0xf0, 0x01, 0x7c, 0x0e, 0x97,
-	0x05, 0x37, 0x6e, 0x04, 0x69, 0x7d, 0x90, 0x4b, 0x67, 0x86, 0x7b, 0x6f, 0x2f, 0x69, 0xa1, 0xbb,
-	0x93, 0xcc, 0xff, 0xfd, 0xe7, 0xfc, 0x87, 0x83, 0x1e, 0x4c, 0xa0, 0x64, 0xe2, 0x0b, 0x90, 0x44,
-	0xa5, 0x52, 0xd1, 0xcf, 0xb9, 0xe0, 0xa4, 0x0a, 0xc9, 0x6c, 0xce, 0xca, 0x65, 0x50, 0x94, 0xa0,
-	0x00, 0xdf, 0xb2, 0x92, 0xe0, 0x4c, 0x12, 0x54, 0xa1, 0xdb, 0xad, 0x27, 0x6d, 0xf9, 0xa9, 0x64,
-	0x29, 0x94, 0x99, 0xb1, 0x70, 0x6f, 0x72, 0xe0, 0xa0, 0x4b, 0xb2, 0xad, 0xec, 0xdf, 0x36, 0x07,
-	0xe0, 0x13, 0x46, 0x68, 0x91, 0x13, 0x2a, 0x04, 0x28, 0xaa, 0x72, 0x10, 0xd2, 0xbe, 0x76, 0x53,
-	0x90, 0x53, 0x90, 0x24, 0xa1, 0x92, 0x99, 0x79, 0x48, 0x15, 0x26, 0x4c, 0xd1, 0x90, 0x14, 0x94,
-	0xe7, 0x42, 0x8b, 0x8d, 0xd6, 0xf7, 0x50, 0xfb, 0xdd, 0x56, 0xd1, 0x1f, 0x0d, 0x62, 0x96, 0xb2,
-	0xbc, 0xca, 0x05, 0x7f, 0x9d, 0x65, 0x65, 0xcc, 0x66, 0x73, 0x26, 0x95, 0x1f, 0xa1, 0x7b, 0x7b,
-	0xde, 0x65, 0x01, 0x42, 0x32, 0x8c, 0xd1, 0x25, 0x9a, 0x65, 0xe5, 0x1d, 0xe7, 0xbe, 0xf3, 0xf8,
-	0x4a, 0xac, 0x6b, 0x3f, 0x42, 0x77, 0x35, 0xf4, 0xde, 0x24, 0x8a, 0x75, 0x20, 0xeb, 0x88, 0x6f,
-	0xa3, 0x96, 0x5a, 0xbc, 0xa1, 0x72, 0xac, 0x91, 0x6b, 0xb1, 0xfd, 0xf2, 0x3f, 0x22, 0xb7, 0x0e,
-	0xb2, 0x6d, 0x5e, 0xa1, 0x96, 0xd9, 0x8b, 0xa6, 0xae, 0xf6, 0x3a, 0x41, 0xed, 0x6e, 0x83, 0xfe,
-	0x68, 0xb0, 0x6b, 0x60, 0xb1, 0xde, 0xdf, 0x26, 0xba, 0xac, 0xfd, 0xf1, 0x4f, 0x07, 0xdd, 0xb8,
-	0x18, 0x07, 0x47, 0x7b, 0xfc, 0x0e, 0x2d, 0xc7, 0x7d, 0x71, 0x1c, 0x64, 0xa2, 0xf8, 0xe4, 0xeb,
-	0xef, 0xff, 0xdf, 0x9b, 0x4f, 0x70, 0x87, 0xd4, 0xdf, 0x41, 0xa2, 0xd2, 0xdd, 0xd9, 0x7e, 0x38,
-	0xe8, 0xfa, 0x4e, 0x28, 0xfc, 0xfc, 0x50, 0xe3, 0xba, 0xad, 0xbb, 0xe1, 0x11, 0x84, 0x9d, 0xf3,
-	0xa9, 0x9e, 0xf3, 0x11, 0x7e, 0x48, 0x0e, 0xde, 0xab, 0xa1, 0xfa, 0xc3, 0x5f, 0x6b, 0xcf, 0x59,
-	0xad, 0x3d, 0xe7, 0xdf, 0xda, 0x73, 0xbe, 0x6d, 0xbc, 0xc6, 0x6a, 0xe3, 0x35, 0xfe, 0x6c, 0xbc,
-	0xc6, 0x87, 0x97, 0x3c, 0x57, 0xe3, 0x79, 0x12, 0xa4, 0x30, 0x25, 0x6f, 0x8d, 0xd3, 0xb3, 0xe1,
-	0xf6, 0xf8, 0x52, 0x98, 0x9c, 0x5a, 0x2f, 0xce, 0x9b, 0xab, 0x65, 0xc1, 0x64, 0xd2, 0xd2, 0x17,
-	0x1a, 0x9d, 0x04, 0x00, 0x00, 0xff, 0xff, 0x84, 0x2a, 0x35, 0xd4, 0x69, 0x03, 0x00, 0x00,
+	// 411 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x92, 0xbd, 0x4e, 0xe3, 0x40,
+	0x14, 0x85, 0xe3, 0x48, 0xeb, 0x62, 0x76, 0xb7, 0x99, 0xcd, 0xae, 0x76, 0xad, 0x8d, 0x77, 0xd7,
+	0xda, 0x3f, 0x22, 0xf0, 0xe0, 0x44, 0xd0, 0x22, 0x85, 0x86, 0x22, 0x45, 0x08, 0x54, 0x48, 0x08,
+	0x8d, 0xcd, 0xc8, 0xb1, 0x48, 0x7c, 0x1d, 0xcf, 0x24, 0x4a, 0x28, 0x29, 0xa8, 0x91, 0x78, 0x03,
+	0xde, 0x81, 0x77, 0xa0, 0x8c, 0x44, 0x43, 0x89, 0x12, 0x1e, 0x04, 0x79, 0x66, 0xf8, 0x89, 0x70,
+	0x22, 0xe8, 0xae, 0x47, 0xe7, 0x9c, 0xfb, 0xe9, 0xf8, 0xa2, 0x5f, 0x1d, 0x48, 0x59, 0x7c, 0x0c,
+	0xc4, 0x17, 0x01, 0x17, 0xf4, 0x28, 0x8a, 0x43, 0x32, 0xf0, 0x48, 0xaf, 0xcf, 0xd2, 0x91, 0x9b,
+	0xa4, 0x20, 0x00, 0x7f, 0xd6, 0x12, 0xf7, 0x49, 0xe2, 0x0e, 0x3c, 0xab, 0x92, 0xef, 0xd4, 0xe3,
+	0x41, 0xca, 0x02, 0x48, 0x0f, 0x55, 0x84, 0xe5, 0xe4, 0x6b, 0x13, 0x9a, 0xd2, 0x2e, 0xd7, 0x9a,
+	0x52, 0x08, 0x21, 0xc8, 0x91, 0x64, 0x93, 0x7e, 0xfd, 0x1e, 0x02, 0x84, 0x1d, 0x46, 0x68, 0x12,
+	0x11, 0x1a, 0xc7, 0x20, 0xa8, 0x88, 0x20, 0x7e, 0xf0, 0x54, 0x02, 0xe0, 0x5d, 0xe0, 0xc4, 0xa7,
+	0x9c, 0x29, 0x66, 0x32, 0xf0, 0x7c, 0x26, 0x68, 0x96, 0x1d, 0x46, 0xb1, 0x14, 0x2b, 0xad, 0x53,
+	0x42, 0x78, 0x3b, 0x53, 0x34, 0xe5, 0xd2, 0x16, 0xeb, 0xf5, 0x19, 0x17, 0x4e, 0x03, 0x7d, 0x9a,
+	0x79, 0xe5, 0x09, 0xc4, 0x9c, 0xe1, 0x35, 0x64, 0x2a, 0xb8, 0xaf, 0xc6, 0x4f, 0xe3, 0xff, 0xfb,
+	0x6a, 0xd9, 0xcd, 0x2d, 0xc1, 0xd5, 0x36, 0x2d, 0x76, 0x6a, 0xe8, 0x9b, 0x4c, 0xdb, 0x51, 0x8a,
+	0x96, 0xec, 0x40, 0xaf, 0xc2, 0x5f, 0x90, 0x29, 0x86, 0x5b, 0x94, 0xb7, 0x65, 0xe6, 0x87, 0x96,
+	0xfe, 0x72, 0xf6, 0x91, 0x95, 0x67, 0xd2, 0x24, 0x1b, 0xc8, 0x54, 0x55, 0x6a, 0x92, 0x7f, 0x73,
+	0x48, 0xea, 0xbb, 0x9b, 0xb3, 0x01, 0xda, 0x56, 0xbd, 0x2c, 0xa2, 0x77, 0x32, 0x1f, 0x9f, 0x1a,
+	0xc8, 0x54, 0xc0, 0x78, 0x69, 0x4e, 0xca, 0xcb, 0x86, 0xac, 0xca, 0x6b, 0xa4, 0x0a, 0xd6, 0xf9,
+	0x73, 0x72, 0x7d, 0x77, 0x5e, 0xfc, 0x81, 0xcb, 0x64, 0xd1, 0x0f, 0xc7, 0x17, 0x06, 0xfa, 0x38,
+	0x03, 0x8b, 0x57, 0x17, 0x2d, 0xc9, 0x6b, 0xd3, 0xf2, 0xde, 0xe0, 0xd0, 0x74, 0xcb, 0x92, 0xee,
+	0x2f, 0xfe, 0x4d, 0x16, 0x9e, 0xae, 0x72, 0xd5, 0x9b, 0x57, 0x13, 0xdb, 0x18, 0x4f, 0x6c, 0xe3,
+	0x76, 0x62, 0x1b, 0x67, 0x53, 0xbb, 0x30, 0x9e, 0xda, 0x85, 0x9b, 0xa9, 0x5d, 0xd8, 0x5b, 0x0f,
+	0x23, 0xd1, 0xee, 0xfb, 0x6e, 0x00, 0x5d, 0xd2, 0x50, 0x49, 0x2b, 0xcd, 0xec, 0xc6, 0x02, 0xe8,
+	0x3c, 0x46, 0x0f, 0x9f, 0x87, 0x8b, 0x51, 0xc2, 0xb8, 0x6f, 0xca, 0x43, 0xac, 0xdd, 0x07, 0x00,
+	0x00, 0xff, 0xff, 0x62, 0xa0, 0x2d, 0x95, 0x74, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -249,7 +249,7 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryClient interface {
-	BTCReceivingAddr(ctx context.Context, in *QueryBTCReceivingAddrRequest, opts ...grpc.CallOption) (*QueryBTCReceivingAddrResponse, error)
+	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	StakingRecord(ctx context.Context, in *QueryStakingRecordRequest, opts ...grpc.CallOption) (*QueryStakingRecordResponse, error)
 }
 
@@ -261,9 +261,9 @@ func NewQueryClient(cc grpc1.ClientConn) QueryClient {
 	return &queryClient{cc}
 }
 
-func (c *queryClient) BTCReceivingAddr(ctx context.Context, in *QueryBTCReceivingAddrRequest, opts ...grpc.CallOption) (*QueryBTCReceivingAddrResponse, error) {
-	out := new(QueryBTCReceivingAddrResponse)
-	err := c.cc.Invoke(ctx, "/lorenzo.btcstaking.v1.Query/BTCReceivingAddr", in, out, opts...)
+func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error) {
+	out := new(QueryParamsResponse)
+	err := c.cc.Invoke(ctx, "/lorenzo.btcstaking.v1.Query/Params", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -281,7 +281,7 @@ func (c *queryClient) StakingRecord(ctx context.Context, in *QueryStakingRecordR
 
 // QueryServer is the server API for Query service.
 type QueryServer interface {
-	BTCReceivingAddr(context.Context, *QueryBTCReceivingAddrRequest) (*QueryBTCReceivingAddrResponse, error)
+	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	StakingRecord(context.Context, *QueryStakingRecordRequest) (*QueryStakingRecordResponse, error)
 }
 
@@ -289,8 +289,8 @@ type QueryServer interface {
 type UnimplementedQueryServer struct {
 }
 
-func (*UnimplementedQueryServer) BTCReceivingAddr(ctx context.Context, req *QueryBTCReceivingAddrRequest) (*QueryBTCReceivingAddrResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method BTCReceivingAddr not implemented")
+func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsRequest) (*QueryParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
 func (*UnimplementedQueryServer) StakingRecord(ctx context.Context, req *QueryStakingRecordRequest) (*QueryStakingRecordResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method StakingRecord not implemented")
@@ -300,20 +300,20 @@ func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
 	s.RegisterService(&_Query_serviceDesc, srv)
 }
 
-func _Query_BTCReceivingAddr_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryBTCReceivingAddrRequest)
+func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryParamsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).BTCReceivingAddr(ctx, in)
+		return srv.(QueryServer).Params(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/lorenzo.btcstaking.v1.Query/BTCReceivingAddr",
+		FullMethod: "/lorenzo.btcstaking.v1.Query/Params",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).BTCReceivingAddr(ctx, req.(*QueryBTCReceivingAddrRequest))
+		return srv.(QueryServer).Params(ctx, req.(*QueryParamsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -341,8 +341,8 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*QueryServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "BTCReceivingAddr",
-			Handler:    _Query_BTCReceivingAddr_Handler,
+			MethodName: "Params",
+			Handler:    _Query_Params_Handler,
 		},
 		{
 			MethodName: "StakingRecord",
@@ -353,7 +353,7 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 	Metadata: "lorenzo/btcstaking/v1/query.proto",
 }
 
-func (m *QueryBTCReceivingAddrRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryParamsRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -363,12 +363,12 @@ func (m *QueryBTCReceivingAddrRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryBTCReceivingAddrRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryParamsRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryBTCReceivingAddrRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryParamsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -376,7 +376,7 @@ func (m *QueryBTCReceivingAddrRequest) MarshalToSizedBuffer(dAtA []byte) (int, e
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryBTCReceivingAddrResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryParamsResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -386,20 +386,25 @@ func (m *QueryBTCReceivingAddrResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryBTCReceivingAddrResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryParamsResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryBTCReceivingAddrResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Addr) > 0 {
-		i -= len(m.Addr)
-		copy(dAtA[i:], m.Addr)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.Addr)))
+	if m.Params != nil {
+		{
+			size, err := m.Params.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
 		i--
 		dAtA[i] = 0xa
 	}
@@ -482,7 +487,7 @@ func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *QueryBTCReceivingAddrRequest) Size() (n int) {
+func (m *QueryParamsRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -491,14 +496,14 @@ func (m *QueryBTCReceivingAddrRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryBTCReceivingAddrResponse) Size() (n int) {
+func (m *QueryParamsResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.Addr)
-	if l > 0 {
+	if m.Params != nil {
+		l = m.Params.Size()
 		n += 1 + l + sovQuery(uint64(l))
 	}
 	return n
@@ -536,7 +541,7 @@ func sovQuery(x uint64) (n int) {
 func sozQuery(x uint64) (n int) {
 	return sovQuery(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *QueryBTCReceivingAddrRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryParamsRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -559,10 +564,10 @@ func (m *QueryBTCReceivingAddrRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryBTCReceivingAddrRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryParamsRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryBTCReceivingAddrRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryParamsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -586,7 +591,7 @@ func (m *QueryBTCReceivingAddrRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryBTCReceivingAddrResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryParamsResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -609,17 +614,17 @@ func (m *QueryBTCReceivingAddrResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryBTCReceivingAddrResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryParamsResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryBTCReceivingAddrResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryParamsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Addr", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Params", wireType)
 			}
-			var stringLen uint64
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuery
@@ -629,23 +634,27 @@ func (m *QueryBTCReceivingAddrResponse) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if msglen < 0 {
 				return ErrInvalidLengthQuery
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + msglen
 			if postIndex < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Addr = string(dAtA[iNdEx:postIndex])
+			if m.Params == nil {
+				m.Params = &Params{}
+			}
+			if err := m.Params.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

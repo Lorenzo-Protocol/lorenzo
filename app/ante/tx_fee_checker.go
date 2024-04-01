@@ -9,14 +9,11 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
 	btcstakingtypes "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types"
 )
 
-// TODO
 var nonFeeMsgList = map[string]struct{}{
-	sdk.MsgTypeURL(&banktypes.MsgSend{}):                   {},
 	sdk.MsgTypeURL(&btcstakingtypes.MsgCreateBTCStaking{}): {},
 }
 

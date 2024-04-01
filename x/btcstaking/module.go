@@ -156,7 +156,7 @@ func (am AppModule) IsAppModule() { // marker
 // InitGenesis initializes the module's state from a provided genesis state.
 func InitGenesis(goCtx context.Context, k keeper.Keeper, genState types.GenesisState) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	if err := k.SetBTCReceivingAddr(ctx, genState.BtcReceivingAddr); err != nil {
+	if err := k.SetParams(ctx, genState.Params); err != nil {
 		panic(err)
 	}
 }
@@ -165,7 +165,7 @@ func InitGenesis(goCtx context.Context, k keeper.Keeper, genState types.GenesisS
 func ExportGenesis(goCtx context.Context, k keeper.Keeper) *types.GenesisState {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	genesis := types.DefaultGenesis()
-	genesis.BtcReceivingAddr = k.GetBTCReceivingAddr(ctx)
+	genesis.Params = k.GetParams(ctx)
 
 	return genesis
 }

@@ -21,15 +21,15 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 	return btcstakingQueryCmd
 }
 
-func CmdGetBTCReceivingAddr() *cobra.Command {
+func CmdGetParams() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "get-btc-receiving-addr",
-		Short: "get the btc receiving address",
+		Use:   "get-params",
+		Short: "get btc staking params",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.BTCReceivingAddr(cmd.Context(), &types.QueryBTCReceivingAddrRequest{})
+			res, err := queryClient.Params(cmd.Context(), &types.QueryParamsRequest{})
 			if err != nil {
 				return err
 			}

@@ -92,8 +92,7 @@ func extractPaymentToWithOpReturnId(tx *wire.MsgTx, addr btcutil.Address) (uint6
     return amt, nil
 }*/
 
-const BtcConfirmationDepth = 6
-
+// TODO: error types
 func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreateBTCStaking) (*types.MsgCreateBTCStakingResponse, error) {
 	stakingMsgTx, err := NewBTCTxFromBytes(req.StakingTx.Transaction)
 	if err != nil {
@@ -111,26 +110,25 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 		return nil, fmt.Errorf("header that includes the staking tx is not found")
 	}
 
+	p := ms.GetParams(ctx)
 	btcTip := ms.btclcKeeper.GetTipInfo(ctx)
 	stakingTxDepth := btcTip.Height - stakingTxHeader.Height
-	if stakingTxDepth < BtcConfirmationDepth {
-		return nil, fmt.Errorf("not k-deep: k=%d; depth=%d", BtcConfirmationDepth, stakingTxDepth)
+	if stakingTxDepth < uint64(p.BtcConfirmationsDepth) {
+		return nil, fmt.Errorf("not k-deep: k=%d; depth=%d", p.BtcConfirmationsDepth, stakingTxDepth)
 	}
-	params := ms.btclcKeeper.GetBTCNet()
-	if err := req.StakingTx.VerifyInclusion(stakingTxHeader.Header, params.PowLimit); err != nil {
+	btclcParams := ms.btclcKeeper.GetBTCNet()
+	if err := req.StakingTx.VerifyInclusion(stakingTxHeader.Header, btclcParams.PowLimit); err != nil {
 		return nil, fmt.Errorf("not included in the Bitcoin chain: %v", err)
 	}
 	var btc_receiving_addr btcutil.Address
 
-	p := ms.GetBTCReceivingAddr(ctx)
-	btc_receiving_addr, err = btcutil.DecodeAddress(p, params)
+	btc_receiving_addr, err = btcutil.DecodeAddress(p.BtcReceivingAddr, btclcParams)
 	if err != nil {
 		return nil, fmt.Errorf("invalid btc_receiving_addr: %s", p)
 	}
 	var mintToAddr []byte
 	var btcAmount uint64
 	btcAmount, mintToAddr, err = extractPaymentToWithOpReturnId(stakingMsgTx, btc_receiving_addr)
-	// XXX: minimum amount check?
 	if err != nil || btcAmount == 0 {
 		return nil, fmt.Errorf("invalid transaction")
 	}
