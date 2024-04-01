@@ -4,6 +4,8 @@ import (
 	appparams "github.com/Lorenzo-Protocol/lorenzo/app/params"
 	"github.com/Lorenzo-Protocol/lorenzo/x/btclightclient"
 	btclightclienttypes "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/types"
+	"github.com/Lorenzo-Protocol/lorenzo/x/fee"
+	feetypes "github.com/Lorenzo-Protocol/lorenzo/x/fee/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	authsims "github.com/cosmos/cosmos-sdk/x/auth/simulation"
@@ -102,6 +104,7 @@ var (
 		evm.AppModuleBasic{},
 		feemarket.AppModuleBasic{},
 		btclightclient.AppModuleBasic{},
+		fee.AppModuleBasic{},
 	)
 	// module account permissions
 	maccPerms = map[string][]string{
@@ -194,6 +197,7 @@ func appModules(
 
 		app.transferModule,
 		btclightclient.NewAppModule(appCodec, app.BTCLightClientKeeper),
+		fee.NewAppModule(appCodec, app.FeeKeeper),
 
 		// this line is used by starport scaffolding # stargate/app/appModule
 
@@ -237,6 +241,7 @@ func orderBeginBlockers() []string {
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
 		btclightclienttypes.ModuleName,
+		feetypes.ModuleName,
 		//self module
 
 	}
@@ -273,6 +278,7 @@ func orderEndBlockers() []string {
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		btclightclienttypes.ModuleName,
+		feetypes.ModuleName,
 		//self module
 
 	}
@@ -312,6 +318,7 @@ func orderInitBlockers() []string {
 
 		//self module
 		btclightclienttypes.ModuleName,
+		feetypes.ModuleName,
 
 		// NOTE: crisis module must go at the end to check for invariants on each module
 		crisistypes.ModuleName,

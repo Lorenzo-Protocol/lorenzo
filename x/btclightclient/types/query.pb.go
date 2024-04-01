@@ -6,10 +6,6 @@ package types
 import (
 	context "context"
 	fmt "fmt"
-	io "io"
-	math "math"
-	math_bits "math/bits"
-
 	github_com_Lorenzo_Protocol_lorenzo_types "github.com/Lorenzo-Protocol/lorenzo/types"
 	query "github.com/cosmos/cosmos-sdk/types/query"
 	_ "github.com/cosmos/gogoproto/gogoproto"
@@ -19,6 +15,9 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	io "io"
+	math "math"
+	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -648,8 +647,8 @@ func (m *QueryBaseHeaderResponse) GetHeader() *BTCHeaderInfo {
 	return nil
 }
 
-// QueryMainChainDepthRequest is the request type for the Query/MainChainDepth RPC
-// it contains hex encoded hash of btc block header as parameter
+// QueryMainChainDepthRequest is the request type for the Query/MainChainDepth
+// RPC it contains hex encoded hash of btc block header as parameter
 type QueryHeaderDepthRequest struct {
 	Hash string `protobuf:"bytes,1,opt,name=hash,proto3" json:"hash,omitempty"`
 }
@@ -694,8 +693,8 @@ func (m *QueryHeaderDepthRequest) GetHash() string {
 	return ""
 }
 
-// QueryMainChainDepthResponse is the response type for the Query/MainChainDepth RPC
-// it contains depth of the block in main chain
+// QueryMainChainDepthResponse is the response type for the Query/MainChainDepth
+// RPC it contains depth of the block in main chain
 type QueryHeaderDepthResponse struct {
 	Depth uint64 `protobuf:"varint,1,opt,name=depth,proto3" json:"depth,omitempty"`
 }

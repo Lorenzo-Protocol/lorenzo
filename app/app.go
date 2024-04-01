@@ -88,10 +88,6 @@ import (
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
-	lrztypes "github.com/Lorenzo-Protocol/lorenzo/types"
-	btclightclientkeeper "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/keeper"
-	btclightclienttypes "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/types"
-
 	// ibc
 	ibctransfer "github.com/cosmos/ibc-go/v7/modules/apps/transfer"
 	ibctransferkeeper "github.com/cosmos/ibc-go/v7/modules/apps/transfer/keeper"
@@ -111,7 +107,14 @@ import (
 
 	// unnamed import of statik for swagger UI support
 	_ "github.com/cosmos/cosmos-sdk/client/docs/statik"
-	/* ------------------------------ ethermint imports ----------------------------- */)
+	/* ------------------------------ ethermint imports ----------------------------- */
+
+	lrztypes "github.com/Lorenzo-Protocol/lorenzo/types"
+	btclightclientkeeper "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/keeper"
+	btclightclienttypes "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/types"
+	feekeeper "github.com/Lorenzo-Protocol/lorenzo/x/fee/keeper"
+	feetypes "github.com/Lorenzo-Protocol/lorenzo/x/fee/types"
+)
 
 var (
 	_ servertypes.Application = (*LorenzoApp)(nil)
@@ -163,6 +166,7 @@ type LorenzoApp struct {
 	ConsensusParamsKeeper consensuskeeper.Keeper
 
 	BTCLightClientKeeper btclightclientkeeper.Keeper
+	FeeKeeper            feekeeper.Keeper
 
 	// Ethermint keepers
 	EvmKeeper       *evmkeeper.Keeper
@@ -193,7 +197,6 @@ func NewLorenzoApp(
 	appOpts servertypes.AppOptions,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) *LorenzoApp {
-
 	appCodec := encodingConfig.Codec
 	cdc := encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
@@ -242,6 +245,7 @@ func NewLorenzoApp(
 		evmtypes.StoreKey,
 		feemarkettypes.StoreKey,
 		btclightclienttypes.StoreKey,
+		feetypes.StoreKey,
 	)
 
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey, evmtypes.TransientKey, feemarkettypes.TransientKey)
@@ -452,6 +456,12 @@ func NewLorenzoApp(
 		btclightclienttypes.NewMultiBTCLightClientHooks(),
 	)
 
+	app.FeeKeeper = feekeeper.NewKeeper(
+		appCodec,
+		keys[feetypes.StoreKey],
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
 	var transferStack ibcporttypes.IBCModule
 	transferStack = ibctransfer.NewIBCModule(app.TransferKeeper)
 
@@ -465,7 +475,7 @@ func NewLorenzoApp(
 
 	// NOTE: we may consider parsing `appOpts` inside module constructors. For the moment
 	// we prefer to be more strict in what arguments the modules expect.
-	var skipGenesisInvariants = cast.ToBool(appOpts.Get(crisis.FlagSkipGenesisInvariants))
+	skipGenesisInvariants := cast.ToBool(appOpts.Get(crisis.FlagSkipGenesisInvariants))
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
 	app.mm = module.NewManager(appModules(app, encodingConfig, skipGenesisInvariants)...)
@@ -513,7 +523,7 @@ func NewLorenzoApp(
 		FeegrantKeeper:         app.FeeGrantKeeper,
 		SignModeHandler:        encodingConfig.TxConfig.SignModeHandler(),
 		MaxTxGasWanted:         maxGasWanted,
-		ExtensionOptionChecker: nil, //uses default
+		ExtensionOptionChecker: nil, // uses default
 		BtcConfig:              btcConfig,
 	})
 	if err != nil {
