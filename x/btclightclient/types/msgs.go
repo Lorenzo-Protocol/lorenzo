@@ -102,3 +102,11 @@ func (msg *MsgUpdateParams) ValidateBasic() error {
 func (msg *MsgUpdateParams) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{}
 }
+
+func (msg *MsgUpdateFeeRate) ReporterAddress() sdk.AccAddress {
+	sender, err := sdk.AccAddressFromBech32(msg.Signer)
+	if err != nil {
+		panic(err)
+	}
+	return sender
+}

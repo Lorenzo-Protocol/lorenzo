@@ -55,6 +55,30 @@ func (m msgServer) InsertHeaders(ctx context.Context, msg *types.MsgInsertHeader
 	return &types.MsgInsertHeadersResponse{}, nil
 }
 
+func (m msgServer) UpdateFeeRate(ctx context.Context, msg *types.MsgUpdateFeeRate) (*types.MsgUpdateFeeRateResponse, error) {
+	if msg == nil {
+		return nil, types.ErrEmptyMessage.Wrapf("message is nil")
+	}
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+
+	if msg.FeeRate == 0 {
+		return nil, types.ErrInvalidMessageFormat.Wrapf("fee rate can not be zero.")
+	}
+
+	reporterAddress := msg.ReporterAddress()
+
+	if !m.canInsertHeaders(sdkCtx, reporterAddress) {
+		return nil, types.ErrUnauthorizedReporter.Wrapf("reporter %s is not authorized to insert headers", reporterAddress)
+	}
+
+	err := m.k.UpdateFeeRate(sdkCtx, msg.FeeRate)
+
+	if err != nil {
+		return nil, err
+	}
+	return &types.MsgUpdateFeeRateResponse{}, nil
+}
+
 func (ms msgServer) UpdateParams(ctx context.Context, req *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
 	if ms.k.authority != req.Authority {
 		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", ms.k.authority, req.Authority)

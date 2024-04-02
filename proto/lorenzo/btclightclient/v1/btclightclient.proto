@@ -24,3 +24,7 @@ message BTCHeaderInfo {
   bytes work = 4
       [ (gogoproto.customtype) = "cosmossdk.io/math.Uint" ];
 }
+
+message BTCFeeRate {
+  uint64 fee_rate = 1;
+}

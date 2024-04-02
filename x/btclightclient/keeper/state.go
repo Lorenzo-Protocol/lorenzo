@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"encoding/binary"
 	"fmt"
 
 	bbn "github.com/Lorenzo-Protocol/lorenzo/types"
@@ -14,6 +15,7 @@ type headersState struct {
 	cdc          codec.BinaryCodec
 	headers      sdk.KVStore
 	hashToHeight sdk.KVStore
+	feeRate      sdk.KVStore
 }
 
 func (k Keeper) headersState(ctx sdk.Context) headersState {
@@ -23,6 +25,7 @@ func (k Keeper) headersState(ctx sdk.Context) headersState {
 		cdc:          k.cdc,
 		headers:      prefix.NewStore(store, types.HeadersObjectPrefix),
 		hashToHeight: prefix.NewStore(store, types.HashToHeightPrefix),
+		feeRate:      prefix.NewStore(store, types.FeeRatePrefix),
 	}
 }
 
@@ -73,6 +76,17 @@ func (s headersState) rollBackHeadersUpTo(height uint64) {
 	for _, header := range headersToDelete {
 		s.deleteHeader(header)
 	}
+}
+
+func (s headersState) updateFeeRate(feeRate uint64) {
+	bs := make([]byte, 8)
+	binary.LittleEndian.PutUint64(bs, feeRate)
+	s.feeRate.Set(types.FeeRatePrefix, bs)
+}
+
+func (s headersState) getFeeRate() uint64 {
+	rawBytes := s.feeRate.Get(types.FeeRatePrefix)
+	return binary.LittleEndian.Uint64(rawBytes)
 }
 
 // GetHeaderByHeight Retrieve a header by its height and hash

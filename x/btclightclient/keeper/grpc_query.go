@@ -210,3 +210,15 @@ func (k Keeper) HeaderDepth(ctx context.Context, req *types.QueryHeaderDepthRequ
 
 	return &types.QueryHeaderDepthResponse{Depth: uint64(depth)}, nil
 }
+
+func (k Keeper) FeeRate(ctx context.Context, req *types.QueryFeeRateRequest) (*types.QueryFeeRateResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+
+	feeRate := k.headersState(sdkCtx).getFeeRate()
+
+	return &types.QueryFeeRateResponse{FeeRate: feeRate}, nil
+}

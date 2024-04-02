@@ -56,6 +56,10 @@ service Query {
   rpc HeaderDepth(QueryHeaderDepthRequest) returns(QueryHeaderDepthResponse) {
     option (google.api.http).get = "/lorenzo/btclightclient/v1/depth/{hash}";
   }
+
+  rpc FeeRate(QueryFeeRateRequest) returns(QueryFeeRateResponse) {
+    option (google.api.http).get = "/lorenzo/btclightclient/v1/feeRate";
+  }
 }
 
 // QueryParamsRequest is the request type for the Query/Params RPC method.
@@ -134,3 +138,7 @@ message QueryHeaderDepthRequest { string hash = 1; }
 // QueryMainChainDepthResponse is the response type for the Query/MainChainDepth RPC
 // it contains depth of the block in main chain
 message QueryHeaderDepthResponse { uint64 depth = 1; }
+
+message QueryFeeRateRequest {}
+
+message QueryFeeRateResponse { uint64 fee_rate = 1; }
