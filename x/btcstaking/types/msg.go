@@ -3,8 +3,6 @@ package types
 import (
 	fmt "fmt"
 
-	//lrz "github.com/Lorenzo-Protocol/lorenzo/types"
-	//"github.com/btcsuite/btcd/chaincfg/chainhash"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
