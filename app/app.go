@@ -166,7 +166,7 @@ type LorenzoApp struct {
 	ConsensusParamsKeeper consensuskeeper.Keeper
 
 	BTCLightClientKeeper btclightclientkeeper.Keeper
-	FeeKeeper            feekeeper.Keeper
+	FeeKeeper            *feekeeper.Keeper
 
 	// Ethermint keepers
 	EvmKeeper       *evmkeeper.Keeper
@@ -525,6 +525,7 @@ func NewLorenzoApp(
 		MaxTxGasWanted:         maxGasWanted,
 		ExtensionOptionChecker: nil, // uses default
 		BtcConfig:              btcConfig,
+		FeeKeeper :             app.FeeKeeper,
 	})
 	if err != nil {
 		panic(err)

@@ -16,7 +16,7 @@ var _ types.MsgServer = msgServer{}
 
 type msgServer struct {
 	// This should be a reference to Keeper
-	k Keeper
+	k *Keeper
 }
 
 func (ms msgServer) UpdateParams(ctx context.Context, req *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
@@ -38,7 +38,7 @@ func (ms msgServer) UpdateParams(ctx context.Context, req *types.MsgUpdateParams
 
 // NewMsgServerImpl returns an implementation of the MsgServer interface
 // for the provided Keeper.
-func NewMsgServerImpl(keeper Keeper) types.MsgServer {
+func NewMsgServerImpl(keeper *Keeper) types.MsgServer {
 	return &msgServer{keeper}
 }
 

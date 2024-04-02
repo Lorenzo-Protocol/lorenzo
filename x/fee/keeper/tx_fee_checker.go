@@ -15,7 +15,7 @@ import (
 //
 // Takes in the the Keeper as parameters.
 // Returns a function that takes in the context and transaction, and returns Coins, int64, and error.
-func TxFeeChecker(k Keeper) func(ctx sdk.Context, tx sdk.Tx) (sdk.Coins, int64, error) {
+func TxFeeChecker(k *Keeper) func(ctx sdk.Context, tx sdk.Tx) (sdk.Coins, int64, error) {
 	return func(ctx sdk.Context, tx sdk.Tx) (sdk.Coins, int64, error) {
 		params := k.GetParams(ctx)
 		hasNonFreeMsg := slices.ContainsFunc(tx.GetMsgs(), func(m sdk.Msg) bool {

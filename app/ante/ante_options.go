@@ -25,7 +25,7 @@ type HandlerOptions struct {
 	MaxTxGasWanted         uint64
 	ExtensionOptionChecker ante.ExtensionOptionChecker
 	BtcConfig              bbn.BtcConfig
-	feeKeeper              feekeeper.Keeper
+	FeeKeeper              *feekeeper.Keeper
 }
 
 func (options HandlerOptions) validate() error {

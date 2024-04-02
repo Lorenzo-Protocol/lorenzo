@@ -294,6 +294,8 @@ can do so safely.
 */
 func orderInitBlockers() []string {
 	return []string{
+		feetypes.ModuleName,
+		
 		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
@@ -318,7 +320,6 @@ func orderInitBlockers() []string {
 
 		//self module
 		btclightclienttypes.ModuleName,
-		feetypes.ModuleName,
 
 		// NOTE: crisis module must go at the end to check for invariants on each module
 		crisistypes.ModuleName,

@@ -10,7 +10,7 @@ import (
 )
 
 // InitGenesis new fee genesis
-func InitGenesis(ctx sdk.Context, keeper keeper.Keeper, data types.GenesisState) {
+func InitGenesis(ctx sdk.Context, keeper *keeper.Keeper, data types.GenesisState) {
 	if err := ValidateGenesis(data); err != nil {
 		panic(fmt.Errorf("failed to initialize fee genesis state: %s", err.Error()))
 	}
@@ -20,7 +20,7 @@ func InitGenesis(ctx sdk.Context, keeper keeper.Keeper, data types.GenesisState)
 }
 
 // ExportGenesis returns a GenesisState for a given context and keeper.
-func ExportGenesis(ctx sdk.Context, keeper keeper.Keeper) *types.GenesisState {
+func ExportGenesis(ctx sdk.Context, keeper *keeper.Keeper) *types.GenesisState {
 	params := keeper.GetParams(ctx)
 	return types.NewGenesisState(params)
 }
