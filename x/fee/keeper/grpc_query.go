@@ -10,7 +10,7 @@ import (
 
 var _ types.QueryServer = Keeper{}
 
-// Params queries the staking parameters
+// Params queries the fee parameters
 func (k Keeper) Params(
 	c context.Context,
 	_ *types.QueryParamsRequest,
