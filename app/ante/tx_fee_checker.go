@@ -9,14 +9,11 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
 	btclightclient "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/types"
 )
 
-// TODO
 var nonFeeMsgList = map[string]struct{}{
-	sdk.MsgTypeURL(&banktypes.MsgSend{}):               {},
 	sdk.MsgTypeURL(&btclightclient.MsgInsertHeaders{}): {},
 }
 
