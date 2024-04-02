@@ -92,45 +92,44 @@ func extractPaymentToWithOpReturnId(tx *wire.MsgTx, addr btcutil.Address) (uint6
     return amt, nil
 }*/
 
-// TODO: error types
 func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreateBTCStaking) (*types.MsgCreateBTCStakingResponse, error) {
 	stakingMsgTx, err := NewBTCTxFromBytes(req.StakingTx.Transaction)
 	if err != nil {
-		return nil, fmt.Errorf("cannot be parsed: %v", err)
+		return nil, types.ErrParseBTCTx.Wrap(err.Error())
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	var stakingTxHash = stakingMsgTx.TxHash()
 	staking_record := ms.getBTCStakingRecord(ctx, stakingTxHash)
 	if staking_record != nil {
-		return nil, fmt.Errorf("duplicated tx hash: %s", stakingTxHash.String())
+		return nil, types.ErrDupBTCTx
 	}
 
 	stakingTxHeader := ms.btclcKeeper.GetHeaderByHash(ctx, req.StakingTx.Key.Hash)
 	if stakingTxHeader == nil {
-		return nil, fmt.Errorf("header that includes the staking tx is not found")
+		return nil, types.ErrBlkHdrNotFound
 	}
 
 	p := ms.GetParams(ctx)
 	btcTip := ms.btclcKeeper.GetTipInfo(ctx)
 	stakingTxDepth := btcTip.Height - stakingTxHeader.Height
 	if stakingTxDepth < uint64(p.BtcConfirmationsDepth) {
-		return nil, fmt.Errorf("not k-deep: k=%d; depth=%d", p.BtcConfirmationsDepth, stakingTxDepth)
+		return nil, types.ErrBlkHdrNotConfirmed.Wrapf("not k-deep: k=%d; depth=%d", p.BtcConfirmationsDepth, stakingTxDepth)
 	}
 	btclcParams := ms.btclcKeeper.GetBTCNet()
 	if err := req.StakingTx.VerifyInclusion(stakingTxHeader.Header, btclcParams.PowLimit); err != nil {
-		return nil, fmt.Errorf("not included in the Bitcoin chain: %v", err)
+		return nil, types.ErrBTCTxNotIncluded.Wrap(err.Error())
 	}
 	var btc_receiving_addr btcutil.Address
 
 	btc_receiving_addr, err = btcutil.DecodeAddress(p.BtcReceivingAddr, btclcParams)
 	if err != nil {
-		return nil, fmt.Errorf("invalid btc_receiving_addr: %s", p)
+		return nil, types.ErrInvalidReceivingAddr.Wrap(err.Error())
 	}
 	var mintToAddr []byte
 	var btcAmount uint64
 	btcAmount, mintToAddr, err = extractPaymentToWithOpReturnId(stakingMsgTx, btc_receiving_addr)
 	if err != nil || btcAmount == 0 {
-		return nil, fmt.Errorf("invalid transaction")
+		return nil, types.ErrInvalidTransaction
 	}
 
 	toMintAmount := sdkmath.NewIntFromUint64(btcAmount).Mul(sdkmath.NewIntFromUint64(1e10))
@@ -144,12 +143,12 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 	}
 	err = ms.bankKeeper.MintCoins(ctx, types.ModuleName, coins)
 	if err != nil {
-		return nil, fmt.Errorf("fail to mint, %s", err)
+		return nil, types.ErrMintToModule.Wrap(err.Error())
 	}
 	// XXX: check mintToAddr before transfer?
 	err = ms.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, mintToAddr, coins)
 	if err != nil {
-		return nil, fmt.Errorf("fail to transfer to mintToAddr, %s", err)
+		return nil, types.ErrTransferToAddr.Wrap(err.Error())
 	}
 	stakingRecord := types.BTCStakingRecord{
 		TxHash:     stakingTxHash[:],
@@ -158,7 +157,7 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 	}
 	err = ms.addBTCStakingRecord(ctx, &stakingRecord)
 	if err != nil {
-		return nil, fmt.Errorf("can't record staking: %s", err)
+		return nil, types.ErrRecordStaking.Wrap(err.Error())
 	}
 	err = ctx.EventManager().EmitTypedEvent(types.NewEventBTCStakingCreated(&stakingRecord))
 	if err != nil {
