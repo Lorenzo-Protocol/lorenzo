@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"encoding/hex"
+
 	"github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -16,7 +18,10 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 		SuggestionsMinimumDistance: 2,
 	}
 
-	btcstakingQueryCmd.AddCommand()
+	btcstakingQueryCmd.AddCommand(
+		CmdGetParams(),
+		CmdGetBTCStaingRecord(),
+	)
 
 	return btcstakingQueryCmd
 }
@@ -50,7 +55,11 @@ func CmdGetBTCStaingRecord() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.StakingRecord(cmd.Context(), &types.QueryStakingRecordRequest{TxHash: []byte(args[0])})
+			txHashBytes, err := hex.DecodeString(args[0])
+			if err != nil {
+				return err
+			}
+			res, err := queryClient.StakingRecord(cmd.Context(), &types.QueryStakingRecordRequest{TxHash: txHashBytes})
 			if err != nil {
 				return err
 			}
