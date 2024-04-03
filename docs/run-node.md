@@ -35,7 +35,10 @@ The flags specify the following:
 a real example:
 
 ```sh
+# btc testnet
 ./build/lorenzod testnet init-files --base-btc-header '{"header": "0000202052d6336f639d03ec6f27638fd34e93d5ba4a971463a8142d0a00000000000000d1cbfdb66dd4131b77114812896e9e9f579e97afeea215fcf7563d77cc89e1103928f865434e2c193514ebdc","hash": "0000000000000023878a8e2ea4ab9d93a5cf7fb07d417dc8a899b9acb33e045f","height": "2582496","work": "96937883"}' --keyring-backend file
+# btc mainnet
+./build/lorenzod testnet init-files --base-btc-header '{"header": "000018228d263ff4070e2fdb31b654704e99f850a4f31762155003000000000000000000f79ccd11440a9d383b1438ee60692fc7b78a4b8800faf6ec61ec5fc37a078387f998f265595a03175799484b","hash": "000000000000000000032366f4bd696122c3e11096dfdacaf76b428b2a3f2318","height": "834624","work": "83947913181361"}' --keyring-backend file --btc-lightclient-params '{"insert_headers_allow_list": ["lrz1h2eglam9jjqlrjz3dask54mr8xfk47cxx0kh5c"]}' --btc-network mainnet
 ```
 
 In this case, we generated a single node. If we take a look under `.testnet`:
