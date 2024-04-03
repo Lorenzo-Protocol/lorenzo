@@ -3,6 +3,7 @@ package keeper
 import (
 	"bytes"
 	"context"
+	"encoding/hex"
 	"fmt"
 
 	sdkmath "cosmossdk.io/math"
@@ -131,6 +132,9 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 	if err != nil || btcAmount == 0 {
 		return nil, types.ErrInvalidTransaction
 	}
+	if len(mintToAddr) != 20 {
+		return nil, types.ErrMintToAddr.Wrap(hex.EncodeToString(mintToAddr))
+	}
 
 	toMintAmount := sdkmath.NewIntFromUint64(btcAmount).Mul(sdkmath.NewIntFromUint64(1e10))
 
@@ -145,7 +149,6 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 	if err != nil {
 		return nil, types.ErrMintToModule.Wrap(err.Error())
 	}
-	// XXX: check mintToAddr before transfer?
 	err = ms.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, mintToAddr, coins)
 	if err != nil {
 		return nil, types.ErrTransferToAddr.Wrap(err.Error())
