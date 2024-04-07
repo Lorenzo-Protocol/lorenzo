@@ -28,6 +28,7 @@ var (
 	_ appmodule.AppModule = AppModule{}
 	//_ appmodule.HasBeginBlocker = AppModule{}
 	//_ module.HasABCIEndBlock    = AppModule{}
+	_ module.HasGenesis     = AppModule{}
 	_ module.AppModuleBasic = AppModuleBasic{}
 )
 
@@ -119,12 +120,13 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 func (am AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
 
 // InitGenesis performs the module's genesis initialization. It returns no validator updates.
-func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, gs json.RawMessage) {
+func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, gs json.RawMessage) []abci.ValidatorUpdate {
 	var genState types.GenesisState
 	// Initialize global index to index in genesis state
 	cdc.MustUnmarshalJSON(gs, &genState)
 
 	InitGenesis(ctx, am.keeper, genState)
+	return []abci.ValidatorUpdate{}
 }
 
 // ExportGenesis returns the module's exported genesis state as raw JSON bytes.
