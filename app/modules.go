@@ -242,9 +242,8 @@ func orderBeginBlockers() []string {
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
 		btclightclienttypes.ModuleName,
-		btcstakingtypes.ModuleName,
 		//self module
-
+		btcstakingtypes.ModuleName,
 	}
 }
 
@@ -279,9 +278,8 @@ func orderEndBlockers() []string {
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		btclightclienttypes.ModuleName,
-		btcstakingtypes.ModuleName,
 		//self module
-
+		btcstakingtypes.ModuleName,
 	}
 }
 
