@@ -75,6 +75,9 @@ import (
 	feemarketkeeper "github.com/evmos/ethermint/x/feemarket/keeper"
 	feemarkettypes "github.com/evmos/ethermint/x/feemarket/types"
 
+	btcstakingkeeper "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/keeper"
+	btcstakingtypes "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types"
+
 	// ibc
 	ibctransfer "github.com/cosmos/ibc-go/v7/modules/apps/transfer"
 	ibctransferkeeper "github.com/cosmos/ibc-go/v7/modules/apps/transfer/keeper"
@@ -156,6 +159,8 @@ type LorenzoApp struct {
 	BTCLightClientKeeper btclightclientkeeper.Keeper
 	FeeKeeper            *feekeeper.Keeper
 
+	BTCStakingKeeper btcstakingkeeper.Keeper
+
 	// Ethermint keepers
 	EvmKeeper       *evmkeeper.Keeper
 	FeeMarketKeeper feemarketkeeper.Keeper
@@ -234,6 +239,7 @@ func NewLorenzoApp(
 		feemarkettypes.StoreKey,
 		btclightclienttypes.StoreKey,
 		feetypes.StoreKey,
+		btcstakingtypes.StoreKey,
 	)
 
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey, evmtypes.TransientKey, feemarkettypes.TransientKey)
@@ -449,6 +455,7 @@ func NewLorenzoApp(
 		keys[feetypes.StoreKey],
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
+	app.BTCStakingKeeper = btcstakingkeeper.NewKeeper(appCodec, keys[btcstakingtypes.StoreKey], app.BTCLightClientKeeper, app.BankKeeper, authtypes.NewModuleAddress(govtypes.ModuleName).String())
 
 	var transferStack ibcporttypes.IBCModule
 	transferStack = ibctransfer.NewIBCModule(app.TransferKeeper)

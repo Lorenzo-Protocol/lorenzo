@@ -4,6 +4,8 @@ import (
 	appparams "github.com/Lorenzo-Protocol/lorenzo/app/params"
 	"github.com/Lorenzo-Protocol/lorenzo/x/btclightclient"
 	btclightclienttypes "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/types"
+	"github.com/Lorenzo-Protocol/lorenzo/x/btcstaking"
+	btcstakingtypes "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types"
 	"github.com/Lorenzo-Protocol/lorenzo/x/fee"
 	feetypes "github.com/Lorenzo-Protocol/lorenzo/x/fee/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
@@ -105,6 +107,7 @@ var (
 		feemarket.AppModuleBasic{},
 		btclightclient.AppModuleBasic{},
 		fee.AppModuleBasic{},
+		btcstaking.AppModuleBasic{},
 	)
 	// module account permissions
 	maccPerms = map[string][]string{
@@ -117,7 +120,8 @@ var (
 		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 
-		evmtypes.ModuleName: {authtypes.Minter, authtypes.Burner}, // used for secure addition and subtraction of balance using module account
+		evmtypes.ModuleName:        {authtypes.Minter, authtypes.Burner}, // used for secure addition and subtraction of balance using module account
+		btcstakingtypes.ModuleName: {authtypes.Minter, authtypes.Burner},
 	}
 )
 
@@ -198,6 +202,7 @@ func appModules(
 		app.transferModule,
 		btclightclient.NewAppModule(appCodec, app.BTCLightClientKeeper),
 		fee.NewAppModule(appCodec, app.FeeKeeper),
+		btcstaking.NewAppModule(appCodec, app.BTCStakingKeeper),
 
 		// this line is used by starport scaffolding # stargate/app/appModule
 
@@ -243,7 +248,7 @@ func orderBeginBlockers() []string {
 		btclightclienttypes.ModuleName,
 		feetypes.ModuleName,
 		//self module
-
+		btcstakingtypes.ModuleName,
 	}
 }
 
@@ -280,7 +285,7 @@ func orderEndBlockers() []string {
 		btclightclienttypes.ModuleName,
 		feetypes.ModuleName,
 		//self module
-
+		btcstakingtypes.ModuleName,
 	}
 }
 
@@ -320,6 +325,7 @@ func orderInitBlockers() []string {
 
 		//self module
 		btclightclienttypes.ModuleName,
+		btcstakingtypes.ModuleName,
 
 		// NOTE: crisis module must go at the end to check for invariants on each module
 		crisistypes.ModuleName,
