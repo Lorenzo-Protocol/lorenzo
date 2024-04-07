@@ -10,10 +10,13 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
+
+	btcstakingtypes "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types"
 	btclightclient "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/types"
 )
 
 var nonFeeMsgList = map[string]struct{}{
+	sdk.MsgTypeURL(&btcstakingtypes.MsgCreateBTCStaking{}): {},
 	sdk.MsgTypeURL(&btclightclient.MsgInsertHeaders{}): {},
 }
 

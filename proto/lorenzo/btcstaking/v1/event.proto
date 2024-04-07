@@ -1,0 +1,11 @@
+syntax = "proto3";
+package lorenzo.btcstaking.v1;
+
+import "lorenzo/btcstaking/v1/staking_record.proto";
+
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types";
+
+// BTC staking creation event
+message EventBTCStakingCreated { 
+    BTCStakingRecord record = 1; 
+}
