@@ -3,7 +3,6 @@ package lorenzo.btclightclient.v1;
 
 import "gogoproto/gogo.proto";
 
-
 option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/types";
 
 // Params defines the parameters for the module.

@@ -6,6 +6,8 @@ import (
 	btclightclienttypes "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/types"
 	"github.com/Lorenzo-Protocol/lorenzo/x/btcstaking"
 	btcstakingtypes "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types"
+	"github.com/Lorenzo-Protocol/lorenzo/x/fee"
+	feetypes "github.com/Lorenzo-Protocol/lorenzo/x/fee/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	authsims "github.com/cosmos/cosmos-sdk/x/auth/simulation"
@@ -104,6 +106,7 @@ var (
 		evm.AppModuleBasic{},
 		feemarket.AppModuleBasic{},
 		btclightclient.AppModuleBasic{},
+		fee.AppModuleBasic{},
 		btcstaking.AppModuleBasic{},
 	)
 	// module account permissions
@@ -198,6 +201,7 @@ func appModules(
 
 		app.transferModule,
 		btclightclient.NewAppModule(appCodec, app.BTCLightClientKeeper),
+		fee.NewAppModule(appCodec, app.FeeKeeper),
 		btcstaking.NewAppModule(appCodec, app.BTCStakingKeeper),
 
 		// this line is used by starport scaffolding # stargate/app/appModule
@@ -242,6 +246,7 @@ func orderBeginBlockers() []string {
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
 		btclightclienttypes.ModuleName,
+		feetypes.ModuleName,
 		//self module
 		btcstakingtypes.ModuleName,
 	}
@@ -278,6 +283,7 @@ func orderEndBlockers() []string {
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		btclightclienttypes.ModuleName,
+		feetypes.ModuleName,
 		//self module
 		btcstakingtypes.ModuleName,
 	}
@@ -293,6 +299,8 @@ can do so safely.
 */
 func orderInitBlockers() []string {
 	return []string{
+		feetypes.ModuleName,
+		
 		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
