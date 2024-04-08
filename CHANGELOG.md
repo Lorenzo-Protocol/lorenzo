@@ -20,6 +20,7 @@
 * (Lorenzo) [\#8](https://github.com/Lorenzo-Protocol/lorenzo/pull/8) support nonfee transaction
 * (Lorenzo) [\#11](https://github.com/Lorenzo-Protocol/lorenzo/pull/11) set MsgInsertHeaders to be fee free
 * (Lorenzo) [\#12](https://github.com/Lorenzo-Protocol/lorenzo/pull/12) add fee module
+* (Lorenzo) [\#13](https://github.com/Lorenzo-Protocol/lorenzo/pull/13) added implementation for submitting bitcoin fee rate in module btclightclient
 
 ### Bug Fixes
 
