@@ -57,6 +57,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	btclightclienttypes "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/types"
+	btcstakingtypes "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types"
 	"github.com/evmos/ethermint/crypto/hd"
 	"github.com/evmos/ethermint/server/config"
 	srvflags "github.com/evmos/ethermint/server/flags"
@@ -79,6 +80,7 @@ var (
 	flagBtcNetwork           = "btc-network"
 	flagBaseBtcHeaderParams  = "base-btc-header"
 	flagBtclightclientParams = "btc-lightclient-params"
+	flagBtcStakingParams     = "btc-staking-params"
 )
 
 type initArgs struct {
@@ -94,6 +96,7 @@ type initArgs struct {
 	btcNetwork           string
 	baseBtcHeaderParams  string
 	btclightclientParams string
+	btcstakingParams     string
 }
 
 type startArgs struct {
@@ -178,6 +181,7 @@ Example:
 			args.btcNetwork, _ = cmd.Flags().GetString(flagBtcNetwork)
 			args.baseBtcHeaderParams, _ = cmd.Flags().GetString(flagBaseBtcHeaderParams)
 			args.btclightclientParams, _ = cmd.Flags().GetString(flagBtclightclientParams)
+			args.btcstakingParams, _ = cmd.Flags().GetString(flagBtcStakingParams)
 
 			return initTestnetFiles(clientCtx, cmd, serverCtx.Config, mbm, genBalIterator, args)
 		},
@@ -190,6 +194,7 @@ Example:
 		"192.167.10.1",
 		"Starting IP address (192.168.0.1 results in persistent peers list ID0@192.168.0.1:46656, ID1@192.168.0.2:46656, ...)")
 	cmd.Flags().String(flags.FlagKeyringBackend, flags.DefaultKeyringBackend, "Select keyring's backend (os|file|test)")
+	cmd.Flags().String(flagBtcStakingParams, "", "btc staking genesis params")
 
 	return cmd
 }
@@ -384,7 +389,7 @@ func initTestnetFiles(
 		srvconfig.WriteConfigFile(filepath.Join(nodeDir, "config/app.toml"), appConfig)
 	}
 
-	if err := initGenFiles(clientCtx, mbm, args.chainID, appparams.BaseDenom, genAccounts, genBalances, genFiles, args.numValidators, args.baseBtcHeaderParams, args.btclightclientParams); err != nil {
+	if err := initGenFiles(clientCtx, mbm, args.chainID, appparams.BaseDenom, genAccounts, genBalances, genFiles, args.numValidators, args.baseBtcHeaderParams, args.btclightclientParams, args.btcstakingParams); err != nil {
 		return err
 	}
 
@@ -411,6 +416,7 @@ func initGenFiles(
 	numValidators int,
 	baseBtcHeaderParams string,
 	btclightclientParams string,
+	btcstakingParams string,
 ) error {
 	appGenState := mbm.DefaultGenesis(clientCtx.Codec)
 	// set the accounts in the genesis state
@@ -475,6 +481,15 @@ func initGenFiles(
 		btclightclientGenState.Params = btclightclientParamsJson
 	}
 	appGenState[btclightclienttypes.ModuleName] = clientCtx.Codec.MustMarshalJSON(btclightclientGenState)
+
+	// btcstaking genesis
+	btcstakingGenState := btcstakingtypes.DefaultGenesis()
+	var btcstakingParamsJson btcstakingtypes.Params
+	err = clientCtx.Codec.UnmarshalJSON([]byte(btcstakingParams), &btcstakingParamsJson)
+	if err == nil {
+		btcstakingGenState.Params = &btcstakingParamsJson
+	}
+	appGenState[btcstakingtypes.ModuleName] = clientCtx.Codec.MustMarshalJSON(btcstakingGenState)
 
 	appGenStateJSON, err := json.MarshalIndent(appGenState, "", "  ")
 	if err != nil {
