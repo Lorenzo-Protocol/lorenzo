@@ -40,3 +40,7 @@ func NewQueryTipRequest() *QueryTipRequest {
 func NewQueryBaseHeaderRequest() *QueryBaseHeaderRequest {
 	return &QueryBaseHeaderRequest{}
 }
+
+func NewQueryFeeRateRequest() *QueryFeeRateRequest {
+	return &QueryFeeRateRequest{}
+}

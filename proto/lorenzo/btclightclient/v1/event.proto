@@ -21,3 +21,5 @@ message EventBTCRollForward { BTCHeaderInfo header = 1; }
 // The header included in the event is the one that was added to the
 // on chain BTC storage.
 message EventBTCHeaderInserted { BTCHeaderInfo header = 1; }
+
+message EventBTCFeeRateUpdated { uint64 fee_rate = 1; }

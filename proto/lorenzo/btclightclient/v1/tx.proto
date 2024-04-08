@@ -18,6 +18,8 @@ service Msg {
   // UpdateParams defines a method for updating btc light client module
   // parameters.
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+
+  rpc UpdateFeeRate(MsgUpdateFeeRate) returns (MsgUpdateFeeRateResponse);
 }
 
 // MsgInsertHeaders defines the message for multiple incoming header bytes
@@ -52,3 +54,12 @@ message MsgUpdateParams {
 
 // MsgUpdateParamsResponse is the response to the MsgUpdateParams message.
 message MsgUpdateParamsResponse {}
+
+message MsgUpdateFeeRate {
+  option (cosmos.msg.v1.signer) = "signer";
+
+  string signer = 1;
+  uint64 fee_rate = 2;
+}
+
+message MsgUpdateFeeRateResponse {}

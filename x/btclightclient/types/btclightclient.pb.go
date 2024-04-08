@@ -80,8 +80,53 @@ func (m *BTCHeaderInfo) GetHeight() uint64 {
 	return 0
 }
 
+type BTCFeeRate struct {
+	FeeRate uint64 `protobuf:"varint,1,opt,name=fee_rate,json=feeRate,proto3" json:"fee_rate,omitempty"`
+}
+
+func (m *BTCFeeRate) Reset()         { *m = BTCFeeRate{} }
+func (m *BTCFeeRate) String() string { return proto.CompactTextString(m) }
+func (*BTCFeeRate) ProtoMessage()    {}
+func (*BTCFeeRate) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2107ea75e21373d0, []int{1}
+}
+func (m *BTCFeeRate) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *BTCFeeRate) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_BTCFeeRate.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *BTCFeeRate) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BTCFeeRate.Merge(m, src)
+}
+func (m *BTCFeeRate) XXX_Size() int {
+	return m.Size()
+}
+func (m *BTCFeeRate) XXX_DiscardUnknown() {
+	xxx_messageInfo_BTCFeeRate.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_BTCFeeRate proto.InternalMessageInfo
+
+func (m *BTCFeeRate) GetFeeRate() uint64 {
+	if m != nil {
+		return m.FeeRate
+	}
+	return 0
+}
+
 func init() {
 	proto.RegisterType((*BTCHeaderInfo)(nil), "lorenzo.btclightclient.v1.BTCHeaderInfo")
+	proto.RegisterType((*BTCFeeRate)(nil), "lorenzo.btclightclient.v1.BTCFeeRate")
 }
 
 func init() {
@@ -89,7 +134,7 @@ func init() {
 }
 
 var fileDescriptor_2107ea75e21373d0 = []byte{
-	// 285 bytes of a gzipped FileDescriptorProto
+	// 319 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xd2, 0xcb, 0xc9, 0x2f, 0x4a,
 	0xcd, 0xab, 0xca, 0xd7, 0x4f, 0x2a, 0x49, 0xce, 0xc9, 0x4c, 0xcf, 0x00, 0x91, 0xa9, 0x79, 0x25,
 	0xfa, 0x65, 0x86, 0x68, 0x22, 0x7a, 0x05, 0x45, 0xf9, 0x25, 0xf9, 0x42, 0x92, 0x50, 0xf5, 0x7a,
@@ -104,10 +149,12 @@ var fileDescriptor_2107ea75e21373d0 = []byte{
 	0x9b, 0x12, 0xcc, 0x0a, 0x8c, 0x1a, 0x2c, 0x41, 0x50, 0x9e, 0x90, 0x1e, 0x17, 0x4b, 0x79, 0x7e,
 	0x51, 0xb6, 0x04, 0x0b, 0xd8, 0x36, 0xa9, 0x5b, 0xf7, 0xe4, 0xc5, 0x92, 0xf3, 0x8b, 0x73, 0xf3,
 	0x8b, 0x8b, 0x53, 0xb2, 0xf5, 0x32, 0xf3, 0xf5, 0x73, 0x13, 0x4b, 0x32, 0xf4, 0x42, 0x33, 0xf3,
-	0x4a, 0x82, 0xc0, 0xea, 0x9c, 0x42, 0x4e, 0x3c, 0x92, 0x63, 0xbc, 0xf0, 0x48, 0x8e, 0xf1, 0xc1,
-	0x23, 0x39, 0xc6, 0x09, 0x8f, 0xe5, 0x18, 0x2e, 0x3c, 0x96, 0x63, 0xb8, 0xf1, 0x58, 0x8e, 0x21,
-	0xca, 0x8a, 0x18, 0x57, 0x56, 0xa0, 0x47, 0x0f, 0xd8, 0xd9, 0x49, 0x6c, 0xe0, 0x20, 0x36, 0x06,
-	0x04, 0x00, 0x00, 0xff, 0xff, 0xa8, 0x3f, 0x97, 0xb8, 0xc5, 0x01, 0x00, 0x00,
+	0x4a, 0x82, 0xc0, 0xea, 0x94, 0xd4, 0xb9, 0xb8, 0x9c, 0x42, 0x9c, 0xdd, 0x52, 0x53, 0x83, 0x12,
+	0x4b, 0x52, 0x85, 0x24, 0xb9, 0x38, 0xd2, 0x52, 0x53, 0xe3, 0x8b, 0x12, 0x4b, 0x52, 0xc1, 0x61,
+	0xc0, 0x12, 0xc4, 0x9e, 0x06, 0x91, 0x72, 0x0a, 0x39, 0xf1, 0x48, 0x8e, 0xf1, 0xc2, 0x23, 0x39,
+	0xc6, 0x07, 0x8f, 0xe4, 0x18, 0x27, 0x3c, 0x96, 0x63, 0xb8, 0xf0, 0x58, 0x8e, 0xe1, 0xc6, 0x63,
+	0x39, 0x86, 0x28, 0x2b, 0x62, 0xbc, 0x53, 0x81, 0x1e, 0x8f, 0x60, 0xff, 0x25, 0xb1, 0x81, 0xe3,
+	0xc2, 0x18, 0x10, 0x00, 0x00, 0xff, 0xff, 0x32, 0x3b, 0xaa, 0x1d, 0xee, 0x01, 0x00, 0x00,
 }
 
 func (m *BTCHeaderInfo) Marshal() (dAtA []byte, err error) {
@@ -174,6 +221,34 @@ func (m *BTCHeaderInfo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *BTCFeeRate) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *BTCFeeRate) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *BTCFeeRate) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.FeeRate != 0 {
+		i = encodeVarintBtclightclient(dAtA, i, uint64(m.FeeRate))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintBtclightclient(dAtA []byte, offset int, v uint64) int {
 	offset -= sovBtclightclient(v)
 	base := offset
@@ -205,6 +280,18 @@ func (m *BTCHeaderInfo) Size() (n int) {
 	if m.Work != nil {
 		l = m.Work.Size()
 		n += 1 + l + sovBtclightclient(uint64(l))
+	}
+	return n
+}
+
+func (m *BTCFeeRate) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.FeeRate != 0 {
+		n += 1 + sovBtclightclient(uint64(m.FeeRate))
 	}
 	return n
 }
@@ -368,6 +455,75 @@ func (m *BTCHeaderInfo) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBtclightclient(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthBtclightclient
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *BTCFeeRate) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBtclightclient
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: BTCFeeRate: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: BTCFeeRate: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FeeRate", wireType)
+			}
+			m.FeeRate = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBtclightclient
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.FeeRate |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipBtclightclient(dAtA[iNdEx:])
