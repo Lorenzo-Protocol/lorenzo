@@ -31,11 +31,13 @@ require (
 )
 
 require (
+	cosmossdk.io/core v0.5.1
 	github.com/btcsuite/btcd/btcec/v2 v2.3.2
 	github.com/btcsuite/btcd/btcutil v1.1.5
 	github.com/btcsuite/btcd/chaincfg/chainhash v1.1.0
 	github.com/cosmos/cosmos-proto v1.0.0-beta.2
 	github.com/cosmos/gogoproto v1.4.10
+	github.com/stretchr/testify v1.8.4
 	golang.org/x/exp v0.0.0-20230811145659-89c5cff77bcb
 )
 
@@ -46,7 +48,6 @@ require (
 	cloud.google.com/go/iam v1.1.5 // indirect
 	cloud.google.com/go/storage v1.30.1 // indirect
 	cosmossdk.io/api v0.3.1 // indirect
-	cosmossdk.io/core v0.5.1 // indirect
 	cosmossdk.io/depinject v1.0.0-alpha.3 // indirect
 	cosmossdk.io/tools/rosetta v0.2.1 // indirect
 	filippo.io/edwards25519 v1.0.0 // indirect
@@ -175,7 +176,6 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/status-im/keycard-go v0.2.0 // indirect
-	github.com/stretchr/testify v1.8.4 // indirect
 	github.com/subosito/gotenv v1.4.2 // indirect
 	github.com/syndtr/goleveldb v1.0.1-0.20220721030215-126854af5e6d // indirect
 	github.com/tecbot/gorocksdb v0.0.0-20191217155057-f0fad39f321c // indirect

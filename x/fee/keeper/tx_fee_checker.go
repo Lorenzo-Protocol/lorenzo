@@ -1,4 +1,4 @@
-package ante
+package keeper
 
 import (
 	"math"
@@ -9,23 +9,24 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 )
 
-// TODO
-var nonFeeMsgList = map[string]struct{}{
-	sdk.MsgTypeURL(&banktypes.MsgSend{}): {},
-}
-
-func checkTxFee(ctx sdk.Context, tx sdk.Tx) (sdk.Coins, int64, error) {
-	hasNonFreeMsg := slices.ContainsFunc(tx.GetMsgs(), func(m sdk.Msg) bool {
-		_, exist := nonFeeMsgList[sdk.MsgTypeURL(m)]
-		return !exist
-	})
-	if hasNonFreeMsg {
-		return checkTxFeeWithValidatorMinGasPrices(ctx, tx)
+// TxFeeChecker generates a function that checks transaction fees based on the given parameters.
+//
+// Takes in the the Keeper as parameters.
+// Returns a function that takes in the context and transaction, and returns Coins, int64, and error.
+func TxFeeChecker(k *Keeper) func(ctx sdk.Context, tx sdk.Tx) (sdk.Coins, int64, error) {
+	return func(ctx sdk.Context, tx sdk.Tx) (sdk.Coins, int64, error) {
+		params := k.GetParams(ctx)
+		hasNonFreeMsg := slices.ContainsFunc(tx.GetMsgs(), func(m sdk.Msg) bool {
+			exist := slices.Contains(params.NonFeeMsgs, sdk.MsgTypeURL(m))
+			return !exist
+		})
+		if hasNonFreeMsg {
+			return checkTxFeeWithValidatorMinGasPrices(ctx, tx)
+		}
+		return []sdk.Coin{}, 0, nil
 	}
-	return []sdk.Coin{}, 0, nil
 }
 
 // checkTxFeeWithValidatorMinGasPrices implements the default fee logic, where the minimum price per
@@ -33,7 +34,7 @@ func checkTxFee(ctx sdk.Context, tx sdk.Tx) (sdk.Coins, int64, error) {
 func checkTxFeeWithValidatorMinGasPrices(ctx sdk.Context, tx sdk.Tx) (sdk.Coins, int64, error) {
 	feeTx, ok := tx.(sdk.FeeTx)
 	if !ok {
-		return nil, 0, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx")
+		return nil, 0, errorsmod.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx")
 	}
 
 	feeCoins := feeTx.GetFee()

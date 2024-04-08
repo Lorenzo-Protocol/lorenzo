@@ -10,6 +10,7 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 	bbn "github.com/Lorenzo-Protocol/lorenzo/types"
+	feekeeper "github.com/Lorenzo-Protocol/lorenzo/x/fee/keeper"
 	errortypes "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
@@ -24,6 +25,7 @@ type HandlerOptions struct {
 	MaxTxGasWanted         uint64
 	ExtensionOptionChecker ante.ExtensionOptionChecker
 	BtcConfig              bbn.BtcConfig
+	FeeKeeper              *feekeeper.Keeper
 }
 
 func (options HandlerOptions) validate() error {

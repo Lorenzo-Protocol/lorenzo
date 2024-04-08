@@ -647,8 +647,8 @@ func (m *QueryBaseHeaderResponse) GetHeader() *BTCHeaderInfo {
 	return nil
 }
 
-// QueryMainChainDepthRequest is the request type for the Query/MainChainDepth RPC
-// it contains hex encoded hash of btc block header as parameter
+// QueryMainChainDepthRequest is the request type for the Query/MainChainDepth
+// RPC it contains hex encoded hash of btc block header as parameter
 type QueryHeaderDepthRequest struct {
 	Hash string `protobuf:"bytes,1,opt,name=hash,proto3" json:"hash,omitempty"`
 }
@@ -693,8 +693,8 @@ func (m *QueryHeaderDepthRequest) GetHash() string {
 	return ""
 }
 
-// QueryMainChainDepthResponse is the response type for the Query/MainChainDepth RPC
-// it contains depth of the block in main chain
+// QueryMainChainDepthResponse is the response type for the Query/MainChainDepth
+// RPC it contains depth of the block in main chain
 type QueryHeaderDepthResponse struct {
 	Depth uint64 `protobuf:"varint,1,opt,name=depth,proto3" json:"depth,omitempty"`
 }

@@ -7,90 +7,76 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/Lorenzo-Protocol/lorenzo/app/ante"
-	"github.com/cosmos/cosmos-sdk/runtime"
-	"github.com/cosmos/cosmos-sdk/x/crisis"
-	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
-
-	"github.com/cosmos/cosmos-sdk/x/authz"
-	"github.com/cosmos/cosmos-sdk/x/params"
-	"github.com/cosmos/cosmos-sdk/x/upgrade"
-	"github.com/evmos/ethermint/server/flags"
-	"github.com/evmos/ethermint/x/evm/vm/geth"
+	"github.com/gorilla/mux"
+	"github.com/rakyll/statik/fs"
 	"github.com/spf13/cast"
 
+	simappparams "cosmossdk.io/simapp/params"
+	"github.com/Lorenzo-Protocol/lorenzo/app/ante"
+	"github.com/cosmos/cosmos-sdk/baseapp"
+	"github.com/cosmos/cosmos-sdk/client"
 	nodeservice "github.com/cosmos/cosmos-sdk/client/grpc/node"
 	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
+	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/codec/types"
+	"github.com/cosmos/cosmos-sdk/runtime"
+	"github.com/cosmos/cosmos-sdk/server/api"
+	"github.com/cosmos/cosmos-sdk/server/config"
+	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	"github.com/cosmos/cosmos-sdk/store/streaming"
-	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
-
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/module"
+	"github.com/cosmos/cosmos-sdk/version"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
+	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/cosmos/cosmos-sdk/x/authz"
+	authzkeeper "github.com/cosmos/cosmos-sdk/x/authz/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	capabilitykeeper "github.com/cosmos/cosmos-sdk/x/capability/keeper"
+	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
 	consensuskeeper "github.com/cosmos/cosmos-sdk/x/consensus/keeper"
+	consensustypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
+	"github.com/cosmos/cosmos-sdk/x/crisis"
 	crisiskeeper "github.com/cosmos/cosmos-sdk/x/crisis/keeper"
+	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
 	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
+	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	evidencekeeper "github.com/cosmos/cosmos-sdk/x/evidence/keeper"
+	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
+	"github.com/cosmos/cosmos-sdk/x/feegrant"
 	feegrantkeeper "github.com/cosmos/cosmos-sdk/x/feegrant/keeper"
 	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
-	mintkeeper "github.com/cosmos/cosmos-sdk/x/mint/keeper"
-	paramskeeper "github.com/cosmos/cosmos-sdk/x/params/keeper"
-	slashingkeeper "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
-	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
-	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
-
-	"github.com/cosmos/cosmos-sdk/version"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
-	consensustypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
-	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
-	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
-	"github.com/cosmos/cosmos-sdk/x/feegrant"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
+	mintkeeper "github.com/cosmos/cosmos-sdk/x/mint/keeper"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+	"github.com/cosmos/cosmos-sdk/x/params"
+	paramskeeper "github.com/cosmos/cosmos-sdk/x/params/keeper"
+	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	paramproposal "github.com/cosmos/cosmos-sdk/x/params/types/proposal"
+	slashingkeeper "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
+	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
+	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-
-	evmtypes "github.com/evmos/ethermint/x/evm/types"
-	feemarkettypes "github.com/evmos/ethermint/x/feemarket/types"
-
+	"github.com/cosmos/cosmos-sdk/x/upgrade"
+	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
+	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
 	"github.com/evmos/ethermint/ethereum/eip712"
+	"github.com/evmos/ethermint/server/flags"
 	ethermint "github.com/evmos/ethermint/types"
 	evmkeeper "github.com/evmos/ethermint/x/evm/keeper"
+	evmtypes "github.com/evmos/ethermint/x/evm/types"
+	"github.com/evmos/ethermint/x/evm/vm/geth"
 	feemarketkeeper "github.com/evmos/ethermint/x/feemarket/keeper"
+	feemarkettypes "github.com/evmos/ethermint/x/feemarket/types"
 
-	"github.com/gorilla/mux"
-	"github.com/rakyll/statik/fs"
-
-	simappparams "cosmossdk.io/simapp/params"
-	"github.com/cosmos/cosmos-sdk/client"
-
-	"github.com/cosmos/cosmos-sdk/server/api"
-	"github.com/cosmos/cosmos-sdk/server/config"
-
-	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/codec/types"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	appparams "github.com/Lorenzo-Protocol/lorenzo/app/params"
-
-	"github.com/cosmos/cosmos-sdk/baseapp"
-	servertypes "github.com/cosmos/cosmos-sdk/server/types"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
-	"github.com/cosmos/cosmos-sdk/types/module"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	authzkeeper "github.com/cosmos/cosmos-sdk/x/authz/keeper"
-	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
-	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
-
-	lrztypes "github.com/Lorenzo-Protocol/lorenzo/types"
-	btclightclientkeeper "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/keeper"
-	btclightclienttypes "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/types"
+	btcstakingkeeper "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/keeper"
+	btcstakingtypes "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types"
 
 	// ibc
 	ibctransfer "github.com/cosmos/ibc-go/v7/modules/apps/transfer"
@@ -111,7 +97,15 @@ import (
 
 	// unnamed import of statik for swagger UI support
 	_ "github.com/cosmos/cosmos-sdk/client/docs/statik"
-	/* ------------------------------ ethermint imports ----------------------------- */)
+	/* ------------------------------ ethermint imports ----------------------------- */
+
+	appparams "github.com/Lorenzo-Protocol/lorenzo/app/params"
+	lrztypes "github.com/Lorenzo-Protocol/lorenzo/types"
+	btclightclientkeeper "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/keeper"
+	btclightclienttypes "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/types"
+	feekeeper "github.com/Lorenzo-Protocol/lorenzo/x/fee/keeper"
+	feetypes "github.com/Lorenzo-Protocol/lorenzo/x/fee/types"
+)
 
 var (
 	_ servertypes.Application = (*LorenzoApp)(nil)
@@ -163,6 +157,9 @@ type LorenzoApp struct {
 	ConsensusParamsKeeper consensuskeeper.Keeper
 
 	BTCLightClientKeeper btclightclientkeeper.Keeper
+	FeeKeeper            *feekeeper.Keeper
+
+	BTCStakingKeeper btcstakingkeeper.Keeper
 
 	// Ethermint keepers
 	EvmKeeper       *evmkeeper.Keeper
@@ -193,7 +190,6 @@ func NewLorenzoApp(
 	appOpts servertypes.AppOptions,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) *LorenzoApp {
-
 	appCodec := encodingConfig.Codec
 	cdc := encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
@@ -242,6 +238,8 @@ func NewLorenzoApp(
 		evmtypes.StoreKey,
 		feemarkettypes.StoreKey,
 		btclightclienttypes.StoreKey,
+		feetypes.StoreKey,
+		btcstakingtypes.StoreKey,
 	)
 
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey, evmtypes.TransientKey, feemarkettypes.TransientKey)
@@ -452,6 +450,13 @@ func NewLorenzoApp(
 		btclightclienttypes.NewMultiBTCLightClientHooks(),
 	)
 
+	app.FeeKeeper = feekeeper.NewKeeper(
+		appCodec,
+		keys[feetypes.StoreKey],
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+	app.BTCStakingKeeper = btcstakingkeeper.NewKeeper(appCodec, keys[btcstakingtypes.StoreKey], app.BTCLightClientKeeper, app.BankKeeper, authtypes.NewModuleAddress(govtypes.ModuleName).String())
+
 	var transferStack ibcporttypes.IBCModule
 	transferStack = ibctransfer.NewIBCModule(app.TransferKeeper)
 
@@ -465,7 +470,7 @@ func NewLorenzoApp(
 
 	// NOTE: we may consider parsing `appOpts` inside module constructors. For the moment
 	// we prefer to be more strict in what arguments the modules expect.
-	var skipGenesisInvariants = cast.ToBool(appOpts.Get(crisis.FlagSkipGenesisInvariants))
+	skipGenesisInvariants := cast.ToBool(appOpts.Get(crisis.FlagSkipGenesisInvariants))
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
 	app.mm = module.NewManager(appModules(app, encodingConfig, skipGenesisInvariants)...)
@@ -513,8 +518,9 @@ func NewLorenzoApp(
 		FeegrantKeeper:         app.FeeGrantKeeper,
 		SignModeHandler:        encodingConfig.TxConfig.SignModeHandler(),
 		MaxTxGasWanted:         maxGasWanted,
-		ExtensionOptionChecker: nil, //uses default
+		ExtensionOptionChecker: nil, // uses default
 		BtcConfig:              btcConfig,
+		FeeKeeper :             app.FeeKeeper,
 	})
 	if err != nil {
 		panic(err)

@@ -21,8 +21,7 @@ message BTCHeaderInfo {
       [ (gogoproto.customtype) =
             "github.com/Lorenzo-Protocol/lorenzo/types.BTCHeaderHashBytes" ];
   uint64 height = 3;
-  bytes work = 4
-      [ (gogoproto.customtype) = "cosmossdk.io/math.Uint" ];
+  bytes work = 4 [ (gogoproto.customtype) = "cosmossdk.io/math.Uint" ];
 }
 
 message BTCFeeRate {

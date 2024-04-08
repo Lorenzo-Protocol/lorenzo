@@ -1,0 +1,10 @@
+syntax = "proto3";
+package lorenzo.fee.v1;
+
+import "gogoproto/gogo.proto";
+import "lorenzo/fee/v1/params.proto";
+
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/fee/types";
+
+// GenesisState defines the btclightclient module's genesis state.
+message GenesisState { Params params = 1 [ (gogoproto.nullable) = false ]; }

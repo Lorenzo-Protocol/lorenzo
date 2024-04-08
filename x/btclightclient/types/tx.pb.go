@@ -77,7 +77,8 @@ func (m *MsgInsertHeaders) GetSigner() string {
 	return ""
 }
 
-// MsgInsertHeadersResponse defines the response for the InsertHeaders transaction
+// MsgInsertHeadersResponse defines the response for the InsertHeaders
+// transaction
 type MsgInsertHeadersResponse struct {
 }
 
@@ -114,12 +115,13 @@ func (m *MsgInsertHeadersResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgInsertHeadersResponse proto.InternalMessageInfo
 
-// MsgUpdateParams defines a message for updating btc light client module parameters.
+// MsgUpdateParams defines a message for updating btc light client module
+// parameters.
 type MsgUpdateParams struct {
 	// authority is the address of the governance account.
 	// just FYI: cosmos.AddressString marks that this field should use type alias
-	// for AddressString instead of string, but the functionality is not yet implemented
-	// in cosmos-proto
+	// for AddressString instead of string, but the functionality is not yet
+	// implemented in cosmos-proto
 	Authority string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
 	// params defines the btc light client parameters to update.
 	//
@@ -362,7 +364,8 @@ const _ = grpc.SupportPackageIsVersion4
 type MsgClient interface {
 	// InsertHeaders adds a batch of headers to the BTC light client chain
 	InsertHeaders(ctx context.Context, in *MsgInsertHeaders, opts ...grpc.CallOption) (*MsgInsertHeadersResponse, error)
-	// UpdateParams defines a method for updating btc light client module parameters.
+	// UpdateParams defines a method for updating btc light client module
+	// parameters.
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	UpdateFeeRate(ctx context.Context, in *MsgUpdateFeeRate, opts ...grpc.CallOption) (*MsgUpdateFeeRateResponse, error)
 }
@@ -406,7 +409,8 @@ func (c *msgClient) UpdateFeeRate(ctx context.Context, in *MsgUpdateFeeRate, opt
 type MsgServer interface {
 	// InsertHeaders adds a batch of headers to the BTC light client chain
 	InsertHeaders(context.Context, *MsgInsertHeaders) (*MsgInsertHeadersResponse, error)
-	// UpdateParams defines a method for updating btc light client module parameters.
+	// UpdateParams defines a method for updating btc light client module
+	// parameters.
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
 	UpdateFeeRate(context.Context, *MsgUpdateFeeRate) (*MsgUpdateFeeRateResponse, error)
 }
