@@ -122,7 +122,14 @@ func (msg *MsgUpdateParams) ValidateBasic() error {
 }
 
 func (msg *MsgUpdateParams) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{}
+	signer, err := sdk.AccAddressFromBech32(msg.Authority)
+	if err != nil {
+		// Panic, since the GetSigners method is called after ValidateBasic
+		// which performs the same check.
+		panic(err)
+	}
+
+	return []sdk.AccAddress{signer}
 }
 
 func (msg *MsgUpdateFeeRate) ReporterAddress() sdk.AccAddress {
