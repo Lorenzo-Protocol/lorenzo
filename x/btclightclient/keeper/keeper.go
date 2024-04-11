@@ -227,6 +227,5 @@ func (k Keeper) GetBTCNet() *chaincfg.Params {
 }
 
 func (k Keeper) GetFeeRate(ctx sdk.Context) uint64 {
-	sdkCtx := sdk.UnwrapSDKContext(ctx)
-	return k.headersState(sdkCtx).getFeeRate()
+	return k.headersState(ctx).getFeeRate()
 }
