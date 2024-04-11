@@ -190,13 +190,28 @@ func (ms msgServer) Burn(goCtx context.Context, req *types.MsgBurnRequest) (*typ
 	btcFeeRate := ms.btclcKeeper.GetFeeRate(ctx)
 	fee := sdk.NewInt64Coin(nativeTokenDenom, int64(params.BurnFeeFactor*btcFeeRate))
 
-	coins := []sdk.Coin{amount.Add(fee)}
-	err = ms.bankKeeper.BurnCoins(ctx, types.ModuleName, coins)
+	signer, err := sdk.AccAddressFromBech32(req.Signer)
+	if err != nil {
+		return nil, types.ErrSigner.Wrap(err.Error())
+	}
+	balance := ms.bankKeeper.GetBalance(ctx, signer, nativeTokenDenom)
+	if balance.IsLTE(amount.Add(fee)) {
+		return nil, types.ErrBurnInsufficientBalance.Wrap(err.Error())
+	}
+
+	/*
+		// TODO: fee may be transfer to the vault address
+		err = ms.bankKeeper.SendCoins(ctx, signer, vaultAddress, []sdk.Coin{fee})
+		if err != nil {
+			return nil, types.ErrBurn.Wrap(err.Error())
+		}
+	*/
+	err = ms.bankKeeper.BurnCoins(ctx, types.ModuleName, []sdk.Coin{amount.Add(fee)})
 	if err != nil {
 		return nil, types.ErrBurn.Wrap(err.Error())
 	}
 
-	err = ctx.EventManager().EmitTypedEvent(types.NewEventBurnCreated(btcTargetAddress, amount, fee))
+	err = ctx.EventManager().EmitTypedEvent(types.NewEventBurnCreated(signer, btcTargetAddress, amount, fee))
 	if err != nil {
 		return nil, types.ErrEmitEvent.Wrap(err.Error())
 	}

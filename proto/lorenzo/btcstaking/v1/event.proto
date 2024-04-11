@@ -11,9 +11,10 @@ message EventBTCStakingCreated {
 }
 
 message EventBurnCreated { 
-    string btc_target_address = 1; 
-    string amount_denom = 2;
-    uint64 amount_value = 3; 
-    string fee_denom = 4;
-    uint64 fee_value = 5; 
+    string signer = 1; 
+    string btc_target_address = 2; 
+    string amount_denom = 3;
+    uint64 amount_value = 4; 
+    string fee_denom = 5;
+    uint64 fee_value = 6; 
 }
