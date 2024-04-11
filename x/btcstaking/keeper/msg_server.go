@@ -15,6 +15,8 @@ import (
 	"github.com/btcsuite/btcd/wire"
 )
 
+const nativeTokenDenom = "stBTC"
+
 type msgServer struct {
 	Keeper
 }
@@ -167,4 +169,33 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 		panic(fmt.Errorf("fail to emit EventBTCStakingCreated : %s", err))
 	}
 	return &types.MsgCreateBTCStakingResponse{}, nil
+}
+
+func (ms msgServer) Burn(goCtx context.Context, req *types.MsgBurnRequest) (*types.MsgBurnResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	btcNetworkParams := ms.btclcKeeper.GetBTCNet()
+	btcTargetAddress, err := btcutil.DecodeAddress(req.BtcTargetAddress, btcNetworkParams)
+	if err != nil {
+		return nil, types.ErrInvalidBurnBtcTargetAddress.Wrap(err.Error())
+	}
+
+	amount := sdk.NewInt64Coin(nativeTokenDenom, int64(req.Amount))
+
+	params := ms.GetParams(ctx)
+	btcFeeRate := ms.btclcKeeper.GetFeeRate(ctx)
+	fee := sdk.NewInt64Coin(nativeTokenDenom, int64(params.BurnFeeFactor*btcFeeRate))
+
+	coins := []sdk.Coin{amount, fee}
+	err = ms.bankKeeper.BurnCoins(ctx, types.ModuleName, coins)
+	if err != nil {
+		return nil, types.ErrBurn.Wrap(err.Error())
+	}
+
+	err = ctx.EventManager().EmitTypedEvent(types.NewEventBurnCreated(btcTargetAddress, amount, fee))
+	if err != nil {
+		return nil, types.ErrEmitEvent.Wrap(err.Error())
+	}
+
+	return &types.MsgBurnResponse{}, nil
 }

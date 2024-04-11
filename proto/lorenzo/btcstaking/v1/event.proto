@@ -9,3 +9,11 @@ option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types";
 message EventBTCStakingCreated { 
     BTCStakingRecord record = 1; 
 }
+
+message EventBurnCreated { 
+    string btc_target_address = 1; 
+    string amount_denom = 2;
+    uint64 amount_value = 3; 
+    string fee_denom = 4;
+    uint64 fee_value = 5; 
+}

@@ -225,3 +225,8 @@ func (k Keeper) GetMainChainReverse(ctx sdk.Context) []*types.BTCHeaderInfo {
 func (k Keeper) GetBTCNet() *chaincfg.Params {
 	return k.btcConfig.NetParams()
 }
+
+func (k Keeper) GetFeeRate(ctx sdk.Context) uint64 {
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+	return k.headersState(sdkCtx).getFeeRate()
+}
