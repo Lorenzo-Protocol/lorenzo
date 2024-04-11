@@ -217,8 +217,7 @@ func (k Keeper) FeeRate(ctx context.Context, req *types.QueryFeeRateRequest) (*t
 	}
 
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
-
-	feeRate := k.headersState(sdkCtx).getFeeRate()
+	feeRate := k.GetFeeRate(sdkCtx)
 
 	return &types.QueryFeeRateResponse{FeeRate: feeRate}, nil
 }
