@@ -140,7 +140,7 @@ docker compose up
 init testnet config and genesis
 
 ```sh
-./build/lorenzod testnet init-files --base-btc-header '{"header": "00000020fe9c2c8d8d1fd467a6e55f7ddaaf9b269d3f591d9539d637170000000000000061469aca436b8f615cb752379638479acfccd44761ceb4a025bca30a8b4e4d74625e086650e22619aa4406c7","hash": "00000000000000019816a254831e576d01c648dccfb333bab4792a49633fde0a","height": "2584512","work": "110454122"}' --btc-lightclient-params '{"insert_headers_allow_list": ["lrz1h2eglam9jjqlrjz3dask54mr8xfk47cxx0kh5c"]}' --keyring-backend file --chain-id lorenzo_26666-1 --btc-staking-params '{"btc_receiving_addr": "tb1q9zkpszu0m06n42jcfw0jhtad4yndsedn4uuye", "btc_confirmations_depth": 3, "burn_fee_factor": "1300000000"}'
+./build/lorenzod testnet init-files --base-btc-header '{"header": "00000020fe9c2c8d8d1fd467a6e55f7ddaaf9b269d3f591d9539d637170000000000000061469aca436b8f615cb752379638479acfccd44761ceb4a025bca30a8b4e4d74625e086650e22619aa4406c7","hash": "00000000000000019816a254831e576d01c648dccfb333bab4792a49633fde0a","height": "2584512","work": "110454122"}' --btc-lightclient-params '{"insert_headers_allow_list": ["lrz1h2eglam9jjqlrjz3dask54mr8xfk47cxx0kh5c"]}' --keyring-backend file --chain-id lorenzo_26666-1 --btc-staking-params '{"btc_receiving_addr": "tb1q9zkpszu0m06n42jcfw0jhtad4yndsedn4uuye2", "btc_confirmations_depth": 3, "burn_fee_factor": "1300000000"}'
 ```
 
 send some token to a address
