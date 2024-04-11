@@ -44,3 +44,11 @@ func (msg *MsgBurnRequest) GetSigners() []sdk.AccAddress {
 
 	return []sdk.AccAddress{signer}
 }
+
+func NewMsgBurnRequest(signer, btcTargetAddress string, amount uint64) MsgBurnRequest {
+	return MsgBurnRequest{
+		Signer:           signer,
+		BtcTargetAddress: btcTargetAddress,
+		Amount:           amount,
+	}
+}
