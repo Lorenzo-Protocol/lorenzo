@@ -16,6 +16,7 @@ import (
 )
 
 const nativeTokenDenom = "stBTC"
+const btcDustThreshold = 546 * 1e10
 
 type msgServer struct {
 	Keeper
@@ -180,13 +181,16 @@ func (ms msgServer) Burn(goCtx context.Context, req *types.MsgBurnRequest) (*typ
 		return nil, types.ErrInvalidBurnBtcTargetAddress.Wrap(err.Error())
 	}
 
+	if req.Amount <= btcDustThreshold {
+		return nil, types.ErrBurnAmountLeDust.Wrap(err.Error())
+	}
 	amount := sdk.NewInt64Coin(nativeTokenDenom, int64(req.Amount))
 
 	params := ms.GetParams(ctx)
 	btcFeeRate := ms.btclcKeeper.GetFeeRate(ctx)
 	fee := sdk.NewInt64Coin(nativeTokenDenom, int64(params.BurnFeeFactor*btcFeeRate))
 
-	coins := []sdk.Coin{amount, fee}
+	coins := []sdk.Coin{amount.Add(fee)}
 	err = ms.bankKeeper.BurnCoins(ctx, types.ModuleName, coins)
 	if err != nil {
 		return nil, types.ErrBurn.Wrap(err.Error())
