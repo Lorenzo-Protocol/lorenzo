@@ -1,6 +1,9 @@
 package cli
 
 import (
+	"encoding/hex"
+
+	sdkmath "cosmossdk.io/math"
 	"github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -60,10 +63,14 @@ func CmdGetBTCStaingRecord() *cobra.Command {
 				return err
 			}
 			res, err := queryClient.StakingRecord(cmd.Context(), &types.QueryStakingRecordRequest{TxHash: txHashBytes[:]})
+			resDisp := types.StakingRecordDisplay{}
+			resDisp.TxId = (chainhash.Hash)(res.Record.TxHash).String()
+			resDisp.Amount = sdkmath.NewIntFromUint64(res.Record.Amount).Mul(sdkmath.NewIntFromUint64(1e10)).String()
+			resDisp.MintToAddress = "0x" + hex.EncodeToString(res.Record.MintToAddr)
 			if err != nil {
 				return err
 			}
-			return clientCtx.PrintProto(res)
+			return clientCtx.PrintProto(&resDisp)
 		},
 	}
 
