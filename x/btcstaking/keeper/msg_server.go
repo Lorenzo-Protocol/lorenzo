@@ -182,7 +182,7 @@ func (ms msgServer) Burn(goCtx context.Context, req *types.MsgBurnRequest) (*typ
 	}
 
 	if req.Amount <= btcDustThreshold {
-		return nil, types.ErrBurnAmountLeDust.Wrap(err.Error())
+		return nil, types.ErrBurnAmountLeDust
 	}
 	amount := sdk.NewInt64Coin(nativeTokenDenom, int64(req.Amount))
 
@@ -192,19 +192,19 @@ func (ms msgServer) Burn(goCtx context.Context, req *types.MsgBurnRequest) (*typ
 
 	signers := req.GetSigners()
 	if len(signers) != 1 {
-		return nil, types.ErrBurnInvalidSigner.Wrap(err.Error())
+		return nil, types.ErrBurnInvalidSigner
 	}
 	signer := signers[0]
 	balance := ms.bankKeeper.GetBalance(ctx, signer, nativeTokenDenom)
 	if balance.IsLT(amount.Add(fee)) {
-		return nil, types.ErrBurnInsufficientBalance.Wrap(err.Error())
+		return nil, types.ErrBurnInsufficientBalance
 	}
 
-	err = ms.bankKeeper.SendCoinsFromAccountToModule(ctx, signer, types.ModuleName, []sdk.Coin{fee})
+	err = ms.bankKeeper.SendCoinsFromAccountToModule(ctx, signer, types.ModuleName, []sdk.Coin{amount.Add(fee)})
 	if err != nil {
 		return nil, types.ErrBurn.Wrap(err.Error())
 	}
-	err = ms.bankKeeper.SendCoins(ctx, signer, sdk.AccAddress{}, []sdk.Coin{amount})
+	err = ms.bankKeeper.BurnCoins(ctx, types.ModuleName, []sdk.Coin{amount})
 	if err != nil {
 		return nil, types.ErrBurn.Wrap(err.Error())
 	}
