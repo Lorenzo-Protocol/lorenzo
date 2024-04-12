@@ -1,9 +1,8 @@
 package cli
 
 import (
-	"encoding/hex"
-
 	"github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types"
+	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
@@ -49,17 +48,18 @@ func CmdGetParams() *cobra.Command {
 
 func CmdGetBTCStaingRecord() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "get-btc-staking-record [btc_staking_tx_hash]",
+		Use:   "get-btc-staking-record [btc_staking_tx_id]",
 		Short: "get the btc staking record",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			queryClient := types.NewQueryClient(clientCtx)
-			txHashBytes, err := hex.DecodeString(args[0])
+			txHashBytes, err := chainhash.NewHashFromStr(args[0])
+
 			if err != nil {
 				return err
 			}
-			res, err := queryClient.StakingRecord(cmd.Context(), &types.QueryStakingRecordRequest{TxHash: txHashBytes})
+			res, err := queryClient.StakingRecord(cmd.Context(), &types.QueryStakingRecordRequest{TxHash: txHashBytes[:]})
 			if err != nil {
 				return err
 			}
