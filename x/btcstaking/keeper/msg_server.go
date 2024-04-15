@@ -15,7 +15,6 @@ import (
 	"github.com/btcsuite/btcd/wire"
 )
 
-const nativeTokenDenom = "stBTC"
 const btcDustThreshold = 546 * 1e10
 
 type msgServer struct {
@@ -184,18 +183,18 @@ func (ms msgServer) Burn(goCtx context.Context, req *types.MsgBurnRequest) (*typ
 	if req.Amount <= btcDustThreshold {
 		return nil, types.ErrBurnAmountLeDust
 	}
-	amount := sdk.NewInt64Coin(nativeTokenDenom, int64(req.Amount))
+	amount := sdk.NewInt64Coin(types.NativeTokenDenom, int64(req.Amount))
 
 	params := ms.GetParams(ctx)
 	btcFeeRate := ms.btclcKeeper.GetFeeRate(ctx)
-	fee := sdk.NewInt64Coin(nativeTokenDenom, int64(params.BurnFeeFactor*btcFeeRate))
+	fee := sdk.NewInt64Coin(types.NativeTokenDenom, int64(params.BurnFeeFactor*btcFeeRate))
 
 	signers := req.GetSigners()
 	if len(signers) != 1 {
 		return nil, types.ErrBurnInvalidSigner
 	}
 	signer := signers[0]
-	balance := ms.bankKeeper.GetBalance(ctx, signer, nativeTokenDenom)
+	balance := ms.bankKeeper.GetBalance(ctx, signer, types.NativeTokenDenom)
 	if balance.IsLT(amount.Add(fee)) {
 		return nil, types.ErrBurnInsufficientBalance
 	}
