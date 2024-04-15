@@ -15,6 +15,8 @@ import (
 	"github.com/btcsuite/btcd/wire"
 )
 
+const btcDustThreshold = 546 * 1e10
+
 type msgServer struct {
 	Keeper
 }
@@ -167,4 +169,49 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 		panic(fmt.Errorf("fail to emit EventBTCStakingCreated : %s", err))
 	}
 	return &types.MsgCreateBTCStakingResponse{}, nil
+}
+
+func (ms msgServer) Burn(goCtx context.Context, req *types.MsgBurnRequest) (*types.MsgBurnResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	btcNetworkParams := ms.btclcKeeper.GetBTCNet()
+	btcTargetAddress, err := btcutil.DecodeAddress(req.BtcTargetAddress, btcNetworkParams)
+	if err != nil {
+		return nil, types.ErrInvalidBurnBtcTargetAddress.Wrap(err.Error())
+	}
+
+	if req.Amount <= btcDustThreshold {
+		return nil, types.ErrBurnAmountLeDust
+	}
+	amount := sdk.NewInt64Coin(types.NativeTokenDenom, int64(req.Amount))
+
+	params := ms.GetParams(ctx)
+	btcFeeRate := ms.btclcKeeper.GetFeeRate(ctx)
+	fee := sdk.NewInt64Coin(types.NativeTokenDenom, int64(params.BurnFeeFactor*btcFeeRate))
+
+	signers := req.GetSigners()
+	if len(signers) != 1 {
+		return nil, types.ErrBurnInvalidSigner
+	}
+	signer := signers[0]
+	balance := ms.bankKeeper.GetBalance(ctx, signer, types.NativeTokenDenom)
+	if balance.IsLT(amount.Add(fee)) {
+		return nil, types.ErrBurnInsufficientBalance
+	}
+
+	err = ms.bankKeeper.SendCoinsFromAccountToModule(ctx, signer, types.ModuleName, []sdk.Coin{amount.Add(fee)})
+	if err != nil {
+		return nil, types.ErrBurn.Wrap(err.Error())
+	}
+	err = ms.bankKeeper.BurnCoins(ctx, types.ModuleName, []sdk.Coin{amount})
+	if err != nil {
+		return nil, types.ErrBurn.Wrap(err.Error())
+	}
+
+	err = ctx.EventManager().EmitTypedEvent(types.NewEventBurnCreated(signer, btcTargetAddress, amount, fee))
+	if err != nil {
+		return nil, types.ErrEmitEvent.Wrap(err.Error())
+	}
+
+	return &types.MsgBurnResponse{}, nil
 }
