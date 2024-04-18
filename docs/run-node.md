@@ -134,3 +134,48 @@ cp -R .testnets/* build/
 docker build -t lorenzo/node .
 docker compose up
 ```
+
+## useful commands
+
+init testnet config and genesis
+
+```sh
+./build/lorenzod testnet init-files --base-btc-header '{"header": "00000020fe9c2c8d8d1fd467a6e55f7ddaaf9b269d3f591d9539d637170000000000000061469aca436b8f615cb752379638479acfccd44761ceb4a025bca30a8b4e4d74625e086650e22619aa4406c7","hash": "00000000000000019816a254831e576d01c648dccfb333bab4792a49633fde0a","height": "2584512","work": "110454122"}' --btc-lightclient-params '{"insert_headers_allow_list": ["lrz1h2eglam9jjqlrjz3dask54mr8xfk47cxx0kh5c"]}' --keyring-backend file --chain-id lorenzo_26666-1 --btc-staking-params '{"btc_receiving_addr": "tb1q9zkpszu0m06n42jcfw0jhtad4yndsedn4uuye2", "btc_confirmations_depth": 3, "burn_fee_factor": "1300000000"}'
+```
+
+send some token to a address
+
+```sh
+./build/lorenzod tx bank send --home build/node0/lorenzod --keyring-backend file --keyring-dir build/node0/lorenzod --chain-id lorenzo_26666-1 lrz1754tssy23f33rzscnda8xh2wzh738e4e56fywy lrz1h2eglam9jjqlrjz3dask54mr8xfk47cxx0kh5c 10000000alrz
+```
+
+add a key from mnemonic
+
+```sh
+./build/lorenzod keys add --keyring-backend file --keyring-dir build/node0/lorenzod reporter --recover
+```
+
+update btc fee rate
+
+```sh
+./build/lorenzod tx btclightclient update-fee-rate 1600 --keyring-backend file --keyring-dir build/node0/lorenzod/ --from lrz1h2eglam9jjqlrjz3dask54mr8xfk47cxx0kh5c --chain-id lorenzo_26666-1
+```
+
+query a btc transaction proof
+
+```sh
+bitcoin-cli -rpcconnect=<ip> -rpcport=8332 -rpcuser=<...> -rpcpassword=<...> gettxoutproof '["3ccfa1834c5794dc9db1a17a5416a4d1d05afcaa93d4a1621a6f7f1c607eb8e7"]'
+```
+
+
+btcstaking mint
+
+```sh
+./build/lorenzod tx btcstaking create-btcstaking-with-btc-proof --keyring-backend file --keyring-dir build/node0/lorenzod --chain-id lorenzo_26666-1 --from lrz1h2eglam9jjqlrjz3dask54mr8xfk47cxx0kh5c 020000000001013412acd95077452c02ac040f320fda6957bd119632ce7f7ca1725fb1f2d44ad20200000000fdffffff030000000000000000166a14bab28ff7659481f1c8516f616a576339936afb06e80300000000000016001428ac180b8fdbf53aaa584b9f2bafada926d865b30774040000000000225120099f46cbdfeeeff497b18f16757da503025da16d6bb3eb0108d48810c310bcf401402f86f1a4c9bc15ee7ed5a5a8c9612650ce233065374deecbe638f1e6a6237351ae3f26ee2674dbbce8240b65566e6a4a042bcc6105d937c995e25061829a22c400000000 0020002007b5a5af1f13f73fa5a7c0cef7c3eb83b6c4260cf0f20e362c3e5b00000000005b7a2c84f6191273ea8571a66c8708cf2714a8294ea60bc60824949e042b1c2c57301666ffff001d0dce81140d0300000b6ae9c2fe4da92665327a95bc635a4f6e38b8c47eb240f9631f42caac0233bfe46df84034cdd39a5099c3a232e4c3c5f4961735cdc2646949a1d6c5dc4f0c29f00b1229247983e492e9263fe785ee363eac04007f100eeedea02ae3b088ea5cade7b87e601c7f6f1a62a1d493aafc5ad0d1a416547aa1b19ddc94574c83a1cf3cae1402dcb2b6fd31bfa9b74f048ef952ac0d07fc23d8d9ded55f485e930e0a83f0628bf9fcc88a177465e01ab81ee0c6e9bdc2c9771290b61c02ecb7e008b09af2b211040f6c6945a98646516b53c7df7789a2672e200f279a26966739661444add035369786ddbc68c6ea03d0f25628c306a31df4d13dced107072e6ccab59392056b77b9f79daf30919e230caa8eb79c277a8d78054e649da7c748891700c5d3a8c99e678c17aa39f27922aafe45bd0cfa4290324d7e1e725aa8f226c21d5bc904c393025b812b97869859153c9cf54ee93cad32eb8aca8d437ec758d2b417035f2f00
+```
+
+btcstaking burn
+
+```sh
+./build/lorenzod tx btcstaking burn --keyring-backend file --keyring-dir build/node0/lorenzod --chain-id lorenzo_26666-1 --from lrz1h2eglam9jjqlrjz3dask54mr8xfk47cxx0kh5c tb1q9zkpszu0m06n42jcfw0jhtad4yndsedn4uuye2 6000000000000
+```
