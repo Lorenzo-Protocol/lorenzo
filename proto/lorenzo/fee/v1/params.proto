@@ -1,0 +1,14 @@
+syntax = "proto3";
+package lorenzo.fee.v1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/fee/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (gogoproto.equal) = true;
+
+  // List of messages that are not fees
+  repeated string non_fee_msgs = 1;
+}

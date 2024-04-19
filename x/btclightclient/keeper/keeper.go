@@ -105,6 +105,13 @@ func (k Keeper) InsertHeaders(ctx sdk.Context, headers []bbn.BTCHeaderBytes) err
 	return k.insertHeaders(ctx, blockHeaders)
 }
 
+func (k Keeper) UpdateFeeRate(ctx sdk.Context, feeRate uint64) error {
+	headerState := k.headersState(ctx)
+	headerState.updateFeeRate(feeRate)
+	k.triggerFeeRateUpdated(ctx, feeRate)
+	return nil
+}
+
 // BlockHeight returns the height of the provided header
 func (k Keeper) BlockHeight(ctx sdk.Context, headerHash *bbn.BTCHeaderHashBytes) (uint64, error) {
 	if headerHash == nil {

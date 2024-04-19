@@ -27,3 +27,7 @@ func (k Keeper) triggerRollForward(ctx context.Context, headerInfo *types.BTCHea
 	// Emit BTCRollForward event
 	sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventBTCRollForward{Header: headerInfo}) //nolint:errcheck
 }
+
+func (k Keeper) triggerFeeRateUpdated(ctx context.Context, feeRate uint64) {
+	sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventBTCFeeRateUpdated{FeeRate: feeRate})
+}

@@ -27,6 +27,7 @@ func GetQueryCmd(_ string) *cobra.Command {
 	cmd.AddCommand(CmdTip())
 	cmd.AddCommand(CmdBaseHeader())
 	cmd.AddCommand(CmdHeaderDepth())
+	cmd.AddCommand(CmdFeeRate())
 	cmd.AddCommand(CmdQueryParams())
 
 	return cmd
@@ -187,6 +188,31 @@ func CmdHeaderDepth() *cobra.Command {
 				return err
 			}
 			res, err := queryClient.HeaderDepth(context.Background(), depthRequest)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdFeeRate() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "fee-rate",
+		Short: "get bitcoin fee rate",
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			params := types.NewQueryFeeRateRequest()
+			res, err := queryClient.FeeRate(context.Background(), params)
 			if err != nil {
 				return err
 			}

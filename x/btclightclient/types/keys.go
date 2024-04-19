@@ -26,6 +26,7 @@ var (
 	HeadersObjectPrefix = []byte{0x01} // reserve this namespace mapping: Height -> BTCHeaderInfo
 	HashToHeightPrefix  = []byte{0x02} // reserve this namespace mapping: Hash -> Height
 	ParamsKey           = []byte{0x03} // key for params
+	FeeRatePrefix       = []byte{0x04} // reserve this namespace mapping: FeeRatePrefix -> value
 )
 
 func HeadersObjectKey(height uint64) []byte {
