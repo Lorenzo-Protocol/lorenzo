@@ -13,4 +13,5 @@ type BTCLightClientKeeper interface {
 	GetTipInfo(ctx sdk.Context) *btclctypes.BTCHeaderInfo
 	GetHeaderByHash(ctx sdk.Context, hash *lrz.BTCHeaderHashBytes) *btclctypes.BTCHeaderInfo
 	GetBTCNet() *chaincfg.Params
+	GetFeeRate(ctx sdk.Context) uint64
 }

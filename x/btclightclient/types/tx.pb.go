@@ -214,7 +214,8 @@ func (m *MsgUpdateParamsResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgUpdateParamsResponse proto.InternalMessageInfo
 
 type MsgUpdateFeeRate struct {
-	Signer  string `protobuf:"bytes,1,opt,name=signer,proto3" json:"signer,omitempty"`
+	Signer string `protobuf:"bytes,1,opt,name=signer,proto3" json:"signer,omitempty"`
+	// sat/vbyte * 1000
 	FeeRate uint64 `protobuf:"varint,2,opt,name=fee_rate,json=feeRate,proto3" json:"fee_rate,omitempty"`
 }
 

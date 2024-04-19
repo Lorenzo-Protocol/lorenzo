@@ -9,6 +9,7 @@ import (
 // ensure that these message types implement the sdk.Msg interface
 var (
 	_ sdk.Msg = &MsgCreateBTCStaking{}
+	_ sdk.Msg = &MsgBurnRequest{}
 )
 
 func (m *MsgCreateBTCStaking) ValidateBasic() error {
@@ -29,4 +30,25 @@ func (msg *MsgCreateBTCStaking) GetSigners() []sdk.AccAddress {
 	}
 
 	return []sdk.AccAddress{signer}
+}
+
+func (m *MsgBurnRequest) ValidateBasic() error {
+	return nil
+}
+
+func (msg *MsgBurnRequest) GetSigners() []sdk.AccAddress {
+	signer, err := sdk.AccAddressFromBech32(msg.Signer)
+	if err != nil {
+		return []sdk.AccAddress{}
+	}
+
+	return []sdk.AccAddress{signer}
+}
+
+func NewMsgBurnRequest(signer, btcTargetAddress string, amount uint64) MsgBurnRequest {
+	return MsgBurnRequest{
+		Signer:           signer,
+		BtcTargetAddress: btcTargetAddress,
+		Amount:           amount,
+	}
 }
