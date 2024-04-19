@@ -4,6 +4,8 @@ WORKDIR /go/src/github.com/Lorenzo-Protocol/lorenzo
 
 RUN apt-get update -y
 RUN apt-get install git -y
+RUN go env -w GO111MODULE=on && \
+    go env -w GOPROXY=https://goproxy.io,direct
 
 COPY . .
 

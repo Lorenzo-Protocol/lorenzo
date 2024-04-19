@@ -59,6 +59,7 @@ message MsgUpdateFeeRate {
   option (cosmos.msg.v1.signer) = "signer";
 
   string signer = 1;
+  // sat/vbyte * 1000
   uint64 fee_rate = 2;
 }
 

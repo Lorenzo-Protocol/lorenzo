@@ -3,15 +3,14 @@ package cli
 import (
 	"encoding/hex"
 	"fmt"
+	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-
-	lrz "github.com/Lorenzo-Protocol/lorenzo/types"
-
 	"github.com/spf13/cobra"
 
+	lrz "github.com/Lorenzo-Protocol/lorenzo/types"
 	"github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/keeper"
 	"github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types"
 )
@@ -28,6 +27,7 @@ func GetTxCmd() *cobra.Command {
 
 	cmd.AddCommand(
 		NewCreateBTCStakingWithBTCProofCmd(),
+		NewBurnCmd(),
 	)
 
 	return cmd
@@ -75,6 +75,29 @@ func NewCreateBTCStakingWithBTCProofCmd() *cobra.Command {
 				},
 			}
 
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func NewBurnCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "burn [btc_target_address] [amouont]",
+		Short: "burn tokens with btc target address and amount",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+			amount, err := strconv.ParseInt(args[1], 10, 64)
+			if err != nil {
+				return err
+			}
+			msg := types.NewMsgBurnRequest(clientCtx.GetFromAddress().String(), args[0], uint64(amount))
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
