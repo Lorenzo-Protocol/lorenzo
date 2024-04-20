@@ -1,0 +1,29 @@
+package keeper
+
+import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/Lorenzo-Protocol/lorenzo/x/agent/types"
+)
+
+// InitGenesis initializes the capability module's state from a provided genesis
+// state.
+func (k Keeper) InitGenesis(ctx sdk.Context, genState types.GenesisState) {
+	k.setNextNumber(ctx, genState.NextNumber)
+
+	admin := sdk.MustAccAddressFromBech32(genState.Admin)
+	k.setAdmin(ctx, admin)
+
+	for _, agent := range genState.Agents {
+		k.setAgent(ctx, agent)
+	}
+}
+
+// ExportGenesis returns the capability module's exported genesis.
+func (k Keeper) ExportGenesis(ctx sdk.Context) *types.GenesisState {
+	return &types.GenesisState{
+		NextNumber: k.GetNextNumber(ctx),
+		Admin:      k.GetAdmin(ctx).String(),
+		Agents:     k.getAgents(ctx),
+	}
+}
