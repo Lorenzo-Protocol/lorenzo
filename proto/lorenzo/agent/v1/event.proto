@@ -1,0 +1,30 @@
+syntax = "proto3";
+package lorenzo.agent.v1;
+
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/agent/types";
+
+// agent creation event
+message EventAddAgent {
+  // id is the unique identifier of the agent
+  uint64 id = 1;
+  // agent name,required
+  string name = 2;
+  // btc_receiving_address is agent’s fund escrow address,required
+  string btc_receiving_address = 3;
+}
+
+// agent edit event
+message EventEditAgent{
+  // id is the unique identifier of the agent
+  uint64 id = 1;
+  // agent name,required
+  string name = 2;
+}
+
+// agent remove event
+message EventRemoveAgent{
+  // id is the unique identifier of the agent
+  uint64 id = 1;
+  // agent name,required
+  string name = 2;
+}
