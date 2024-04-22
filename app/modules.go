@@ -2,6 +2,8 @@ package app
 
 import (
 	appparams "github.com/Lorenzo-Protocol/lorenzo/app/params"
+	"github.com/Lorenzo-Protocol/lorenzo/x/agent"
+	agenttypes "github.com/Lorenzo-Protocol/lorenzo/x/agent/types"
 	"github.com/Lorenzo-Protocol/lorenzo/x/btclightclient"
 	btclightclienttypes "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/types"
 	"github.com/Lorenzo-Protocol/lorenzo/x/btcstaking"
@@ -108,6 +110,7 @@ var (
 		btclightclient.AppModuleBasic{},
 		fee.AppModuleBasic{},
 		btcstaking.AppModuleBasic{},
+		agent.AppModuleBasic{},
 	)
 	// module account permissions
 	maccPerms = map[string][]string{
@@ -203,6 +206,7 @@ func appModules(
 		btclightclient.NewAppModule(appCodec, app.BTCLightClientKeeper),
 		fee.NewAppModule(appCodec, app.FeeKeeper),
 		btcstaking.NewAppModule(appCodec, app.BTCStakingKeeper),
+		agent.NewAppModule(appCodec, app.AgentKeeper),
 
 		// this line is used by starport scaffolding # stargate/app/appModule
 
@@ -247,6 +251,7 @@ func orderBeginBlockers() []string {
 		vestingtypes.ModuleName,
 		btclightclienttypes.ModuleName,
 		feetypes.ModuleName,
+		agenttypes.ModuleName,
 		//self module
 		btcstakingtypes.ModuleName,
 	}
@@ -284,6 +289,7 @@ func orderEndBlockers() []string {
 		vestingtypes.ModuleName,
 		btclightclienttypes.ModuleName,
 		feetypes.ModuleName,
+		agenttypes.ModuleName,
 		//self module
 		btcstakingtypes.ModuleName,
 	}
@@ -326,6 +332,7 @@ func orderInitBlockers() []string {
 		//self module
 		btclightclienttypes.ModuleName,
 		btcstakingtypes.ModuleName,
+		agenttypes.ModuleName,
 
 		// NOTE: crisis module must go at the end to check for invariants on each module
 		crisistypes.ModuleName,
