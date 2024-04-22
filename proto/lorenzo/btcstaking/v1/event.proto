@@ -15,6 +15,4 @@ message EventBurnCreated {
     string btc_target_address = 2; 
     string amount_denom = 3;
     uint64 amount_value = 4; 
-    string fee_denom = 5;
-    uint64 fee_value = 6; 
 }
