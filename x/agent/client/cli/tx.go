@@ -24,7 +24,7 @@ func GetTxCmd() *cobra.Command {
 
 	cmd.AddCommand(CmdTxAddAgent())
 	cmd.AddCommand(CmdTxEditAgent())
-	cmd.AddCommand(CmdTxEditAgent())
+	cmd.AddCommand(CmdTxRemoveAgent())
 
 	return cmd
 }
