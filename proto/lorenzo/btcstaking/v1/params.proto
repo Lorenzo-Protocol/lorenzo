@@ -9,5 +9,4 @@ option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types";
 message Params {
   string btc_receiving_addr = 1;
   uint32 btc_confirmations_depth = 2;
-  uint64 burn_fee_factor = 3;
 }
