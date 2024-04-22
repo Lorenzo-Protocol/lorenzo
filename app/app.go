@@ -26,6 +26,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/streaming"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/mempool"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
@@ -203,6 +204,15 @@ func NewLorenzoApp(
 		Codec:             appCodec,
 		TxConfig:          encodingConfig.TxConfig,
 		Amino:             encodingConfig.Amino,
+	})
+
+	// Setup Mempool
+	baseAppOptions = append(baseAppOptions, func(app *baseapp.BaseApp) {
+		memPool := mempool.NoOpMempool{}
+		app.SetMempool(memPool)
+		handler := baseapp.NewDefaultProposalHandler(memPool, app)
+		app.SetPrepareProposal(handler.PrepareProposalHandler())
+		app.SetProcessProposal(handler.ProcessProposalHandler())
 	})
 
 	bApp := baseapp.NewBaseApp(
@@ -531,7 +541,7 @@ func NewLorenzoApp(
 		MaxTxGasWanted:         maxGasWanted,
 		ExtensionOptionChecker: nil, // uses default
 		BtcConfig:              btcConfig,
-		FeeKeeper :             app.FeeKeeper,
+		FeeKeeper:              app.FeeKeeper,
 	})
 	if err != nil {
 		panic(err)
