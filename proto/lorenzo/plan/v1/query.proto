@@ -1,0 +1,58 @@
+syntax = "proto3";
+package lorenzo.plan.v1;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "lorenzo/plan/v1/plan.proto";
+import "lorenzo/plan/v1/params.proto";
+
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/plan/types";
+
+// Query defines the gRPC querier service.
+service Query {
+
+  // Params queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/lorenzo/fee/v1/params";
+  }
+
+  // Plans queries all plans.
+  rpc Plans(PlansRequest) returns (PlansResponse) {
+    option (google.api.http).get = "/lorenzo/plan/v1/plans";
+  }
+
+  // Plan queries a plan by id.
+  rpc Plan(PlanRequest) returns (PlanResponse) {
+    option (google.api.http).get = "/lorenzo/plan/v1/plans/{id}";
+  }
+}
+
+// QueryParamsRequest is the request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is the response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [ (gogoproto.nullable) = false ];
+}
+
+
+// PlansRequest is the request type for the Query.Plans RPC method.
+message PlansRequest {
+}
+
+// PlansResponse is the response type for the Query.Plans RPC method.
+message PlansResponse {
+  repeated Plan plans = 1 [(gogoproto.nullable) = false];
+}
+
+// PlanRequest is the request type for the Query.Plan RPC method.
+message PlanRequest {
+  // id is the unique identifier of the agent
+  uint64 id = 1;
+}
+
+// PlanResponse is the response type for the Query.Plan RPC method.
+message PlanResponse {
+  Plan plan = 1 [(gogoproto.nullable) = false];
+}

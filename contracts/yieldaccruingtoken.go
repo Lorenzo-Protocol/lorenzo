@@ -8,6 +8,7 @@ import (
 )
 
 var (
+	//go:embed compiled_contracts/YieldAccruingToken.json
 	YieldAccruingTokenJSON []byte //nolint: golint
 
 	YieldAccruingTokenContract evmtypes.CompiledContract

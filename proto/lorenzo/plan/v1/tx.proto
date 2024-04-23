@@ -1,0 +1,96 @@
+syntax = "proto3";
+package lorenzo.plan.v1;
+
+import "cosmos_proto/cosmos.proto";
+import "cosmos/msg/v1/msg.proto";
+import "gogoproto/gogo.proto";
+
+import "lorenzo/plan/v1/params.proto";
+
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/plan/types";
+
+// Msg defines the Msg service.
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+
+  // UpdateParams defines a method for updating the plan parameters.
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+
+  // CreatePlan defines a method for creating a new plan.
+  rpc CreatePlan(MsgCreatePlan) returns (MsgCreatePlanResponse);
+
+  // CreateClaim defines a method for claims rewards to sender.
+  rpc Claims(MsgClaims) returns (MsgClaimsResponse);
+}
+
+// MsgUpdateParams is the request type for the Msg/UpdateParams RPC method.
+message MsgUpdateParams {
+  option (cosmos.msg.v1.signer) = "authority";
+
+  // authority is the address of the governance account.
+  // just FYI: cosmos.AddressString marks that this field should use type alias
+  // for AddressString instead of string, but the functionality is not yet
+  // implemented in cosmos-proto
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // params defines the btc light client parameters to update.
+  //
+  // NOTE: All parameters must be supplied.
+  Params params = 2 [ (gogoproto.nullable) = false ];
+}
+
+// MsgUpdateParamsResponse is the response type for the Msg/UpdateParams RPC method.
+message MsgUpdateParamsResponse {
+}
+
+// MsgCreatePlan is the request type for the Msg/CreatePlan RPC method.
+message MsgCreatePlan {
+  option (cosmos.msg.v1.signer) = "authority";
+
+  // name is the name of the plan
+  string name = 2;
+
+  // plan_desc_uri is the URI of the plan description
+  string plan_desc_uri = 3;
+
+  // agent_id is the unique identifier of the agent
+  uint64 agent_id = 4;
+
+  // subscription_start_time is the start time of the subscription
+  uint64 subscription_start_time = 5;
+
+  // subscription_end_time is the end time of the subscription
+  uint64 subscription_end_time = 6;
+
+  // plan_start_time is the start time of the plan
+  uint64 end_time = 7;
+
+  // sender is the address of the governance account or module admin
+  string sender = 8 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
+
+// MsgCreatePlanResponse is the response type for the Msg/CreatePlan RPC method.
+message MsgCreatePlanResponse {
+  // id is the unique identifier of the agent
+  uint64 id = 1;
+}
+
+// MsgClaims is the request type for the Msg/Claims RPC method.
+message MsgClaims {
+  option (cosmos.msg.v1.signer) = "sender";
+
+  // plan_id is the unique identifier of the plan
+  uint64 plan_id = 2;
+
+  // amount is the amount of the claim
+  uint64 amount = 3;
+
+  // sender is the address of the governance account or module admin
+  string sender = 4 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
+
+// MsgClaimsResponse is the response type for the Msg/Claims RPC method.
+message MsgClaimsResponse {
+  // id is the unique identifier of the agent
+  uint64 id = 1;
+}

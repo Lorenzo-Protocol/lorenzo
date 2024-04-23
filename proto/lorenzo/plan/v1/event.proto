@@ -1,0 +1,5 @@
+syntax = "proto3";
+package lorenzo.plan.v1;
+
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/plan/types";
+
