@@ -185,21 +185,17 @@ func (ms msgServer) Burn(goCtx context.Context, req *types.MsgBurnRequest) (*typ
 	}
 	amount := sdk.NewInt64Coin(types.NativeTokenDenom, int64(req.Amount))
 
-	params := ms.GetParams(ctx)
-	btcFeeRate := ms.btclcKeeper.GetFeeRate(ctx)
-	fee := sdk.NewInt64Coin(types.NativeTokenDenom, int64(params.BurnFeeFactor*btcFeeRate))
-
 	signers := req.GetSigners()
 	if len(signers) != 1 {
 		return nil, types.ErrBurnInvalidSigner
 	}
 	signer := signers[0]
 	balance := ms.bankKeeper.GetBalance(ctx, signer, types.NativeTokenDenom)
-	if balance.IsLT(amount.Add(fee)) {
+	if balance.IsLT(amount) {
 		return nil, types.ErrBurnInsufficientBalance
 	}
 
-	err = ms.bankKeeper.SendCoinsFromAccountToModule(ctx, signer, types.ModuleName, []sdk.Coin{amount.Add(fee)})
+	err = ms.bankKeeper.SendCoinsFromAccountToModule(ctx, signer, types.ModuleName, []sdk.Coin{amount})
 	if err != nil {
 		return nil, types.ErrBurn.Wrap(err.Error())
 	}
@@ -208,7 +204,7 @@ func (ms msgServer) Burn(goCtx context.Context, req *types.MsgBurnRequest) (*typ
 		return nil, types.ErrBurn.Wrap(err.Error())
 	}
 
-	err = ctx.EventManager().EmitTypedEvent(types.NewEventBurnCreated(signer, btcTargetAddress, amount, fee))
+	err = ctx.EventManager().EmitTypedEvent(types.NewEventBurnCreated(signer, btcTargetAddress, amount))
 	if err != nil {
 		return nil, types.ErrEmitEvent.Wrap(err.Error())
 	}
