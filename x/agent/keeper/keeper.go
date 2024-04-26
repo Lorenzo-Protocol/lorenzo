@@ -10,26 +10,30 @@ import (
 
 // Keeper of the fee store
 type Keeper struct {
-	cdc       codec.BinaryCodec
-	storeKey  storetypes.StoreKey
-	authority string
+	cdc         codec.BinaryCodec
+	storeKey    storetypes.StoreKey
+	btcLCKeeper types.BTCLightClientKeeper
+	authority   string
 }
 
 // NewKeeper initializes a new Keeper.
 //
 // cdc - binary codec for the Keeper
 // storeKey - store key for the Keeper
+// btcLCKeeper - BTC light client keeper
 // authority - authority for the Keeper
 // Returns a Keeper
 func NewKeeper(
 	cdc codec.BinaryCodec,
 	storeKey storetypes.StoreKey,
+	btcLCKeeper types.BTCLightClientKeeper,
 	authority string,
 ) Keeper {
 	return Keeper{
-		cdc:       cdc,
-		storeKey:  storeKey,
-		authority: authority,
+		cdc:         cdc,
+		storeKey:    storeKey,
+		btcLCKeeper: btcLCKeeper,
+		authority:   authority,
 	}
 }
 

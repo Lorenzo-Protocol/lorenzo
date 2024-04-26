@@ -473,6 +473,7 @@ func NewLorenzoApp(
 	app.AgentKeeper = agentkeeper.NewKeeper(
 		appCodec,
 		keys[agenttypes.StoreKey],
+		app.BTCLightClientKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 

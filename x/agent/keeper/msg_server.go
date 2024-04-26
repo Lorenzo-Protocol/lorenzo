@@ -4,6 +4,7 @@ import (
 	"context"
 
 	errorsmod "cosmossdk.io/errors"
+	"github.com/btcsuite/btcd/btcutil"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/Lorenzo-Protocol/lorenzo/x/agent/types"
@@ -38,6 +39,11 @@ type msgServer struct {
 func (m msgServer) AddAgent(goctx context.Context, msg *types.MsgAddAgent) (*types.MsgAddAgentResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goctx)
 
+	_, err := btcutil.DecodeAddress(msg.BtcReceivingAddress, m.k.btcLCKeeper.GetBTCNet())
+	if err != nil {
+		return nil, errorsmod.Wrapf(types.ErrInvalidBtcAddress, "invalid btc receiving address :%s", msg.BtcReceivingAddress)
+	}
+
 	sender := sdk.MustAccAddressFromBech32(msg.Sender)
 	if !m.k.Authorized(ctx, sender) {
 		return nil, errorsmod.Wrapf(types.ErrUnAuthorized, "invalid sender :%s, not authorized", msg.Sender)
@@ -71,6 +77,10 @@ func (m msgServer) EditAgent(goctx context.Context, msg *types.MsgEditAgent) (*t
 	}
 
 	if msg.BtcReceivingAddress != types.DoNotModifyDesc {
+		_, err := btcutil.DecodeAddress(msg.BtcReceivingAddress, m.k.btcLCKeeper.GetBTCNet())
+		if err != nil {
+			return nil, errorsmod.Wrapf(types.ErrInvalidBtcAddress, "invalid btc receiving address :%s", msg.BtcReceivingAddress)
+		}
 		agent.BtcReceivingAddress = msg.BtcReceivingAddress
 	}
 	if msg.Description != types.DoNotModifyDesc {
