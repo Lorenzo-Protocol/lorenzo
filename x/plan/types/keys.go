@@ -13,6 +13,11 @@ const (
 	RouterKey = ModuleName
 )
 
+const (
+	YATMethodMint = "mint"
+	YATMethodBurn = "burn"
+)
+
 var (
 	// PlanKey is the key to store the plan in the store
 	PlanKey       = []byte{0x01}
