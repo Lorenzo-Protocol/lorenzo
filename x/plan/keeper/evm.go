@@ -9,7 +9,6 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	errortypes "github.com/cosmos/cosmos-sdk/types/errors"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
@@ -18,16 +17,6 @@ import (
 
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 )
-
-// DeployPlanContract creates and deploys a Plan contract on the EVM with the
-// plan module account as owner.
-func (k Keeper) DeployPlanContract(
-	ctx sdk.Context,
-	coinMetadata banktypes.Metadata,
-) (common.Address, error) {
-	// todo
-	return common.Address{}, nil
-}
 
 // CallEVM performs a smart contract method call using given args
 func (k Keeper) CallEVM(

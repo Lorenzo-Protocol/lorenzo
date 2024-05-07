@@ -18,12 +18,12 @@ func (m msgServer) UpdateParams(ctx context.Context, params *types.MsgUpdatePara
 	panic("implement me")
 }
 
-func (m msgServer) CreatePlan(ctx context.Context, request *types.CreatePlanRequest) (*types.CreatePlanResponse, error) {
+func (m msgServer) CreatePlan(ctx context.Context, request *types.MsgCreatePlan) (*types.MsgCreatePlanResponse, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (m msgServer) Claims(ctx context.Context, request *types.ClaimsRequest) (*types.ClaimsResponse, error) {
+func (m msgServer) Claims(ctx context.Context, request *types.MsgClaims) (*types.MsgClaimsResponse, error) {
 	//TODO implement me
 	panic("implement me")
 }
