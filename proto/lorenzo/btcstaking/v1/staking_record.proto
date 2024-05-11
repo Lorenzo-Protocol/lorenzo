@@ -12,4 +12,6 @@ message BTCStakingRecord {
   bytes tx_hash = 1;
   uint64 amount = 2;
   bytes mint_to_addr = 3;
+  bytes agent_id = 4;
+  string btc_receiving_addr = 5;
 }

@@ -30,7 +30,7 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 
 func CmdGetParams() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "get-params",
+		Use:   "params",
 		Short: "get btc staking params",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -67,6 +67,8 @@ func CmdGetBTCStaingRecord() *cobra.Command {
 			resDisp.TxId = (chainhash.Hash)(res.Record.TxHash).String()
 			resDisp.Amount = sdkmath.NewIntFromUint64(res.Record.Amount).Mul(sdkmath.NewIntFromUint64(1e10)).String()
 			resDisp.MintToAddress = "0x" + hex.EncodeToString(res.Record.MintToAddr)
+			resDisp.BtcReceivingAddr = res.Record.BtcReceivingAddr
+			resDisp.AgentId = "0x" + hex.EncodeToString(res.Record.AgentId)
 			if err != nil {
 				return err
 			}

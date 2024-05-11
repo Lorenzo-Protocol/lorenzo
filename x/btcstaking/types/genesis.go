@@ -1,5 +1,7 @@
 package types
 
+import "fmt"
+
 // 130 vbytes * 1e7
 // native token 's precision is 1e18, but the fee rate value is increased by 1000 times, so finally multiply by 1e7.
 const initBurnFeeFactor = 130 * 1e7
@@ -17,5 +19,11 @@ func DefaultGenesis() *GenesisState {
 // Validate performs basic genesis state validation returning an error upon any
 // failure.
 func (gs GenesisState) Validate() error {
+	if gs.Params == nil {
+		return fmt.Errorf("params cannot be nil")
+	}
+	if gs.Params.BtcConfirmationsDepth == 0 {
+		return fmt.Errorf("btc confirmations depth cannot be 0")
+	}
 	return nil
 }

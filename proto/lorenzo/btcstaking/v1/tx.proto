@@ -50,7 +50,8 @@ message TransactionInfo {
 message MsgCreateBTCStaking {
     option (cosmos.msg.v1.signer) = "signer";
     string signer = 1;
-  TransactionInfo staking_tx = 2;
+    TransactionInfo staking_tx = 2;
+    bytes agent_id = 3;
 }
 
 message MsgCreateBTCStakingResponse {}

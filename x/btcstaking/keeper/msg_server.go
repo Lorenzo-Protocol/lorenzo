@@ -3,6 +3,7 @@ package keeper
 import (
 	"bytes"
 	"context"
+	"encoding/binary"
 	"encoding/hex"
 	"fmt"
 
@@ -95,6 +96,37 @@ func extractPaymentToWithOpReturnId(tx *wire.MsgTx, addr btcutil.Address) (uint6
     return amt, nil
 }*/
 
+var toStBTCFactor = sdkmath.NewIntFromUint64(1e10)
+
+func (ms msgServer) mintStBTCToAddr(ctx sdk.Context, mintToAddr sdk.AccAddress, btcAmount uint64) error {
+	toMintAmount := sdkmath.NewIntFromUint64(btcAmount).Mul(toStBTCFactor)
+	coins := []sdk.Coin{
+		{
+			//FIXME: no string literal
+			Denom:  "stBTC",
+			Amount: toMintAmount,
+		},
+	}
+	err := ms.bankKeeper.MintCoins(ctx, types.ModuleName, coins)
+	if err != nil {
+		return types.ErrMintToModule.Wrap(err.Error())
+	}
+	err = ms.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, mintToAddr, coins)
+	if err != nil {
+		return types.ErrTransferToAddr.Wrap(err.Error())
+	}
+	return nil
+}
+
+// TODO
+func mintSPT(ctx sdk.Context, mintToAddr sdk.AccAddress, btcAmount uint64, agent_id []byte, plan uint32) error {
+	return nil
+}
+
+func burnSPT(ctx sdk.Context, addr sdk.AccAddress, btcAmount uint64, agent_id []byte, plan uint32) error {
+	return nil
+}
+
 func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreateBTCStaking) (*types.MsgCreateBTCStakingResponse, error) {
 	stakingMsgTx, err := NewBTCTxFromBytes(req.StakingTx.Transaction)
 	if err != nil {
@@ -123,42 +155,36 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 		return nil, types.ErrBTCTxNotIncluded.Wrap(err.Error())
 	}
 	var btc_receiving_addr btcutil.Address
+	//TODO: fetch btc_receiving_addr by req.AgentId
 
-	btc_receiving_addr, err = btcutil.DecodeAddress(p.BtcReceivingAddr, btclcParams)
+	/*btc_receiving_addr, err = btcutil.DecodeAddress(req.BtcReceivingAddr, btclcParams)
 	if err != nil {
 		return nil, types.ErrInvalidReceivingAddr.Wrap(err.Error())
-	}
-	var mintToAddr []byte
-	var btcAmount uint64
-	btcAmount, mintToAddr, err = extractPaymentToWithOpReturnId(stakingMsgTx, btc_receiving_addr)
+	}*/
+	btcAmount, opReturnData, err := extractPaymentToWithOpReturnId(stakingMsgTx, btc_receiving_addr)
 	if err != nil || btcAmount == 0 {
 		return nil, types.ErrInvalidTransaction
 	}
-	if len(mintToAddr) != 20 {
-		return nil, types.ErrMintToAddr.Wrap(hex.EncodeToString(mintToAddr))
+	if len(opReturnData) != 24 {
+		return nil, types.ErrOpReturnData.Wrap(hex.EncodeToString(opReturnData))
+	}
+	var mintToAddr []byte = opReturnData[:20]
+	plan := binary.BigEndian.Uint32(opReturnData[20:24])
+
+	err = ms.mintStBTCToAddr(ctx, mintToAddr, btcAmount)
+	if err != nil {
+		return nil, err
+	}
+	if err = mintSPT(ctx, mintToAddr, btcAmount, req.AgentId, plan); err != nil {
+		return nil, err
 	}
 
-	toMintAmount := sdkmath.NewIntFromUint64(btcAmount).Mul(sdkmath.NewIntFromUint64(1e10))
-
-	coins := []sdk.Coin{
-		{
-			//FIXME: no string literal
-			Denom:  "stBTC",
-			Amount: toMintAmount,
-		},
-	}
-	err = ms.bankKeeper.MintCoins(ctx, types.ModuleName, coins)
-	if err != nil {
-		return nil, types.ErrMintToModule.Wrap(err.Error())
-	}
-	err = ms.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, mintToAddr, coins)
-	if err != nil {
-		return nil, types.ErrTransferToAddr.Wrap(err.Error())
-	}
 	stakingRecord := types.BTCStakingRecord{
-		TxHash:     stakingTxHash[:],
-		Amount:     btcAmount,
-		MintToAddr: mintToAddr,
+		TxHash:           stakingTxHash[:],
+		Amount:           btcAmount,
+		MintToAddr:       mintToAddr,
+		AgentId:          req.AgentId,
+		BtcReceivingAddr: btc_receiving_addr.String(),
 	}
 	err = ms.addBTCStakingRecord(ctx, &stakingRecord)
 	if err != nil {
