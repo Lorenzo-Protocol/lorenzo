@@ -3,6 +3,7 @@ package lorenzo.plan.v1;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
 import "lorenzo/plan/v1/plan.proto";
 import "lorenzo/plan/v1/params.proto";
 
@@ -39,11 +40,13 @@ message QueryParamsResponse {
 
 // PlansRequest is the request type for the Query.Plans RPC method.
 message PlansRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
 // PlansResponse is the response type for the Query.Plans RPC method.
 message PlansResponse {
   repeated Plan plans = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // PlanRequest is the request type for the Query.Plan RPC method.

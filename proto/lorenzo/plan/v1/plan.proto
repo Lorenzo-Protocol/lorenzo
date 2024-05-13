@@ -7,9 +7,11 @@ option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/plan/types";
 message Plan {
   uint64 id = 1;
   string name = 2;
-  string plan_desc_uri = 3;
-  uint64 agent_id = 4;
-  uint64 subscription_start_time = 5;
-  uint64 subscription_end_time = 6;
-  uint64 end_time = 7;
+  string symbol = 3;
+  string plan_desc_uri = 4;
+  uint64 agent_id = 5;
+  uint64 subscription_start_time = 6;
+  uint64 subscription_end_time = 7;
+  uint64 end_time = 8;
+  string contract_address = 9;
 }

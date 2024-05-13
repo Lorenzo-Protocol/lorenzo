@@ -43,16 +43,26 @@ func init() {
 
 var (
 	// PlanKey is the key to store the plan in the store
-	ParamsKey     = []byte{0x01}
-	PlanKey       = []byte{0x02}
-	NextNumberKey = []byte{0x03}
+	ParamsKey             = []byte{0x01}
+	KeyPrefixNextNumber   = []byte{0x02}
+	KeyPrefixPlan         = []byte{0x03}
+	KeyPrefixPlanContract = []byte{0x04}
+
+	Delimiter = []byte{0x00}
 )
 
 func KeyPlan(id uint64) []byte {
 	bz := sdk.Uint64ToBigEndian(id)
-	return append(PlanKey, bz...)
+	return append(KeyPrefixPlan, bz...)
 }
 
 func KeyNextNumber() []byte {
-	return NextNumberKey
+	return KeyPrefixNextNumber
+}
+
+func KeyPlanContract(contractAddr string) []byte {
+	key := make([]byte, len(contractAddr))
+	copy(key, KeyPrefixPlanContract)
+	copy(key[len(KeyPrefixPlanContract):], contractAddr)
+	return key
 }

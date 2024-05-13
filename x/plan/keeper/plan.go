@@ -2,16 +2,79 @@ package keeper
 
 import (
 	"github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
+	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k Keeper) AddPlan(ctx sdk.Context, plan types.Plan) error {
+func (k Keeper) AddPlan(ctx sdk.Context, plan types.Plan) (types.Plan, error) {
 	// generate the next plan ID
 	planId := k.GetNextNumber(ctx)
 	plan.Id = planId
+	// Deploy the contract
+	contractAddress, err := k.DeployYATContract(
+		ctx,
+		types.ModuleAddress,
+		plan.Name,
+		plan.Symbol,
+		plan.PlanDescUri,
+		plan.Id,
+		plan.AgentId,
+		plan.SubscriptionStartTime,
+		plan.SubscriptionEndTime,
+		plan.EndTime,
+	)
+	if err != nil {
+		return plan, err
+	}
+	plan.ContractAddress = contractAddress.Hex()
+
 	// set the plan
-	k.setPlan(ctx, planId, plan)
-	return nil
+	k.setPlan(ctx, plan)
+	return plan, nil
+}
+
+// GetPlan retrieves a plan by the plan ID from the Keeper's store.
+//
+// Parameters:
+// - ctx: the SDK context.
+// - planId: the plan ID.
+//
+// Returns:
+// - types.Plan: the plan, or an empty plan if it is not found in the store.
+func (k Keeper) GetPlan(ctx sdk.Context, planId uint64) (types.Plan, bool) {
+	store := ctx.KVStore(k.storeKey)
+	key := types.KeyPlan(planId)
+	bz := store.Get(key)
+	if bz == nil {
+		return types.Plan{}, false
+	}
+
+	var plan types.Plan
+	k.cdc.MustUnmarshal(bz, &plan)
+	return plan, true
+}
+
+// GetPlans retrieves all plans from the Keeper's store.
+//
+// Parameters:
+// - ctx: the SDK context.
+//
+// Returns:
+// - []types.Plan: the plans.
+func (k Keeper) GetPlans(ctx sdk.Context) []types.Plan {
+	store := ctx.KVStore(k.storeKey)
+
+	iterator := sdk.KVStorePrefixIterator(store, types.KeyPrefixPlan)
+	defer iterator.Close()
+
+	var plans []types.Plan
+	for ; iterator.Valid(); iterator.Next() {
+		var plan types.Plan
+		k.cdc.MustUnmarshal(iterator.Value(), &plan)
+		plans = append(plans, plan)
+	}
+	return plans
+
 }
 
 // GetNextNumber retrieves the next number from the Keeper's store.
@@ -40,7 +103,14 @@ func (k Keeper) GetNextNumber(ctx sdk.Context) uint64 {
 // Returns:
 // - uint64: the plan ID, or 0 if it is not found in the store.
 func (k Keeper) GetPlanIdByContractAddr(ctx sdk.Context, contractAddr string) uint64 {
-	//todo: implement
+	store := ctx.KVStore(k.storeKey)
+	key := types.KeyPlanContract(contractAddr)
+	bz := store.Get(key)
+	if bz != nil {
+		var plan types.Plan
+		k.cdc.MustUnmarshal(bz, &plan)
+		return plan.Id
+	}
 	return 0
 }
 
@@ -53,16 +123,36 @@ func (k Keeper) GetPlanIdByContractAddr(ctx sdk.Context, contractAddr string) ui
 // Returns:
 // - string: the contract address, or an empty string if it is not found in the store.
 func (k Keeper) GetContractAddrByPlanId(ctx sdk.Context, planId uint64) string {
-	//todo: implement
+	store := ctx.KVStore(k.storeKey)
+	key := types.KeyPlan(planId)
+	bz := store.Get(key)
+	if bz != nil {
+		var plan types.Plan
+		k.cdc.MustUnmarshal(bz, &plan)
+		return plan.ContractAddress
+	}
 	return ""
+}
+
+// GetNodesPrefixStore returns the store for the plans
+func (k Keeper) GetNodesPrefixStore(ctx sdk.Context) prefix.Store {
+	store := ctx.KVStore(k.storeKey)
+	return prefix.NewStore(store, types.KeyPrefixPlan)
 }
 
 // setPlan sets a plan in the Keeper's store.
 //
 // ctx - the SDK context.
 // plan - the plan to be set.
-func (k Keeper) setPlan(ctx sdk.Context, planId uint64, plan types.Plan) {
-	//todo: implement
+func (k Keeper) setPlan(ctx sdk.Context, plan types.Plan) {
+	// contractAddress --> plan
+	store := ctx.KVStore(k.storeKey)
+	key := types.KeyPlanContract(plan.ContractAddress)
+	planBz := k.cdc.MustMarshal(&plan)
+	store.Set(key, planBz)
+	// planId --> plan
+	key = types.KeyPlan(plan.Id)
+	store.Set(key, planBz)
 }
 
 // setNextNumber sets the next number in the Keeper's store.

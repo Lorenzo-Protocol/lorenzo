@@ -101,7 +101,7 @@ func (k Keeper) ClaimRewardAndWithDrawBTC(
 	return nil
 }
 
-func (k Keeper) onlyClaimReward(
+func (k Keeper) OnlyClaimReward(
 	ctx sdk.Context,
 	contractAddress common.Address,
 	contractABI abi.ABI,
@@ -123,7 +123,7 @@ func (k Keeper) onlyClaimReward(
 	return nil
 }
 
-func (k Keeper) burnWithstBTCBurn(
+func (k Keeper) BurnWithstBTCBurn(
 	ctx sdk.Context,
 	contractAddress common.Address,
 	contractABI abi.ABI,
@@ -147,7 +147,7 @@ func (k Keeper) burnWithstBTCBurn(
 	return nil
 }
 
-func (k Keeper) setRewardTokenAddress(
+func (k Keeper) SetRewardTokenAddress(
 	ctx sdk.Context,
 	contractAddress common.Address,
 	contractABI abi.ABI,
@@ -187,11 +187,15 @@ func (k Keeper) PlanId(
 	}
 	unpacked, err := contractABI.Unpack(types.YATMethodPlanId, res.Ret)
 	if err != nil || len(unpacked) == 0 {
-		return 0, err
+		return 0, errorsmod.Wrapf(
+			types.ErrABIUnpack, "failed to unpack plan ID from contract %s", contractAddress.Hex(),
+		)
 	}
 	planId, ok := unpacked[0].(uint64)
 	if !ok {
-		return 0, err
+		return 0, errorsmod.Wrapf(
+			types.ErrABIUnpack, "failed to convert plan ID to uint64 from contract %s", contractAddress.Hex(),
+		)
 	}
 
 	return planId, nil
@@ -215,11 +219,15 @@ func (k Keeper) AgentId(
 	}
 	unpacked, err := contractABI.Unpack(types.YATMethodAgentId, res.Ret)
 	if err != nil || len(unpacked) == 0 {
-		return 0, err
+		return 0, errorsmod.Wrapf(
+			types.ErrABIUnpack, "failed to unpack agent ID from contract %s", contractAddress.Hex(),
+		)
 	}
 	agentId, ok := unpacked[0].(uint64)
 	if !ok {
-		return 0, err
+		return 0, errorsmod.Wrapf(
+			types.ErrABIUnpack, "failed to convert agent ID to uint64 from contract %s", contractAddress.Hex(),
+		)
 	}
 
 	return agentId, nil
@@ -243,11 +251,15 @@ func (k Keeper) SubscriptionStartTime(
 	}
 	unpacked, err := contractABI.Unpack(types.YATMethodSubscriptionStartTime, res.Ret)
 	if err != nil || len(unpacked) == 0 {
-		return 0, err
+		return 0, errorsmod.Wrapf(
+			types.ErrABIUnpack, "failed to unpack subscription start time from contract %s", contractAddress.Hex(),
+		)
 	}
 	subscriptionStartTime, ok := unpacked[0].(uint64)
 	if !ok {
-		return 0, err
+		return 0, errorsmod.Wrapf(
+			types.ErrABIUnpack, "failed to convert subscription start time to uint64 from contract %s", contractAddress.Hex(),
+		)
 	}
 
 	return subscriptionStartTime, nil
@@ -271,11 +283,15 @@ func (k Keeper) SubscriptionEndTime(
 	}
 	unpacked, err := contractABI.Unpack(types.YATMethodSubscriptionEndTime, res.Ret)
 	if err != nil || len(unpacked) == 0 {
-		return 0, err
+		return 0, errorsmod.Wrapf(
+			types.ErrABIUnpack, "failed to unpack subscription end time from contract %s", contractAddress.Hex(),
+		)
 	}
 	subscriptionEndTime, ok := unpacked[0].(uint64)
 	if !ok {
-		return 0, err
+		return 0, errorsmod.Wrapf(
+			types.ErrABIUnpack, "failed to convert subscription end time to uint64 from contract %s", contractAddress.Hex(),
+		)
 	}
 
 	return subscriptionEndTime, nil
@@ -299,11 +315,15 @@ func (k Keeper) EndTime(
 	}
 	unpacked, err := contractABI.Unpack(types.YATMethodEndTime, res.Ret)
 	if err != nil || len(unpacked) == 0 {
-		return 0, err
+		return 0, errorsmod.Wrapf(
+			types.ErrABIUnpack, "failed to unpack end time from contract %s", contractAddress.Hex(),
+		)
 	}
 	endTime, ok := unpacked[0].(uint64)
 	if !ok {
-		return 0, err
+		return 0, errorsmod.Wrapf(
+			types.ErrABIUnpack, "failed to convert end time to uint64 from contract %s", contractAddress.Hex(),
+		)
 	}
 
 	return endTime, nil
@@ -327,11 +347,15 @@ func (k Keeper) PlanDesc(
 	}
 	unpacked, err := contractABI.Unpack(types.YATMethodPlanDesc, res.Ret)
 	if err != nil || len(unpacked) == 0 {
-		return "", err
+		return "", errorsmod.Wrapf(
+			types.ErrABIUnpack, "failed to unpack plan description from contract %s", contractAddress.Hex(),
+		)
 	}
 	planDesc, ok := unpacked[0].(string)
 	if !ok {
-		return "", err
+		return "", errorsmod.Wrapf(
+			types.ErrABIUnpack, "failed to convert plan description to string from contract %s", contractAddress.Hex(),
+		)
 	}
 
 	return planDesc, nil
@@ -355,11 +379,15 @@ func (k Keeper) RewardTokenAddress(
 	}
 	unpacked, err := contractABI.Unpack(types.YATMethodRewardTokenAddress, res.Ret)
 	if err != nil || len(unpacked) == 0 {
-		return common.Address{}, err
+		return common.Address{}, errorsmod.Wrapf(
+			types.ErrABIUnpack, "failed to unpack reward token address from contract %s", contractAddress.Hex(),
+		)
 	}
 	rewardTokenAddress, ok := unpacked[0].(common.Address)
 	if !ok {
-		return common.Address{}, err
+		return common.Address{}, errorsmod.Wrapf(
+			types.ErrABIUnpack, "failed to convert reward token address to common.Address from contract %s", contractAddress.Hex(),
+		)
 	}
 
 	return rewardTokenAddress, nil

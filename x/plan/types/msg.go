@@ -3,6 +3,7 @@ package types
 import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/ethereum/go-ethereum/common"
 )
 
 var (
@@ -43,6 +44,9 @@ func (m *MsgCreatePlan) GetSigners() []sdk.AccAddress {
 func (m *MsgClaims) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.Sender); err != nil {
 		return errorsmod.Wrap(err, "invalid sender address")
+	}
+	if !common.IsHexAddress(m.Receiver) {
+		return errorsmod.Wrap(ErrReceiver, "invalid receiver address")
 	}
 	return nil
 }

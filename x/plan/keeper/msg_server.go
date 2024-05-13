@@ -34,19 +34,45 @@ func (m msgServer) UpdateParams(goCtx context.Context, req *types.MsgUpdateParam
 	return &types.MsgUpdateParamsResponse{}, nil
 }
 
-func (m msgServer) CreatePlan(goCtx context.Context, request *types.MsgCreatePlan) (*types.MsgCreatePlanResponse, error) {
+func (m msgServer) CreatePlan(goCtx context.Context, req *types.MsgCreatePlan) (*types.MsgCreatePlanResponse, error) {
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	sender := sdk.AccAddress(request.Sender)
+	sender := sdk.AccAddress(req.Sender)
 	if !m.k.Authorized(ctx, sender) {
-		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "unauthorized")
+		return nil, errorsmod.Wrapf(types.ErrUnauthorized, "unauthorized")
 	}
-	panic("implement me")
+	plan := types.Plan{
+		Name:                  req.Name,
+		Symbol:                req.Symbol,
+		PlanDescUri:           req.PlanDescUri,
+		AgentId:               req.AgentId,
+		SubscriptionStartTime: req.SubscriptionStartTime,
+		SubscriptionEndTime:   req.SubscriptionEndTime,
+		EndTime:               req.EndTime,
+	}
+	planResult, err := m.k.AddPlan(ctx, plan)
+	if err != nil {
+		return nil, err
+	}
+
+	ctx.EventManager().EmitEvent(
+		types.NewCreatePlanEvent(sender, planResult),
+	)
+	return &types.MsgCreatePlanResponse{Id: planResult.Id}, nil
 }
 
-func (m msgServer) Claims(ctx context.Context, request *types.MsgClaims) (*types.MsgClaimsResponse, error) {
-	//TODO implement me
-	panic("implement me")
+func (m msgServer) Claims(goCtx context.Context, req *types.MsgClaims) (*types.MsgClaimsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	sender := sdk.AccAddress(req.Sender)
+	if !m.k.Authorized(ctx, sender) {
+		return nil, errorsmod.Wrapf(types.ErrUnauthorized, "unauthorized")
+	}
+
+	if err := req.ValidateBasic(); err != nil {
+		return nil, err
+	}
+
+	return &types.MsgClaimsResponse{}, nil
 }
 
 // NewMsgServerImpl returns an implementation of the MsgServer interface
