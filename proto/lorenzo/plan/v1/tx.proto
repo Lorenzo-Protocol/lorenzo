@@ -45,7 +45,7 @@ message MsgUpdateParamsResponse {
 
 // MsgCreatePlan is the request type for the Msg/CreatePlan RPC method.
 message MsgCreatePlan {
-  option (cosmos.msg.v1.signer) = "authority";
+  option (cosmos.msg.v1.signer) = "sender";
 
   // name is the name of the plan
   string name = 2;
@@ -65,7 +65,7 @@ message MsgCreatePlan {
   // plan_start_time is the start time of the plan
   uint64 end_time = 7;
 
-  // sender is the address of the governance account or module admin
+  // sender is the address of the allowed sender
   string sender = 8 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
 

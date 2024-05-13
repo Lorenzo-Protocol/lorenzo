@@ -4,7 +4,6 @@ import (
 	"github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	authzkeeper "github.com/cosmos/cosmos-sdk/x/authz/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 )
@@ -13,8 +12,9 @@ import (
 type Keeper struct {
 	storeKey storetypes.StoreKey
 	cdc      codec.BinaryCodec
+
 	// the address capable of executing a MsgUpdateParams message. Typically, this should be the x/gov module account.
-	authority sdk.AccAddress
+	authority string
 
 	accountKeeper types.AccountKeeper
 	bankKeeper    bankkeeper.Keeper
@@ -26,16 +26,12 @@ type Keeper struct {
 func NewKeeper(
 	storeKey storetypes.StoreKey,
 	cdc codec.BinaryCodec,
-	authority sdk.AccAddress,
+	authority string,
 	ak types.AccountKeeper,
 	bk bankkeeper.Keeper,
 	evmKeeper types.EVMKeeper,
 	authzKeeper authzkeeper.Keeper,
 ) Keeper {
-	// ensure gov module account is set and is not nil
-	if err := sdk.VerifyAddressFormat(authority); err != nil {
-		panic(err)
-	}
 
 	return Keeper{
 		authority:     authority,

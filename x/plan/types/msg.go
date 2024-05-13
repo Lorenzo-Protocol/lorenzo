@@ -27,7 +27,9 @@ func (m *MsgUpdateParams) GetSigners() []sdk.AccAddress {
 
 // ValidateBasic executes sanity validation on the provided data
 func (m *MsgCreatePlan) ValidateBasic() error {
-
+	if _, err := sdk.AccAddressFromBech32(m.Sender); err != nil {
+		return errorsmod.Wrap(err, "invalid sender address")
+	}
 	return nil
 }
 
@@ -39,7 +41,9 @@ func (m *MsgCreatePlan) GetSigners() []sdk.AccAddress {
 
 // ValidateBasic executes sanity validation on the provided data
 func (m *MsgClaims) ValidateBasic() error {
-
+	if _, err := sdk.AccAddressFromBech32(m.Sender); err != nil {
+		return errorsmod.Wrap(err, "invalid sender address")
+	}
 	return nil
 }
 

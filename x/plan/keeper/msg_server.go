@@ -3,6 +3,10 @@ package keeper
 import (
 	"context"
 
+	errorsmod "cosmossdk.io/errors"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+
 	"github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
 )
 
@@ -13,13 +17,30 @@ type msgServer struct {
 	k *Keeper
 }
 
-func (m msgServer) UpdateParams(ctx context.Context, params *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
-	//TODO implement me
-	panic("implement me")
+func (m msgServer) UpdateParams(goCtx context.Context, req *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
+
+	if m.k.authority != req.Authority {
+		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", m.k.authority, req.Authority)
+	}
+	if err := req.Params.Validate(); err != nil {
+		return nil, govtypes.ErrInvalidProposalMsg.Wrapf("invalid parameter: %v", err)
+	}
+	sdkCtx := sdk.UnwrapSDKContext(goCtx)
+
+	if err := m.k.SetParams(sdkCtx, req.Params); err != nil {
+		return nil, err
+	}
+
+	return &types.MsgUpdateParamsResponse{}, nil
 }
 
-func (m msgServer) CreatePlan(ctx context.Context, request *types.MsgCreatePlan) (*types.MsgCreatePlanResponse, error) {
-	//TODO implement me
+func (m msgServer) CreatePlan(goCtx context.Context, request *types.MsgCreatePlan) (*types.MsgCreatePlanResponse, error) {
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	sender := sdk.AccAddress(request.Sender)
+	if !m.k.Authorized(ctx, sender) {
+		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "unauthorized")
+	}
 	panic("implement me")
 }
 

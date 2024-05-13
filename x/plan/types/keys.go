@@ -43,8 +43,9 @@ func init() {
 
 var (
 	// PlanKey is the key to store the plan in the store
-	PlanKey       = []byte{0x01}
-	NextNumberKey = []byte{0x02}
+	ParamsKey     = []byte{0x01}
+	PlanKey       = []byte{0x02}
+	NextNumberKey = []byte{0x03}
 )
 
 func KeyPlan(id uint64) []byte {
