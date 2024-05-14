@@ -3,8 +3,12 @@ package types
 import (
 	fmt "fmt"
 
+	"github.com/btcsuite/btcd/btcutil"
+	"github.com/btcsuite/btcd/chaincfg"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
+
+const btcDustThreshold = 546 * 1e10
 
 // ensure that these message types implement the sdk.Msg interface
 var (
@@ -33,6 +37,17 @@ func (msg *MsgCreateBTCStaking) GetSigners() []sdk.AccAddress {
 }
 
 func (m *MsgBurnRequest) ValidateBasic() error {
+	if m.Amount <= btcDustThreshold {
+		return fmt.Errorf("amount must great than %v", btcDustThreshold)
+	}
+	return nil
+}
+
+func (m *MsgBurnRequest) ValidateBtcAddress(btcNetworkParams *chaincfg.Params) error {
+	_, err := btcutil.DecodeAddress(m.BtcTargetAddress, btcNetworkParams)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

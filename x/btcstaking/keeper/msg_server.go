@@ -15,8 +15,6 @@ import (
 	"github.com/btcsuite/btcd/wire"
 )
 
-const btcDustThreshold = 546 * 1e10
-
 type msgServer struct {
 	Keeper
 }
@@ -180,9 +178,6 @@ func (ms msgServer) Burn(goCtx context.Context, req *types.MsgBurnRequest) (*typ
 		return nil, types.ErrInvalidBurnBtcTargetAddress.Wrap(err.Error())
 	}
 
-	if req.Amount <= btcDustThreshold {
-		return nil, types.ErrBurnAmountLeDust
-	}
 	amount := sdk.NewInt64Coin(types.NativeTokenDenom, int64(req.Amount))
 
 	signers := req.GetSigners()
