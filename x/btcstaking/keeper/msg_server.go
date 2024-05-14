@@ -181,7 +181,7 @@ func (ms msgServer) Burn(goCtx context.Context, req *types.MsgBurnRequest) (*typ
 
 	amountValue, ok := math.NewIntFromString(req.Amount)
 	if !ok {
-		return nil, types.ErrBurnAmount
+		return nil, types.ErrBurnAmount.Wrap("amount must be a valid integer")
 	}
 	amount := sdk.NewCoin(types.NativeTokenDenom, amountValue)
 

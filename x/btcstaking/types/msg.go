@@ -43,7 +43,7 @@ func (m *MsgBurnRequest) ValidateBasic() error {
 		return fmt.Errorf("invalid integer value")
 	}
 	if amount.LTE(math.NewInt(btcDustThreshold)) {
-		return fmt.Errorf("amount must great than %v", btcDustThreshold)
+		return fmt.Errorf("amount must be greater than %v", btcDustThreshold)
 	}
 	return nil
 }
