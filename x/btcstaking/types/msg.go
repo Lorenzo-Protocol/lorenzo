@@ -3,6 +3,7 @@ package types
 import (
 	fmt "fmt"
 
+	"cosmossdk.io/math"
 	"github.com/btcsuite/btcd/btcutil"
 	"github.com/btcsuite/btcd/chaincfg"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -37,7 +38,11 @@ func (msg *MsgCreateBTCStaking) GetSigners() []sdk.AccAddress {
 }
 
 func (m *MsgBurnRequest) ValidateBasic() error {
-	if m.Amount <= btcDustThreshold {
+	amount, ok := math.NewIntFromString(m.Amount)
+	if !ok {
+		return fmt.Errorf("invalid integer value")
+	}
+	if amount.LTE(math.NewInt(btcDustThreshold)) {
 		return fmt.Errorf("amount must great than %v", btcDustThreshold)
 	}
 	return nil
@@ -60,10 +65,10 @@ func (msg *MsgBurnRequest) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{signer}
 }
 
-func NewMsgBurnRequest(signer, btcTargetAddress string, amount uint64) MsgBurnRequest {
+func NewMsgBurnRequest(signer, btcTargetAddress string, amount math.Int) MsgBurnRequest {
 	return MsgBurnRequest{
 		Signer:           signer,
 		BtcTargetAddress: btcTargetAddress,
-		Amount:           amount,
+		Amount:           amount.String(),
 	}
 }

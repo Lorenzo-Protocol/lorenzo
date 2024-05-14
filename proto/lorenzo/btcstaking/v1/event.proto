@@ -14,5 +14,5 @@ message EventBurnCreated {
     string signer = 1; 
     string btc_target_address = 2; 
     string amount_denom = 3;
-    uint64 amount_value = 4; 
+    string amount_value = 4; 
 }

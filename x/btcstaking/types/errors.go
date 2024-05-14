@@ -20,7 +20,7 @@ var (
 	ErrInvalidBurnBtcTargetAddress = errorsmod.Register(ModuleName, 1111, "invalid btc target address in MsgBurnRequest")
 	ErrBurn                        = errorsmod.Register(ModuleName, 1112, "fail to burn")
 	ErrEmitEvent                   = errorsmod.Register(ModuleName, 1113, "fail to emit a event")
-	ErrBurnAmountLeDust            = errorsmod.Register(ModuleName, 1114, "amount less or equal btc dust threshold")
+	ErrBurnAmount                  = errorsmod.Register(ModuleName, 1114, "amount must be a valid integer")
 	ErrBurnInsufficientBalance     = errorsmod.Register(ModuleName, 1115, "insufficient account balance")
 	ErrBurnInvalidSigner           = errorsmod.Register(ModuleName, 1116, "invalid signer")
 )
