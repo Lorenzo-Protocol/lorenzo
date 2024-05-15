@@ -86,7 +86,7 @@ func NewCreateBTCStakingWithBTCProofCmd() *cobra.Command {
 func NewBurnCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "burn [btc_address] [amount]",
-		Short: "burn tokens with btc address and amount",
+		Short: "burn stBTC tokens, accepting two parameters: the btc address as the recipient address for BTC and the amount to be burned",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)

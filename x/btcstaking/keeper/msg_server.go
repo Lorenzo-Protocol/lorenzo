@@ -6,7 +6,6 @@ import (
 	"encoding/hex"
 	"fmt"
 
-	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -179,11 +178,7 @@ func (ms msgServer) Burn(goCtx context.Context, req *types.MsgBurnRequest) (*typ
 		return nil, types.ErrInvalidBurnBtcTargetAddress.Wrap(err.Error())
 	}
 
-	amountValue, ok := math.NewIntFromString(req.Amount)
-	if !ok {
-		return nil, types.ErrBurnAmount.Wrap("amount must be a valid integer")
-	}
-	amount := sdk.NewCoin(types.NativeTokenDenom, amountValue)
+	amount := sdk.NewCoin(types.NativeTokenDenom, req.Amount)
 
 	signers := req.GetSigners()
 	if len(signers) != 1 {

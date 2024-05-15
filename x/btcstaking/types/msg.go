@@ -38,11 +38,7 @@ func (msg *MsgCreateBTCStaking) GetSigners() []sdk.AccAddress {
 }
 
 func (m *MsgBurnRequest) ValidateBasic() error {
-	amount, ok := math.NewIntFromString(m.Amount)
-	if !ok {
-		return fmt.Errorf("invalid integer value")
-	}
-	if amount.LTE(math.NewInt(btcDustThreshold)) {
+	if m.Amount.LTE(math.NewInt(btcDustThreshold)) {
 		return fmt.Errorf("amount must be greater than %v", btcDustThreshold)
 	}
 	return nil
@@ -69,6 +65,6 @@ func NewMsgBurnRequest(signer, btcTargetAddress string, amount math.Int) MsgBurn
 	return MsgBurnRequest{
 		Signer:           signer,
 		BtcTargetAddress: btcTargetAddress,
-		Amount:           amount.String(),
+		Amount:           amount,
 	}
 }
