@@ -4,9 +4,11 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	evmtypes "github.com/evmos/ethermint/x/evm/types"
-
 	vesting "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
+	"github.com/cosmos/cosmos-sdk/x/authz"
+	"golang.org/x/exp/slices"
+
+	evmtypes "github.com/evmos/ethermint/x/evm/types"
 
 	btcstakingtypes "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types"
 )
@@ -17,7 +19,10 @@ type RejectMessagesDecorator struct {
 	onlyonceMsgTypeURLs []string
 }
 
-var _ sdk.AnteDecorator = RejectMessagesDecorator{}
+var (
+	_                  sdk.AnteDecorator = RejectMessagesDecorator{}
+	authzExecsgTypeURL                   = sdk.MsgTypeURL(&authz.MsgExec{})
+)
 
 // NewRejectMessagesDecorator creates a decorator to block vesting messages from reaching the mempool
 func NewRejectMessagesDecorator() RejectMessagesDecorator {
@@ -49,30 +54,37 @@ func (rmd RejectMessagesDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simula
 		}
 
 		typeURL := sdk.MsgTypeURL(msg)
-		for _, disabledTypeURL := range rmd.disabledMsgTypeURLs {
-			if typeURL == disabledTypeURL {
-				return ctx, errorsmod.Wrapf(
-					sdkerrors.ErrUnauthorized,
-					"MsgTypeURL %s not supported",
-					typeURL,
-				)
-			}
+
+		// check if the msg type is disabled
+		if slices.Contains(rmd.disabledMsgTypeURLs, typeURL) {
+			return ctx, errorsmod.Wrapf(
+				sdkerrors.ErrUnauthorized,
+				"MsgTypeURL %s not supported",
+				typeURL,
+			)
 		}
 
-		for _, onlyonceMsgTypeURL := range rmd.onlyonceMsgTypeURLs {
-			if typeURL == onlyonceMsgTypeURL {
-				_, ok := msgTypeCount[typeURL]
-				if ok {
-					msgTypeCount[typeURL] += 1
-				} else {
-					msgTypeCount[typeURL] = 1
+		
+		if slices.Contains(rmd.onlyonceMsgTypeURLs, typeURL) {
+			msgTypeCount[typeURL]++
+		}
+
+		// check if the msg type is authzExecsgTypeURL
+		if typeURL == authzExecsgTypeURL {
+			msgs, err := msg.(*authz.MsgExec).GetMessages()
+			if err != nil {
+				return ctx, err
+			}
+
+			for _, msg := range msgs {
+				if slices.Contains(rmd.onlyonceMsgTypeURLs, sdk.MsgTypeURL(msg)) {
+					msgTypeCount[typeURL]++
 				}
 			}
 		}
-	}
 
-	for typeURL, count := range msgTypeCount {
-		if count > 1 {
+		// check if the msg type is only once
+		if msgTypeCount[typeURL] > 1 {
 			return ctx, errorsmod.Wrapf(
 				sdkerrors.ErrInvalidRequest,
 				"a transaction can only contain one %s message",
@@ -80,6 +92,5 @@ func (rmd RejectMessagesDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simula
 			)
 		}
 	}
-
 	return next(ctx, tx, simulate)
 }
