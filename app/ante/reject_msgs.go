@@ -64,7 +64,6 @@ func (rmd RejectMessagesDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simula
 			)
 		}
 
-		
 		if slices.Contains(rmd.onlyonceMsgTypeURLs, typeURL) {
 			msgTypeCount[typeURL]++
 		}
@@ -77,8 +76,17 @@ func (rmd RejectMessagesDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simula
 			}
 
 			for _, msg := range msgs {
-				if slices.Contains(rmd.onlyonceMsgTypeURLs, sdk.MsgTypeURL(msg)) {
-					msgTypeCount[typeURL]++
+				msgTypeURL := sdk.MsgTypeURL(msg)
+				if slices.Contains(rmd.onlyonceMsgTypeURLs, msgTypeURL) {
+					msgTypeCount[msgTypeURL]++
+					// Check if the message type appears more than once
+					if msgTypeCount[msgTypeURL] > 1 {
+						return ctx, errorsmod.Wrapf(
+							sdkerrors.ErrInvalidRequest,
+							"a transaction can only contain one %s message",
+							msgTypeURL,
+						)
+					}
 				}
 			}
 		}
