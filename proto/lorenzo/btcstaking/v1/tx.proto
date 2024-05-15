@@ -59,7 +59,7 @@ message MsgBurnRequest {
   option (cosmos.msg.v1.signer) = "signer";
   string signer = 1;
   string btc_target_address = 2;
-  uint64 amount = 3;
+  string amount = 3 [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false ];
 }
 
 message MsgBurnResponse{}

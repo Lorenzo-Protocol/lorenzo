@@ -3,6 +3,9 @@ package types
 import (
 	fmt "fmt"
 
+	"cosmossdk.io/math"
+	"github.com/btcsuite/btcd/btcutil"
+	"github.com/btcsuite/btcd/chaincfg"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -36,6 +39,14 @@ func (m *MsgBurnRequest) ValidateBasic() error {
 	return nil
 }
 
+func (m *MsgBurnRequest) ValidateBtcAddress(btcNetworkParams *chaincfg.Params) error {
+	_, err := btcutil.DecodeAddress(m.BtcTargetAddress, btcNetworkParams)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (msg *MsgBurnRequest) GetSigners() []sdk.AccAddress {
 	signer, err := sdk.AccAddressFromBech32(msg.Signer)
 	if err != nil {
@@ -45,7 +56,7 @@ func (msg *MsgBurnRequest) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{signer}
 }
 
-func NewMsgBurnRequest(signer, btcTargetAddress string, amount uint64) MsgBurnRequest {
+func NewMsgBurnRequest(signer, btcTargetAddress string, amount math.Int) MsgBurnRequest {
 	return MsgBurnRequest{
 		Signer:           signer,
 		BtcTargetAddress: btcTargetAddress,

@@ -3,8 +3,8 @@ package cli
 import (
 	"encoding/hex"
 	"fmt"
-	"strconv"
 
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -85,19 +85,19 @@ func NewCreateBTCStakingWithBTCProofCmd() *cobra.Command {
 
 func NewBurnCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "burn [btc_target_address] [amouont]",
-		Short: "burn tokens with btc target address and amount",
+		Use:   "burn [btc_address] [amount]",
+		Short: "burn stBTC tokens, accepting two parameters: the btc address as the recipient address for BTC and the amount to be burned",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
-			amount, err := strconv.ParseInt(args[1], 10, 64)
-			if err != nil {
-				return err
+			amount, ok := math.NewIntFromString(args[1])
+			if !ok {
+				return fmt.Errorf("amount must be a valid integer")
 			}
-			msg := types.NewMsgBurnRequest(clientCtx.GetFromAddress().String(), args[0], uint64(amount))
+			msg := types.NewMsgBurnRequest(clientCtx.GetFromAddress().String(), args[0], amount)
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
