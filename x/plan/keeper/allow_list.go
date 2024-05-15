@@ -9,12 +9,10 @@ import sdk "github.com/cosmos/cosmos-sdk/types"
 // bool: true if the address is authorized, false otherwise.
 func (k Keeper) Authorized(ctx sdk.Context, address sdk.AccAddress) bool {
 	params := k.GetParams(ctx)
-	authorized := false
 	for _, addr := range params.AllowList {
 		if sdk.MustAccAddressFromBech32(addr).Equals(address) {
-			authorized = true
+			return true
 		}
 	}
-
-	return authorized
+	return false
 }

@@ -20,16 +20,13 @@ func (p Params) Validate() error {
 
 func ValidateAddressList(i interface{}) error {
 	allowList, ok := i.([]string)
-
 	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
+		return fmt.Errorf("invalid parameter type: %T, expected []string", i)
 	}
-
 	for _, a := range allowList {
 		if _, err := sdk.AccAddressFromBech32(a); err != nil {
-			return fmt.Errorf("invalid address")
+			return fmt.Errorf("invalid address: %s", a)
 		}
 	}
-
 	return nil
 }

@@ -1,6 +1,9 @@
 package keeper
 
 import (
+	"fmt"
+	"math/big"
+
 	errorsmod "cosmossdk.io/errors"
 	"github.com/Lorenzo-Protocol/lorenzo/contracts"
 	"github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
@@ -36,7 +39,7 @@ func (k Keeper) DeployYATContract(
 		endTime,
 	)
 	if err != nil {
-		return common.Address{}, errorsmod.Wrapf(types.ErrABIPack, "failed to pack contract arguments: %s", err)
+		return common.Address{}, errorsmod.Wrap(types.ErrABIPack, fmt.Sprintf("failed to pack contract arguments: %s", err))
 	}
 	data := make([]byte, len(contracts.YieldAccruingTokenContract.Bin)+len(contractArgs))
 	copy(data[:len(contracts.YieldAccruingTokenContract.Bin)], contracts.YieldAccruingTokenContract.Bin)
@@ -191,14 +194,14 @@ func (k Keeper) PlanId(
 			types.ErrABIUnpack, "failed to unpack plan ID from contract %s", contractAddress.Hex(),
 		)
 	}
-	planId, ok := unpacked[0].(uint64)
+	planId, ok := unpacked[0].(*big.Int)
 	if !ok {
 		return 0, errorsmod.Wrapf(
 			types.ErrABIUnpack, "failed to convert plan ID to uint64 from contract %s", contractAddress.Hex(),
 		)
 	}
 
-	return planId, nil
+	return planId.Uint64(), nil
 }
 
 func (k Keeper) AgentId(
@@ -223,14 +226,14 @@ func (k Keeper) AgentId(
 			types.ErrABIUnpack, "failed to unpack agent ID from contract %s", contractAddress.Hex(),
 		)
 	}
-	agentId, ok := unpacked[0].(uint64)
+	agentId, ok := unpacked[0].(*big.Int)
 	if !ok {
 		return 0, errorsmod.Wrapf(
 			types.ErrABIUnpack, "failed to convert agent ID to uint64 from contract %s", contractAddress.Hex(),
 		)
 	}
 
-	return agentId, nil
+	return agentId.Uint64(), nil
 }
 
 func (k Keeper) SubscriptionStartTime(
@@ -255,14 +258,14 @@ func (k Keeper) SubscriptionStartTime(
 			types.ErrABIUnpack, "failed to unpack subscription start time from contract %s", contractAddress.Hex(),
 		)
 	}
-	subscriptionStartTime, ok := unpacked[0].(uint64)
+	subscriptionStartTime, ok := unpacked[0].(*big.Int)
 	if !ok {
 		return 0, errorsmod.Wrapf(
 			types.ErrABIUnpack, "failed to convert subscription start time to uint64 from contract %s", contractAddress.Hex(),
 		)
 	}
 
-	return subscriptionStartTime, nil
+	return subscriptionStartTime.Uint64(), nil
 }
 
 func (k Keeper) SubscriptionEndTime(
@@ -287,14 +290,14 @@ func (k Keeper) SubscriptionEndTime(
 			types.ErrABIUnpack, "failed to unpack subscription end time from contract %s", contractAddress.Hex(),
 		)
 	}
-	subscriptionEndTime, ok := unpacked[0].(uint64)
+	subscriptionEndTime, ok := unpacked[0].(*big.Int)
 	if !ok {
 		return 0, errorsmod.Wrapf(
 			types.ErrABIUnpack, "failed to convert subscription end time to uint64 from contract %s", contractAddress.Hex(),
 		)
 	}
 
-	return subscriptionEndTime, nil
+	return subscriptionEndTime.Uint64(), nil
 }
 
 func (k Keeper) EndTime(
@@ -319,14 +322,14 @@ func (k Keeper) EndTime(
 			types.ErrABIUnpack, "failed to unpack end time from contract %s", contractAddress.Hex(),
 		)
 	}
-	endTime, ok := unpacked[0].(uint64)
+	endTime, ok := unpacked[0].(*big.Int)
 	if !ok {
 		return 0, errorsmod.Wrapf(
 			types.ErrABIUnpack, "failed to convert end time to uint64 from contract %s", contractAddress.Hex(),
 		)
 	}
 
-	return endTime, nil
+	return endTime.Uint64(), nil
 }
 
 func (k Keeper) PlanDesc(
