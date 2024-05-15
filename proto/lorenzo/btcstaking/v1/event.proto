@@ -1,6 +1,8 @@
 syntax = "proto3";
 package lorenzo.btcstaking.v1;
 
+import "cosmos/base/v1beta1/coin.proto";
+import "gogoproto/gogo.proto";
 import "lorenzo/btcstaking/v1/staking_record.proto";
 
 option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types";
@@ -11,8 +13,7 @@ message EventBTCStakingCreated {
 }
 
 message EventBurnCreated { 
-    string signer = 1; 
+    string signer = 1;
     string btc_target_address = 2; 
-    string amount_denom = 3;
-    string amount_value = 4; 
+    cosmos.base.v1beta1.Coin amount = 3 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];
 }
