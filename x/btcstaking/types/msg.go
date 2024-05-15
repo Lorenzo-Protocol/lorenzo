@@ -9,11 +9,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-const (
-	satBaseUint      = 1e10
-	btcDustThreshold = 546 * satBaseUint
-)
-
 // ensure that these message types implement the sdk.Msg interface
 var (
 	_ sdk.Msg = &MsgCreateBTCStaking{}
@@ -41,13 +36,6 @@ func (msg *MsgCreateBTCStaking) GetSigners() []sdk.AccAddress {
 }
 
 func (m *MsgBurnRequest) ValidateBasic() error {
-	if m.Amount.ModRaw(satBaseUint) != math.ZeroInt() {
-		return fmt.Errorf("amount must be a multiple of %v", satBaseUint)
-	}
-
-	if m.Amount.LTE(math.NewInt(btcDustThreshold)) {
-		return fmt.Errorf("amount must be greater than %v", btcDustThreshold)
-	}
 	return nil
 }
 
