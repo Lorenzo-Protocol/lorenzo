@@ -17,6 +17,11 @@ func (gs GenesisState) Validate() error {
 	if gs.Params == nil {
 		return fmt.Errorf("params cannot be nil")
 	}
+	for name, receiver := range gs.Params.Receivers {
+		if name != receiver.Name {
+			return fmt.Errorf("Receiver's name dismatch")
+		}
+	}
 	if gs.Params.BtcConfirmationsDepth == 0 {
 		return fmt.Errorf("btc confirmations depth cannot be 0")
 	}

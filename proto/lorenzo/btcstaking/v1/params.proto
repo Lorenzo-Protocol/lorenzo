@@ -5,8 +5,12 @@ import "gogoproto/gogo.proto";
 
 option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types";
 
+message Receiver {
+	string name = 1;
+	string addr = 2;
+}
 // GenesisState defines the btcstaking module's genesis state.
 message Params {
-  string btc_receiving_addr = 1;
+  map<string, Receiver> receivers = 1;
   uint32 btc_confirmations_depth = 2;
 }

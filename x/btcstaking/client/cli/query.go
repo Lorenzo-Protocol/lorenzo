@@ -67,6 +67,8 @@ func CmdGetBTCStaingRecord() *cobra.Command {
 			resDisp.TxId = (chainhash.Hash)(res.Record.TxHash).String()
 			resDisp.Amount = sdkmath.NewIntFromUint64(res.Record.Amount).Mul(sdkmath.NewIntFromUint64(1e10)).String()
 			resDisp.MintToAddress = "0x" + hex.EncodeToString(res.Record.MintToAddr)
+			resDisp.BtcReceiverName = res.Record.BtcReceiverName
+			resDisp.BtcReceiverAddr = res.Record.BtcReceiverAddr
 			if err != nil {
 				return err
 			}

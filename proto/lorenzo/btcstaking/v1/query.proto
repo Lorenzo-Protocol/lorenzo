@@ -26,6 +26,8 @@ message StakingRecordDisplay {
     string txId = 1;
     string mintToAddress = 2;
     string amount = 3;
+    string btc_receiver_name = 4;
+    string btc_receiver_addr = 5;
 }
 
 message QueryStakingRecordRequest {
