@@ -6,8 +6,10 @@ import (
 	"encoding/hex"
 	"fmt"
 
+	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	"github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types"
 	"github.com/btcsuite/btcd/btcutil"
@@ -122,9 +124,12 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 	if err := req.StakingTx.VerifyInclusion(stakingTxHeader.Header, btclcParams.PowLimit); err != nil {
 		return nil, types.ErrBTCTxNotIncluded.Wrap(err.Error())
 	}
-	var btc_receiving_addr btcutil.Address
+	receiver, receiverExists := p.Receivers[req.Receiver]
+	if !receiverExists {
+		return nil, types.ErrInvalidReceivingAddr.Wrapf("Receiver(%s) not exists", req.Receiver)
+	}
 
-	btc_receiving_addr, err = btcutil.DecodeAddress(p.BtcReceivingAddr, btclcParams)
+	btc_receiving_addr, err := btcutil.DecodeAddress(receiver.Addr, btclcParams)
 	if err != nil {
 		return nil, types.ErrInvalidReceivingAddr.Wrap(err.Error())
 	}
@@ -143,7 +148,7 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 	coins := []sdk.Coin{
 		{
 			//FIXME: no string literal
-			Denom:  "stBTC",
+			Denom:  types.NativeTokenDenom,
 			Amount: toMintAmount,
 		},
 	}
@@ -156,9 +161,11 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 		return nil, types.ErrTransferToAddr.Wrap(err.Error())
 	}
 	stakingRecord := types.BTCStakingRecord{
-		TxHash:     stakingTxHash[:],
-		Amount:     btcAmount,
-		MintToAddr: mintToAddr,
+		TxHash:          stakingTxHash[:],
+		Amount:          btcAmount,
+		MintToAddr:      mintToAddr,
+		BtcReceiverName: receiver.Name,
+		BtcReceiverAddr: receiver.Addr,
 	}
 	err = ms.addBTCStakingRecord(ctx, &stakingRecord)
 	if err != nil {
@@ -210,4 +217,39 @@ func (ms msgServer) Burn(goCtx context.Context, req *types.MsgBurnRequest) (*typ
 	}
 
 	return &types.MsgBurnResponse{}, nil
+}
+
+func (ms msgServer) AddReceiver(goCtx context.Context, req *types.MsgAddReceiver) (*types.MsgAddReceiverResponse, error) {
+	if ms.authority != req.Authority {
+		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", ms.authority, req.Authority)
+	}
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	params := ms.GetParams(ctx)
+	params.Receivers[req.Receiver.Name] = &req.Receiver
+	btclcParams := ms.btclcKeeper.GetBTCNet()
+	if _, err := btcutil.DecodeAddress(req.Receiver.Addr, btclcParams); err != nil {
+		return nil, types.ErrInvalidReceivingAddr.Wrap(err.Error())
+	}
+	if err := ms.SetParams(ctx, params); err != nil {
+		return nil, err
+	}
+
+	return &types.MsgAddReceiverResponse{}, nil
+}
+
+func (ms msgServer) RemoveReceiver(goCtx context.Context, req *types.MsgRemoveReceiver) (*types.MsgRemoveReceiverResponse, error) {
+	if ms.authority != req.Authority {
+		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", ms.authority, req.Authority)
+	}
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	params := ms.GetParams(ctx)
+	_, receiverExists := params.Receivers[req.Receiver]
+	if receiverExists {
+		return nil, govtypes.ErrInvalidProposalMsg.Wrap("Receiver not exists")
+	}
+	delete(params.Receivers, req.Receiver)
+	if err := ms.SetParams(ctx, params); err != nil {
+		return nil, err
+	}
+	return &types.MsgRemoveReceiverResponse{}, nil
 }
