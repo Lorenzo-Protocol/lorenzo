@@ -17,10 +17,18 @@ func (gs GenesisState) Validate() error {
 	if gs.Params == nil {
 		return fmt.Errorf("params cannot be nil")
 	}
-	for name, receiver := range gs.Params.Receivers {
-		if name != receiver.Name {
-			return fmt.Errorf("Receiver's name dismatch")
+	receivers := map[string]bool{}
+	for _, receiver := range gs.Params.Receivers {
+		if _, receiverExists := receivers[receiver.Name]; receiverExists {
+			return fmt.Errorf("duplicate receiver name: %s", receiver)
 		}
+		if len(receiver.Name) == 0 {
+			return fmt.Errorf("receiver name cannot be empty")
+		}
+		if len(receiver.Addr) == 0 {
+			return fmt.Errorf("receiver addr cannot be empty")
+		}
+		receivers[receiver.Name] = true
 	}
 	if gs.Params.BtcConfirmationsDepth == 0 {
 		return fmt.Errorf("btc confirmations depth cannot be 0")

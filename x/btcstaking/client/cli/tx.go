@@ -62,7 +62,14 @@ func NewCreateBTCStakingWithBTCProofCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			if _, receiverExists := resp.Params.Receivers[args[2]]; !receiverExists {
+
+			receiverExists := false
+			for _, r := range resp.Params.Receivers {
+				if r.Name == args[2] {
+					receiverExists = true
+				}
+			}
+			if !receiverExists {
 				return fmt.Errorf("receiver(%s) not found", args[2])
 			}
 

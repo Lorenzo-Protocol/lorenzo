@@ -22,7 +22,7 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 
 	btcstakingQueryCmd.AddCommand(
 		CmdGetParams(),
-		CmdGetBTCStaingRecord(),
+		CmdGetBTCStakingRecord(),
 	)
 
 	return btcstakingQueryCmd
@@ -49,7 +49,7 @@ func CmdGetParams() *cobra.Command {
 	return cmd
 }
 
-func CmdGetBTCStaingRecord() *cobra.Command {
+func CmdGetBTCStakingRecord() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "get-btc-staking-record [btc_staking_tx_id]",
 		Short: "get the btc staking record",

@@ -11,6 +11,6 @@ message Receiver {
 }
 // GenesisState defines the btcstaking module's genesis state.
 message Params {
-  map<string, Receiver> receivers = 1;
+  repeated Receiver receivers = 1;
   uint32 btc_confirmations_depth = 2;
 }
