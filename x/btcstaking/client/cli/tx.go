@@ -35,9 +35,9 @@ func GetTxCmd() *cobra.Command {
 
 func NewCreateBTCStakingWithBTCProofCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-btcstaking-with-btc-proof [btc_tx_bytes] [proof]",
+		Use:   "create-btcstaking-with-btc-proof [btc_tx_bytes] [proof] [receiver_name]",
 		Short: "Create a new btc staking request with proof from bitcoin-cli getrawtransaction&gettxoutproof output",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -57,6 +57,22 @@ func NewCreateBTCStakingWithBTCProofCmd() *cobra.Command {
 			}
 			txIndex, proofBytes, err := keeper.ParseBTCProof(merkleBlk)
 
+			queryClient := types.NewQueryClient(clientCtx)
+			resp, err := queryClient.Params(cmd.Context(), &types.QueryParamsRequest{})
+			if err != nil {
+				return err
+			}
+
+			receiverExists := false
+			for _, r := range resp.Params.Receivers {
+				if r.Name == args[2] {
+					receiverExists = true
+				}
+			}
+			if !receiverExists {
+				return fmt.Errorf("receiver(%s) not found", args[2])
+			}
+
 			blkHdr := &merkleBlk.Header
 
 			var blkHdrHashBytes lrz.BTCHeaderHashBytes
@@ -64,7 +80,8 @@ func NewCreateBTCStakingWithBTCProofCmd() *cobra.Command {
 			blkHdrHashBytes.FromChainhash(&tmp)
 
 			msg := types.MsgCreateBTCStaking{
-				Signer: clientCtx.GetFromAddress().String(),
+				Receiver: args[2],
+				Signer:   clientCtx.GetFromAddress().String(),
 				StakingTx: &types.TransactionInfo{
 					Key: &types.TransactionKey{
 						Index: txIndex,
