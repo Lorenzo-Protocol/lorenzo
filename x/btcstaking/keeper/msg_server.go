@@ -124,8 +124,8 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 	if err := req.StakingTx.VerifyInclusion(stakingTxHeader.Header, btclcParams.PowLimit); err != nil {
 		return nil, types.ErrBTCTxNotIncluded.Wrap(err.Error())
 	}
-	receiver, receiverExists := p.Receivers[req.Receiver]
-	if !receiverExists {
+	_, receiver := findReceiver(p.Receivers, req.Receiver)
+	if receiver == nil {
 		return nil, types.ErrInvalidReceivingAddr.Wrapf("Receiver(%s) not exists", req.Receiver)
 	}
 
@@ -219,13 +219,31 @@ func (ms msgServer) Burn(goCtx context.Context, req *types.MsgBurnRequest) (*typ
 	return &types.MsgBurnResponse{}, nil
 }
 
+func findReceiver(receivers []*types.Receiver, name string) (int, *types.Receiver) {
+	var receiver *types.Receiver = nil
+	idx := -1
+	for i, r := range receivers {
+		if r != nil && r.Name == name {
+			idx = i
+			receiver = r
+			break
+		}
+	}
+	return idx, receiver
+}
+
 func (ms msgServer) AddReceiver(goCtx context.Context, req *types.MsgAddReceiver) (*types.MsgAddReceiverResponse, error) {
 	if ms.authority != req.Authority {
 		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", ms.authority, req.Authority)
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	params := ms.GetParams(ctx)
-	params.Receivers[req.Receiver.Name] = &req.Receiver
+	receiverIdx, receiver := findReceiver(params.Receivers, req.Receiver.Name)
+	if receiver != nil {
+		params.Receivers[receiverIdx] = &req.Receiver
+	} else {
+		params.Receivers = append(params.Receivers, receiver)
+	}
 	btclcParams := ms.btclcKeeper.GetBTCNet()
 	if _, err := btcutil.DecodeAddress(req.Receiver.Addr, btclcParams); err != nil {
 		return nil, types.ErrInvalidReceivingAddr.Wrap(err.Error())
@@ -243,11 +261,16 @@ func (ms msgServer) RemoveReceiver(goCtx context.Context, req *types.MsgRemoveRe
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	params := ms.GetParams(ctx)
-	_, receiverExists := params.Receivers[req.Receiver]
-	if receiverExists {
+	receivers := make([]*types.Receiver, 0, len(params.Receivers))
+	for _, receiver := range params.Receivers {
+		if receiver.Name != req.Receiver {
+			receivers = append(receivers, receiver)
+		}
+	}
+	if len(receivers) == len(params.Receivers) {
 		return nil, govtypes.ErrInvalidProposalMsg.Wrap("Receiver not exists")
 	}
-	delete(params.Receivers, req.Receiver)
+	params.Receivers = receivers
 	if err := ms.SetParams(ctx, params); err != nil {
 		return nil, err
 	}

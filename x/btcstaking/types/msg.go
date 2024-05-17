@@ -20,7 +20,7 @@ func (m *MsgCreateBTCStaking) ValidateBasic() error {
 		return fmt.Errorf("empty staking tx info")
 	}
 	if len(m.Receiver) == 0 {
-		return fmt.Errorf("empty receiver")
+		return fmt.Errorf("receiver name cannot be empty")
 	}
 	// staking tx should be correctly formatted
 	if err := m.StakingTx.ValidateBasic(); err != nil {
@@ -39,10 +39,10 @@ func (m *MsgAddReceiver) ValidateBasic() error {
 		return errorsmod.Wrap(err, "invalid authority address")
 	}
 	if len(m.Receiver.Name) == 0 {
-		return fmt.Errorf("empty receiver")
+		return fmt.Errorf("receiver name cannot be empty")
 	}
 	if len(m.Receiver.Addr) == 0 {
-		return fmt.Errorf("empty receiver addr")
+		return fmt.Errorf("receiver addr cannot be empty")
 	}
 	return nil
 }
@@ -57,7 +57,7 @@ func (m *MsgRemoveReceiver) ValidateBasic() error {
 		return errorsmod.Wrap(err, "invalid authority address")
 	}
 	if len(m.Receiver) == 0 {
-		return fmt.Errorf("empty receiver")
+		return fmt.Errorf("receiver name cannot be empty")
 	}
 	return nil
 }
