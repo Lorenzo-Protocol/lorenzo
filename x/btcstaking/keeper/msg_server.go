@@ -237,7 +237,7 @@ func (ms msgServer) AddReceiver(goCtx context.Context, req *types.MsgAddReceiver
 	if receiver != nil {
 		params.Receivers[receiverIdx] = &req.Receiver
 	} else {
-		params.Receivers = append(params.Receivers, receiver)
+		params.Receivers = append(params.Receivers, &req.Receiver)
 	}
 	btclcParams := ms.btclcKeeper.GetBTCNet()
 	if _, err := btcutil.DecodeAddress(req.Receiver.Addr, btclcParams); err != nil {
