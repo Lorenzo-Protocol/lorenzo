@@ -2,6 +2,7 @@ package cli
 
 import (
 	"encoding/hex"
+	"fmt"
 
 	sdkmath "cosmossdk.io/math"
 	"github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types"
@@ -63,6 +64,9 @@ func CmdGetBTCStakingRecord() *cobra.Command {
 				return err
 			}
 			res, err := queryClient.StakingRecord(cmd.Context(), &types.QueryStakingRecordRequest{TxHash: txHashBytes[:]})
+			if res.Record == nil {
+				return fmt.Errorf("record not found")
+			}
 			resDisp := types.StakingRecordDisplay{}
 			resDisp.TxId = (chainhash.Hash)(res.Record.TxHash).String()
 			resDisp.Amount = sdkmath.NewIntFromUint64(res.Record.Amount).Mul(sdkmath.NewIntFromUint64(1e10)).String()

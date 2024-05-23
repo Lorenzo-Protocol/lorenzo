@@ -3,10 +3,10 @@ package types
 import (
 	fmt "fmt"
 
+	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	"github.com/btcsuite/btcd/btcutil"
 	"github.com/btcsuite/btcd/chaincfg"
-	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -41,11 +41,8 @@ func (m *MsgAddReceiver) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
 		return errorsmod.Wrap(err, "invalid authority address")
 	}
-	if len(m.Receiver.Name) == 0 {
-		return fmt.Errorf("receiver name cannot be empty")
-	}
-	if len(m.Receiver.Addr) == 0 {
-		return fmt.Errorf("receiver addr cannot be empty")
+	if err := m.Receiver.Validate(); err != nil {
+		return err
 	}
 	return nil
 }

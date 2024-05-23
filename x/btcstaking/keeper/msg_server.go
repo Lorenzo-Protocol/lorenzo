@@ -15,7 +15,10 @@ import (
 	"github.com/btcsuite/btcd/btcutil"
 	"github.com/btcsuite/btcd/txscript"
 	"github.com/btcsuite/btcd/wire"
+	"github.com/ethereum/go-ethereum/common"
 )
+
+const EthAddrLen = 42
 
 type msgServer struct {
 	Keeper
@@ -41,6 +44,20 @@ func NewBTCTxFromBytes(txBytes []byte) (*wire.MsgTx, error) {
 }
 
 const maxOpReturnPkScriptSize = 83
+
+func extractPaymentTo(tx *wire.MsgTx, addr btcutil.Address) (uint64, error) {
+	payToAddrScript, err := txscript.PayToAddrScript(addr)
+	if err != nil {
+		return 0, fmt.Errorf("invalid address")
+	}
+	var amt uint64 = 0
+	for _, out := range tx.TxOut {
+		if bytes.Equal(out.PkScript, payToAddrScript) {
+			amt += uint64(out.Value)
+		}
+	}
+	return amt, nil
+}
 
 func extractPaymentToWithOpReturnId(tx *wire.MsgTx, addr btcutil.Address) (uint64, []byte, error) {
 	payToAddrScript, err := txscript.PayToAddrScript(addr)
@@ -133,7 +150,12 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 	}
 	var mintToAddr []byte
 	var btcAmount uint64
-	btcAmount, mintToAddr, err = extractPaymentToWithOpReturnId(stakingMsgTx, btc_receiving_addr)
+	if common.IsHexAddress(receiver.EthAddr) {
+		mintToAddr = common.HexToAddress(receiver.EthAddr).Bytes()
+		btcAmount, err = extractPaymentTo(stakingMsgTx, btc_receiving_addr)
+	} else {
+		btcAmount, mintToAddr, err = extractPaymentToWithOpReturnId(stakingMsgTx, btc_receiving_addr)
+	}
 	if err != nil || btcAmount == 0 {
 		return nil, types.ErrInvalidTransaction
 	}
