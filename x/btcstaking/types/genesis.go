@@ -1,6 +1,9 @@
 package types
 
-import "fmt"
+import (
+	"encoding/hex"
+	"fmt"
+)
 
 // DefaultGenesis returns the default genesis state
 func DefaultGenesis() *GenesisState {
@@ -28,6 +31,16 @@ func (gs GenesisState) Validate() error {
 		if len(receiver.Addr) == 0 {
 			return fmt.Errorf("receiver addr cannot be empty")
 		}
+      if len(receiver.EthAddr) == 42 {
+          if receiver.EthAddr[:2] != "0x" {
+              return fmt.Errorf("receiver's eth addr must start with 0x");
+          }
+          if _, err := hex.DecodeString(receiver.EthAddr[2:]); err != nil {
+              return fmt.Errorf("receiver's eth addr must be a valid hex string");
+          }
+      } else if len(receiver.EthAddr) != 0 {
+          return fmt.Errorf("receiver's eth addr must be empty or 42 characters");
+      }
 		receivers[receiver.Name] = true
 	}
 	if gs.Params.BtcConfirmationsDepth == 0 {
