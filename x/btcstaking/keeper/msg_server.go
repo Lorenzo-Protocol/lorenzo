@@ -15,6 +15,7 @@ import (
 	"github.com/btcsuite/btcd/btcutil"
 	"github.com/btcsuite/btcd/txscript"
 	"github.com/btcsuite/btcd/wire"
+	"github.com/ethereum/go-ethereum/common"
 )
 
 const EthAddrLen = 42
@@ -149,14 +150,8 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 	}
 	var mintToAddr []byte
 	var btcAmount uint64
-	if len(receiver.EthAddr) == EthAddrLen {
-		if receiver.EthAddr[0:2] != "0x" {
-			return nil, types.ErrInvalidEthAddr.Wrapf("unknown prefix: %s", receiver.EthAddr[0:2])
-		}
-		mintToAddr, err = hex.DecodeString(receiver.EthAddr[2:])
-		if err != nil {
-			return nil, types.ErrInvalidEthAddr.Wrap(err.Error())
-		}
+	if common.IsHexAddress(receiver.EthAddr) {
+		mintToAddr = common.HexToAddress(receiver.EthAddr).Bytes()
 		btcAmount, err = extractPaymentTo(stakingMsgTx, btc_receiving_addr)
 	} else {
 		btcAmount, mintToAddr, err = extractPaymentToWithOpReturnId(stakingMsgTx, btc_receiving_addr)

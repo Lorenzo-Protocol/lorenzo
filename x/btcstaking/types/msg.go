@@ -41,11 +41,8 @@ func (m *MsgAddReceiver) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
 		return errorsmod.Wrap(err, "invalid authority address")
 	}
-	if len(m.Receiver.Name) == 0 {
-		return fmt.Errorf("receiver name cannot be empty")
-	}
-	if len(m.Receiver.Addr) == 0 {
-		return fmt.Errorf("receiver addr cannot be empty")
+	if err := m.Receiver.Validate(); err != nil {
+		return err
 	}
 	return nil
 }
