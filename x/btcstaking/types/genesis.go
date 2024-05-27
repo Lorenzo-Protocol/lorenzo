@@ -44,8 +44,5 @@ func (gs GenesisState) Validate() error {
 		}
 		receivers[receiver.Name] = true
 	}
-	if gs.Params.BtcConfirmationsDepth == 0 {
-		return fmt.Errorf("btc confirmations depth cannot be 0")
-	}
 	return nil
 }

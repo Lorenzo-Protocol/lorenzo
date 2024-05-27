@@ -20,6 +20,10 @@ import (
 
 const EthAddrLen = 42
 
+const Dep0Amount = 2e6
+const Dep1Amount = 1e7
+const Dep2Amount = 5e7
+
 type msgServer struct {
 	Keeper
 }
@@ -132,9 +136,6 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 	p := ms.GetParams(ctx)
 	btcTip := ms.btclcKeeper.GetTipInfo(ctx)
 	stakingTxDepth := btcTip.Height - stakingTxHeader.Height
-	if stakingTxDepth < uint64(p.BtcConfirmationsDepth) {
-		return nil, types.ErrBlkHdrNotConfirmed.Wrapf("not k-deep: k=%d; depth=%d", p.BtcConfirmationsDepth, stakingTxDepth)
-	}
 	btclcParams := ms.btclcKeeper.GetBTCNet()
 	if err := req.StakingTx.VerifyInclusion(stakingTxHeader.Header, btclcParams.PowLimit); err != nil {
 		return nil, types.ErrBTCTxNotIncluded.Wrap(err.Error())
@@ -158,6 +159,17 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 	}
 	if err != nil || btcAmount == 0 {
 		return nil, types.ErrInvalidTransaction
+	} else if btcAmount < Dep0Amount { // no depth check required
+	} else if btcAmount < Dep1Amount { // at least 1 depth
+		if stakingTxDepth < 1 {
+			return nil, types.ErrBlkHdrNotConfirmed.Wrapf("not k-deep: k=%d; depth=%d", 1, stakingTxDepth)
+		}
+	} else if btcAmount < Dep2Amount {
+		if stakingTxDepth < 2 {
+			return nil, types.ErrBlkHdrNotConfirmed.Wrapf("not k-deep: k=%d; depth=%d", 2, stakingTxDepth)
+		}
+	} else if stakingTxDepth < 3 {
+		return nil, types.ErrBlkHdrNotConfirmed.Wrapf("not k-deep: k=%d; depth=%d", 3, stakingTxDepth)
 	}
 	if len(mintToAddr) != 20 {
 		return nil, types.ErrMintToAddr.Wrap(hex.EncodeToString(mintToAddr))
