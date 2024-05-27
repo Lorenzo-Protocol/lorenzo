@@ -24,7 +24,9 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type Receiver struct {
+	// name of the receiver
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// btc address
 	Addr string `protobuf:"bytes,2,opt,name=addr,proto3" json:"addr,omitempty"`
 	// like 0xBAb28FF7659481F1c8516f616A576339936AFB06
 	EthAddr string `protobuf:"bytes,3,opt,name=eth_addr,json=ethAddr,proto3" json:"eth_addr,omitempty"`
@@ -86,8 +88,10 @@ func (m *Receiver) GetEthAddr() string {
 
 // GenesisState defines the btcstaking module's genesis state.
 type Params struct {
-	Receivers             []*Receiver `protobuf:"bytes,1,rep,name=receivers,proto3" json:"receivers,omitempty"`
-	BtcConfirmationsDepth uint32      `protobuf:"varint,2,opt,name=btc_confirmations_depth,json=btcConfirmationsDepth,proto3" json:"btc_confirmations_depth,omitempty"`
+	// receivers' name must be unique
+	Receivers []*Receiver `protobuf:"bytes,1,rep,name=receivers,proto3" json:"receivers,omitempty"`
+	// deprecated
+	BtcConfirmationsDepth uint32 `protobuf:"varint,2,opt,name=btc_confirmations_depth,json=btcConfirmationsDepth,proto3" json:"btc_confirmations_depth,omitempty"`
 }
 
 func (m *Params) Reset()         { *m = Params{} }
