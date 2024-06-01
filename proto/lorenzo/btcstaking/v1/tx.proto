@@ -22,6 +22,8 @@ service Msg {
   rpc AddReceiver(MsgAddReceiver) returns (MsgAddReceiverResponse);
 
   rpc RemoveReceiver(MsgRemoveReceiver) returns (MsgRemoveReceiverResponse);
+
+  rpc UpdateAllowList(MsgUpdateAllowList) returns (MsgUpdateAllowListResponse);
 }
 
 message TransactionKey {
@@ -87,3 +89,12 @@ message MsgRemoveReceiver {
   string receiver = 2 ;
 }
 message MsgRemoveReceiverResponse {}
+
+message MsgUpdateAllowList {
+  option (cosmos.msg.v1.signer) = "authority";
+
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  repeated string minter_allow_list = 2;
+}
+message MsgUpdateAllowListResponse {}

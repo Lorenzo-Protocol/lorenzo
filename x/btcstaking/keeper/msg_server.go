@@ -20,9 +20,10 @@ import (
 
 const EthAddrLen = 42
 
-const Dep0Amount = 2e6
-const Dep1Amount = 1e7
-const Dep2Amount = 5e7
+const Dep0Amount = 4e5
+const Dep1Amount = 2e6
+const Dep2Amount = 1e7
+const Dep3Amount = 5e7
 
 type msgServer struct {
 	Keeper
@@ -36,7 +37,6 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 
 var _ types.MsgServer = msgServer{}
 
-// UpdateParams updates the params
 func NewBTCTxFromBytes(txBytes []byte) (*wire.MsgTx, error) {
 	var msgTx wire.MsgTx
 	rbuf := bytes.NewReader(txBytes)
@@ -102,19 +102,17 @@ func extractPaymentToWithOpReturnId(tx *wire.MsgTx, addr btcutil.Address) (uint6
 	return amt, opReturnId, nil
 }
 
-/*func extractPaymentTo(tx *wire.MsgTx, addr btcutil.Address) (uint64, error) {
-    payToAddrScript, err := txscript.PayToAddrScript(addr)
-    if err != nil {
-        return 0, fmt.Errorf("invalid address")
-    }
-    var amt uint64 = 0
-    for _, out := range tx.TxOut {
-        if bytes.Equal(out.PkScript, payToAddrScript) {
-            amt += uint64(out.Value)
-        }
-    }
-    return amt, nil
-}*/
+func canPerformMint(signer sdk.AccAddress, p types.Params) bool {
+	if len(p.MinterAllowList) == 0 {
+		return true
+	}
+	for _, addr := range p.MinterAllowList {
+		if sdk.MustAccAddressFromBech32(addr).Equals(signer) {
+			return true
+		}
+	}
+	return false
+}
 
 func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreateBTCStaking) (*types.MsgCreateBTCStakingResponse, error) {
 	stakingMsgTx, err := NewBTCTxFromBytes(req.StakingTx.Transaction)
@@ -152,6 +150,10 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 	var mintToAddr []byte
 	var btcAmount uint64
 	if common.IsHexAddress(receiver.EthAddr) {
+		signers := req.GetSigners()
+		if len(signers) == 0 || !canPerformMint(req.GetSigners()[0], *p) {
+			return nil, types.ErrNotInAllowList
+		}
 		mintToAddr = common.HexToAddress(receiver.EthAddr).Bytes()
 		btcAmount, err = extractPaymentTo(stakingMsgTx, btc_receiving_addr)
 	} else {
@@ -162,14 +164,18 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 	} else if btcAmount < Dep0Amount { // no depth check required
 	} else if btcAmount < Dep1Amount { // at least 1 depth
 		if stakingTxDepth < 1 {
-			return nil, types.ErrBlkHdrNotConfirmed.Wrapf("not k-deep: k=%d; depth=%d", 1, stakingTxDepth)
+			return nil, types.ErrBlkHdrNotConfirmed.Wrapf("not k-deep: k=1; depth=%d", stakingTxDepth)
 		}
 	} else if btcAmount < Dep2Amount {
 		if stakingTxDepth < 2 {
-			return nil, types.ErrBlkHdrNotConfirmed.Wrapf("not k-deep: k=%d; depth=%d", 2, stakingTxDepth)
+			return nil, types.ErrBlkHdrNotConfirmed.Wrapf("not k-deep: k=2; depth=%d", stakingTxDepth)
 		}
-	} else if stakingTxDepth < 3 {
-		return nil, types.ErrBlkHdrNotConfirmed.Wrapf("not k-deep: k=%d; depth=%d", 3, stakingTxDepth)
+	} else if btcAmount < Dep3Amount {
+		if stakingTxDepth < 3 {
+			return nil, types.ErrBlkHdrNotConfirmed.Wrapf("not k-deep: k=3; depth=%d", stakingTxDepth)
+		}
+	} else if stakingTxDepth < 4 {
+		return nil, types.ErrBlkHdrNotConfirmed.Wrapf("not k-deep: k=4; depth=%d", stakingTxDepth)
 	}
 	if len(mintToAddr) != 20 {
 		return nil, types.ErrMintToAddr.Wrap(hex.EncodeToString(mintToAddr))
@@ -304,4 +310,20 @@ func (ms msgServer) RemoveReceiver(goCtx context.Context, req *types.MsgRemoveRe
 		return nil, err
 	}
 	return &types.MsgRemoveReceiverResponse{}, nil
+}
+
+func (ms msgServer) UpdateAllowList(goCtx context.Context, req *types.MsgUpdateAllowList) (*types.MsgUpdateAllowListResponse, error) {
+	if ms.authority != req.Authority {
+		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", ms.authority, req.Authority)
+	}
+	if err := types.ValidateAddressList(req.MinterAllowList); err != nil {
+		return nil, err
+	}
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	params := ms.GetParams(ctx)
+	params.MinterAllowList = req.MinterAllowList
+	if err := ms.SetParams(ctx, params); err != nil {
+		return nil, err
+	}
+	return &types.MsgUpdateAllowListResponse{}, nil
 }

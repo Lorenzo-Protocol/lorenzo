@@ -3,6 +3,7 @@ package types
 import (
 	"fmt"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ethereum/go-ethereum/common"
 )
 
@@ -28,14 +29,19 @@ func (receiver Receiver) Validate() error {
 	return nil
 }
 
-// Validate performs basic genesis state validation returning an error upon any
-// failure.
-func (gs GenesisState) Validate() error {
-	if gs.Params == nil {
-		return fmt.Errorf("params cannot be nil")
+func ValidateAddressList(allowList []string) error {
+	for _, a := range allowList {
+		if _, err := sdk.AccAddressFromBech32(a); err != nil {
+			return fmt.Errorf("invalid address")
+		}
 	}
+
+	return nil
+}
+
+func (params Params) Validate() error {
 	receivers := map[string]bool{}
-	for _, receiver := range gs.Params.Receivers {
+	for _, receiver := range params.Receivers {
 		if err := receiver.Validate(); err != nil {
 			return err
 		}
@@ -43,6 +49,21 @@ func (gs GenesisState) Validate() error {
 			return fmt.Errorf("duplicate receiver name: %s", receiver)
 		}
 		receivers[receiver.Name] = true
+	}
+	if err := ValidateAddressList(params.MinterAllowList); err != nil {
+		return fmt.Errorf("invalid minter allow list")
+	}
+	return nil
+}
+
+// Validate performs basic genesis state validation returning an error upon any
+// failure.
+func (gs GenesisState) Validate() error {
+	if gs.Params == nil {
+		return fmt.Errorf("params cannot be nil")
+	}
+	if err := gs.Params.Validate(); err != nil {
+		return err
 	}
 	return nil
 }

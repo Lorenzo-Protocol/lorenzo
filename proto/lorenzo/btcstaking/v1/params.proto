@@ -19,4 +19,6 @@ message Params {
   repeated Receiver receivers = 1;
   // deprecated
   uint32 btc_confirmations_depth = 2;
+  // allow list to mint for receiver with eth_addr
+  repeated string minter_allow_list = 3;
 }

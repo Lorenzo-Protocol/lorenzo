@@ -16,6 +16,7 @@ var (
 	_ sdk.Msg = &MsgBurnRequest{}
 	_ sdk.Msg = &MsgRemoveReceiver{}
 	_ sdk.Msg = &MsgAddReceiver{}
+	_ sdk.Msg = &MsgUpdateAllowList{}
 )
 
 func (m *MsgCreateBTCStaking) ValidateBasic() error {
@@ -98,4 +99,19 @@ func NewMsgBurnRequest(signer, btcTargetAddress string, amount math.Int) MsgBurn
 		BtcTargetAddress: btcTargetAddress,
 		Amount:           amount,
 	}
+}
+
+func (m *MsgUpdateAllowList) GetSigners() []sdk.AccAddress {
+	addr, _ := sdk.AccAddressFromBech32(m.Authority)
+	return []sdk.AccAddress{addr}
+}
+
+func (m *MsgUpdateAllowList) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
+		return errorsmod.Wrap(err, "invalid authority address")
+	}
+	if err := ValidateAddressList(m.MinterAllowList); err != nil {
+		return err
+	}
+	return nil
 }
