@@ -222,7 +222,7 @@ replace (
 	// use cosmos fork of keyring
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.2.0
 	// use lorenzo forks ethermint
-	github.com/evmos/ethermint => github.com/Lorenzo-Protocol/ethermint v0.22.0-lorenzo-3
+	github.com/evmos/ethermint => github.com/Lorenzo-Protocol/ethermint v0.22.0-lorenzo-4
 
 	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.9.0
 	//  broken goleveldb
