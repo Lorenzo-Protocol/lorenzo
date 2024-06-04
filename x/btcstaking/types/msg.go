@@ -3,7 +3,6 @@ package types
 import (
 	fmt "fmt"
 
-	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	"github.com/btcsuite/btcd/btcutil"
 	"github.com/btcsuite/btcd/chaincfg"
@@ -14,9 +13,7 @@ import (
 var (
 	_ sdk.Msg = &MsgCreateBTCStaking{}
 	_ sdk.Msg = &MsgBurnRequest{}
-	_ sdk.Msg = &MsgRemoveReceiver{}
-	_ sdk.Msg = &MsgAddReceiver{}
-	_ sdk.Msg = &MsgUpdateAllowList{}
+	_ sdk.Msg = &MsgUpdateParams{}
 )
 
 func (m *MsgCreateBTCStaking) ValidateBasic() error {
@@ -29,36 +26,6 @@ func (m *MsgCreateBTCStaking) ValidateBasic() error {
 	// staking tx should be correctly formatted
 	if err := m.StakingTx.ValidateBasic(); err != nil {
 		return err
-	}
-	return nil
-}
-
-func (m *MsgAddReceiver) GetSigners() []sdk.AccAddress {
-	addr, _ := sdk.AccAddressFromBech32(m.Authority)
-	return []sdk.AccAddress{addr}
-}
-
-func (m *MsgAddReceiver) ValidateBasic() error {
-	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
-		return errorsmod.Wrap(err, "invalid authority address")
-	}
-	if err := m.Receiver.Validate(); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (m *MsgRemoveReceiver) GetSigners() []sdk.AccAddress {
-	addr, _ := sdk.AccAddressFromBech32(m.Authority)
-	return []sdk.AccAddress{addr}
-}
-
-func (m *MsgRemoveReceiver) ValidateBasic() error {
-	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
-		return errorsmod.Wrap(err, "invalid authority address")
-	}
-	if len(m.Receiver) == 0 {
-		return fmt.Errorf("receiver name cannot be empty")
 	}
 	return nil
 }
@@ -101,16 +68,13 @@ func NewMsgBurnRequest(signer, btcTargetAddress string, amount math.Int) MsgBurn
 	}
 }
 
-func (m *MsgUpdateAllowList) GetSigners() []sdk.AccAddress {
+func (m *MsgUpdateParams) GetSigners() []sdk.AccAddress {
 	addr, _ := sdk.AccAddressFromBech32(m.Authority)
 	return []sdk.AccAddress{addr}
 }
 
-func (m *MsgUpdateAllowList) ValidateBasic() error {
-	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
-		return errorsmod.Wrap(err, "invalid authority address")
-	}
-	if err := ValidateAddressList(m.MinterAllowList); err != nil {
+func (m *MsgUpdateParams) ValidateBasic() error {
+	if err := m.Params.Validate(); err != nil {
 		return err
 	}
 	return nil

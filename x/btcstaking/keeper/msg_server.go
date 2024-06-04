@@ -267,63 +267,16 @@ func findReceiver(receivers []*types.Receiver, name string) (int, *types.Receive
 	return idx, receiver
 }
 
-func (ms msgServer) AddReceiver(goCtx context.Context, req *types.MsgAddReceiver) (*types.MsgAddReceiverResponse, error) {
+func (ms msgServer) UpdateParams(goCtx context.Context, req *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
 	if ms.authority != req.Authority {
 		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", ms.authority, req.Authority)
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	params := ms.GetParams(ctx)
-	receiverIdx, receiver := findReceiver(params.Receivers, req.Receiver.Name)
-	if receiver != nil {
-		params.Receivers[receiverIdx] = &req.Receiver
-	} else {
-		params.Receivers = append(params.Receivers, &req.Receiver)
-	}
-	btclcParams := ms.btclcKeeper.GetBTCNet()
-	if _, err := btcutil.DecodeAddress(req.Receiver.Addr, btclcParams); err != nil {
-		return nil, types.ErrInvalidReceivingAddr.Wrap(err.Error())
-	}
-	if err := ms.SetParams(ctx, params); err != nil {
+	if err := req.Params.Validate(); err != nil {
 		return nil, err
 	}
-
-	return &types.MsgAddReceiverResponse{}, nil
-}
-
-func (ms msgServer) RemoveReceiver(goCtx context.Context, req *types.MsgRemoveReceiver) (*types.MsgRemoveReceiverResponse, error) {
-	if ms.authority != req.Authority {
-		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", ms.authority, req.Authority)
-	}
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	params := ms.GetParams(ctx)
-	receivers := make([]*types.Receiver, 0, len(params.Receivers))
-	for _, receiver := range params.Receivers {
-		if receiver.Name != req.Receiver {
-			receivers = append(receivers, receiver)
-		}
-	}
-	if len(receivers) == len(params.Receivers) {
-		return nil, govtypes.ErrInvalidProposalMsg.Wrap("Receiver not exists")
-	}
-	params.Receivers = receivers
-	if err := ms.SetParams(ctx, params); err != nil {
+	if err := ms.SetParams(ctx, &req.Params); err != nil {
 		return nil, err
 	}
-	return &types.MsgRemoveReceiverResponse{}, nil
-}
-
-func (ms msgServer) UpdateAllowList(goCtx context.Context, req *types.MsgUpdateAllowList) (*types.MsgUpdateAllowListResponse, error) {
-	if ms.authority != req.Authority {
-		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", ms.authority, req.Authority)
-	}
-	if err := types.ValidateAddressList(req.MinterAllowList); err != nil {
-		return nil, err
-	}
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	params := ms.GetParams(ctx)
-	params.MinterAllowList = req.MinterAllowList
-	if err := ms.SetParams(ctx, params); err != nil {
-		return nil, err
-	}
-	return &types.MsgUpdateAllowListResponse{}, nil
+	return &types.MsgUpdateParamsResponse{}, nil
 }
