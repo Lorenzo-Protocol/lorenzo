@@ -41,7 +41,7 @@ func TestBTCTx(t *testing.T) {
 
 	addr := "tb1ptt9gnjnvje343y47z2wd7r8w6mnuylp8z0w74qftv7p5x323vxeq9jrn6f"
 	btc_addr, _ := btcutil.DecodeAddress(addr, &chaincfg.TestNet3Params)
-	amt, op_return_id, e := extractPaymentToWithOpReturnId(tx.MsgTx(), btc_addr)
+	amt, op_return_id, e := ExtractPaymentToWithOpReturnId(tx.MsgTx(), btc_addr)
 	assert.Equal(nil, e, "fail to extract")
 	assert.Equal(uint64(34471), amt, "wrong amount")
 	assert.Equal([]byte{0, 0, 10, 88, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28, 119, 155, 70, 202, 95, 252, 241, 68, 245, 58, 160, 156, 23, 165, 195, 55, 45, 227, 62, 65, 73, 78, 78, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 21, 142, 70, 9, 19, 208, 0, 0}, op_return_id, "unexpected op_return_id")

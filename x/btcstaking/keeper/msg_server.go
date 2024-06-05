@@ -49,7 +49,7 @@ func NewBTCTxFromBytes(txBytes []byte) (*wire.MsgTx, error) {
 
 const maxOpReturnPkScriptSize = 83
 
-func extractPaymentTo(tx *wire.MsgTx, addr btcutil.Address) (uint64, error) {
+func ExtractPaymentTo(tx *wire.MsgTx, addr btcutil.Address) (uint64, error) {
 	payToAddrScript, err := txscript.PayToAddrScript(addr)
 	if err != nil {
 		return 0, fmt.Errorf("invalid address")
@@ -63,7 +63,7 @@ func extractPaymentTo(tx *wire.MsgTx, addr btcutil.Address) (uint64, error) {
 	return amt, nil
 }
 
-func extractPaymentToWithOpReturnId(tx *wire.MsgTx, addr btcutil.Address) (uint64, []byte, error) {
+func ExtractPaymentToWithOpReturnId(tx *wire.MsgTx, addr btcutil.Address) (uint64, []byte, error) {
 	payToAddrScript, err := txscript.PayToAddrScript(addr)
 	if err != nil {
 		return 0, nil, fmt.Errorf("invalid address")
@@ -155,9 +155,9 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 			return nil, types.ErrNotInAllowList
 		}
 		mintToAddr = common.HexToAddress(receiver.EthAddr).Bytes()
-		btcAmount, err = extractPaymentTo(stakingMsgTx, btc_receiving_addr)
+		btcAmount, err = ExtractPaymentTo(stakingMsgTx, btc_receiving_addr)
 	} else {
-		btcAmount, mintToAddr, err = extractPaymentToWithOpReturnId(stakingMsgTx, btc_receiving_addr)
+		btcAmount, mintToAddr, err = ExtractPaymentToWithOpReturnId(stakingMsgTx, btc_receiving_addr)
 	}
 	if err != nil || btcAmount == 0 {
 		return nil, types.ErrInvalidTransaction
