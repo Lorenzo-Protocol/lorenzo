@@ -5,8 +5,20 @@ import "gogoproto/gogo.proto";
 
 option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types";
 
+message Receiver {
+    // name of the receiver
+    string name = 1;
+    // btc address
+    string addr = 2;
+    // like 0xBAb28FF7659481F1c8516f616A576339936AFB06
+    string eth_addr = 3;
+}
 // GenesisState defines the btcstaking module's genesis state.
 message Params {
-  string btc_receiving_addr = 1;
+  // receivers' name must be unique
+  repeated Receiver receivers = 1;
+  // deprecated
   uint32 btc_confirmations_depth = 2;
+  // allow list to mint for receiver with eth_addr
+  repeated string minter_allow_list = 3;
 }

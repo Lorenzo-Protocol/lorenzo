@@ -3,8 +3,8 @@ package cli
 import (
 	"encoding/hex"
 	"fmt"
-	"strconv"
 
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -35,9 +35,9 @@ func GetTxCmd() *cobra.Command {
 
 func NewCreateBTCStakingWithBTCProofCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-btcstaking-with-btc-proof [btc_tx_bytes] [proof]",
+		Use:   "create-btcstaking-with-btc-proof [btc_tx_bytes] [proof] [receiver_name]",
 		Short: "Create a new btc staking request with proof from bitcoin-cli getrawtransaction&gettxoutproof output",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -57,6 +57,22 @@ func NewCreateBTCStakingWithBTCProofCmd() *cobra.Command {
 			}
 			txIndex, proofBytes, err := keeper.ParseBTCProof(merkleBlk)
 
+			queryClient := types.NewQueryClient(clientCtx)
+			resp, err := queryClient.Params(cmd.Context(), &types.QueryParamsRequest{})
+			if err != nil {
+				return err
+			}
+
+			receiverExists := false
+			for _, r := range resp.Params.Receivers {
+				if r.Name == args[2] {
+					receiverExists = true
+				}
+			}
+			if !receiverExists {
+				return fmt.Errorf("receiver(%s) not found", args[2])
+			}
+
 			blkHdr := &merkleBlk.Header
 
 			var blkHdrHashBytes lrz.BTCHeaderHashBytes
@@ -64,7 +80,8 @@ func NewCreateBTCStakingWithBTCProofCmd() *cobra.Command {
 			blkHdrHashBytes.FromChainhash(&tmp)
 
 			msg := types.MsgCreateBTCStaking{
-				Signer: clientCtx.GetFromAddress().String(),
+				Receiver: args[2],
+				Signer:   clientCtx.GetFromAddress().String(),
 				StakingTx: &types.TransactionInfo{
 					Key: &types.TransactionKey{
 						Index: txIndex,
@@ -85,19 +102,19 @@ func NewCreateBTCStakingWithBTCProofCmd() *cobra.Command {
 
 func NewBurnCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "burn [btc_target_address] [amouont]",
-		Short: "burn tokens with btc target address and amount",
+		Use:   "burn [btc_address] [amount]",
+		Short: "burn stBTC tokens, accepting two parameters: the btc address as the recipient address for BTC and the amount to be burned",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
-			amount, err := strconv.ParseInt(args[1], 10, 64)
-			if err != nil {
-				return err
+			amount, ok := math.NewIntFromString(args[1])
+			if !ok {
+				return fmt.Errorf("amount must be a valid integer")
 			}
-			msg := types.NewMsgBurnRequest(clientCtx.GetFromAddress().String(), args[0], uint64(amount))
+			msg := types.NewMsgBurnRequest(clientCtx.GetFromAddress().String(), args[0], amount)
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
