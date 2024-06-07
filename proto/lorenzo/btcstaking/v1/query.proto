@@ -16,6 +16,10 @@ service Query {
     rpc StakingRecord(QueryStakingRecordRequest) returns (QueryStakingRecordResponse) {
         option (google.api.http).get = "/lorenzo/btcstaking/v1/stakingRecord";
     }
+
+    rpc Records(QueryRecordsRequest) returns (QueryRecordsResponse) {
+        option (google.api.http).get = "/lorenzo/btcstaking/v1/records";
+    }
 }
 message QueryParamsRequest {}
 message QueryParamsResponse {
@@ -35,4 +39,18 @@ message QueryStakingRecordRequest {
 }
 message QueryStakingRecordResponse {
     BTCStakingRecord record = 1;
+}
+
+message QueryRecordsRequest {
+    cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryRecordsResponse {
+    repeated BTCStakingRecord records = 1;
+    cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message RecordsDisplay {
+    repeated StakingRecordDisplay records = 1;
+    cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
