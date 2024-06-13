@@ -35,31 +35,7 @@ func NewKeeper(
 	}
 }
 
-// AddAgent adds a new agent to the Keeper.
-//
-// Parameters:
-// - ctx: the SDK context.
-// - name: the name of the agent.
-// - btcReceivingAddress: the Bitcoin receiving address of the agent.
-// - ethAddr: the Ethereum address of the agent.
-// - description: the description of the agent.
-// - url: the URL of the agent.
-//
-// Returns: none.
-func (k Keeper) AddAgent(ctx sdk.Context, name, btcReceivingAddress, ethAddr, description, url string) uint64 {
-	id := k.GetNextNumber(ctx)
-	agent := types.Agent{
-		Id:                  id,
-		Name:                name,
-		BtcReceivingAddress: btcReceivingAddress,
-		EthAddr:             ethAddr,
-		Description:         description,
-		Url:                 url,
-	}
-	k.setAgent(ctx, agent)
-	k.setNextNumber(ctx, id+1)
-	return id
-}
+
 
 // GetAgent retrieves an agent from the Keeper's store based on the given ID.
 //
@@ -125,6 +101,33 @@ func (k Keeper) GetAdmin(ctx sdk.Context) sdk.AccAddress {
 // - bool: true if the address is authorized, false otherwise.
 func (k Keeper) Allowed(ctx sdk.Context, address sdk.AccAddress) bool {
 	return k.GetAdmin(ctx).Equals(address)
+}
+
+// addAgent adds a new agent to the Keeper's store.
+//
+// Parameters:
+// - ctx: the SDK context.
+// - name: the name of the agent.
+// - btcReceivingAddress: the Bitcoin receiving address of the agent.
+// - ethAddr: the Ethereum address of the agent.
+// - description: the description of the agent.
+// - url: the URL of the agent.
+//
+// Returns:
+// - uint64: the ID of the newly added agent.
+func (k Keeper) addAgent(ctx sdk.Context, name, btcReceivingAddress, ethAddr, description, url string) uint64 {
+	id := k.GetNextNumber(ctx)
+	agent := types.Agent{
+		Id:                  id,
+		Name:                name,
+		BtcReceivingAddress: btcReceivingAddress,
+		EthAddr:             ethAddr,
+		Description:         description,
+		Url:                 url,
+	}
+	k.setAgent(ctx, agent)
+	k.setNextNumber(ctx, id+1)
+	return id
 }
 
 // setNextNumber sets the next number in the Keeper's store.

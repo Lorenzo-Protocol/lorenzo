@@ -48,7 +48,7 @@ func (m msgServer) AddAgent(goctx context.Context, msg *types.MsgAddAgent) (*typ
 		return nil, errorsmod.Wrapf(types.ErrUnAuthorized, "invalid sender :%s, not authorized", msg.Sender)
 	}
 
-	agentID := m.k.AddAgent(ctx, msg.Name, msg.BtcReceivingAddress, msg.EthAddr, msg.Description, msg.Url)
+	agentID := m.k.addAgent(ctx, msg.Name, msg.BtcReceivingAddress, msg.EthAddr, msg.Description, msg.Url)
 	return &types.MsgAddAgentResponse{
 		Id: agentID,
 	}, nil
@@ -75,6 +75,9 @@ func (m msgServer) EditAgent(goctx context.Context, msg *types.MsgEditAgent) (*t
 		return nil, errorsmod.Wrapf(types.ErrAgentNotFound, "not found agent:%d", msg.Id)
 	}
 
+	if msg.Name != types.DoNotModifyDesc {
+		agent.Name = msg.Name
+	}
 	if msg.Description != types.DoNotModifyDesc {
 		agent.Description = msg.Description
 	}

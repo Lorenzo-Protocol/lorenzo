@@ -10,10 +10,6 @@ option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/agent/types";
 // GenesisState defines the agent module's genesis state.
 message GenesisState {
   repeated Agent agents = 1 [ (gogoproto.nullable) = false ];
-
-  // next_number is the next auto-increasing agent id
-  uint64 next_number = 2;
-
   // administrator account of agent module
-  string admin = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string admin = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }

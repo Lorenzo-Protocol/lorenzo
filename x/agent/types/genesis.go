@@ -13,9 +13,7 @@ import (
 // No parameters.
 // Returns a pointer to GenesisState.
 func DefaultGenesisState() *GenesisState {
-	return &GenesisState{
-		NextNumber: 1,
-	}
+	return &GenesisState{}
 }
 
 // Validate checks if the given GenesisState is valid.
@@ -32,10 +30,6 @@ func (data GenesisState) Validate() error {
 	_, err := sdk.AccAddressFromBech32(data.Admin)
 	if err != nil {
 		return err
-	}
-
-	if data.NextNumber <= 0 {
-		return ErrInvalidID
 	}
 
 	for _, agent := range data.Agents {
