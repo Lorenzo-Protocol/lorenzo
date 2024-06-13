@@ -1,0 +1,77 @@
+syntax = "proto3";
+package lorenzo.agent.v1;
+
+import "cosmos_proto/cosmos.proto";
+import "cosmos/msg/v1/msg.proto";
+
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/agent/types";
+
+// Msg defines the Msg service.
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+
+  // AddAgent defines a method for adding a agent.
+  rpc AddAgent(MsgAddAgent) returns (MsgAddAgentResponse);
+
+  // AddAgent defines a method for editting a agent.
+  rpc EditAgent(MsgEditAgent) returns (MsgEditAgentResponse);
+
+  // RemoveAgent defines a method for removing a agent.
+  rpc RemoveAgent(MsgRemoveAgent) returns (MsgRemoveAgentResponse);
+}
+
+// MsgUpdateParams defines a message for add a agent.
+message MsgAddAgent {
+  option (cosmos.msg.v1.signer) = "sender";
+
+  // agent name,required
+  string name = 1;
+  // btc_receiving_address is agent’s fund escrow address,required
+  string btc_receiving_address = 2;
+  // like 0xBAb28FF7659481F1c8516f616A576339936AFB06
+  string eth_addr = 3;
+  // description is a brief description of the agent, optional
+  string description = 4;
+  // url is the agent's link, used for detailed introduction, optional
+  string url = 5;
+  // sender is the address of the governance account or module admin
+  string sender = 6 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
+
+// MsgAddAgentResponse is the response to the MsgAddAgent message.
+message MsgAddAgentResponse {
+  // id is the unique identifier of the agent
+  uint64 id = 1;
+}
+
+// MsgEditAgent defines a message for editting the agent.
+message MsgEditAgent {
+  option (cosmos.msg.v1.signer) = "sender";
+
+  // id is the unique identifier of the agent
+  uint64 id = 1;
+  // agent name,required
+  string name = 2;
+  // description is a brief description of the agent, optional
+  string description = 3;
+  // url is the agent's link, used for detailed introduction, optional
+  string url = 4;
+  // sender is the address of the governance account or module admin
+  string sender = 5 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
+
+// MsgEditAgentResponse is the response to the MsgEditAgent message.
+message MsgEditAgentResponse {}
+
+// MsgRemoveAgent defines a message for removing the agent.
+message MsgRemoveAgent {
+  option (cosmos.msg.v1.signer) = "sender";
+
+  // id is the unique identifier of the agent
+  uint64 id = 1;
+  // sender is the address of the governance account or module admin
+  string sender = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
+
+// MsgRemoveAgentResponse is the response to the MsgRemoveAgent message.
+message MsgRemoveAgentResponse {}
