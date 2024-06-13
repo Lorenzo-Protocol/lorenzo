@@ -38,6 +38,19 @@ func (k Keeper) Agent(goctx context.Context, request *types.QueryAgentRequest) (
 	return &types.QueryAgentResponse{Agent: agent}, nil
 }
 
+// Admin retrieves the admin address from the Keeper's store.
+//
+// Parameters:
+// - goctx: the Go context.
+// - request: the QueryAdminRequest.
+//
+// Returns:
+// - *types.QueryAdminResponse: the QueryAdminResponse containing the admin address, or an error if it is not found in the store.
+func (k Keeper) Admin(goctx context.Context, request *types.QueryAdminRequest) (*types.QueryAdminResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goctx)
+	return &types.QueryAdminResponse{Admin: k.GetAdmin(ctx).String()}, nil
+}
+
 func (k Keeper) getAgents(ctx sdk.Context) (agents []types.Agent) {
 	store := ctx.KVStore(k.storeKey)
 
