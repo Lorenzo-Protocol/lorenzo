@@ -1,10 +1,15 @@
 package keeper
 
 import (
+	"fmt"
+
+	"github.com/cometbft/cometbft/libs/log"
+
 	"github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
+
 	"github.com/cosmos/cosmos-sdk/codec"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
-	authzkeeper "github.com/cosmos/cosmos-sdk/x/authz/keeper"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 )
 
@@ -19,27 +24,28 @@ type Keeper struct {
 	accountKeeper types.AccountKeeper
 	bankKeeper    bankkeeper.Keeper
 	evmKeeper     types.EVMKeeper
-
-	authzKeeper authzkeeper.Keeper
 }
 
 func NewKeeper(
-	storeKey storetypes.StoreKey,
 	cdc codec.BinaryCodec,
+	storeKey storetypes.StoreKey,
 	authority string,
 	ak types.AccountKeeper,
 	bk bankkeeper.Keeper,
 	evmKeeper types.EVMKeeper,
-	authzKeeper authzkeeper.Keeper,
-) Keeper {
+) *Keeper {
 
-	return Keeper{
+	return &Keeper{
 		authority:     authority,
 		storeKey:      storeKey,
 		cdc:           cdc,
 		accountKeeper: ak,
 		bankKeeper:    bk,
 		evmKeeper:     evmKeeper,
-		authzKeeper:   authzKeeper,
 	}
+}
+
+// Logger returns a module-specific logger.
+func (k Keeper) Logger(ctx sdk.Context) log.Logger {
+	return ctx.Logger().With("module", fmt.Sprintf("%s", types.ModuleName))
 }

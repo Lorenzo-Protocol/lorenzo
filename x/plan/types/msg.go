@@ -3,11 +3,13 @@ package types
 import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/ethereum/go-ethereum/common"
 )
 
 var (
 	_ sdk.Msg = (*MsgUpdateParams)(nil)
+	_ sdk.Msg = (*MsgUpgradeYAT)(nil)
 	_ sdk.Msg = (*MsgCreatePlan)(nil)
 	_ sdk.Msg = (*MsgClaims)(nil)
 )
@@ -22,6 +24,23 @@ func (m *MsgUpdateParams) ValidateBasic() error {
 
 // GetSigners returns the expected signers for a MsgUpdateParams message
 func (m *MsgUpdateParams) GetSigners() []sdk.AccAddress {
+	addr, _ := sdk.AccAddressFromBech32(m.Authority)
+	return []sdk.AccAddress{addr}
+}
+
+// ValidateBasic executes sanity validation on the provided data
+func (m *MsgUpgradeYAT) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
+		return errorsmod.Wrap(err, "invalid authority address")
+	}
+	if !common.IsHexAddress(m.Implementation) {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "expecting a hex address, got %s", m.Implementation)
+	}
+	return nil
+}
+
+// GetSigners returns the expected signers for a MsgUpdateParams message
+func (m *MsgUpgradeYAT) GetSigners() []sdk.AccAddress {
 	addr, _ := sdk.AccAddressFromBech32(m.Authority)
 	return []sdk.AccAddress{addr}
 }

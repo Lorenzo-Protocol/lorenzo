@@ -18,7 +18,9 @@ const (
 )
 
 const (
+	YATMethodInitialize                = "initialize"
 	YATMethodMint                      = "mint"
+	YATMethodClaimYATToken             = "claimYATToken"
 	YATMethodClaimRewardAndWithDrawBTC = "claimRewardAndWithDrawBTC"
 	YATMethodOnlyClaimReward           = "onlyClaimReward"
 	YATMethodBurnWithstBTCBurn         = "burnWithstBTCBurn"
@@ -34,6 +36,10 @@ const (
 	YATMethodRewardTokenAddress    = "rewardTokenAddress"
 )
 
+const (
+	BeaconMethodUpgradeTo = "upgradeTo"
+)
+
 // ModuleAddress is the native module address for the module
 var ModuleAddress common.Address
 
@@ -42,7 +48,6 @@ func init() {
 }
 
 var (
-	// PlanKey is the key to store the plan in the store
 	ParamsKey             = []byte{0x01}
 	KeyPrefixNextNumber   = []byte{0x02}
 	KeyPrefixPlan         = []byte{0x03}

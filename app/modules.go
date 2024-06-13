@@ -8,6 +8,8 @@ import (
 	btcstakingtypes "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types"
 	"github.com/Lorenzo-Protocol/lorenzo/x/fee"
 	feetypes "github.com/Lorenzo-Protocol/lorenzo/x/fee/types"
+	"github.com/Lorenzo-Protocol/lorenzo/x/plan"
+	plantypes "github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	authsims "github.com/cosmos/cosmos-sdk/x/auth/simulation"
@@ -108,6 +110,9 @@ var (
 		btclightclient.AppModuleBasic{},
 		fee.AppModuleBasic{},
 		btcstaking.AppModuleBasic{},
+
+		// slef modules
+		plan.AppModuleBasic{},
 	)
 	// module account permissions
 	maccPerms = map[string][]string{
@@ -122,6 +127,9 @@ var (
 
 		evmtypes.ModuleName:        {authtypes.Minter, authtypes.Burner}, // used for secure addition and subtraction of balance using module account
 		btcstakingtypes.ModuleName: {authtypes.Minter, authtypes.Burner},
+
+		// self module
+		plantypes.ModuleName: nil,
 	}
 )
 
@@ -209,6 +217,9 @@ func appModules(
 		// Ethermint app modules
 		evm.NewAppModule(app.EvmKeeper, app.AccountKeeper, app.GetSubspace(evmtypes.ModuleName).WithKeyTable(evmtypes.ParamKeyTable())),
 		feemarket.NewAppModule(app.FeeMarketKeeper, app.GetSubspace(feemarkettypes.ModuleName).WithKeyTable(feemarkettypes.ParamKeyTable())),
+
+		// self modules
+		plan.NewAppModule(appCodec, app.PlanKeeper),
 	}
 }
 
@@ -249,6 +260,7 @@ func orderBeginBlockers() []string {
 		feetypes.ModuleName,
 		//self module
 		btcstakingtypes.ModuleName,
+		plantypes.ModuleName,
 	}
 }
 
@@ -286,6 +298,7 @@ func orderEndBlockers() []string {
 		feetypes.ModuleName,
 		//self module
 		btcstakingtypes.ModuleName,
+		plantypes.ModuleName,
 	}
 }
 
@@ -300,7 +313,7 @@ can do so safely.
 func orderInitBlockers() []string {
 	return []string{
 		feetypes.ModuleName,
-		
+
 		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
@@ -326,6 +339,7 @@ func orderInitBlockers() []string {
 		//self module
 		btclightclienttypes.ModuleName,
 		btcstakingtypes.ModuleName,
+		plantypes.ModuleName,
 
 		// NOTE: crisis module must go at the end to check for invariants on each module
 		crisistypes.ModuleName,

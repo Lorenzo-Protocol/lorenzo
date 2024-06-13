@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"math/big"
 
+	"github.com/ethereum/go-ethereum/common/hexutil"
+
 	errorsmod "cosmossdk.io/errors"
 	"github.com/Lorenzo-Protocol/lorenzo/contracts"
 	"github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
@@ -13,11 +15,25 @@ import (
 	"github.com/ethereum/go-ethereum/crypto"
 )
 
-// DeployYATContract creates and deploys a YAT contract on the EVM with the
-// plan module account as owner.
-func (k Keeper) DeployYATContract(
+// DeployYATProxyContract deploys a new Yield Accruing Token (YAT) contract.
+//
+// Parameters:
+// - ctx: the SDK context.
+// - deployer: the address of the account deploying the contract.
+// - name: the name of the YAT contract.
+// - symbol: the symbol of the YAT contract.
+// - planDescUri: the URI of the plan description.
+// - planId: the ID of the plan.
+// - agentId: the ID of the agent.
+// - subscriptionStartTime: the start time of the subscription.
+// - subscriptionEndTime: the end time of the subscription.
+// - endTime: the end time of the plan.
+// - merkleRoot: the Merkle root of the plan.
+// Returns:
+// - common.Address: the address of the deployed contract.
+// - error: an error if the deployment fails.
+func (k Keeper) DeployYATProxyContract(
 	ctx sdk.Context,
-	deployer common.Address,
 	name,
 	symbol,
 	planDescUri string,
@@ -26,9 +42,13 @@ func (k Keeper) DeployYATContract(
 	subscriptionStartTime uint64,
 	subscriptionEndTime uint64,
 	endTime uint64,
+	merkleRoot string,
 ) (common.Address, error) {
-	contractArgs, err := contracts.YieldAccruingTokenContract.ABI.Pack(
-		"",
+	merkleRootBytes, _ := hexutil.Decode(merkleRoot)
+
+	// pack contract arguments
+	initArgs, err := contracts.YieldAccruingTokenContract.ABI.Pack(
+		types.YATMethodInitialize,
 		name,
 		symbol,
 		planDescUri,
@@ -37,27 +57,95 @@ func (k Keeper) DeployYATContract(
 		subscriptionStartTime,
 		subscriptionEndTime,
 		endTime,
+		merkleRootBytes,
 	)
 	if err != nil {
 		return common.Address{}, errorsmod.Wrap(types.ErrABIPack, fmt.Sprintf("failed to pack contract arguments: %s", err))
 	}
+
+	params := k.GetParams(ctx)
+	if params.Beacon == "" {
+		return common.Address{}, errorsmod.Wrap(types.ErrBeaconNotSet, "beacon not set")
+	}
+
+	// pack proxy contract arguments
+	contractArgs, err := contracts.YATProxyContract.ABI.Pack(
+		"",
+		common.HexToAddress(params.Beacon),
+		initArgs,
+	)
+
 	data := make([]byte, len(contracts.YieldAccruingTokenContract.Bin)+len(contractArgs))
 	copy(data[:len(contracts.YieldAccruingTokenContract.Bin)], contracts.YieldAccruingTokenContract.Bin)
 	copy(data[len(contracts.YieldAccruingTokenContract.Bin):], contractArgs)
+
+	// deployer is the module address
+	deployer := k.getModuleEthAddress(ctx)
+	nonce, err := k.accountKeeper.GetSequence(ctx, deployer.Bytes())
+	if err != nil {
+		return common.Address{}, err
+	}
+
+	// generate contract address
+	contractAddr := crypto.CreateAddress(deployer, nonce)
+	result, err := k.CallEVMWithData(ctx, deployer, nil, data, true)
+	if err != nil {
+		return common.Address{}, errorsmod.Wrapf(err, "failed to deploy contract for %s", name)
+	}
+	if result.Failed() {
+		return common.Address{}, errorsmod.Wrapf(types.ErrVMExecution, "failed to deploy contract for %s, reason: %s", name, result.Revert())
+	}
+
+	return contractAddr, nil
+}
+
+// DeployYATLogicContract deploys a new Yield Accruing Token (YAT) contract.
+//
+// Parameters:
+// - ctx: the SDK context.
+// Returns:
+// - common.Address: the address of the deployed contract.
+// - error: an error if the deployment fails.
+func (k Keeper) DeployYATLogicContract(
+	ctx sdk.Context,
+) (common.Address, error) {
+	data := make([]byte, len(contracts.YieldAccruingTokenContract.Bin))
+	copy(data[:len(contracts.YieldAccruingTokenContract.Bin)], contracts.YieldAccruingTokenContract.Bin)
+
+	deployer := k.getModuleEthAddress(ctx)
 	nonce, err := k.accountKeeper.GetSequence(ctx, deployer.Bytes())
 	if err != nil {
 		return common.Address{}, err
 	}
 	// generate contract address
 	contractAddr := crypto.CreateAddress(deployer, nonce)
-	_, err = k.CallEVMWithData(ctx, deployer, nil, data, true)
+	result, err := k.CallEVMWithData(ctx, deployer, nil, data, true)
 	if err != nil {
-		return common.Address{}, errorsmod.Wrapf(err, "failed to deploy contract for %s", name)
+
+		return common.Address{}, errorsmod.Wrapf(
+			err,
+			"failed to deploy contract for yat logic contract")
 	}
+	if result.Failed() {
+		return common.Address{}, errorsmod.Wrapf(
+			types.ErrVMExecution,
+			"failed to deploy contract for yat logic contract, reason: %s", result.Revert())
+	}
+
 	return contractAddr, nil
 }
 
-// Mint creates a new plan token and mints it to the specified address.
+// Mint mints YAT tokens to an account.
+//
+// Parameters:
+// - ctx: the SDK context.
+// - contractAddress: the address of the YAT contract.
+// - contractABI: the ABI of the YAT contract.
+// - accountAddr: the address of the account to mint tokens to.
+// - amount: the amount of tokens to mint.
+//
+// Returns:
+// - error: an error if the minting fails.
 func (k Keeper) Mint(
 	ctx sdk.Context,
 	contractAddress common.Address,
@@ -68,7 +156,7 @@ func (k Keeper) Mint(
 	_, err := k.CallEVM(
 		ctx,
 		contractABI,
-		types.ModuleAddress,
+		k.getModuleEthAddress(ctx),
 		contractAddress,
 		true,
 		types.YATMethodMint,
@@ -82,21 +170,38 @@ func (k Keeper) Mint(
 	return nil
 }
 
-func (k Keeper) ClaimRewardAndWithDrawBTC(
+// ClaimYATToken claims YAT tokens.
+//
+// Parameters:
+// - ctx: the SDK context.
+// - contractAddress: the address of the YAT contract.
+// - contractABI: the ABI of the YAT contract.
+// - accountAddr: the address of the account to claim tokens for.
+// - amount: the amount of tokens to claim.
+// - merkleProof: the Merkle proof of the claim.
+//
+// Returns:
+// - error: an error if the claim fails.
+func (k Keeper) ClaimYATToken(
 	ctx sdk.Context,
 	contractAddress common.Address,
 	contractABI abi.ABI,
 	accountAddr common.Address,
+	amount uint64,
+	merkleProof string,
 ) error {
+	merkleProofBytes, _ := hexutil.Decode(merkleProof)
 	_, err := k.CallEVM(
 		ctx,
 		contractABI,
-		types.ModuleAddress,
+		k.getModuleEthAddress(ctx),
 		contractAddress,
 		true,
-		types.YATMethodClaimRewardAndWithDrawBTC,
+		types.YATMethodClaimYATToken,
 		// args
 		accountAddr,
+		amount,
+		merkleProofBytes,
 	)
 	if err != nil {
 		return err
@@ -104,6 +209,51 @@ func (k Keeper) ClaimRewardAndWithDrawBTC(
 	return nil
 }
 
+// ClaimRewardAndWithDrawBTC claims rewards and withdraws BTC.
+//
+// Parameters:
+// - ctx: the SDK context.
+// - contractAddress: the address of the YAT contract.
+// - contractABI: the ABI of the YAT contract.
+// - accountAddr: the address of the account to claim rewards and withdraw BTC for.
+// - amount: the amount of BTC to withdraw.
+//
+// Returns:
+// - error: an error if the claim and withdrawal fails.
+func (k Keeper) ClaimRewardAndWithDrawBTC(
+	ctx sdk.Context,
+	contractAddress common.Address,
+	contractABI abi.ABI,
+	accountAddr common.Address,
+	amount uint64,
+) error {
+	_, err := k.CallEVM(
+		ctx,
+		contractABI,
+		k.getModuleEthAddress(ctx),
+		contractAddress,
+		true,
+		types.YATMethodClaimRewardAndWithDrawBTC,
+		// args
+		accountAddr,
+		amount,
+	)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// OnlyClaimReward claims rewards.
+//
+// Parameters:
+// - ctx: the SDK context.
+// - contractAddress: the address of the YAT contract.
+// - contractABI: the ABI of the YAT contract.
+// - accountAddr: the address of the account to claim rewards for.
+//
+// Returns:
+// - error: an error if the claim fails.
 func (k Keeper) OnlyClaimReward(
 	ctx sdk.Context,
 	contractAddress common.Address,
@@ -113,7 +263,7 @@ func (k Keeper) OnlyClaimReward(
 	_, err := k.CallEVM(
 		ctx,
 		contractABI,
-		types.ModuleAddress,
+		k.getModuleEthAddress(ctx),
 		contractAddress,
 		true,
 		types.YATMethodOnlyClaimReward,
@@ -126,6 +276,17 @@ func (k Keeper) OnlyClaimReward(
 	return nil
 }
 
+// BurnWithstBTCBurn burns stBTC and mints YAT tokens.
+//
+// Parameters:
+// - ctx: the SDK context.
+// - contractAddress: the address of the YAT contract.
+// - contractABI: the ABI of the YAT contract.
+// - accountAddr: the address of the account to burn stBTC and mint tokens for.
+// - amount: the amount of stBTC to burn.
+//
+// Returns:
+// - error: an error if the burn and mint fails.
 func (k Keeper) BurnWithstBTCBurn(
 	ctx sdk.Context,
 	contractAddress common.Address,
@@ -136,7 +297,7 @@ func (k Keeper) BurnWithstBTCBurn(
 	_, err := k.CallEVM(
 		ctx,
 		contractABI,
-		types.ModuleAddress,
+		k.getModuleEthAddress(ctx),
 		contractAddress,
 		true,
 		types.YATMethodBurnWithstBTCBurn,
@@ -150,6 +311,16 @@ func (k Keeper) BurnWithstBTCBurn(
 	return nil
 }
 
+// SetRewardTokenAddress sets the reward token address for the YAT contract.
+//
+// Parameters:
+// - ctx: the SDK context.
+// - contractAddress: the address of the YAT contract.
+// - contractABI: the ABI of the YAT contract.
+// - rewardTokenAddress: the address of the reward token.
+//
+// Returns:
+// - error: an error if the setting fails.
 func (k Keeper) SetRewardTokenAddress(
 	ctx sdk.Context,
 	contractAddress common.Address,
@@ -159,7 +330,7 @@ func (k Keeper) SetRewardTokenAddress(
 	_, err := k.CallEVM(
 		ctx,
 		contractABI,
-		types.ModuleAddress,
+		k.getModuleEthAddress(ctx),
 		contractAddress,
 		true,
 		types.YATMethodSetRewardTokenAddress,
@@ -172,6 +343,16 @@ func (k Keeper) SetRewardTokenAddress(
 	return nil
 }
 
+// PlanId gets the plan id from the YAT contract.
+//
+// Parameters:
+// - ctx: the SDK context.
+// - contractABI: the address of the YAT contract.
+// - contractAddress: the ABI of the YAT contract.
+//
+// Returns:
+// - uint64: the plan ID.
+// - error: an error if the getting fails.
 func (k Keeper) PlanId(
 	ctx sdk.Context,
 	contractABI abi.ABI,
@@ -180,7 +361,7 @@ func (k Keeper) PlanId(
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
-		types.ModuleAddress,
+		k.getModuleEthAddress(ctx),
 		contractAddress,
 		false,
 		types.YATMethodPlanId,
@@ -204,6 +385,16 @@ func (k Keeper) PlanId(
 	return planId.Uint64(), nil
 }
 
+// AgentId gets the agent ID from the YAT contract.
+//
+// Parameters:
+// - ctx: the SDK context.
+// - contractABI: the address of the YAT contract.
+// - contractAddress: the ABI of the YAT contract.
+//
+// Returns:
+// - uint64: the agent ID.
+// - error: an error if the getting fails.
 func (k Keeper) AgentId(
 	ctx sdk.Context,
 	contractABI abi.ABI,
@@ -212,7 +403,7 @@ func (k Keeper) AgentId(
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
-		types.ModuleAddress,
+		k.getModuleEthAddress(ctx),
 		contractAddress,
 		false,
 		types.YATMethodAgentId,
@@ -236,6 +427,16 @@ func (k Keeper) AgentId(
 	return agentId.Uint64(), nil
 }
 
+// SubscriptionStartTime gets the subscription start time from the YAT contract.
+//
+// Parameters:
+// - ctx: the SDK context.
+// - contractABI: the address of the YAT contract.
+// - contractAddress: the ABI of the YAT contract.
+//
+// Returns:
+// - uint64: the subscription start time.
+// - error: an error if the getting fails.
 func (k Keeper) SubscriptionStartTime(
 	ctx sdk.Context,
 	contractABI abi.ABI,
@@ -244,7 +445,7 @@ func (k Keeper) SubscriptionStartTime(
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
-		types.ModuleAddress,
+		k.getModuleEthAddress(ctx),
 		contractAddress,
 		false,
 		types.YATMethodSubscriptionStartTime,
@@ -268,6 +469,16 @@ func (k Keeper) SubscriptionStartTime(
 	return subscriptionStartTime.Uint64(), nil
 }
 
+// SubscriptionEndTime gets the subscription end time from the YAT contract.
+//
+// Parameters:
+// - ctx: the SDK context.
+// - contractABI: the address of the YAT contract.
+// - contractAddress: the ABI of the YAT contract.
+//
+// Returns:
+// - uint64: the subscription end time.
+// - error: an error if the getting fails.
 func (k Keeper) SubscriptionEndTime(
 	ctx sdk.Context,
 	contractABI abi.ABI,
@@ -276,7 +487,7 @@ func (k Keeper) SubscriptionEndTime(
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
-		types.ModuleAddress,
+		k.getModuleEthAddress(ctx),
 		contractAddress,
 		false,
 		types.YATMethodSubscriptionEndTime,
@@ -300,6 +511,16 @@ func (k Keeper) SubscriptionEndTime(
 	return subscriptionEndTime.Uint64(), nil
 }
 
+// EndTime gets the end time from the YAT contract.
+//
+// Parameters:
+// - ctx: the SDK context.
+// - contractABI: the address of the YAT contract.
+// - contractAddress: the ABI of the YAT contract.
+//
+// Returns:
+// - uint64: the end time.
+// - error: an error if the getting fails.
 func (k Keeper) EndTime(
 	ctx sdk.Context,
 	contractABI abi.ABI,
@@ -308,7 +529,7 @@ func (k Keeper) EndTime(
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
-		types.ModuleAddress,
+		k.getModuleEthAddress(ctx),
 		contractAddress,
 		false,
 		types.YATMethodEndTime,
@@ -332,6 +553,16 @@ func (k Keeper) EndTime(
 	return endTime.Uint64(), nil
 }
 
+// PlanDesc gets the plan description from the YAT contract.
+//
+// Parameters:
+// - ctx: the SDK context.
+// - contractABI: the address of the YAT contract.
+// - contractAddress: the ABI of the YAT contract.
+//
+// Returns:
+// - string: the plan description.
+// - error: an error if the getting fails.
 func (k Keeper) PlanDesc(
 	ctx sdk.Context,
 	contractABI abi.ABI,
@@ -340,7 +571,7 @@ func (k Keeper) PlanDesc(
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
-		types.ModuleAddress,
+		k.getModuleEthAddress(ctx),
 		contractAddress,
 		false,
 		types.YATMethodPlanDesc,
@@ -364,6 +595,16 @@ func (k Keeper) PlanDesc(
 	return planDesc, nil
 }
 
+// RewardTokenAddress gets the reward token address from the YAT contract.
+//
+// Parameters:
+// - ctx: the SDK context.
+// - contractABI: the address of the YAT contract.
+// - contractAddress: the ABI of the YAT contract.
+//
+// Returns:
+// - common.Address: the reward token address.
+// - error: an error if the getting fails.
 func (k Keeper) RewardTokenAddress(
 	ctx sdk.Context,
 	contractABI abi.ABI,
@@ -372,7 +613,7 @@ func (k Keeper) RewardTokenAddress(
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
-		types.ModuleAddress,
+		k.getModuleEthAddress(ctx),
 		contractAddress,
 		false,
 		types.YATMethodRewardTokenAddress,
@@ -394,4 +635,9 @@ func (k Keeper) RewardTokenAddress(
 	}
 
 	return rewardTokenAddress, nil
+}
+
+func (k Keeper) getModuleEthAddress(ctx sdk.Context) common.Address {
+	moduleAccount := k.accountKeeper.GetModuleAccount(ctx, types.ModuleName)
+	return common.BytesToAddress(moduleAccount.GetAddress().Bytes())
 }

@@ -7,13 +7,14 @@ import (
 )
 
 func (k Keeper) AddPlan(ctx sdk.Context, plan types.Plan) (types.Plan, error) {
+	// todo: check if the agent not exists
+
 	// generate the next plan ID
 	planId := k.GetNextNumber(ctx)
 	plan.Id = planId
 	// Deploy the contract
-	contractAddress, err := k.DeployYATContract(
+	contractAddress, err := k.DeployYATProxyContract(
 		ctx,
-		types.ModuleAddress,
 		plan.Name,
 		plan.Symbol,
 		plan.PlanDescUri,
@@ -22,6 +23,7 @@ func (k Keeper) AddPlan(ctx sdk.Context, plan types.Plan) (types.Plan, error) {
 		plan.SubscriptionStartTime,
 		plan.SubscriptionEndTime,
 		plan.EndTime,
+		plan.MerkleRoot,
 	)
 	if err != nil {
 		return plan, err

@@ -21,6 +21,10 @@ const (
 	AttributeKeyPlanContractAddress       = "contract_address"
 
 	AttributeKeySender = sdk.AttributeKeySender
+
+	EventSetParams         = "set_params"
+	AttributeKeyBeaconAddr = "beacon_addr"
+	AttributeKeyLogicAddr  = "logic_addr"
 )
 
 // NewCreatePlanEvent construct a new plan created sdk.Event

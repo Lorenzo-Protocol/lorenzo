@@ -7,17 +7,20 @@ import (
 )
 
 // InitGenesis new fee genesis
-func InitGenesis(ctx sdk.Context, keeper *keeper.Keeper, data types.GenesisState) {
+func InitGenesis(ctx sdk.Context, k *keeper.Keeper, genState types.GenesisState) {
+	if err := genState.Validate(); err != nil {
+		panic(err)
+	}
 
+	if err := k.SetParams(ctx, genState.Params); err != nil {
+		panic(err)
+	}
 }
 
 // ExportGenesis returns a GenesisState for a given context and keeper.
 func ExportGenesis(ctx sdk.Context, keeper *keeper.Keeper) *types.GenesisState {
-	return nil
-}
-
-// ValidateGenesis performs basic validation of supply genesis data returning an
-// error for any failed validation criteria.
-func ValidateGenesis(data types.GenesisState) error {
-	return nil
+	params := keeper.GetParams(ctx)
+	nextNumber := keeper.GetNextNumber(ctx)
+	plans := keeper.GetPlans(ctx)
+	return types.NewGenesisState(params, nextNumber, plans)
 }

@@ -7,7 +7,14 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 )
 
-func (k Keeper) Withdraw(ctx sdk.Context, claimsType types.ClaimsType, planId uint64, receiver string) error {
+func (k Keeper) Withdraw(
+	ctx sdk.Context,
+	claimsType types.ClaimsType,
+	planId uint64,
+	receiver string,
+	amount uint64,
+	merkleProof string,
+) error {
 	receiverEvmAddress := common.HexToAddress(receiver)
 	// get contract address
 	contractAddress := k.GetContractAddrByPlanId(ctx, planId)
@@ -25,13 +32,26 @@ func (k Keeper) Withdraw(ctx sdk.Context, claimsType types.ClaimsType, planId ui
 			yatABI,
 			receiverEvmAddress,
 		)
-	default:
+	case types.ClaimsType_CLAIM_REWARD_AND_WITHDRAW_BTC:
 		return k.ClaimRewardAndWithDrawBTC(
 			ctx,
 			contractAddressHex,
 			yatABI,
 			receiverEvmAddress,
+			amount,
 		)
+	case types.ClaimsType_CLAIM_YAT_Token:
+		return k.ClaimYATToken(
+			ctx,
+			contractAddressHex,
+			yatABI,
+			receiverEvmAddress,
+			amount,
+			merkleProof,
+		)
+
+	default:
+		return types.ErrInvalidClaimsType
 	}
 
 }

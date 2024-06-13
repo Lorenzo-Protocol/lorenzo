@@ -79,6 +79,10 @@ import (
 	btcstakingkeeper "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/keeper"
 	btcstakingtypes "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types"
 
+	// selft modules
+	plankeeper "github.com/Lorenzo-Protocol/lorenzo/x/plan/keeper"
+	plantypes "github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
+
 	// ibc
 	ibctransfer "github.com/cosmos/ibc-go/v7/modules/apps/transfer"
 	ibctransferkeeper "github.com/cosmos/ibc-go/v7/modules/apps/transfer/keeper"
@@ -166,6 +170,9 @@ type LorenzoApp struct {
 	EvmKeeper       *evmkeeper.Keeper
 	FeeMarketKeeper feemarketkeeper.Keeper
 
+	// self keeper
+	PlanKeeper *plankeeper.Keeper
+
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
@@ -250,6 +257,9 @@ func NewLorenzoApp(
 		btclightclienttypes.StoreKey,
 		feetypes.StoreKey,
 		btcstakingtypes.StoreKey,
+
+		// self modules
+		plantypes.StoreKey,
 	)
 
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey, evmtypes.TransientKey, feemarkettypes.TransientKey)
@@ -466,6 +476,16 @@ func NewLorenzoApp(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 	app.BTCStakingKeeper = btcstakingkeeper.NewKeeper(appCodec, keys[btcstakingtypes.StoreKey], app.BTCLightClientKeeper, app.BankKeeper, authtypes.NewModuleAddress(govtypes.ModuleName).String())
+
+	// self keeper
+	app.PlanKeeper = plankeeper.NewKeeper(
+		appCodec,
+		keys[plantypes.StoreKey],
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.EvmKeeper,
+	)
 
 	var transferStack ibcporttypes.IBCModule
 	transferStack = ibctransfer.NewIBCModule(app.TransferKeeper)
