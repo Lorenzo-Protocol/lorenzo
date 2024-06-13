@@ -11,6 +11,14 @@ message EventAddAgent {
   string name = 2;
   // btc_receiving_address is agent’s fund escrow address,required
   string btc_receiving_address = 3;
+  // like 0xBAb28FF7659481F1c8516f616A576339936AFB06
+  string eth_addr = 4;
+  // description is a brief description of the agent, optional
+  string description = 5;
+  // url is the agent's link, used for detailed introduction, optional
+  string url = 6;
+  // sender is the address of the governance account or module admin
+  string sender = 7;
 }
 
 // agent edit event
@@ -19,12 +27,18 @@ message EventEditAgent{
   uint64 id = 1;
   // agent name,required
   string name = 2;
+  // description is a brief description of the agent, optional
+  string description = 3;
+  // url is the agent's link, used for detailed introduction, optional
+  string url = 4;
+  // sender is the address of the governance account or module admin
+  string sender = 5;
 }
 
 // agent remove event
 message EventRemoveAgent{
   // id is the unique identifier of the agent
   uint64 id = 1;
-  // agent name,required
-  string name = 2;
+  // sender is the address of the governance account or module admin
+  string sender = 2;
 }

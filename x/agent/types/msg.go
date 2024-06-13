@@ -3,6 +3,9 @@ package types
 import (
 	"strings"
 
+	"github.com/ethereum/go-ethereum/common"
+
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -26,6 +29,10 @@ func (m *MsgAddAgent) ValidateBasic() error {
 	if len(strings.TrimSpace(m.BtcReceivingAddress)) == 0 {
 		return ErrBtcReceivingAddressEmpty
 	}
+
+	if len(m.EthAddr) != 0 && !common.IsHexAddress(m.EthAddr) {
+		return errorsmod.Wrap(ErrInvalidEthAddress, "EthAddr must be empty or a valid eth addr")
+	}
 	return nil
 }
 
@@ -42,14 +49,7 @@ func (m *MsgEditAgent) ValidateBasic() error {
 	}
 
 	_, err := sdk.AccAddressFromBech32(m.Sender)
-	if err != nil {
-		return err
-	}
-
-	if m.BtcReceivingAddress != DoNotModifyDesc && len(strings.TrimSpace(m.BtcReceivingAddress)) == 0 {
-		return ErrBtcReceivingAddressEmpty
-	}
-	return nil
+	return err
 }
 
 // GetSigners returns the expected signers for a MsgEditAgent message
@@ -61,10 +61,7 @@ func (m *MsgEditAgent) GetSigners() []sdk.AccAddress {
 // ValidateBasic executes sanity validation on the provided data
 func (m *MsgRemoveAgent) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(m.Sender)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 // GetSigners returns the expected signers for a MsgRemoveAgent message

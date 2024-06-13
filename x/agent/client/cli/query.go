@@ -34,7 +34,7 @@ func GetQueryCmd() *cobra.Command {
 func CmdQueryAgents() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list",
-		Short: "retrieve the hashes maintained by this module",
+		Short: "retrieve the agent list",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
@@ -57,7 +57,7 @@ func CmdQueryAgents() *cobra.Command {
 func CmdQueryAgent() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "agent [agent-id]",
-		Short: "retrieve the hashes maintained by this module",
+		Short: "retrieve the agent",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)

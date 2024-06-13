@@ -7,23 +7,29 @@ import (
 )
 
 const (
-	FlagName                = "name"
-	FlagBtcReceivingAddress = "btc-receiving-address"
-	FlagDescription         = "description"
-	FlagUrl                 = "url"
+	// FlagName is the flag for the name of the agent
+	FlagName        = "name"
+	// FlagEthAddress is the flag for the eth address of the agent
+	FlagEthAddress  = "eth-address"
+	// FlagDescription is the flag for the description of the agent
+	FlagDescription = "description"
+	// FlagURL is the flag for the url of the agent
+	FlagURL         = "url"
 )
 
 var (
+	// FsAddAgent defines the flags for adding an agent
 	FsAddAgent  = flag.NewFlagSet("", flag.ContinueOnError)
+	// FsEditAgent defines the flags for editing an agent
 	FsEditAgent = flag.NewFlagSet("", flag.ContinueOnError)
 )
 
 func init() {
+	FsAddAgent.String(FlagEthAddress, "", "The agent eth address")
 	FsAddAgent.String(FlagDescription, "", "The agent description")
-	FsAddAgent.String(FlagUrl, "", "The agent url")
+	FsAddAgent.String(FlagURL, "", "The agent url")
 
 	FsEditAgent.String(FlagName, types.DoNotModifyDesc, "The agent name")
-	FsEditAgent.String(FlagBtcReceivingAddress, types.DoNotModifyDesc, "the Bitcoin receiving address of the agent")
 	FsEditAgent.String(FlagDescription, types.DoNotModifyDesc, "The agent description")
-	FsEditAgent.String(FlagUrl, types.DoNotModifyDesc, "The agent url")
+	FsEditAgent.String(FlagURL, types.DoNotModifyDesc, "The agent url")
 }

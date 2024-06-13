@@ -30,6 +30,14 @@ type EventAddAgent struct {
 	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	// btc_receiving_address is agent’s fund escrow address,required
 	BtcReceivingAddress string `protobuf:"bytes,3,opt,name=btc_receiving_address,json=btcReceivingAddress,proto3" json:"btc_receiving_address,omitempty"`
+	// like 0xBAb28FF7659481F1c8516f616A576339936AFB06
+	EthAddr string `protobuf:"bytes,4,opt,name=eth_addr,json=ethAddr,proto3" json:"eth_addr,omitempty"`
+	// description is a brief description of the agent, optional
+	Description string `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
+	// url is the agent's link, used for detailed introduction, optional
+	Url string `protobuf:"bytes,6,opt,name=url,proto3" json:"url,omitempty"`
+	// sender is the address of the governance account or module admin
+	Sender string `protobuf:"bytes,7,opt,name=sender,proto3" json:"sender,omitempty"`
 }
 
 func (m *EventAddAgent) Reset()         { *m = EventAddAgent{} }
@@ -86,12 +94,46 @@ func (m *EventAddAgent) GetBtcReceivingAddress() string {
 	return ""
 }
 
+func (m *EventAddAgent) GetEthAddr() string {
+	if m != nil {
+		return m.EthAddr
+	}
+	return ""
+}
+
+func (m *EventAddAgent) GetDescription() string {
+	if m != nil {
+		return m.Description
+	}
+	return ""
+}
+
+func (m *EventAddAgent) GetUrl() string {
+	if m != nil {
+		return m.Url
+	}
+	return ""
+}
+
+func (m *EventAddAgent) GetSender() string {
+	if m != nil {
+		return m.Sender
+	}
+	return ""
+}
+
 // agent edit event
 type EventEditAgent struct {
 	// id is the unique identifier of the agent
 	Id uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	// agent name,required
 	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	// description is a brief description of the agent, optional
+	Description string `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	// url is the agent's link, used for detailed introduction, optional
+	Url string `protobuf:"bytes,4,opt,name=url,proto3" json:"url,omitempty"`
+	// sender is the address of the governance account or module admin
+	Sender string `protobuf:"bytes,5,opt,name=sender,proto3" json:"sender,omitempty"`
 }
 
 func (m *EventEditAgent) Reset()         { *m = EventEditAgent{} }
@@ -141,12 +183,33 @@ func (m *EventEditAgent) GetName() string {
 	return ""
 }
 
+func (m *EventEditAgent) GetDescription() string {
+	if m != nil {
+		return m.Description
+	}
+	return ""
+}
+
+func (m *EventEditAgent) GetUrl() string {
+	if m != nil {
+		return m.Url
+	}
+	return ""
+}
+
+func (m *EventEditAgent) GetSender() string {
+	if m != nil {
+		return m.Sender
+	}
+	return ""
+}
+
 // agent remove event
 type EventRemoveAgent struct {
 	// id is the unique identifier of the agent
 	Id uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	// agent name,required
-	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	// sender is the address of the governance account or module admin
+	Sender string `protobuf:"bytes,2,opt,name=sender,proto3" json:"sender,omitempty"`
 }
 
 func (m *EventRemoveAgent) Reset()         { *m = EventRemoveAgent{} }
@@ -189,9 +252,9 @@ func (m *EventRemoveAgent) GetId() uint64 {
 	return 0
 }
 
-func (m *EventRemoveAgent) GetName() string {
+func (m *EventRemoveAgent) GetSender() string {
 	if m != nil {
-		return m.Name
+		return m.Sender
 	}
 	return ""
 }
@@ -205,23 +268,28 @@ func init() {
 func init() { proto.RegisterFile("lorenzo/agent/v1/event.proto", fileDescriptor_f8e8f07d92c984c2) }
 
 var fileDescriptor_f8e8f07d92c984c2 = []byte{
-	// 244 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0xc9, 0xc9, 0x2f, 0x4a,
-	0xcd, 0xab, 0xca, 0xd7, 0x4f, 0x4c, 0x4f, 0xcd, 0x2b, 0xd1, 0x2f, 0x33, 0xd4, 0x4f, 0x2d, 0x4b,
-	0xcd, 0x2b, 0xd1, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x12, 0x80, 0xca, 0xea, 0x81, 0x65, 0xf5,
-	0xca, 0x0c, 0x95, 0xd2, 0xb9, 0x78, 0x5d, 0x41, 0x0a, 0x1c, 0x53, 0x52, 0x1c, 0x41, 0x62, 0x42,
-	0x7c, 0x5c, 0x4c, 0x99, 0x29, 0x12, 0x8c, 0x0a, 0x8c, 0x1a, 0x2c, 0x41, 0x4c, 0x99, 0x29, 0x42,
-	0x42, 0x5c, 0x2c, 0x79, 0x89, 0xb9, 0xa9, 0x12, 0x4c, 0x0a, 0x8c, 0x1a, 0x9c, 0x41, 0x60, 0xb6,
-	0x90, 0x11, 0x97, 0x68, 0x52, 0x49, 0x72, 0x7c, 0x51, 0x6a, 0x72, 0x6a, 0x66, 0x59, 0x66, 0x5e,
-	0x7a, 0x7c, 0x62, 0x4a, 0x4a, 0x51, 0x6a, 0x71, 0xb1, 0x04, 0x33, 0x58, 0x91, 0x70, 0x52, 0x49,
-	0x72, 0x10, 0x4c, 0xce, 0x11, 0x22, 0xa5, 0x64, 0xc2, 0xc5, 0x07, 0xb6, 0xc8, 0x35, 0x25, 0xb3,
-	0x84, 0x68, 0x9b, 0x94, 0xcc, 0xb8, 0x04, 0xc0, 0xba, 0x82, 0x52, 0x73, 0xf3, 0xcb, 0x52, 0x89,
-	0xd6, 0xe7, 0xe4, 0x7d, 0xe2, 0x91, 0x1c, 0xe3, 0x85, 0x47, 0x72, 0x8c, 0x0f, 0x1e, 0xc9, 0x31,
-	0x4e, 0x78, 0x2c, 0xc7, 0x70, 0xe1, 0xb1, 0x1c, 0xc3, 0x8d, 0xc7, 0x72, 0x0c, 0x51, 0x86, 0xe9,
-	0x99, 0x25, 0x19, 0xa5, 0x49, 0x7a, 0xc9, 0xf9, 0xb9, 0xfa, 0x3e, 0x90, 0xd0, 0xd0, 0x0d, 0x00,
-	0x05, 0x4e, 0x72, 0x7e, 0x8e, 0x3e, 0x2c, 0xf0, 0x2a, 0xa0, 0xc1, 0x57, 0x52, 0x59, 0x90, 0x5a,
-	0x9c, 0xc4, 0x06, 0x0e, 0x3c, 0x63, 0x40, 0x00, 0x00, 0x00, 0xff, 0xff, 0xd0, 0x98, 0x61, 0xa4,
-	0x5c, 0x01, 0x00, 0x00,
+	// 323 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x91, 0x41, 0x4b, 0xf3, 0x30,
+	0x18, 0xc7, 0x97, 0xae, 0xdb, 0xde, 0x37, 0xe2, 0x18, 0x11, 0x25, 0x82, 0x84, 0xb1, 0xd3, 0x2e,
+	0xb6, 0x4c, 0x6f, 0xde, 0x26, 0xec, 0xa4, 0x07, 0xe9, 0xd1, 0xcb, 0x58, 0x93, 0x87, 0x2d, 0xb0,
+	0x26, 0x25, 0xcd, 0x8a, 0x7a, 0xf2, 0x23, 0xf8, 0xb1, 0x3c, 0xc9, 0x8e, 0x1e, 0xa5, 0xfd, 0x22,
+	0xd2, 0xac, 0xc3, 0x29, 0x13, 0xbc, 0x25, 0xcf, 0xef, 0xff, 0xc0, 0xef, 0xe1, 0x8f, 0xcf, 0x96,
+	0xda, 0x80, 0x7a, 0xd2, 0xe1, 0x6c, 0x0e, 0xca, 0x86, 0xf9, 0x28, 0x84, 0x1c, 0x94, 0x0d, 0x52,
+	0xa3, 0xad, 0x26, 0xbd, 0x9a, 0x06, 0x8e, 0x06, 0xf9, 0x68, 0xf0, 0x86, 0xf0, 0xe1, 0xa4, 0x4a,
+	0x8c, 0x85, 0x18, 0x57, 0x43, 0xd2, 0xc5, 0x9e, 0x14, 0x14, 0xf5, 0xd1, 0xd0, 0x8f, 0x3c, 0x29,
+	0x08, 0xc1, 0xbe, 0x9a, 0x25, 0x40, 0xbd, 0x3e, 0x1a, 0xfe, 0x8f, 0xdc, 0x9b, 0x5c, 0xe0, 0xe3,
+	0xd8, 0xf2, 0xa9, 0x01, 0x0e, 0x32, 0x97, 0x6a, 0x3e, 0x9d, 0x09, 0x61, 0x20, 0xcb, 0x68, 0xd3,
+	0x85, 0x8e, 0x62, 0xcb, 0xa3, 0x2d, 0x1b, 0x6f, 0x10, 0x39, 0xc5, 0xff, 0xc0, 0x2e, 0x5c, 0x92,
+	0xfa, 0x2e, 0xd6, 0x01, 0xbb, 0xa8, 0x28, 0xe9, 0xe3, 0x03, 0x01, 0x19, 0x37, 0x32, 0xb5, 0x52,
+	0x2b, 0xda, 0x72, 0x74, 0x77, 0x44, 0x7a, 0xb8, 0xb9, 0x32, 0x4b, 0xda, 0x76, 0xa4, 0x7a, 0x92,
+	0x13, 0xdc, 0xce, 0x40, 0x09, 0x30, 0xb4, 0xe3, 0x86, 0xf5, 0x6f, 0xf0, 0x8c, 0x70, 0xd7, 0x1d,
+	0x34, 0x11, 0xd2, 0xfe, 0xfd, 0xa2, 0x1f, 0x0a, 0xcd, 0x5f, 0x15, 0xfc, 0x7d, 0x0a, 0xad, 0x6f,
+	0x0a, 0x57, 0xb8, 0xe7, 0x0c, 0x22, 0x48, 0x74, 0x0e, 0xfb, 0x1d, 0xbe, 0x76, 0xbd, 0xdd, 0xdd,
+	0xeb, 0x9b, 0xd7, 0x82, 0xa1, 0x75, 0xc1, 0xd0, 0x47, 0xc1, 0xd0, 0x4b, 0xc9, 0x1a, 0xeb, 0x92,
+	0x35, 0xde, 0x4b, 0xd6, 0xb8, 0x1f, 0xcd, 0xa5, 0x5d, 0xac, 0xe2, 0x80, 0xeb, 0x24, 0xbc, 0xdd,
+	0xd4, 0x78, 0x7e, 0x57, 0xb5, 0xca, 0xf5, 0x32, 0xdc, 0xb6, 0xfe, 0x50, 0xf7, 0x6e, 0x1f, 0x53,
+	0xc8, 0xe2, 0xb6, 0x6b, 0xfd, 0xf2, 0x33, 0x00, 0x00, 0xff, 0xff, 0x44, 0x2b, 0x12, 0xdb, 0x15,
+	0x02, 0x00, 0x00,
 }
 
 func (m *EventAddAgent) Marshal() (dAtA []byte, err error) {
@@ -244,6 +312,34 @@ func (m *EventAddAgent) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.Sender)))
+		i--
+		dAtA[i] = 0x3a
+	}
+	if len(m.Url) > 0 {
+		i -= len(m.Url)
+		copy(dAtA[i:], m.Url)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.Url)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if len(m.Description) > 0 {
+		i -= len(m.Description)
+		copy(dAtA[i:], m.Description)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.Description)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.EthAddr) > 0 {
+		i -= len(m.EthAddr)
+		copy(dAtA[i:], m.EthAddr)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.EthAddr)))
+		i--
+		dAtA[i] = 0x22
+	}
 	if len(m.BtcReceivingAddress) > 0 {
 		i -= len(m.BtcReceivingAddress)
 		copy(dAtA[i:], m.BtcReceivingAddress)
@@ -286,6 +382,27 @@ func (m *EventEditAgent) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.Sender)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.Url) > 0 {
+		i -= len(m.Url)
+		copy(dAtA[i:], m.Url)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.Url)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Description) > 0 {
+		i -= len(m.Description)
+		copy(dAtA[i:], m.Description)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.Description)))
+		i--
+		dAtA[i] = 0x1a
+	}
 	if len(m.Name) > 0 {
 		i -= len(m.Name)
 		copy(dAtA[i:], m.Name)
@@ -321,10 +438,10 @@ func (m *EventRemoveAgent) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Name) > 0 {
-		i -= len(m.Name)
-		copy(dAtA[i:], m.Name)
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.Name)))
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.Sender)))
 		i--
 		dAtA[i] = 0x12
 	}
@@ -364,6 +481,22 @@ func (m *EventAddAgent) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
+	l = len(m.EthAddr)
+	if l > 0 {
+		n += 1 + l + sovEvent(uint64(l))
+	}
+	l = len(m.Description)
+	if l > 0 {
+		n += 1 + l + sovEvent(uint64(l))
+	}
+	l = len(m.Url)
+	if l > 0 {
+		n += 1 + l + sovEvent(uint64(l))
+	}
+	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovEvent(uint64(l))
+	}
 	return n
 }
 
@@ -380,6 +513,18 @@ func (m *EventEditAgent) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
+	l = len(m.Description)
+	if l > 0 {
+		n += 1 + l + sovEvent(uint64(l))
+	}
+	l = len(m.Url)
+	if l > 0 {
+		n += 1 + l + sovEvent(uint64(l))
+	}
+	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovEvent(uint64(l))
+	}
 	return n
 }
 
@@ -392,7 +537,7 @@ func (m *EventRemoveAgent) Size() (n int) {
 	if m.Id != 0 {
 		n += 1 + sovEvent(uint64(m.Id))
 	}
-	l = len(m.Name)
+	l = len(m.Sender)
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
@@ -517,6 +662,134 @@ func (m *EventAddAgent) Unmarshal(dAtA []byte) error {
 			}
 			m.BtcReceivingAddress = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EthAddr", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvent
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvent
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvent
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.EthAddr = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Description", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvent
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvent
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvent
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Description = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Url", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvent
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvent
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvent
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Url = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvent
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvent
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvent
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Sender = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipEvent(dAtA[iNdEx:])
@@ -618,6 +891,102 @@ func (m *EventEditAgent) Unmarshal(dAtA []byte) error {
 			}
 			m.Name = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Description", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvent
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvent
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvent
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Description = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Url", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvent
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvent
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvent
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Url = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvent
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvent
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvent
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Sender = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipEvent(dAtA[iNdEx:])
@@ -689,7 +1058,7 @@ func (m *EventRemoveAgent) Unmarshal(dAtA []byte) error {
 			}
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -717,7 +1086,7 @@ func (m *EventRemoveAgent) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Name = string(dAtA[iNdEx:postIndex])
+			m.Sender = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

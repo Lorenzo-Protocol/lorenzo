@@ -11,4 +11,5 @@ var (
 	ErrAgentNotFound            = errorsmod.Register(ModuleName, 5, "agent not found")
 	ErrUnAuthorized             = errorsmod.Register(ModuleName, 6, "unauthorized")
 	ErrInvalidBtcAddress        = errorsmod.Register(ModuleName, 7, "invalid btc address")
+	ErrInvalidEthAddress        = errorsmod.Register(ModuleName, 8, "invalid eth address")
 )

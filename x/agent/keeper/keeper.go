@@ -27,13 +27,11 @@ func NewKeeper(
 	cdc codec.BinaryCodec,
 	storeKey storetypes.StoreKey,
 	btcLCKeeper types.BTCLightClientKeeper,
-	authority string,
 ) Keeper {
 	return Keeper{
 		cdc:         cdc,
 		storeKey:    storeKey,
 		btcLCKeeper: btcLCKeeper,
-		authority:   authority,
 	}
 }
 
@@ -43,16 +41,18 @@ func NewKeeper(
 // - ctx: the SDK context.
 // - name: the name of the agent.
 // - btcReceivingAddress: the Bitcoin receiving address of the agent.
+// - ethAddr: the Ethereum address of the agent.
 // - description: the description of the agent.
 // - url: the URL of the agent.
 //
 // Returns: none.
-func (k Keeper) AddAgent(ctx sdk.Context, name, btcReceivingAddress, description, url string) uint64 {
+func (k Keeper) AddAgent(ctx sdk.Context, name, btcReceivingAddress, ethAddr, description, url string) uint64 {
 	id := k.GetNextNumber(ctx)
 	agent := types.Agent{
 		Id:                  id,
 		Name:                name,
 		BtcReceivingAddress: btcReceivingAddress,
+		EthAddr:             ethAddr,
 		Description:         description,
 		Url:                 url,
 	}
@@ -115,13 +115,16 @@ func (k Keeper) GetAdmin(ctx sdk.Context) sdk.AccAddress {
 	return sdk.AccAddress(bz)
 }
 
-// Authorized checks if the given address is authorized.
+// Allowed checks if the given address is authorized.
 //
-// ctx: the SDK context.
-// address: the address to check.
-// bool: true if the address is authorized, false otherwise.
-func (k Keeper) Authorized(ctx sdk.Context, address sdk.AccAddress) bool {
-	return k.authority == address.String() || k.GetAdmin(ctx).Equals(address)
+// Parameters:
+// - ctx: the SDK context.
+// - address: the address to check.
+//
+// Returns:
+// - bool: true if the address is authorized, false otherwise.
+func (k Keeper) Allowed(ctx sdk.Context, address sdk.AccAddress) bool {
+	return k.GetAdmin(ctx).Equals(address)
 }
 
 // setNextNumber sets the next number in the Keeper's store.

@@ -33,7 +33,7 @@ func (k Keeper) Agent(goctx context.Context, request *types.QueryAgentRequest) (
 	ctx := sdk.UnwrapSDKContext(goctx)
 	agent, has := k.GetAgent(ctx, request.Id)
 	if !has {
-		return nil, status.Errorf(codes.InvalidArgument, "not found agent:%d", request.Id)
+		return nil, status.Errorf(codes.InvalidArgument, "not found agent: %d", request.Id)
 	}
 	return &types.QueryAgentResponse{Agent: agent}, nil
 }

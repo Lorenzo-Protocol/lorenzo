@@ -3,7 +3,9 @@ package types
 import (
 	"strings"
 
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/ethereum/go-ethereum/common"
 )
 
 // DefaultGenesisState returns the default genesis state.
@@ -44,7 +46,10 @@ func (data GenesisState) Validate() error {
 		if len(strings.TrimSpace(agent.BtcReceivingAddress)) == 0 {
 			return ErrBtcReceivingAddressEmpty
 		}
-	}
 
+		if len(agent.EthAddr) != 0 && !common.IsHexAddress(agent.EthAddr) {
+			return errorsmod.Wrap(ErrInvalidEthAddress, "EthAddr must be empty or a valid eth addr")
+		}
+	}
 	return nil
 }

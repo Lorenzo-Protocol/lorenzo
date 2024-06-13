@@ -54,18 +54,24 @@ func CmdTxAddAgent() *cobra.Command {
 				return err
 			}
 
+			ethAddr, err := cmd.Flags().GetString(FlagEthAddress)
+			if err != nil {
+				return err
+			}
+
 			description, err := cmd.Flags().GetString(FlagDescription)
 			if err != nil {
 				return err
 			}
 
-			url, err := cmd.Flags().GetString(FlagUrl)
+			url, err := cmd.Flags().GetString(FlagURL)
 			if err != nil {
 				return err
 			}
 			msg := &types.MsgAddAgent{
 				Name:                args[0],
 				BtcReceivingAddress: args[1],
+				EthAddr:             ethAddr,
 				Description:         description,
 				Url:                 url,
 				Sender:              clientCtx.GetFromAddress().String(),
@@ -113,7 +119,7 @@ func CmdTxEditAgent() *cobra.Command {
 				return err
 			}
 
-			url, err := cmd.Flags().GetString(FlagUrl)
+			url, err := cmd.Flags().GetString(FlagURL)
 			if err != nil {
 				return err
 			}
@@ -123,17 +129,12 @@ func CmdTxEditAgent() *cobra.Command {
 				return err
 			}
 
-			btcReceivingAddress, err := cmd.Flags().GetString(FlagBtcReceivingAddress)
-			if err != nil {
-				return err
-			}
 			msg := types.MsgEditAgent{
-				BtcReceivingAddress: btcReceivingAddress,
-				Name:                name,
-				Description:         description,
-				Url:                 url,
-				Sender:              clientCtx.GetFromAddress().String(),
-				Id:                  agentID,
+				Name:        name,
+				Description: description,
+				Url:         url,
+				Sender:      clientCtx.GetFromAddress().String(),
+				Id:          agentID,
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err

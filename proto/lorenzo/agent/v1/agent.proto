@@ -11,8 +11,10 @@ message Agent {
   string name = 2;
   // btc_receiving_address is agent’s fund escrow address,required
   string btc_receiving_address = 3;
+  // like 0xBAb28FF7659481F1c8516f616A576339936AFB06
+  string eth_addr = 4;
   // description is a brief description of the agent, optional
-  string description = 4;
+  string description = 5;
   // url is the agent's link, used for detailed introduction, optional
-  string url = 5;
+  string url = 6;
 }

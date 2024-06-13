@@ -37,19 +37,18 @@ type msgServer struct {
 //
 // It returns a pointer to the types.MsgAddAgentResponse object and an error.
 func (m msgServer) AddAgent(goctx context.Context, msg *types.MsgAddAgent) (*types.MsgAddAgentResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goctx)
-
 	_, err := btcutil.DecodeAddress(msg.BtcReceivingAddress, m.k.btcLCKeeper.GetBTCNet())
 	if err != nil {
 		return nil, errorsmod.Wrapf(types.ErrInvalidBtcAddress, "invalid btc receiving address :%s", msg.BtcReceivingAddress)
 	}
 
+	ctx := sdk.UnwrapSDKContext(goctx)
 	sender := sdk.MustAccAddressFromBech32(msg.Sender)
-	if !m.k.Authorized(ctx, sender) {
+	if !m.k.Allowed(ctx, sender) {
 		return nil, errorsmod.Wrapf(types.ErrUnAuthorized, "invalid sender :%s, not authorized", msg.Sender)
 	}
 
-	agentID := m.k.AddAgent(ctx, msg.Name, msg.BtcReceivingAddress, msg.Description, msg.Url)
+	agentID := m.k.AddAgent(ctx, msg.Name, msg.BtcReceivingAddress, msg.EthAddr, msg.Description, msg.Url)
 	return &types.MsgAddAgentResponse{
 		Id: agentID,
 	}, nil
@@ -67,7 +66,7 @@ func (m msgServer) EditAgent(goctx context.Context, msg *types.MsgEditAgent) (*t
 	ctx := sdk.UnwrapSDKContext(goctx)
 
 	sender := sdk.MustAccAddressFromBech32(msg.Sender)
-	if !m.k.Authorized(ctx, sender) {
+	if !m.k.Allowed(ctx, sender) {
 		return nil, errorsmod.Wrapf(types.ErrUnAuthorized, "invalid sender :%s, not authorized", msg.Sender)
 	}
 
@@ -76,13 +75,6 @@ func (m msgServer) EditAgent(goctx context.Context, msg *types.MsgEditAgent) (*t
 		return nil, errorsmod.Wrapf(types.ErrAgentNotFound, "not found agent:%d", msg.Id)
 	}
 
-	if msg.BtcReceivingAddress != types.DoNotModifyDesc {
-		_, err := btcutil.DecodeAddress(msg.BtcReceivingAddress, m.k.btcLCKeeper.GetBTCNet())
-		if err != nil {
-			return nil, errorsmod.Wrapf(types.ErrInvalidBtcAddress, "invalid btc receiving address :%s", msg.BtcReceivingAddress)
-		}
-		agent.BtcReceivingAddress = msg.BtcReceivingAddress
-	}
 	if msg.Description != types.DoNotModifyDesc {
 		agent.Description = msg.Description
 	}
@@ -104,7 +96,7 @@ func (m msgServer) RemoveAgent(goctx context.Context, msg *types.MsgRemoveAgent)
 	ctx := sdk.UnwrapSDKContext(goctx)
 
 	sender := sdk.MustAccAddressFromBech32(msg.Sender)
-	if !m.k.Authorized(ctx, sender) {
+	if !m.k.Allowed(ctx, sender) {
 		return nil, errorsmod.Wrapf(types.ErrUnAuthorized, "invalid sender :%s, not authorized", msg.Sender)
 	}
 
