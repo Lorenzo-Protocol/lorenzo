@@ -9,6 +9,10 @@ option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/plan/types";
 message Params {
   option (gogoproto.equal) = true;
 
+  // init_contract_enabled defines if the init contract is enabled
+  bool init_contract_enabled = 1;
+
   // List of addresses that are allowed to create a plan
-  repeated string allow_list = 1;
+  repeated string allow_list = 2;
+
 }
