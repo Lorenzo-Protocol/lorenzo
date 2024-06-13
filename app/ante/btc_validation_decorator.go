@@ -3,6 +3,7 @@ package ante
 import (
 	bbn "github.com/Lorenzo-Protocol/lorenzo/types"
 	btclightclient "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/types"
+	btcstaking "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -30,6 +31,12 @@ func (bvd BtcValidationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulat
 				err := msg.ValidateHeaders(&powLimit)
 				if err != nil {
 					return ctx, btclightclient.ErrInvalidProofOfWOrk
+				}
+			case *btcstaking.MsgBurnRequest:
+				netParams := bvd.BtcCfg.NetParams()
+				err := msg.ValidateBtcAddress(netParams)
+				if err != nil {
+					return ctx, btcstaking.ErrInvalidBurnBtcTargetAddress
 				}
 			default:
 				// NOOP in case of other messages

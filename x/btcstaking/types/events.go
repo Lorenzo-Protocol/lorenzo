@@ -15,7 +15,6 @@ func NewEventBurnCreated(signer sdk.AccAddress, btcTargetAddress btcutil.Address
 	return &EventBurnCreated{
 		Signer:           signer.String(),
 		BtcTargetAddress: btcTargetAddress.String(),
-		AmountDenom:      amount.Denom,
-		AmountValue:      amount.Amount.Uint64(),
+		Amount:           amount,
 	}
 }

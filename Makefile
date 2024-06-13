@@ -109,7 +109,7 @@ e2e-test-all: e2e-test-ibc e2e-test-ibc-timeout
 
 protoVer=0.11.6
 protoImageName=ghcr.io/cosmos/proto-builder:$(protoVer)
-protoImage=$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace --user 0 $(protoImageName)
+protoImage=$(DOCKER) run --network=host --rm -v $(CURDIR):/workspace --workdir /workspace --user 0 $(protoImageName)
 
 # ------
 # NOTE: If you are experiencing problems running these commands, try deleting

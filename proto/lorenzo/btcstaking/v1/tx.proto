@@ -4,19 +4,20 @@ package lorenzo.btcstaking.v1;
 import "cosmos/msg/v1/msg.proto";
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
+import "lorenzo/btcstaking/v1/params.proto";
 //import "cosmos/staking/v1beta1/staking.proto";
 
 option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types";
 
 // Msg defines the Msg service.
-// TODO: handle unbonding tx with full witness
 service Msg {
   option (cosmos.msg.v1.service) = true;
 
-  // CreateBTCDelegation creates a new BTC delegation
   rpc CreateBTCStaking(MsgCreateBTCStaking) returns (MsgCreateBTCStakingResponse);
 
   rpc Burn(MsgBurnRequest) returns (MsgBurnResponse);
+
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
 }
 
 message TransactionKey {
@@ -41,9 +42,6 @@ message TransactionInfo {
   TransactionKey key = 1;
   // transaction is the full transaction in bytes
   bytes transaction = 2;
-  // proof is the Merkle proof that this tx is included in the position in `key`
-  // TODO: maybe it could use here better format as we already processed and
-  // validated the proof?
   bytes proof = 3;
 }
 
@@ -51,6 +49,7 @@ message MsgCreateBTCStaking {
     option (cosmos.msg.v1.signer) = "signer";
     string signer = 1;
   TransactionInfo staking_tx = 2;
+  string receiver = 3;
 }
 
 message MsgCreateBTCStakingResponse {}
@@ -59,7 +58,17 @@ message MsgBurnRequest {
   option (cosmos.msg.v1.signer) = "signer";
   string signer = 1;
   string btc_target_address = 2;
-  uint64 amount = 3;
+  string amount = 3 [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false ];
 }
 
 message MsgBurnResponse{}
+
+message MsgUpdateParams {
+  option (cosmos.msg.v1.signer) = "authority";
+
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  Params params = 2 [ (gogoproto.nullable) = false ];
+}
+
+message MsgUpdateParamsResponse {}

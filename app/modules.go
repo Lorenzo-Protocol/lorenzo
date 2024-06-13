@@ -2,6 +2,8 @@ package app
 
 import (
 	appparams "github.com/Lorenzo-Protocol/lorenzo/app/params"
+	"github.com/Lorenzo-Protocol/lorenzo/x/agent"
+	agenttypes "github.com/Lorenzo-Protocol/lorenzo/x/agent/types"
 	"github.com/Lorenzo-Protocol/lorenzo/x/btclightclient"
 	btclightclienttypes "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/types"
 	"github.com/Lorenzo-Protocol/lorenzo/x/btcstaking"
@@ -86,7 +88,7 @@ var (
 	ModuleBasics = module.NewBasicManager(
 		auth.AppModuleBasic{},
 		authzmodule.AppModuleBasic{},
-		genutil.AppModuleBasic{},
+		genutil.NewAppModuleBasic(genutiltypes.DefaultMessageValidator),
 		bank.AppModuleBasic{},
 		capability.AppModuleBasic{},
 		staking.AppModuleBasic{},
@@ -107,11 +109,12 @@ var (
 		// Ethermint modules
 		evm.AppModuleBasic{},
 		feemarket.AppModuleBasic{},
-		btclightclient.AppModuleBasic{},
-		fee.AppModuleBasic{},
-		btcstaking.AppModuleBasic{},
 
 		// slef modules
+		btclightclient.AppModuleBasic{},
+		btcstaking.AppModuleBasic{},
+		fee.AppModuleBasic{},
+		agent.AppModuleBasic{},
 		plan.AppModuleBasic{},
 	)
 	// module account permissions
@@ -208,9 +211,6 @@ func appModules(
 		params.NewAppModule(app.ParamsKeeper),
 
 		app.transferModule,
-		btclightclient.NewAppModule(appCodec, app.BTCLightClientKeeper),
-		fee.NewAppModule(appCodec, app.FeeKeeper),
-		btcstaking.NewAppModule(appCodec, app.BTCStakingKeeper),
 
 		// this line is used by starport scaffolding # stargate/app/appModule
 
@@ -219,6 +219,10 @@ func appModules(
 		feemarket.NewAppModule(app.FeeMarketKeeper, app.GetSubspace(feemarkettypes.ModuleName).WithKeyTable(feemarkettypes.ParamKeyTable())),
 
 		// self modules
+		btclightclient.NewAppModule(appCodec, app.BTCLightClientKeeper),
+		fee.NewAppModule(appCodec, app.FeeKeeper),
+		btcstaking.NewAppModule(appCodec, app.BTCStakingKeeper),
+		agent.NewAppModule(appCodec, app.AgentKeeper),
 		plan.NewAppModule(appCodec, app.PlanKeeper),
 	}
 }
@@ -256,10 +260,12 @@ func orderBeginBlockers() []string {
 		feegrant.ModuleName,
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
-		btclightclienttypes.ModuleName,
-		feetypes.ModuleName,
+
 		//self module
+		btclightclienttypes.ModuleName,
 		btcstakingtypes.ModuleName,
+		feetypes.ModuleName,
+		agenttypes.ModuleName,
 		plantypes.ModuleName,
 	}
 }
@@ -294,10 +300,12 @@ func orderEndBlockers() []string {
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
-		btclightclienttypes.ModuleName,
-		feetypes.ModuleName,
+
 		//self module
+		btclightclienttypes.ModuleName,
 		btcstakingtypes.ModuleName,
+		feetypes.ModuleName,
+		agenttypes.ModuleName,
 		plantypes.ModuleName,
 	}
 }
@@ -337,8 +345,11 @@ func orderInitBlockers() []string {
 		evidencetypes.ModuleName,
 
 		//self module
+
 		btclightclienttypes.ModuleName,
 		btcstakingtypes.ModuleName,
+		feetypes.ModuleName,
+		agenttypes.ModuleName,
 		plantypes.ModuleName,
 
 		// NOTE: crisis module must go at the end to check for invariants on each module
