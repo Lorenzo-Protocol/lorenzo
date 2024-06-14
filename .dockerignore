@@ -1,4 +1,5 @@
 Dockerfile
-dymension-testnet.pem
+build/
+vendor/
 .github
 .gitignore
