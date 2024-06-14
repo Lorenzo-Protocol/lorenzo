@@ -208,7 +208,7 @@ func (k Keeper) HeaderDepth(ctx context.Context, req *types.QueryHeaderDepthRequ
 		return nil, err
 	}
 
-	return &types.QueryHeaderDepthResponse{Depth: uint64(depth)}, nil
+	return &types.QueryHeaderDepthResponse{Depth: depth}, nil
 }
 
 func (k Keeper) FeeRate(ctx context.Context, req *types.QueryFeeRateRequest) (*types.QueryFeeRateResponse, error) {

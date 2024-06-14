@@ -211,7 +211,7 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 	}
 	err = ctx.EventManager().EmitTypedEvent(types.NewEventBTCStakingCreated(&stakingRecord))
 	if err != nil {
-		panic(fmt.Errorf("fail to emit EventBTCStakingCreated : %s", err))
+		panic(fmt.Errorf("fail to emit EventBTCStakingCreated : %w", err))
 	}
 	return &types.MsgCreateBTCStakingResponse{}, nil
 }

@@ -75,6 +75,11 @@ func (k Keeper) DeployYATProxyContract(
 		initArgs,
 	)
 
+	if err != nil {
+		return common.Address{}, errorsmod.Wrap(types.ErrABIPack, fmt.Sprintf("failed to pack contract arguments: %s", err))
+
+	}
+
 	data := make([]byte, len(contracts.YieldAccruingTokenContract.Bin)+len(contractArgs))
 	copy(data[:len(contracts.YieldAccruingTokenContract.Bin)], contracts.YieldAccruingTokenContract.Bin)
 	copy(data[len(contracts.YieldAccruingTokenContract.Bin):], contractArgs)

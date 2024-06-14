@@ -10,5 +10,5 @@ const (
 
 var (
 	// ParamsKey defines the key to store the Params object
-	ParamsKey           = []byte{0x01} // key for params
+	ParamsKey = []byte{0x01} // key for params
 )
