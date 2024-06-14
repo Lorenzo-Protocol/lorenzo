@@ -12,7 +12,6 @@ import (
 	"github.com/spf13/cast"
 
 	simappparams "cosmossdk.io/simapp/params"
-	"github.com/Lorenzo-Protocol/lorenzo/app/ante"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	nodeservice "github.com/cosmos/cosmos-sdk/client/grpc/node"
@@ -67,19 +66,8 @@ import (
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
-	"github.com/evmos/ethermint/ethereum/eip712"
-	"github.com/evmos/ethermint/server/flags"
-	ethermint "github.com/evmos/ethermint/types"
-	evmkeeper "github.com/evmos/ethermint/x/evm/keeper"
-	evmtypes "github.com/evmos/ethermint/x/evm/types"
-	"github.com/evmos/ethermint/x/evm/vm/geth"
-	feemarketkeeper "github.com/evmos/ethermint/x/feemarket/keeper"
-	feemarkettypes "github.com/evmos/ethermint/x/feemarket/types"
 
-	btcstakingkeeper "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/keeper"
-	btcstakingtypes "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types"
-
-	// ibc
+	/* ------------------------------ ibc imports ----------------------------- */
 	ibctransfer "github.com/cosmos/ibc-go/v7/modules/apps/transfer"
 	ibctransferkeeper "github.com/cosmos/ibc-go/v7/modules/apps/transfer/keeper"
 	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
@@ -89,7 +77,7 @@ import (
 	ibckeeper "github.com/cosmos/ibc-go/v7/modules/core/keeper"
 	ibctestingtypes "github.com/cosmos/ibc-go/v7/testing/types"
 
-	// tendermint
+	/* ------------------------------ tendermint imports ----------------------------- */
 	dbm "github.com/cometbft/cometbft-db"
 	abci "github.com/cometbft/cometbft/abci/types"
 	tmjson "github.com/cometbft/cometbft/libs/json"
@@ -99,15 +87,29 @@ import (
 	// unnamed import of statik for swagger UI support
 	_ "github.com/cosmos/cosmos-sdk/client/docs/statik"
 	/* ------------------------------ ethermint imports ----------------------------- */
+	"github.com/evmos/ethermint/ethereum/eip712"
+	"github.com/evmos/ethermint/server/flags"
+	ethermint "github.com/evmos/ethermint/types"
+	evmkeeper "github.com/evmos/ethermint/x/evm/keeper"
+	evmtypes "github.com/evmos/ethermint/x/evm/types"
+	"github.com/evmos/ethermint/x/evm/vm/geth"
+	feemarketkeeper "github.com/evmos/ethermint/x/feemarket/keeper"
+	feemarkettypes "github.com/evmos/ethermint/x/feemarket/types"
 
+	/* ------------------------------ self module imports ----------------------------- */
+	"github.com/Lorenzo-Protocol/lorenzo/app/ante"
 	appparams "github.com/Lorenzo-Protocol/lorenzo/app/params"
 	lrztypes "github.com/Lorenzo-Protocol/lorenzo/types"
 	agentkeeper "github.com/Lorenzo-Protocol/lorenzo/x/agent/keeper"
 	agenttypes "github.com/Lorenzo-Protocol/lorenzo/x/agent/types"
 	btclightclientkeeper "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/keeper"
 	btclightclienttypes "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/types"
+	btcstakingkeeper "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/keeper"
+	btcstakingtypes "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types"
 	feekeeper "github.com/Lorenzo-Protocol/lorenzo/x/fee/keeper"
 	feetypes "github.com/Lorenzo-Protocol/lorenzo/x/fee/types"
+	plankeeper "github.com/Lorenzo-Protocol/lorenzo/x/plan/keeper"
+	plantypes "github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
 )
 
 var (
@@ -159,15 +161,16 @@ type LorenzoApp struct {
 	FeeGrantKeeper        feegrantkeeper.Keeper
 	ConsensusParamsKeeper consensuskeeper.Keeper
 
-	BTCLightClientKeeper btclightclientkeeper.Keeper
-	FeeKeeper            *feekeeper.Keeper
-	AgentKeeper           agentkeeper.Keeper
-
-	BTCStakingKeeper btcstakingkeeper.Keeper
-
 	// Ethermint keepers
 	EvmKeeper       *evmkeeper.Keeper
 	FeeMarketKeeper feemarketkeeper.Keeper
+
+	// self keeper
+	BTCLightClientKeeper btclightclientkeeper.Keeper
+	FeeKeeper            *feekeeper.Keeper
+	AgentKeeper          agentkeeper.Keeper
+	BTCStakingKeeper     btcstakingkeeper.Keeper
+	PlanKeeper           *plankeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
@@ -254,6 +257,9 @@ func NewLorenzoApp(
 		feetypes.StoreKey,
 		btcstakingtypes.StoreKey,
 		agenttypes.StoreKey,
+
+		// self modules
+		plantypes.StoreKey,
 	)
 
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey, evmtypes.TransientKey, feemarkettypes.TransientKey)
@@ -477,6 +483,16 @@ func NewLorenzoApp(
 	)
 
 	app.BTCStakingKeeper = btcstakingkeeper.NewKeeper(appCodec, keys[btcstakingtypes.StoreKey], app.BTCLightClientKeeper, app.BankKeeper, authtypes.NewModuleAddress(govtypes.ModuleName).String())
+
+	// self keeper
+	app.PlanKeeper = plankeeper.NewKeeper(
+		appCodec,
+		keys[plantypes.StoreKey],
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.EvmKeeper,
+	)
 
 	var transferStack ibcporttypes.IBCModule
 	transferStack = ibctransfer.NewIBCModule(app.TransferKeeper)
