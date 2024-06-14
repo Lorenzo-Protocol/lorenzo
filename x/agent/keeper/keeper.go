@@ -13,7 +13,7 @@ type Keeper struct {
 	cdc         codec.BinaryCodec
 	storeKey    storetypes.StoreKey
 	btcLCKeeper types.BTCLightClientKeeper
-	authority   string
+	//authority   string
 }
 
 // NewKeeper initializes a new Keeper.
@@ -34,8 +34,6 @@ func NewKeeper(
 		btcLCKeeper: btcLCKeeper,
 	}
 }
-
-
 
 // GetAgent retrieves an agent from the Keeper's store based on the given ID.
 //

@@ -55,7 +55,7 @@ func (k Keeper) getAgents(ctx sdk.Context) (agents []types.Agent) {
 	store := ctx.KVStore(k.storeKey)
 
 	it := sdk.KVStorePrefixIterator(store, types.AgentKey)
-	defer it.Close()
+	defer it.Close() // nolint: errcheck
 
 	for ; it.Valid(); it.Next() {
 		var agent types.Agent

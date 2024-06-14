@@ -159,7 +159,7 @@ func (s headersState) TipExists() bool {
 func (s headersState) IterateReverseHeaders(fn func(*types.BTCHeaderInfo) bool) {
 	// Iterate it in reverse in order to get the highest heights first
 	iter := s.headers.ReverseIterator(nil, nil)
-	defer iter.Close()
+	defer iter.Close() // nolint: errcheck
 
 	for ; iter.Valid(); iter.Next() {
 		header := headerInfoFromStoredBytes(s.cdc, iter.Value())
@@ -183,7 +183,7 @@ func (s headersState) IterateForwardHeaders(startPoint uint64, fn func(*types.BT
 	}
 
 	iter := s.headers.Iterator(startKey, nil)
-	defer iter.Close()
+	defer iter.Close() // nolint: errcheck
 
 	for ; iter.Valid(); iter.Next() {
 		header := headerInfoFromStoredBytes(s.cdc, iter.Value())

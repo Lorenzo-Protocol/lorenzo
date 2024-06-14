@@ -278,6 +278,7 @@ func NewLorenzoApp(
 		keys:              keys,
 		tkeys:             tkeys,
 		memKeys:           memKeys,
+		invCheckPeriod:    invCheckPeriod,
 	}
 
 	app.ParamsKeeper = initParamsKeeper(
@@ -494,8 +495,7 @@ func NewLorenzoApp(
 		app.EvmKeeper,
 	)
 
-	var transferStack ibcporttypes.IBCModule
-	transferStack = ibctransfer.NewIBCModule(app.TransferKeeper)
+	transferStack := ibctransfer.NewIBCModule(app.TransferKeeper)
 
 	// Create static IBC router, add transfer route, then set and seal it
 	ibcRouter := ibcporttypes.NewRouter()
