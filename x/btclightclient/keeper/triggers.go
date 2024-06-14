@@ -11,21 +11,21 @@ func (k Keeper) triggerHeaderInserted(ctx context.Context, headerInfo *types.BTC
 	// Trigger AfterBTCHeaderInserted hook
 	k.AfterBTCHeaderInserted(ctx, headerInfo)
 	// Emit HeaderInserted event
-	sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventBTCHeaderInserted{Header: headerInfo}) //nolint:errcheck
+	sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventBTCHeaderInserted{Header: headerInfo}) //nolint: golint
 }
 
 func (k Keeper) triggerRollBack(ctx context.Context, headerInfo *types.BTCHeaderInfo) {
 	// Trigger AfterBTCRollBack hook
 	k.AfterBTCRollBack(ctx, headerInfo)
 	// Emit BTCRollBack event
-	sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventBTCRollBack{Header: headerInfo}) //nolint:errcheck
+	sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventBTCRollBack{Header: headerInfo}) //nolint: golint
 }
 
 func (k Keeper) triggerRollForward(ctx context.Context, headerInfo *types.BTCHeaderInfo) {
 	// Trigger AfterBTCRollForward hook
 	k.AfterBTCRollForward(ctx, headerInfo)
 	// Emit BTCRollForward event
-	sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventBTCRollForward{Header: headerInfo}) //nolint:errcheck
+	sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventBTCRollForward{Header: headerInfo}) //nolint: golint
 }
 
 func (k Keeper) triggerFeeRateUpdated(ctx context.Context, feeRate uint64) {

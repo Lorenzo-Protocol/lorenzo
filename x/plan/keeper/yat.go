@@ -74,6 +74,9 @@ func (k Keeper) DeployYATProxyContract(
 		common.HexToAddress(params.Beacon),
 		initArgs,
 	)
+	if err != nil {
+		return common.Address{}, errorsmod.Wrap(types.ErrABIPack, fmt.Sprintf("failed to pack contract arguments: %s", err))
+	}
 
 	data := make([]byte, len(contracts.YieldAccruingTokenContract.Bin)+len(contractArgs))
 	copy(data[:len(contracts.YieldAccruingTokenContract.Bin)], contracts.YieldAccruingTokenContract.Bin)

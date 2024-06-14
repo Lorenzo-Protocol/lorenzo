@@ -50,7 +50,7 @@ func (m msgServer) AddAgent(goctx context.Context, msg *types.MsgAddAgent) (*typ
 
 	agentID := m.k.addAgent(ctx, msg.Name, msg.BtcReceivingAddress, msg.EthAddr, msg.Description, msg.Url)
 
-	ctx.EventManager().EmitTypedEvent(&types.EventAddAgent{ // nolint: errcheck
+	ctx.EventManager().EmitTypedEvent(&types.EventAddAgent{ //nolint: golint
 		Id:                  agentID,
 		Name:                msg.Name,
 		BtcReceivingAddress: msg.BtcReceivingAddress,
@@ -95,7 +95,7 @@ func (m msgServer) EditAgent(goctx context.Context, msg *types.MsgEditAgent) (*t
 		agent.Url = msg.Url
 	}
 	m.k.setAgent(ctx, agent)
-	ctx.EventManager().EmitTypedEvent(&types.EventEditAgent{ // nolint: errcheck
+	ctx.EventManager().EmitTypedEvent(&types.EventEditAgent{ //nolint: golint
 		Id:          msg.Id,
 		Name:        msg.Name,
 		Description: msg.Description,
@@ -126,7 +126,7 @@ func (m msgServer) RemoveAgent(goctx context.Context, msg *types.MsgRemoveAgent)
 	}
 
 	m.k.removeAgent(ctx, msg.Id)
-	ctx.EventManager().EmitTypedEvent(&types.EventRemoveAgent{ // nolint: errcheck
+	ctx.EventManager().EmitTypedEvent(&types.EventRemoveAgent{ //nolint: golint
 		Id:     msg.Id,
 		Sender: msg.Sender,
 	})

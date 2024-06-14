@@ -48,9 +48,13 @@ func init() {
 }
 
 var (
-	ParamsKey             = []byte{0x01}
-	KeyPrefixNextNumber   = []byte{0x02}
-	KeyPrefixPlan         = []byte{0x03}
+	// ParamsKey is the key prefix for the global params
+	ParamsKey = []byte{0x01}
+	// KeyPrefixNextNumber is the key prefix for the next plan id
+	KeyPrefixNextNumber = []byte{0x02}
+	// KeyPrefixPlan is the key prefix for the plan
+	KeyPrefixPlan = []byte{0x03}
+	// KeyPrefixPlanContract is the key prefix for the plan contract
 	KeyPrefixPlanContract = []byte{0x04}
 
 	Delimiter = []byte{0x00}
