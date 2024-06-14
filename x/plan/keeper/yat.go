@@ -74,6 +74,9 @@ func (k Keeper) DeployYATProxyContract(
 		common.HexToAddress(params.Beacon),
 		initArgs,
 	)
+	if err != nil {
+		return common.Address{}, errorsmod.Wrap(types.ErrABIPack, fmt.Sprintf("failed to pack contract arguments: %s", err))
+	}
 
 	data := make([]byte, len(contracts.YieldAccruingTokenContract.Bin)+len(contractArgs))
 	copy(data[:len(contracts.YieldAccruingTokenContract.Bin)], contracts.YieldAccruingTokenContract.Bin)
@@ -121,7 +124,6 @@ func (k Keeper) DeployYATLogicContract(
 	contractAddr := crypto.CreateAddress(deployer, nonce)
 	result, err := k.CallEVMWithData(ctx, deployer, nil, data, true)
 	if err != nil {
-
 		return common.Address{}, errorsmod.Wrapf(
 			err,
 			"failed to deploy contract for yat logic contract")

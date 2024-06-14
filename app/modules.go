@@ -74,7 +74,7 @@ func getGovProposalHandlers() []govclient.ProposalHandler {
 
 	govProposalHandlers = append(govProposalHandlers,
 		paramsclient.ProposalHandler,
-		//distrclient.ProposalHandler,
+		// distrclient.ProposalHandler,
 		upgradeclient.LegacyProposalHandler,
 		upgradeclient.LegacyCancelProposalHandler,
 		ibcclientclient.UpdateClientProposalHandler,
@@ -267,7 +267,7 @@ func orderBeginBlockers() []string {
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
 
-		//self module
+		// self module
 		btclightclienttypes.ModuleName,
 		btcstakingtypes.ModuleName,
 		feetypes.ModuleName,
@@ -307,7 +307,7 @@ func orderEndBlockers() []string {
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 
-		//self module
+		// self module
 		btclightclienttypes.ModuleName,
 		btcstakingtypes.ModuleName,
 		feetypes.ModuleName,
@@ -350,7 +350,7 @@ func orderInitBlockers() []string {
 		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
 
-		//self module
+		// self module
 
 		btclightclienttypes.ModuleName,
 		btcstakingtypes.ModuleName,

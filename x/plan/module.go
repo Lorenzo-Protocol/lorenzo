@@ -75,7 +75,7 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEncod
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the module.
 func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
-	types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx)) //nolint:errcheck // generally we don't handle errors here
+	types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx)) //nolint:errcheck,gosec // generally we don't handle errors here
 }
 
 // GetTxCmd returns the fee module's root tx command.
@@ -148,7 +148,7 @@ func (AppModule) ConsensusVersion() uint64 { return 1 }
 
 // BeginBlock executes all ABCI BeginBlock logic respective to the fee module.
 func (am AppModule) BeginBlock(ctx sdk.Context, _ abci.RequestBeginBlock) {
-	//BeginBlocker(ctx, am.keeper)
+	// BeginBlocker(ctx, am.keeper)
 }
 
 // EndBlock executes all ABCI EndBlock logic respective to the fee module. It

@@ -30,5 +30,3 @@ func ExportGenesis(ctx sdk.Context, keeper *keeper.Keeper) *types.GenesisState {
 func ValidateGenesis(data types.GenesisState) error {
 	return data.Params.Validate()
 }
-
-

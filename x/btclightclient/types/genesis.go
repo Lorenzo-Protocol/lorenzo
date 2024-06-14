@@ -9,8 +9,8 @@ import (
 
 func SimnetGenesisBlock() BTCHeaderInfo {
 	// By default we use the genesis block of the simnet, as it is the best for testing
-	var header = chaincfg.SimNetParams.GenesisBlock.Header
-	var headerHash = chaincfg.SimNetParams.GenesisHash
+	header := chaincfg.SimNetParams.GenesisBlock.Header
+	headerHash := chaincfg.SimNetParams.GenesisHash
 
 	bytes := bbn.NewBTCHeaderBytesFromBlockHeader(&header)
 	hash := bbn.NewBTCHeaderHashBytesFromChainhash(headerHash)
@@ -26,8 +26,8 @@ func SimnetGenesisBlock() BTCHeaderInfo {
 
 func TestNetGenesisBlock() BTCHeaderInfo {
 	// By default we use the genesis block of the simnet, as it is the best for testing
-	var header = chaincfg.TestNet3Params.GenesisBlock.Header
-	var headerHash = chaincfg.TestNet3Params.GenesisHash
+	header := chaincfg.TestNet3Params.GenesisBlock.Header
+	headerHash := chaincfg.TestNet3Params.GenesisHash
 
 	bytes := bbn.NewBTCHeaderBytesFromBlockHeader(&header)
 	hash := bbn.NewBTCHeaderHashBytesFromChainhash(headerHash)

@@ -63,14 +63,12 @@ func (k Keeper) insertHeaders(
 	ctx sdk.Context,
 	headers []*wire.BlockHeader,
 ) error {
-
 	headerState := k.headersState(ctx)
 
 	result, err := k.bl.InsertHeaders(
 		headerState,
 		headers,
 	)
-
 	if err != nil {
 		return err
 	}
@@ -119,7 +117,6 @@ func (k Keeper) BlockHeight(ctx sdk.Context, headerHash *bbn.BTCHeaderHashBytes)
 	}
 
 	headerInfo, err := k.headersState(ctx).GetHeaderByHash(headerHash)
-
 	if err != nil {
 		return 0, err
 	}
@@ -157,7 +154,6 @@ func (k Keeper) GetTipInfo(ctx sdk.Context) *types.BTCHeaderInfo {
 // GetHeaderByHash returns header with given hash, if it does not exists returns nil
 func (k Keeper) GetHeaderByHash(ctx sdk.Context, hash *bbn.BTCHeaderHashBytes) *types.BTCHeaderInfo {
 	info, err := k.headersState(ctx).GetHeaderByHash(hash)
-
 	if err != nil {
 		return nil
 	}
@@ -168,7 +164,6 @@ func (k Keeper) GetHeaderByHash(ctx sdk.Context, hash *bbn.BTCHeaderHashBytes) *
 // GetHeaderByHeight returns header with given height from main chain, returns nil if such header is not found
 func (k Keeper) GetHeaderByHeight(ctx sdk.Context, height uint64) *types.BTCHeaderInfo {
 	header, err := k.headersState(ctx).GetHeaderByHeight(height)
-
 	if err != nil {
 		return nil
 	}
@@ -194,7 +189,7 @@ func (k Keeper) GetMainChainFrom(ctx sdk.Context, startHeight uint64) []*types.B
 func (k Keeper) GetMainChainUpTo(ctx sdk.Context, depth uint64) []*types.BTCHeaderInfo {
 	headers := make([]*types.BTCHeaderInfo, 0)
 
-	var currentDepth = uint64(0)
+	currentDepth := uint64(0)
 	accHeaderFn := func(header *types.BTCHeaderInfo) bool {
 		// header header is at depth 0.
 		if currentDepth > depth {

@@ -35,7 +35,8 @@ func TestBTCTx(t *testing.T) {
 		Proof:       proofBytes,
 	}
 	var blkHdrBytesbuf bytes.Buffer
-	blkHdr.Serialize(&blkHdrBytesbuf)
+	err := blkHdr.Serialize(&blkHdrBytesbuf)
+	assert.Equal(nil, err, "serialize should work")
 	tmp2 := blkHdrBytesbuf.Bytes()
 	assert.Equal(nil, txInfo.VerifyInclusion((*lrz.BTCHeaderBytes)(&tmp2), chaincfg.TestNet3Params.PowLimit), "inclusion should work")
 

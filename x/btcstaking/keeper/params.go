@@ -16,11 +16,12 @@ func (k Keeper) SetParams(ctx sdk.Context, p *types.Params) error {
 // GetBTCReceivingAddr returns the current x/btcstaking module parameters.
 func (k Keeper) GetParams(ctx sdk.Context) *types.Params {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.ParamsKey)
-	if bz == nil || len(bz) == 0 {
-		return nil
-	}
 	var params types.Params
+	bz := store.Get(types.ParamsKey)
+	if bz == nil {
+		return &params
+	}
+
 	k.cdc.MustUnmarshal(bz, &params)
 	return &params
 }

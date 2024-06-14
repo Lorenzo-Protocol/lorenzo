@@ -69,7 +69,7 @@ func (k Keeper) GetPlans(ctx sdk.Context) []types.Plan {
 	store := ctx.KVStore(k.storeKey)
 
 	iterator := sdk.KVStorePrefixIterator(store, types.KeyPrefixPlan)
-	defer iterator.Close()
+	defer iterator.Close() // nolint: errcheck
 
 	var plans []types.Plan
 	for ; iterator.Valid(); iterator.Next() {
@@ -78,7 +78,6 @@ func (k Keeper) GetPlans(ctx sdk.Context) []types.Plan {
 		plans = append(plans, plan)
 	}
 	return plans
-
 }
 
 // GetNextNumber retrieves the next number from the Keeper's store.

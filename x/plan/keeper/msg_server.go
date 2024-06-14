@@ -22,7 +22,6 @@ type msgServer struct {
 }
 
 func (m msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
-
 	if m.k.authority != msg.Authority {
 		return nil, errorsmod.Wrapf(
 			govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", m.k.authority, msg.Authority)
@@ -63,7 +62,6 @@ func (m msgServer) UpgradeYAT(goCtx context.Context, msg *types.MsgUpgradeYAT) (
 }
 
 func (m msgServer) CreatePlan(goCtx context.Context, msg *types.MsgCreatePlan) (*types.MsgCreatePlanResponse, error) {
-
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	sender := sdk.AccAddress(msg.Sender)
 	if !m.k.Authorized(ctx, sender) {

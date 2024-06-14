@@ -28,7 +28,7 @@ func (m *MsgUpdateParams) GetSigners() []sdk.AccAddress {
 // It returns an error if the validation fails.
 func (p Params) Validate() error {
 	seen := make(map[string]bool)
-	for _,msg := range p.NonFeeMsgs {
+	for _, msg := range p.NonFeeMsgs {
 		if seen[msg] {
 			return errorsmod.Wrapf(ErrDuplicateMsg, "duplicate msg %s", msg)
 		}
@@ -36,7 +36,6 @@ func (p Params) Validate() error {
 	}
 	return nil
 }
-
 
 // Validate validates the GenesisState.
 //

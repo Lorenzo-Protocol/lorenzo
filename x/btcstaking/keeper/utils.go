@@ -14,6 +14,7 @@ func hashConcat(a []byte, b []byte) chainhash.Hash {
 	c = append(c, b...)
 	return chainhash.DoubleHashH(c)
 }
+
 func ParseMerkleBlock(proof []byte) (*wire.MsgMerkleBlock, error) {
 	var msgMerkleBlk wire.MsgMerkleBlock
 	if err := msgMerkleBlk.BtcDecode(bytes.NewReader(proof), wire.BIP0037Version, wire.WitnessEncoding); err != nil {
@@ -29,6 +30,7 @@ func getFlag(bitfield []byte, pos int) bool {
 func calcWidth(nTxes, hei uint32) uint32 {
 	return (nTxes + (1 << hei) - 1) >> hei
 }
+
 func calcHeight(nTxes int) uint32 {
 	return uint32(math.Ceil(math.Log2(float64(nTxes))))
 }
