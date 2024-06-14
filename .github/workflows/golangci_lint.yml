@@ -13,11 +13,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v4
         with:
           go-version: "1.20"
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v6
+          check-latest: true
+      - uses: technote-space/get-diff-action@v6.1.2
+        id: git_diff
         with:
-          version: v1.58
-          skip-cache: true
+          PATTERNS: |
+            **/*.go
+            go.mod
+            go.sum
+            **/go.mod
+            **/go.sum
+      - name: run linting
+        if: env.GIT_DIFF
+        run: |
+          make lint
