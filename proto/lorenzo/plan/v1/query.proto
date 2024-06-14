@@ -14,16 +14,16 @@ service Query {
 
   // Params queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/lorenzo/fee/v1/params";
+    option (google.api.http).get = "/lorenzo/plan/v1/params";
   }
 
   // Plans queries all plans.
-  rpc Plans(PlansRequest) returns (PlansResponse) {
+  rpc Plans(QueryPlansRequest) returns (QueryPlansResponse) {
     option (google.api.http).get = "/lorenzo/plan/v1/plans";
   }
 
   // Plan queries a plan by id.
-  rpc Plan(PlanRequest) returns (PlanResponse) {
+  rpc Plan(QueryPlanRequest) returns (QueryPlanResponse) {
     option (google.api.http).get = "/lorenzo/plan/v1/plans/{id}";
   }
 }
@@ -39,23 +39,23 @@ message QueryParamsResponse {
 
 
 // PlansRequest is the request type for the Query.Plans RPC method.
-message PlansRequest {
+message QueryPlansRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
 // PlansResponse is the response type for the Query.Plans RPC method.
-message PlansResponse {
+message QueryPlansResponse {
   repeated Plan plans = 1 [(gogoproto.nullable) = false];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // PlanRequest is the request type for the Query.Plan RPC method.
-message PlanRequest {
+message QueryPlanRequest {
   // id is the unique identifier of the agent
   uint64 id = 1;
 }
 
 // PlanResponse is the response type for the Query.Plan RPC method.
-message PlanResponse {
+message QueryPlanResponse {
   Plan plan = 1 [(gogoproto.nullable) = false];
 }

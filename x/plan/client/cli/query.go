@@ -12,7 +12,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// GetQueryCmd returns the cli query commands for fee module
+// GetQueryCmd returns the cli query commands for plan module
 func GetQueryCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                        types.ModuleName,
@@ -21,17 +21,17 @@ func GetQueryCmd() *cobra.Command {
 		SuggestionsMinimumDistance: 2,
 		RunE:                       client.ValidateCmd,
 	}
-	cmd.AddCommand(CmdQueryParams())
-	cmd.AddCommand(CmdQueryPlan())
-	cmd.AddCommand(CmdQueryPlans())
+	cmd.AddCommand(GetCmdQueryParams())
+	cmd.AddCommand(GetCmdQueryPlan())
+	cmd.AddCommand(GetCmdQueryPlans())
 	return cmd
 }
 
-// CmdQueryParams returns a new Cobra command for showing the parameters of the fee module.
+// GetCmdQueryParams returns a new Cobra command for showing the parameters of the plan module.
 //
 // No parameters.
 // Returns *cobra.Command.
-func CmdQueryParams() *cobra.Command {
+func GetCmdQueryParams() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "params",
 		Short: "query the parameters of the fee module",
@@ -50,14 +50,14 @@ func CmdQueryParams() *cobra.Command {
 	return cmd
 }
 
-// CmdQueryPlan returns a new Cobra command for querying a plan by id.
+// GetCmdQueryPlan returns a new Cobra command for querying a plan by id.
 //
 // Args: 1
 //
 //	0: plan id
 //
 // Returns *cobra.Command.
-func CmdQueryPlan() *cobra.Command {
+func GetCmdQueryPlan() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "plan",
 		Short: "query a plan by id",
@@ -68,9 +68,9 @@ func CmdQueryPlan() *cobra.Command {
 
 			planId, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
-				return err
+				return fmt.Errorf("invalid plan ID: %s, error: %s", args[0], err.Error())
 			}
-			res, err := queryClient.Plan(context.Background(), &types.PlanRequest{Id: planId})
+			res, err := queryClient.Plan(context.Background(), &types.QueryPlanRequest{Id: planId})
 			if err != nil {
 				return err
 			}
@@ -81,11 +81,11 @@ func CmdQueryPlan() *cobra.Command {
 	return cmd
 }
 
-// CmdQueryPlans returns a new Cobra command for querying all plans.
+// GetCmdQueryPlans returns a new Cobra command for querying all plans.
 //
 // No parameters.
 // Returns *cobra.Command.
-func CmdQueryPlans() *cobra.Command {
+func GetCmdQueryPlans() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "plans",
 		Short: "query a plan",
@@ -98,7 +98,7 @@ func CmdQueryPlans() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			res, err := queryClient.Plans(context.Background(), &types.PlansRequest{
+			res, err := queryClient.Plans(context.Background(), &types.QueryPlansRequest{
 				Pagination: pageReq,
 			})
 			if err != nil {

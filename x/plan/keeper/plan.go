@@ -26,12 +26,14 @@ func (k Keeper) AddPlan(ctx sdk.Context, plan types.Plan) (types.Plan, error) {
 		plan.MerkleRoot,
 	)
 	if err != nil {
-		return plan, err
+		return types.Plan{}, err
 	}
 	plan.ContractAddress = contractAddress.Hex()
 
 	// set the plan
 	k.setPlan(ctx, plan)
+	// increment the next plan ID
+	k.setNextNumber(ctx, planId+1)
 	return plan, nil
 }
 

@@ -3,6 +3,8 @@ package keeper
 import (
 	"fmt"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	errorsmod "cosmossdk.io/errors"
 	"github.com/Lorenzo-Protocol/lorenzo/contracts"
 	"github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
@@ -68,6 +70,11 @@ func (k Keeper) UpgradeYAT(
 	ctx sdk.Context,
 	implementation common.Address,
 ) error {
+
+	if !common.IsHexAddress(implementation.Hex()) {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid implementation address: %s", implementation.Hex())
+	}
+
 	params := k.GetParams(ctx)
 
 	if len(params.Beacon) == 0 {

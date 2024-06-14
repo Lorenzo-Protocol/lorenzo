@@ -17,7 +17,7 @@ type Querier struct {
 }
 
 // Params queries the parameters of the module.
-func (q Querier) Params(goCtx context.Context, req *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
+func (q Querier) Params(goCtx context.Context, _ *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	params := q.GetParams(ctx)
 
@@ -25,7 +25,7 @@ func (q Querier) Params(goCtx context.Context, req *types.QueryParamsRequest) (*
 }
 
 // Plans queries all plans.
-func (q Querier) Plans(goCtx context.Context, req *types.PlansRequest) (*types.PlansResponse, error) {
+func (q Querier) Plans(goCtx context.Context, req *types.QueryPlansRequest) (*types.QueryPlansResponse, error) {
 	if req == nil {
 		return nil, sdkerrors.ErrInvalidRequest.Wrap("empty request")
 	}
@@ -42,21 +42,21 @@ func (q Querier) Plans(goCtx context.Context, req *types.PlansRequest) (*types.P
 	}); err != nil {
 		return nil, err
 	}
-	return &types.PlansResponse{
+	return &types.QueryPlansResponse{
 		Plans:      plans,
 		Pagination: pageRes,
 	}, nil
 }
 
 // Plan queries a plan by id.
-func (q Querier) Plan(goCtx context.Context, req *types.PlanRequest) (*types.PlanResponse, error) {
+func (q Querier) Plan(goCtx context.Context, req *types.QueryPlanRequest) (*types.QueryPlanResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	plan, found := q.GetPlan(ctx, req.Id)
 	if !found {
 		return nil, types.ErrPlanNotFound
 	}
 
-	return &types.PlanResponse{Plan: plan}, nil
+	return &types.QueryPlanResponse{Plan: plan}, nil
 }
 
 // NewQuerierImpl returns an implementation of the captains QueryServer interface.

@@ -60,7 +60,7 @@ func GetCmdCreatePlan() *cobra.Command {
 func GetClaimsCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "claims [plan-id] [receiver] [claims_type]",
-		Short: "Creates a new plan",
+		Short: "Handle claims for a plan",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 
@@ -73,7 +73,7 @@ func GetClaimsCmd() *cobra.Command {
 				return err
 			}
 
-			var msgCreatePlan *types.MsgCreatePlan
+			var msgCreatePlan = &types.MsgCreatePlan{}
 			err = json.Unmarshal(contents, msgCreatePlan)
 			if err != nil {
 				return err

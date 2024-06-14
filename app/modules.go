@@ -1,17 +1,6 @@
 package app
 
 import (
-	appparams "github.com/Lorenzo-Protocol/lorenzo/app/params"
-	"github.com/Lorenzo-Protocol/lorenzo/x/agent"
-	agenttypes "github.com/Lorenzo-Protocol/lorenzo/x/agent/types"
-	"github.com/Lorenzo-Protocol/lorenzo/x/btclightclient"
-	btclightclienttypes "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/types"
-	"github.com/Lorenzo-Protocol/lorenzo/x/btcstaking"
-	btcstakingtypes "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types"
-	"github.com/Lorenzo-Protocol/lorenzo/x/fee"
-	feetypes "github.com/Lorenzo-Protocol/lorenzo/x/fee/types"
-	"github.com/Lorenzo-Protocol/lorenzo/x/plan"
-	plantypes "github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	authsims "github.com/cosmos/cosmos-sdk/x/auth/simulation"
@@ -49,15 +38,32 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/upgrade"
 	upgradeclient "github.com/cosmos/cosmos-sdk/x/upgrade/client"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+
+	/* ------------------------------ ibc imports ----------------------------- */
 	ibctransfer "github.com/cosmos/ibc-go/v7/modules/apps/transfer"
 	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 	ibc "github.com/cosmos/ibc-go/v7/modules/core"
 	ibcclientclient "github.com/cosmos/ibc-go/v7/modules/core/02-client/client"
 	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
+
+	/* ------------------------------ ethermint imports ----------------------------- */
 	"github.com/evmos/ethermint/x/evm"
 	evmtypes "github.com/evmos/ethermint/x/evm/types"
 	"github.com/evmos/ethermint/x/feemarket"
 	feemarkettypes "github.com/evmos/ethermint/x/feemarket/types"
+
+	/* ------------------------------ self module imports ----------------------------- */
+	appparams "github.com/Lorenzo-Protocol/lorenzo/app/params"
+	"github.com/Lorenzo-Protocol/lorenzo/x/agent"
+	agenttypes "github.com/Lorenzo-Protocol/lorenzo/x/agent/types"
+	"github.com/Lorenzo-Protocol/lorenzo/x/btclightclient"
+	btclightclienttypes "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/types"
+	"github.com/Lorenzo-Protocol/lorenzo/x/btcstaking"
+	btcstakingtypes "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types"
+	"github.com/Lorenzo-Protocol/lorenzo/x/fee"
+	feetypes "github.com/Lorenzo-Protocol/lorenzo/x/fee/types"
+	"github.com/Lorenzo-Protocol/lorenzo/x/plan"
+	plantypes "github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
 )
 
 // this line is used by starport scaffolding # stargate/wasm/app/enabledProposals

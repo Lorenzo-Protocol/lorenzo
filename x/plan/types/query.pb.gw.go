@@ -56,7 +56,7 @@ var (
 )
 
 func request_Query_Plans_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq PlansRequest
+	var protoReq QueryPlansRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
@@ -72,7 +72,7 @@ func request_Query_Plans_0(ctx context.Context, marshaler runtime.Marshaler, cli
 }
 
 func local_request_Query_Plans_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq PlansRequest
+	var protoReq QueryPlansRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
@@ -88,7 +88,7 @@ func local_request_Query_Plans_0(ctx context.Context, marshaler runtime.Marshale
 }
 
 func request_Query_Plan_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq PlanRequest
+	var protoReq QueryPlanRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -115,7 +115,7 @@ func request_Query_Plan_0(ctx context.Context, marshaler runtime.Marshaler, clie
 }
 
 func local_request_Query_Plan_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq PlanRequest
+	var protoReq QueryPlanRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -321,7 +321,7 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"lorenzo", "fee", "v1", "params"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"lorenzo", "plan", "v1", "params"}, "", runtime.AssumeColonVerbOpt(false)))
 
 	pattern_Query_Plans_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"lorenzo", "plan", "v1", "plans"}, "", runtime.AssumeColonVerbOpt(false)))
 

@@ -50,6 +50,10 @@ func (m msgServer) UpgradeYAT(goCtx context.Context, msg *types.MsgUpgradeYAT) (
 			msg.Authority,
 		)
 	}
+	// Check if the implementation address is a valid address
+	if !common.IsHexAddress(msg.Implementation) {
+		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidAddress, "invalid implementation address")
+	}
 	implementation := common.HexToAddress(msg.Implementation)
 	if err := m.k.UpgradeYAT(ctx, implementation); err != nil {
 		return nil, err
