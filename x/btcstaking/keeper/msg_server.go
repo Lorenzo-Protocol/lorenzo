@@ -20,10 +20,12 @@ import (
 
 const EthAddrLen = 42
 
-const Dep0Amount = 4e5
-const Dep1Amount = 2e6
-const Dep2Amount = 1e7
-const Dep3Amount = 5e7
+const (
+	Dep0Amount = 4e5
+	Dep1Amount = 2e6
+	Dep2Amount = 1e7
+	Dep3Amount = 5e7
+)
 
 type msgServer struct {
 	Keeper
@@ -120,7 +122,7 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 		return nil, types.ErrParseBTCTx.Wrap(err.Error())
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	var stakingTxHash = stakingMsgTx.TxHash()
+	stakingTxHash := stakingMsgTx.TxHash()
 	staking_record := ms.getBTCStakingRecord(ctx, stakingTxHash)
 	if staking_record != nil {
 		return nil, types.ErrDupBTCTx
@@ -185,7 +187,7 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 
 	coins := []sdk.Coin{
 		{
-			//FIXME: no string literal
+			// FIXME: no string literal
 			Denom:  types.NativeTokenDenom,
 			Amount: toMintAmount,
 		},

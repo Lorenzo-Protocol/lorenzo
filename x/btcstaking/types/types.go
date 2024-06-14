@@ -50,7 +50,6 @@ func ValidateBTCHeader(header *wire.BlockHeader, powLimit *big.Int) error {
 	// The upper limit for the power to be spent
 	// Use the one maintained by btcd
 	err := blockchain.CheckProofOfWork(block, powLimit)
-
 	if err != nil {
 		return err
 	}
@@ -119,6 +118,7 @@ func verify(tx *btcutil.Tx, merkleRoot *chainhash.Hash, intermediateNodes []byte
 
 	return bytes.Equal(current[:], root)
 }
+
 func (ti *TransactionInfo) VerifyInclusion(btcHeader *lrz.BTCHeaderBytes, powLimit *big.Int) error {
 	if err := ti.ValidateBasic(); err != nil {
 		return err

@@ -8,7 +8,5 @@ const (
 	StoreKey = ModuleName
 )
 
-var (
-	// ParamsKey defines the key to store the Params object
-	ParamsKey = []byte{0x01} // key for params
-)
+// ParamsKey defines the key to store the Params object
+var ParamsKey = []byte{0x01} // key for params

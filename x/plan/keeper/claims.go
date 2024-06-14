@@ -53,5 +53,4 @@ func (k Keeper) Withdraw(
 	default:
 		return types.ErrInvalidClaimsType
 	}
-
 }

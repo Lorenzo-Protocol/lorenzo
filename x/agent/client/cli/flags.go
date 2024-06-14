@@ -8,18 +8,18 @@ import (
 
 const (
 	// FlagName is the flag for the name of the agent
-	FlagName        = "name"
+	FlagName = "name"
 	// FlagEthAddress is the flag for the eth address of the agent
-	FlagEthAddress  = "eth-address"
+	FlagEthAddress = "eth-address"
 	// FlagDescription is the flag for the description of the agent
 	FlagDescription = "description"
 	// FlagURL is the flag for the url of the agent
-	FlagURL         = "url"
+	FlagURL = "url"
 )
 
 var (
 	// FsAddAgent defines the flags for adding an agent
-	FsAddAgent  = flag.NewFlagSet("", flag.ContinueOnError)
+	FsAddAgent = flag.NewFlagSet("", flag.ContinueOnError)
 	// FsEditAgent defines the flags for editing an agent
 	FsEditAgent = flag.NewFlagSet("", flag.ContinueOnError)
 )

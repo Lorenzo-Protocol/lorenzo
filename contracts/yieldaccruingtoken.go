@@ -28,7 +28,6 @@ var (
 )
 
 func init() {
-
 	// contract code
 	// https://github.com/Lorenzo-Protocol/builtin-contracts/blob/main/contracts/YieldAccruingToken.sol
 	err := json.Unmarshal(YieldAccruingTokenJSON, &YieldAccruingTokenContract)

@@ -34,7 +34,6 @@ func GetCmdCreatePlan() *cobra.Command {
 		Short: "Creates a new plan",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
@@ -63,7 +62,6 @@ func GetClaimsCmd() *cobra.Command {
 		Short: "Handle claims for a plan",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
@@ -73,14 +71,13 @@ func GetClaimsCmd() *cobra.Command {
 				return err
 			}
 
-			var msgCreatePlan = &types.MsgCreatePlan{}
+			msgCreatePlan := &types.MsgCreatePlan{}
 			err = json.Unmarshal(contents, msgCreatePlan)
 			if err != nil {
 				return err
 			}
 			if msgCreatePlan.ValidateBasic() != nil {
 				return err
-
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgCreatePlan)

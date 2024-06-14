@@ -78,7 +78,6 @@ func (k Keeper) GetPlans(ctx sdk.Context) []types.Plan {
 		plans = append(plans, plan)
 	}
 	return plans
-
 }
 
 // GetNextNumber retrieves the next number from the Keeper's store.

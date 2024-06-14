@@ -45,7 +45,6 @@ func (k Keeper) Hashes(ctx context.Context, req *types.QueryHashesRequest) (*typ
 		}
 		return true, nil
 	})
-
 	if err != nil {
 		return nil, err
 	}
@@ -189,13 +188,11 @@ func (k Keeper) BaseHeader(ctx context.Context, req *types.QueryBaseHeaderReques
 }
 
 func (k Keeper) HeaderDepth(ctx context.Context, req *types.QueryHeaderDepthRequest) (*types.QueryHeaderDepthResponse, error) {
-
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
 	haderHash, err := bbn.NewBTCHeaderHashBytesFromHex(req.Hash)
-
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "provided hash is not a valid hex string")
 	}
@@ -203,7 +200,6 @@ func (k Keeper) HeaderDepth(ctx context.Context, req *types.QueryHeaderDepthRequ
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 
 	depth, err := k.MainChainDepth(sdkCtx, &haderHash)
-
 	if err != nil {
 		return nil, err
 	}

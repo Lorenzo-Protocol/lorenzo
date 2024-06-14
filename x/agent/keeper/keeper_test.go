@@ -16,8 +16,8 @@ import (
 )
 
 var (
-	testAdmin  = helpers.CreateTestAddrs(1)[0]
-	agents     = []types.Agent{
+	testAdmin = helpers.CreateTestAddrs(1)[0]
+	agents    = []types.Agent{
 		{
 			Id:                  1,
 			Name:                "agent1",
@@ -43,8 +43,8 @@ func TestKeeperTestSuite(t *testing.T) {
 func (suite *KeeperTestSuite) SetupTest() {
 	merge := func(cdc codec.Codec, state map[string]json.RawMessage) {
 		genesis := &types.GenesisState{
-			Agents:     agents,
-			Admin:      testAdmin.String(),
+			Agents: agents,
+			Admin:  testAdmin.String(),
 		}
 		state[types.ModuleName] = cdc.MustMarshalJSON(genesis)
 	}
@@ -76,7 +76,7 @@ func (suite *KeeperTestSuite) TestGetNextNumber() {
 
 func (suite *KeeperTestSuite) TestGetAdmin() {
 	suite.SetupTest()
-	
+
 	admin := suite.keeper.GetAdmin(suite.ctx)
 	suite.Equal(admin, testAdmin)
 }

@@ -30,8 +30,8 @@ type lightChainCtx struct {
 var _ blockchain.ChainCtx = (*lightChainCtx)(nil)
 
 func newLightChainCtx(params *chaincfg.Params, blocksPerRetarget int32,
-	minRetargetTimespan, maxRetargetTimespan int64) *lightChainCtx {
-
+	minRetargetTimespan, maxRetargetTimespan int64,
+) *lightChainCtx {
 	return &lightChainCtx{
 		params:              params,
 		blocksPerRetarget:   blocksPerRetarget,
@@ -89,8 +89,8 @@ type localHeaderInfo struct {
 func newLocalHeaderInfo(
 	header *wire.BlockHeader,
 	height uint64,
-	totalWork sdkmath.Uint) *localHeaderInfo {
-
+	totalWork sdkmath.Uint,
+) *localHeaderInfo {
 	return &localHeaderInfo{
 		header:    header,
 		height:    height,
@@ -141,8 +141,8 @@ type lightHeaderCtx struct {
 var _ blockchain.HeaderCtx = (*lightHeaderCtx)(nil)
 
 func newLightHeaderCtx(height uint64, header *wire.BlockHeader,
-	store *storeWithExtensionChain) *lightHeaderCtx {
-
+	store *storeWithExtensionChain,
+) *lightHeaderCtx {
 	return &lightHeaderCtx{
 		height:    height,
 		bits:      header.Bits,
@@ -175,8 +175,8 @@ func (l *lightHeaderCtx) Parent() blockchain.HeaderCtx {
 }
 
 func (l *lightHeaderCtx) RelativeAncestorCtx(
-	distance int32) blockchain.HeaderCtx {
-
+	distance int32,
+) blockchain.HeaderCtx {
 	ancestorHeight := l.Height() - distance
 
 	if ancestorHeight < 0 {
@@ -204,7 +204,8 @@ type BtcLightClient struct {
 
 func NewBtcLightClient(
 	params *chaincfg.Params,
-	ctx *lightChainCtx) *BtcLightClient {
+	ctx *lightChainCtx,
+) *BtcLightClient {
 	return &BtcLightClient{
 		params: params,
 		ctx:    ctx,
@@ -257,7 +258,7 @@ func (d *DisableHeaderInTheFutureValidationTimeSource) AdjustedTime() time.Time 
 }
 
 func (d *DisableHeaderInTheFutureValidationTimeSource) AddTimeSample(_ string, _ time.Time) {
-	//no op
+	// no op
 }
 
 func (d *DisableHeaderInTheFutureValidationTimeSource) Offset() time.Duration {
@@ -273,7 +274,6 @@ func newStoreWithExtensionChain(
 	store BtcChainReadStore,
 	maxExentsionHeaders int,
 ) *storeWithExtensionChain {
-
 	return &storeWithExtensionChain{
 		// large capacity to avoid reallocation
 		headers: make([]*localHeaderInfo, 0, maxExentsionHeaders),
@@ -288,7 +288,6 @@ func (s *storeWithExtensionChain) addHeader(header *localHeaderInfo) {
 func (s *storeWithExtensionChain) getHeaderAtHeight(height uint64) *localHeaderInfo {
 	if len(s.headers) == 0 || height < s.headers[0].height {
 		h, err := s.store.GetHeaderByHeight(height)
-
 		if err != nil {
 			return nil
 		}
@@ -302,7 +301,8 @@ func (s *storeWithExtensionChain) getHeaderAtHeight(height uint64) *localHeaderI
 func (l *BtcLightClient) processNewHeadersChain(
 	store *storeWithExtensionChain,
 	chainParent *localHeaderInfo,
-	chain []*wire.BlockHeader) error {
+	chain []*wire.BlockHeader,
+) error {
 	// init info about parent as current tip
 	parentHeaderInfo := chainParent
 
@@ -312,7 +312,6 @@ func (l *BtcLightClient) processNewHeadersChain(
 		err := l.checkHeader(
 			store, parentHeaderInfo, h,
 		)
-
 		if err != nil {
 			return fmt.Errorf("provided header contains invalid header. Error msg: %s: %w", err.Error(), ErrInvalidHeader)
 		}
@@ -376,7 +375,6 @@ func (l *BtcLightClient) InsertHeaders(readStore BtcChainReadStore, headers []*w
 		// here we received potential new fork
 		parentHash := bbn.NewBTCHeaderHashBytesFromChainhash(&firstHeaderOfExtensionChain.PrevBlock)
 		forkParent, err := readStore.GetHeaderByHash(&parentHash)
-
 		if err != nil {
 			return nil, fmt.Errorf("cannot find parent header with hash %s for provided chain: %w", parentHash.String(), ErrHeaderParentDoesNotExist)
 		}

@@ -70,7 +70,6 @@ func (k Keeper) UpgradeYAT(
 	ctx sdk.Context,
 	implementation common.Address,
 ) error {
-
 	if !common.IsHexAddress(implementation.Hex()) {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid implementation address: %s", implementation.Hex())
 	}

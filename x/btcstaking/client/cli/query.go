@@ -59,7 +59,6 @@ func CmdGetBTCStakingRecord() *cobra.Command {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			queryClient := types.NewQueryClient(clientCtx)
 			txHashBytes, err := chainhash.NewHashFromStr(args[0])
-
 			if err != nil {
 				return err
 			}

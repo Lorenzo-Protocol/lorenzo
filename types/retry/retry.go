@@ -54,7 +54,7 @@ func Do(sleep time.Duration, maxSleepTime time.Duration, retryableFunc func() er
 		}
 
 		// Add some randomness to prevent thrashing
-		//TODO: lint
+		// TODO: lint
 		jitter := time.Duration(rand.Int63n(int64(sleep))) // nolint: gosec
 		sleep = sleep + jitter/2
 

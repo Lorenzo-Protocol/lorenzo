@@ -48,7 +48,6 @@ func (m msgServer) InsertHeaders(ctx context.Context, msg *types.MsgInsertHeader
 	}
 
 	err := m.k.InsertHeaders(sdkCtx, msg.Headers)
-
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +71,6 @@ func (m msgServer) UpdateFeeRate(ctx context.Context, msg *types.MsgUpdateFeeRat
 	}
 
 	err := m.k.UpdateFeeRate(sdkCtx, msg.FeeRate)
-
 	if err != nil {
 		return nil, err
 	}

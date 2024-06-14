@@ -30,7 +30,6 @@ func getParams(opts servertypes.AppOptions) *chaincfg.Params {
 	}
 
 	network, err := cast.ToStringE(valueInterface)
-
 	if err != nil {
 		panic("Bitcoin network config should be valid string")
 	}

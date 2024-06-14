@@ -47,7 +47,6 @@ func (m BTCHeaderBytes) MarshalJSON() ([]byte, error) {
 func (m *BTCHeaderBytes) UnmarshalJSON(bz []byte) error {
 	var headerHexStr string
 	err := json.Unmarshal(bz, &headerHexStr)
-
 	if err != nil {
 		return err
 	}

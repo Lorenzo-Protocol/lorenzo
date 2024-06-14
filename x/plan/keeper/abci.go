@@ -13,13 +13,13 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 	// deploy a new beacon contract if the current block height is 1
 	// TODO:
 	if ctx.BlockHeight() <= 1 || len(params.Beacon) == 0 {
-		//deploy a new beacon proxy contract & deploy a new plan logic contract
-		//1. deploy a new plan logic contract
+		// deploy a new beacon proxy contract & deploy a new plan logic contract
+		// 1. deploy a new plan logic contract
 		logicAddr, err := k.DeployYATLogicContract(ctx)
 		if err != nil {
 			panic(err)
 		}
-		//2. deploy a new plan beacon contract
+		// 2. deploy a new plan beacon contract
 		beaconAddr, err := k.DeployBeacon(ctx, logicAddr)
 		if err != nil {
 			panic(err)
@@ -43,5 +43,4 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 			),
 		)
 	}
-
 }

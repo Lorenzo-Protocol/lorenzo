@@ -34,7 +34,6 @@ func NewKeeper(
 	bk bankkeeper.Keeper,
 	evmKeeper types.EVMKeeper,
 ) *Keeper {
-
 	return &Keeper{
 		authority:     authority,
 		storeKey:      storeKey,

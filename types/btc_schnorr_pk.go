@@ -100,7 +100,6 @@ func (pk BIP340PubKey) MarshalJSON() ([]byte, error) {
 func (pk *BIP340PubKey) UnmarshalJSON(bz []byte) error {
 	var pkHexString string
 	err := json.Unmarshal(bz, &pkHexString)
-
 	if err != nil {
 		return err
 	}
