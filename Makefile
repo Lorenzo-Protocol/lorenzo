@@ -76,7 +76,10 @@ ifeq (,$(findstring nostrip,$(LORENZO_STAKING_BUILD_OPTIONS)))
   BUILD_FLAGS += -trimpath
 endif
 
-all: install
+all: tools install
+
+# The below include contains the tools and runsim targets.
+include contrib/devtools/Makefile
 
 .PHONY: install
 install: go.sum
