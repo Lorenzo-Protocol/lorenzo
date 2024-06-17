@@ -280,9 +280,11 @@ func (ms msgServer) UpdateParams(goCtx context.Context, req *types.MsgUpdatePara
 	}
 	return &types.MsgUpdateParamsResponse{}, nil
 }
+
 func (ms msgServer) AddReceiver(goCtx context.Context, req *types.MsgAddReceiver) (*types.MsgAddReceiverResponse, error) {
 	return nil, fmt.Errorf("deprecated, use UpdateParams instead")
 }
+
 func (ms msgServer) RemoveReceiver(goCtx context.Context, req *types.MsgRemoveReceiver) (*types.MsgRemoveReceiverResponse, error) {
 	return nil, fmt.Errorf("deprecated, use UpdateParams instead")
 }
