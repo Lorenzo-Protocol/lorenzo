@@ -12,6 +12,8 @@ import (
 	"github.com/ethereum/go-ethereum/core/vm"
 	"github.com/evmos/ethermint/x/evm/statedb"
 	evmtypes "github.com/evmos/ethermint/x/evm/types"
+
+	agenttypes "github.com/Lorenzo-Protocol/lorenzo/x/agent/types"
 )
 
 // AccountKeeper defines the expected interface needed to retrieve account info.
@@ -29,4 +31,9 @@ type EVMKeeper interface {
 	EstimateGas(c context.Context, req *evmtypes.EthCallRequest) (*evmtypes.EstimateGasResponse, error)
 	ApplyMessage(ctx sdk.Context, msg core.Message, tracer vm.EVMLogger, commit bool) (*evmtypes.MsgEthereumTxResponse, error)
 	ChainID() *big.Int
+}
+
+// AgentKeeper defines the expected interface needed to retrieve agent info.
+type AgentKeeper interface {
+	GetAgent(ctx sdk.Context, id uint64) (agenttypes.Agent, bool)
 }

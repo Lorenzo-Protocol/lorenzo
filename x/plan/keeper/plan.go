@@ -8,6 +8,10 @@ import (
 
 func (k Keeper) AddPlan(ctx sdk.Context, plan types.Plan) (types.Plan, error) {
 	// todo: check if the agent not exists
+	_, agentFound := k.agentKeeper.GetAgent(ctx, plan.AgentId)
+	if !agentFound {
+		return types.Plan{}, types.ErrAgentNotFound
+	}
 
 	// generate the next plan ID
 	planId := k.GetNextNumber(ctx)

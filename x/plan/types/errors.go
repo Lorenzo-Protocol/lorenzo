@@ -12,4 +12,5 @@ var (
 	ErrInvalidClaimsType = errorsmod.Register(ModuleName, 8, "invalid claims type")
 	ErrBeaconNotSet      = errorsmod.Register(ModuleName, 9, "beacon not set")
 	ErrVMExecution       = errorsmod.Register(ModuleName, 10, "VM execution failed")
+	ErrAgentNotFound     = errorsmod.Register(ModuleName, 11, "agent not found")
 )

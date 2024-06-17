@@ -10,9 +10,8 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 	logger := k.Logger(ctx)
 	params := k.GetParams(ctx)
 
-	// deploy a new beacon contract if the current block height is 1
-	// TODO:
-	if ctx.BlockHeight() <= 1 || len(params.Beacon) == 0 {
+	// deploy a new beacon contract if the current beacon contract is empty
+	if len(params.Beacon) == 0 {
 		// deploy a new beacon proxy contract & deploy a new plan logic contract
 		// 1. deploy a new plan logic contract
 		logicAddr, err := k.DeployYATLogicContract(ctx)
