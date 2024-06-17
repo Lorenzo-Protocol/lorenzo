@@ -493,6 +493,7 @@ func NewLorenzoApp(
 		app.AccountKeeper,
 		app.BankKeeper,
 		app.EvmKeeper,
+		app.AgentKeeper,
 	)
 
 	transferStack := ibctransfer.NewIBCModule(app.TransferKeeper)

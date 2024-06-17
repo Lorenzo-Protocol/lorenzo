@@ -51,7 +51,7 @@ message QueryPlansResponse {
 
 // PlanRequest is the request type for the Query.Plan RPC method.
 message QueryPlanRequest {
-  // id is the unique identifier of the agent
+  // id is the unique identifier of the plan
   uint64 id = 1;
 }
 

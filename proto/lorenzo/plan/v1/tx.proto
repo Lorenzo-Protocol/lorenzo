@@ -50,7 +50,7 @@ message MsgUpdateParamsResponse {
 message MsgUpgradeYAT {
   option (cosmos.msg.v1.signer) = "authority";
 
-  // implementation is the new erc20 contract address
+  // implementation is the new yat logic contract address
   string implementation = 1;
 
   // authority is the address of the governance account.
@@ -98,7 +98,7 @@ message MsgCreatePlan {
 
 // MsgCreatePlanResponse is the response type for the Msg/CreatePlan RPC method.
 message MsgCreatePlanResponse {
-  // id is the unique identifier of the agent
+  // id is the unique identifier of the plan
   uint64 id = 1;
 }
 

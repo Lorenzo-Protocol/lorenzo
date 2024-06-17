@@ -213,7 +213,7 @@ func (m *QueryPlansResponse) GetPagination() *query.PageResponse {
 
 // PlanRequest is the request type for the Query.Plan RPC method.
 type QueryPlanRequest struct {
-	// id is the unique identifier of the agent
+	// id is the unique identifier of the plan
 	Id uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 }
 

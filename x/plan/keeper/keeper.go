@@ -24,6 +24,8 @@ type Keeper struct {
 	accountKeeper types.AccountKeeper
 	bankKeeper    bankkeeper.Keeper
 	evmKeeper     types.EVMKeeper
+
+	agentKeeper types.AgentKeeper
 }
 
 func NewKeeper(
@@ -33,6 +35,7 @@ func NewKeeper(
 	ak types.AccountKeeper,
 	bk bankkeeper.Keeper,
 	evmKeeper types.EVMKeeper,
+	agentKeeper types.AgentKeeper,
 ) *Keeper {
 	return &Keeper{
 		authority:     authority,
@@ -41,6 +44,7 @@ func NewKeeper(
 		accountKeeper: ak,
 		bankKeeper:    bk,
 		evmKeeper:     evmKeeper,
+		agentKeeper:   agentKeeper,
 	}
 }
 

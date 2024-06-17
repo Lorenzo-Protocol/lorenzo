@@ -157,7 +157,7 @@ var xxx_messageInfo_MsgUpdateParamsResponse proto.InternalMessageInfo
 
 // MsgUpgradeYAT is the request type for the Msg/UpgradeYAT RPC method.
 type MsgUpgradeYAT struct {
-	// implementation is the new erc20 contract address
+	// implementation is the new yat logic contract address
 	Implementation string `protobuf:"bytes,1,opt,name=implementation,proto3" json:"implementation,omitempty"`
 	// authority is the address of the governance account.
 	// just FYI: cosmos.AddressString marks that this field should use type alias
@@ -370,7 +370,7 @@ func (m *MsgCreatePlan) GetSender() string {
 
 // MsgCreatePlanResponse is the response type for the Msg/CreatePlan RPC method.
 type MsgCreatePlanResponse struct {
-	// id is the unique identifier of the agent
+	// id is the unique identifier of the plan
 	Id uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 }
 
