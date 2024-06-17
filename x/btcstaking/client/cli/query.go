@@ -31,9 +31,10 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 
 func CmdGetParams() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "get-params",
-		Short: "get btc staking params",
-		Args:  cobra.NoArgs,
+		Use:     "get-params",
+		Aliases: []string{"params"},
+		Short:   "get btc staking params",
+		Args:    cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			queryClient := types.NewQueryClient(clientCtx)
@@ -52,9 +53,10 @@ func CmdGetParams() *cobra.Command {
 
 func CmdGetBTCStakingRecord() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "get-btc-staking-record [btc_staking_tx_id]",
-		Short: "get the btc staking record",
-		Args:  cobra.ExactArgs(1),
+		Use:     "get-btc-staking-record [btc_staking_tx_id]",
+		Aliases: []string{"record"},
+		Short:   "get the btc staking record",
+		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			queryClient := types.NewQueryClient(clientCtx)
@@ -63,6 +65,9 @@ func CmdGetBTCStakingRecord() *cobra.Command {
 				return err
 			}
 			res, err := queryClient.StakingRecord(cmd.Context(), &types.QueryStakingRecordRequest{TxHash: txHashBytes[:]})
+			if err != nil {
+				return err
+			}
 			if res.Record == nil {
 				return fmt.Errorf("record not found")
 			}
@@ -72,9 +77,6 @@ func CmdGetBTCStakingRecord() *cobra.Command {
 			resDisp.MintToAddress = "0x" + hex.EncodeToString(res.Record.MintToAddr)
 			resDisp.BtcReceiverName = res.Record.BtcReceiverName
 			resDisp.BtcReceiverAddr = res.Record.BtcReceiverAddr
-			if err != nil {
-				return err
-			}
 			return clientCtx.PrintProto(&resDisp)
 		},
 	}

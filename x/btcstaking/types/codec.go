@@ -18,6 +18,9 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		(*sdk.Msg)(nil),
 		&MsgCreateBTCStaking{},
 		&MsgBurnRequest{},
+		&MsgRemoveReceiver{},
+		&MsgAddReceiver{},
+		&MsgUpdateParams{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
