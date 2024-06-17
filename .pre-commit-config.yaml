@@ -1,0 +1,14 @@
+repos:
+  - repo: local
+    hooks:
+      - id: build
+        name: make-build
+        description: 'Execute `make build` locally to prevent any build errors.'
+        entry: make build
+        language: system
+        stages: [ commit ]
+        always_run: true
+  - repo: https://github.com/golangci/golangci-lint
+    rev: v1.59.1
+    hooks:
+      - id: golangci-lint
