@@ -76,7 +76,10 @@ ifeq (,$(findstring nostrip,$(LORENZO_STAKING_BUILD_OPTIONS)))
   BUILD_FLAGS += -trimpath
 endif
 
-all: install
+all: tools install
+
+# The below include contains the tools and runsim targets.
+include contrib/devtools/Makefile
 
 .PHONY: install
 install: go.sum
@@ -198,4 +201,5 @@ format:
 	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@$(golangci_version)
 	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/docs/statik/statik.go" -not -path "./tests/mocks/*" -not -name "*.pb.go" -not -name "*.pb.gw.go" -not -name "*.pulsar.go" -not -path "./crypto/keys/secp256k1/*" | xargs gofumpt -w -l
 	$(golangci_lint_cmd) run --fix
-.PHONY: format
+
+.PHONY: lint lint-fix format
