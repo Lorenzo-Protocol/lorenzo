@@ -8,7 +8,7 @@ import (
 	"github.com/btcsuite/btcd/btcutil"
 )
 
-func parseLockTime(str string) (uint16, error) {
+func parseLockTime(str string) (uint16, error) { // nolint: unused
 	num, ok := sdkmath.NewIntFromString(str)
 
 	if !ok {
@@ -28,7 +28,7 @@ func parseLockTime(str string) (uint16, error) {
 	return uint16(asUint64), nil
 }
 
-func parseBtcAmount(str string) (btcutil.Amount, error) {
+func parseBtcAmount(str string) (btcutil.Amount, error) { // nolint: unused
 	num, ok := sdkmath.NewIntFromString(str)
 
 	if !ok {

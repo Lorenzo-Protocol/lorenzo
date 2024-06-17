@@ -20,10 +20,12 @@ import (
 
 const EthAddrLen = 42
 
-const Dep0Amount = 4e5
-const Dep1Amount = 2e6
-const Dep2Amount = 1e7
-const Dep3Amount = 5e7
+const (
+	Dep0Amount = 4e5
+	Dep1Amount = 2e6
+	Dep2Amount = 1e7
+	Dep3Amount = 5e7
+)
 
 type msgServer struct {
 	Keeper
@@ -49,7 +51,7 @@ func NewBTCTxFromBytes(txBytes []byte) (*wire.MsgTx, error) {
 
 const maxOpReturnPkScriptSize = 83
 
-func extractPaymentTo(tx *wire.MsgTx, addr btcutil.Address) (uint64, error) {
+func ExtractPaymentTo(tx *wire.MsgTx, addr btcutil.Address) (uint64, error) {
 	payToAddrScript, err := txscript.PayToAddrScript(addr)
 	if err != nil {
 		return 0, fmt.Errorf("invalid address")
@@ -63,7 +65,7 @@ func extractPaymentTo(tx *wire.MsgTx, addr btcutil.Address) (uint64, error) {
 	return amt, nil
 }
 
-func extractPaymentToWithOpReturnId(tx *wire.MsgTx, addr btcutil.Address) (uint64, []byte, error) {
+func ExtractPaymentToWithOpReturnId(tx *wire.MsgTx, addr btcutil.Address) (uint64, []byte, error) {
 	payToAddrScript, err := txscript.PayToAddrScript(addr)
 	if err != nil {
 		return 0, nil, fmt.Errorf("invalid address")
@@ -120,7 +122,7 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 		return nil, types.ErrParseBTCTx.Wrap(err.Error())
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	var stakingTxHash = stakingMsgTx.TxHash()
+	stakingTxHash := stakingMsgTx.TxHash()
 	staking_record := ms.getBTCStakingRecord(ctx, stakingTxHash)
 	if staking_record != nil {
 		return nil, types.ErrDupBTCTx
@@ -155,9 +157,9 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 			return nil, types.ErrNotInAllowList
 		}
 		mintToAddr = common.HexToAddress(receiver.EthAddr).Bytes()
-		btcAmount, err = extractPaymentTo(stakingMsgTx, btc_receiving_addr)
+		btcAmount, err = ExtractPaymentTo(stakingMsgTx, btc_receiving_addr)
 	} else {
-		btcAmount, mintToAddr, err = extractPaymentToWithOpReturnId(stakingMsgTx, btc_receiving_addr)
+		btcAmount, mintToAddr, err = ExtractPaymentToWithOpReturnId(stakingMsgTx, btc_receiving_addr)
 	}
 	if err != nil || btcAmount == 0 {
 		return nil, types.ErrInvalidTransaction
@@ -185,7 +187,7 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 
 	coins := []sdk.Coin{
 		{
-			//FIXME: no string literal
+			// FIXME: no string literal
 			Denom:  types.NativeTokenDenom,
 			Amount: toMintAmount,
 		},
@@ -211,7 +213,7 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 	}
 	err = ctx.EventManager().EmitTypedEvent(types.NewEventBTCStakingCreated(&stakingRecord))
 	if err != nil {
-		panic(fmt.Errorf("fail to emit EventBTCStakingCreated : %s", err))
+		panic(fmt.Errorf("fail to emit EventBTCStakingCreated : %w", err))
 	}
 	return &types.MsgCreateBTCStakingResponse{}, nil
 }

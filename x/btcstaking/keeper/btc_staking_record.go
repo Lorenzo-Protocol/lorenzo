@@ -9,7 +9,7 @@ import (
 
 func (k Keeper) addBTCStakingRecord(ctx sdk.Context, btcStk *types.BTCStakingRecord) error {
 	store := k.btcStakingRecordStore(ctx)
-	var btcStkKey = btcStk.TxHash
+	btcStkKey := btcStk.TxHash
 	store.Set(btcStkKey, k.cdc.MustMarshal(btcStk))
 	return nil
 }

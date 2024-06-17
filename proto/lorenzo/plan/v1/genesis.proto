@@ -1,0 +1,21 @@
+syntax = "proto3";
+package lorenzo.plan.v1;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+import "lorenzo/plan/v1/plan.proto";
+import "lorenzo/plan/v1/params.proto";
+
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/plan/types";
+
+// GenesisState defines the agent module's genesis state.
+message GenesisState {
+  // params defines all the parameters of the module.
+  Params params = 1 [ (gogoproto.nullable) = false ];
+
+  // next_number is the next auto-increasing plan id
+  uint64 next_number = 2;
+
+  // plans are the plans
+  repeated Plan plans = 3 [ (gogoproto.nullable) = false ];
+}

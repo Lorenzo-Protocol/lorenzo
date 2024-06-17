@@ -6,9 +6,7 @@ import (
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 )
 
-var (
-	plans = []upgrades.Upgrade{}
-)
+var plans = []upgrades.Upgrade{}
 
 // RegisterUpgradePlans register a handler of upgrade plan
 func (app *LorenzoApp) RegisterUpgradePlans() {

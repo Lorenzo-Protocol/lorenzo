@@ -7,27 +7,31 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k Keeper) triggerHeaderInserted(ctx context.Context, headerInfo *types.BTCHeaderInfo) {
+func (k Keeper) triggerHeaderInserted(goCtx context.Context, headerInfo *types.BTCHeaderInfo) {
 	// Trigger AfterBTCHeaderInserted hook
-	k.AfterBTCHeaderInserted(ctx, headerInfo)
+	k.AfterBTCHeaderInserted(goCtx, headerInfo)
 	// Emit HeaderInserted event
-	sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventBTCHeaderInserted{Header: headerInfo}) //nolint:errcheck
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	ctx.EventManager().EmitTypedEvent(&types.EventBTCHeaderInserted{Header: headerInfo}) //nolint:errcheck,gosec
 }
 
-func (k Keeper) triggerRollBack(ctx context.Context, headerInfo *types.BTCHeaderInfo) {
+func (k Keeper) triggerRollBack(goCtx context.Context, headerInfo *types.BTCHeaderInfo) {
 	// Trigger AfterBTCRollBack hook
-	k.AfterBTCRollBack(ctx, headerInfo)
+	k.AfterBTCRollBack(goCtx, headerInfo)
 	// Emit BTCRollBack event
-	sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventBTCRollBack{Header: headerInfo}) //nolint:errcheck
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	ctx.EventManager().EmitTypedEvent(&types.EventBTCRollBack{Header: headerInfo}) //nolint:errcheck,gosec
 }
 
-func (k Keeper) triggerRollForward(ctx context.Context, headerInfo *types.BTCHeaderInfo) {
+func (k Keeper) triggerRollForward(goCtx context.Context, headerInfo *types.BTCHeaderInfo) {
 	// Trigger AfterBTCRollForward hook
-	k.AfterBTCRollForward(ctx, headerInfo)
+	k.AfterBTCRollForward(goCtx, headerInfo)
 	// Emit BTCRollForward event
-	sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventBTCRollForward{Header: headerInfo}) //nolint:errcheck
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	ctx.EventManager().EmitTypedEvent(&types.EventBTCRollForward{Header: headerInfo}) //nolint:errcheck,gosec
 }
 
-func (k Keeper) triggerFeeRateUpdated(ctx context.Context, feeRate uint64) {
-	sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventBTCFeeRateUpdated{FeeRate: feeRate})
+func (k Keeper) triggerFeeRateUpdated(goCtx context.Context, feeRate uint64) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	ctx.EventManager().EmitTypedEvent(&types.EventBTCFeeRateUpdated{FeeRate: feeRate}) //nolint:errcheck,gosec
 }

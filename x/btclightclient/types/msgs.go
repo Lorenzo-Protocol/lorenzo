@@ -9,9 +9,11 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-var _ sdk.Msg = (*MsgInsertHeaders)(nil)
-var _ sdk.Msg = (*MsgUpdateParams)(nil)
-var _ sdk.Msg = (*MsgUpdateFeeRate)(nil)
+var (
+	_ sdk.Msg = (*MsgInsertHeaders)(nil)
+	_ sdk.Msg = (*MsgUpdateParams)(nil)
+	_ sdk.Msg = (*MsgUpdateFeeRate)(nil)
+)
 
 func NewMsgInsertHeaders(signer sdk.AccAddress, headersHex string) (*MsgInsertHeaders, error) {
 	if len(headersHex) == 0 {
@@ -19,7 +21,6 @@ func NewMsgInsertHeaders(signer sdk.AccAddress, headersHex string) (*MsgInsertHe
 	}
 
 	decoded, err := hex.DecodeString(headersHex)
-
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +43,7 @@ func NewMsgInsertHeaders(signer sdk.AccAddress, headersHex string) (*MsgInsertHe
 }
 
 func (msg *MsgInsertHeaders) ValidateHeaders(powLimit *big.Int) error {
-	// TOOD: Limit number of headers in message?
+	// TODO: Limit number of headers in message?
 	for _, header := range msg.Headers {
 		err := bbn.ValidateBTCHeader(header.ToBlockHeader(), powLimit)
 		if err != nil {
@@ -63,7 +64,6 @@ func (msg *MsgInsertHeaders) ReporterAddress() sdk.AccAddress {
 
 func (msg *MsgInsertHeaders) ValidateStateless() error {
 	_, err := sdk.AccAddressFromBech32(msg.Signer)
-
 	if err != nil {
 		return err
 	}

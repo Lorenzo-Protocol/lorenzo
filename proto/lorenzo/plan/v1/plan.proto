@@ -1,0 +1,18 @@
+syntax = "proto3";
+package lorenzo.plan.v1;
+
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/plan/types";
+
+// Plan defines the details of a project
+message Plan {
+  uint64 id = 1;
+  string name = 2;
+  string symbol = 3;
+  string plan_desc_uri = 4;
+  uint64 agent_id = 5;
+  uint64 subscription_start_time = 6;
+  uint64 subscription_end_time = 7;
+  uint64 end_time = 8;
+  string merkle_root = 9;
+  string contract_address = 10;
+}
