@@ -89,6 +89,12 @@ install: go.sum
 build: go.sum
 	go build $(BUILD_FLAGS) -o build/lorenzod ./cmd/lorenzod
 
+.PHONY: clean
+clean:
+	rm -rf \
+	$(BUILDDIR)/ \
+	.testnets
+
 ###############################################################################
 ###                                E2E tests                                ###
 ###############################################################################
@@ -142,6 +148,20 @@ proto-check-breaking:
 	@echo "Checking Protobuf files for breaking changes"
 	$(protoImage) buf breaking --against $(HTTPS_GIT)#branch=main
 
+###############################################################################
+###                                Localnet                                 ###
+###############################################################################
+
+localnet-build-env:
+	$(MAKE) -C contrib/images lorenzod-env
+
+localnet-build-nodes:
+	$(DOCKER) run --rm -v $(CURDIR)/.testnets:/data lorenzo/lorenzod \
+			  testnet init-files --v 4 -o /data --starting-ip-address 192.168.10.2 --keyring-backend=test
+	docker-compose up -d
+
+localnet-stop:
+	docker-compose down
 ###############################################################################
 ###                                Releasing                                ###
 ###############################################################################
