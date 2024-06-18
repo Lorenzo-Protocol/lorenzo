@@ -35,7 +35,7 @@ func GetTxCmd() *cobra.Command {
 
 func NewCreateBTCStakingWithBTCProofCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-btcstaking-with-btc-proof [btc_tx_bytes] [proof] [receiver_name]",
+		Use:   "btcstaking [btc_tx_bytes] [proof] [receiver_name]",
 		Short: "Create a new btc staking request with proof from bitcoin-cli getrawtransaction&gettxoutproof output",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
