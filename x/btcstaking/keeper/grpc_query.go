@@ -10,8 +10,9 @@ import (
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 )
 
-// NewMsgServerImpl returns an implementation of the MsgServer interface
-// for the provided Keeper.
+type Querier struct {
+	*Keeper
+}
 
 func (k Keeper) Params(c context.Context, req *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
@@ -38,4 +39,9 @@ func (k Keeper) StakingRecord(c context.Context, req *types.QueryStakingRecordRe
 	stakingRecord := k.getBTCStakingRecord(ctx, txHash)
 
 	return &types.QueryStakingRecordResponse{Record: stakingRecord}, nil
+}
+
+// NewQuerierImpl returns an implementation of the captains QueryServer interface.
+func NewQuerierImpl(k *Keeper) types.QueryServer {
+	return &Querier{k}
 }

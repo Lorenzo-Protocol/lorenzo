@@ -31,10 +31,9 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 
 func CmdGetParams() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "get-params",
-		Aliases: []string{"params"},
-		Short:   "get btc staking params",
-		Args:    cobra.NoArgs,
+		Use:   "params",
+		Short: "get btc staking params",
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			queryClient := types.NewQueryClient(clientCtx)
@@ -53,7 +52,7 @@ func CmdGetParams() *cobra.Command {
 
 func CmdGetBTCStakingRecord() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "get-btc-staking-record [btc_staking_tx_id]",
+		Use:     "btc-staking-record [btc_staking_tx_id]",
 		Aliases: []string{"record"},
 		Short:   "get the btc staking record",
 		Args:    cobra.ExactArgs(1),

@@ -36,15 +36,15 @@ func calcHeight(nTxes int) uint32 {
 }
 
 func traverseMerkleBlock(msg *wire.MsgMerkleBlock, hei uint32, pos uint32, bit_used *int, hash_used *int, proof *[]byte, txIndex *uint32) ([]byte, bool) {
-	parent_of_match := getFlag(msg.Flags, *bit_used)
+	parentOfMatch := getFlag(msg.Flags, *bit_used)
 	*bit_used += 1
-	if hei == 0 || !parent_of_match {
+	if hei == 0 || !parentOfMatch {
 		hash := msg.Hashes[*hash_used]
 		*hash_used += 1
-		if hei == 0 && parent_of_match {
+		if hei == 0 && parentOfMatch {
 			*txIndex = pos
 		}
-		return hash[:], parent_of_match
+		return hash[:], parentOfMatch
 	} else {
 		left, lis := traverseMerkleBlock(msg, hei-1, pos*2, bit_used, hash_used, proof, txIndex)
 		var right []byte
@@ -54,7 +54,7 @@ func traverseMerkleBlock(msg *wire.MsgMerkleBlock, hei uint32, pos uint32, bit_u
 			right = left
 		}
 		var hash chainhash.Hash
-		if parent_of_match {
+		if parentOfMatch {
 			if lis {
 				*proof = append(*proof, right...)
 			} else {
@@ -64,7 +64,7 @@ func traverseMerkleBlock(msg *wire.MsgMerkleBlock, hei uint32, pos uint32, bit_u
 		} else {
 			hash = hashConcat(right, left)
 		}
-		return hash[:], parent_of_match
+		return hash[:], parentOfMatch
 	}
 }
 
