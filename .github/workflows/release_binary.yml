@@ -11,7 +11,7 @@ permissions: write-all
 # via the 'make release' command.
 
 jobs:
-  goreleaser:
+  release:
     runs-on: ubuntu-latest
     environment: release
     steps:
