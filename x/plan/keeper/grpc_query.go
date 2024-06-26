@@ -12,6 +12,8 @@ import (
 	"github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
 )
 
+var _ types.QueryServer = Querier{}
+
 type Querier struct {
 	*Keeper
 }
