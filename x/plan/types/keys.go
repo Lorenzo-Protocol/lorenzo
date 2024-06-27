@@ -18,22 +18,31 @@ const (
 )
 
 const (
-	YATMethodInitialize                = "initialize"
-	YATMethodMint                      = "mint"
-	YATMethodClaimYATToken             = "claimYATToken"
-	YATMethodClaimRewardAndWithDrawBTC = "claimRewardAndWithDrawBTC"
-	YATMethodOnlyClaimReward           = "onlyClaimReward"
-	YATMethodBurnWithstBTCBurn         = "burnWithstBTCBurn"
-	YATMethodSetRewardTokenAddress     = "setRewardTokenAddress"
+	YATMethodClaimReward  = "claimReward"
+	YATMethodMint         = "mint"
+	YATMethodSetMinter    = "setMinter"
+	YATMethodRemoveMinter = "removeMinter"
+)
+
+const (
+	StakePlanMethodInitialize         = "initialize"
+	StakePlanMethodClaimYATToken      = "claimYATToken"
+	StakePlanMethodMint               = "mint"
+	StakePlanMethodAdminPauseBridge   = "adminPauseBridge"
+	StakePlanMethodAdminUnpauseBridge = "adminUnpauseBridge"
+	StakePlanMethodSetPlanDesc        = "setPlanDesc"
 
 	// query method
-	YATMethodPlanId                = "planId"
-	YATMethodAgentId               = "agentId"
-	YATMethodSubscriptionStartTime = "subscriptionStartTime"
-	YATMethodSubscriptionEndTime   = "subscriptionEndTime"
-	YATMethodEndTime               = "endTime"
-	YATMethodPlanDesc              = "planDesc"
-	YATMethodRewardTokenAddress    = "rewardTokenAddress"
+	StakePlanMethodStakePlanName          = "stakePlanName"
+	StakePlanMethodPlanDesc               = "planDesc"
+	StakePlanMethodPlanId                 = "planId"
+	StakePlanMethodAgentId                = "agentId"
+	StakePlanMethodPlanStartBlock         = "planStartBlock"
+	StakePlanMethodPeriodBlocks           = "periodBlocks"
+	StakePlanMethodNextRewardReceiveBlock = "nextRewardReceiveBlock"
+	StakePlanMethodYatContractAddress     = "yatContractAddress"
+	StakePlanMethodClaimRoundId           = "claimRoundId"
+	StakePlanMethodMerkleRoot             = "merkleRoot"
 )
 
 const (

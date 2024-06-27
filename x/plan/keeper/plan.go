@@ -17,27 +17,26 @@ func (k Keeper) AddPlan(ctx sdk.Context, plan types.Plan) (types.Plan, error) {
 	planId := k.GetNextNumber(ctx)
 	plan.Id = planId
 	// Deploy the contract
-	contractAddress, err := k.DeployYATProxyContract(
-		ctx,
-		plan.Name,
-		plan.Symbol,
-		plan.PlanDescUri,
-		plan.Id,
-		plan.AgentId,
-		plan.SubscriptionStartTime,
-		plan.SubscriptionEndTime,
-		plan.EndTime,
-		plan.MerkleRoot,
-	)
-	if err != nil {
-		return types.Plan{}, err
-	}
-	plan.ContractAddress = contractAddress.Hex()
-
-	// set the plan
-	k.setPlan(ctx, plan)
-	// increment the next plan ID
-	k.setNextNumber(ctx, planId+1)
+	//contractAddress, err := k.DeployStakePlanProxyContract(
+	//	ctx,
+	//	plan.Name,
+	//	plan.PlanDescUri,
+	//	plan.Id,
+	//	plan.AgentId,
+	//	plan.SubscriptionStartTime,
+	//	plan.SubscriptionEndTime,
+	//	plan.EndTime,
+	//	plan.MerkleRoot,
+	//)
+	//if err != nil {
+	//	return types.Plan{}, err
+	//}
+	//plan.ContractAddress = contractAddress.Hex()
+	//
+	//// set the plan
+	//k.setPlan(ctx, plan)
+	//// increment the next plan ID
+	//k.setNextNumber(ctx, planId+1)
 	return plan, nil
 }
 
