@@ -256,7 +256,7 @@ func GetUpdatePlanStatusCmd() *cobra.Command {
 
 			msgUpdatePlanStatus := &types.MsgUpdatePlanStatus{
 				PlanId: planId,
-				Status: types.PlanStatus(planStatus),
+				Status: planStatus,
 				Sender: from.String(),
 			}
 
