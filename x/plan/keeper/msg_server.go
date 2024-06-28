@@ -41,12 +41,12 @@ func (m msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParam
 func (m msgServer) UpgradeYAT(goCtx context.Context, msg *types.MsgUpgradeYAT) (*types.MsgUpgradeYATResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	if m.k.authority != msg.Authority {
+	sender := sdk.AccAddress(msg.Authority)
+
+	if m.k.authority != msg.Authority || !m.k.Authorized(ctx, sender) {
 		return nil, errorsmod.Wrapf(
 			sdkerrors.ErrUnauthorized,
-			"invalid authority; expected %s, got %s",
-			m.k.authority,
-			msg.Authority,
+			"unauthorized",
 		)
 	}
 	// Check if the implementation address is a valid address
@@ -137,6 +137,24 @@ func (m msgServer) CreateYAT(goCtx context.Context, msg *types.MsgCreateYAT) (*t
 	)
 
 	return &types.MsgCreateYATResponse{ContractAddress: yatContract.Hex()}, nil
+}
+
+func (m msgServer) UpdatePlanStatus(goCtx context.Context, msg *types.MsgUpdatePlanStatus) (*types.MsgUpdatePlanStatusResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	sender := sdk.AccAddress(msg.Sender)
+	if !m.k.Authorized(ctx, sender) {
+		return nil, errorsmod.Wrapf(types.ErrUnauthorized, "unauthorized")
+	}
+
+	switch msg.Status {
+	case types.PlanStatus_Enabled, types.PlanStatus_Disabled:
+		if err := m.k.UpdatePlanStatus(ctx, msg.PlanId, msg.Status); err != nil {
+			return nil, err
+		}
+	default:
+		return nil, errorsmod.Wrapf(types.ErrInvalidPlanStatus, "invalid plan status: %s", msg.Status)
+	}
+	return &types.MsgUpdatePlanStatusResponse{}, nil
 }
 
 // NewMsgServerImpl returns an implementation of the MsgServer interface

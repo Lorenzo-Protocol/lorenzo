@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/ethereum/go-ethereum/accounts/abi"
-
 	errorsmod "cosmossdk.io/errors"
 	"github.com/Lorenzo-Protocol/lorenzo/contracts"
 	"github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
@@ -253,6 +251,14 @@ func (k Keeper) SetMerkleRoot(
 	return nil
 }
 
+// AdminPauseBridge pauses the bridge of the StakePlan contract.
+//
+// Parameters:
+// - ctx: the SDK context.
+// - contractAddress: the address of the StakePlan contract.
+//
+// Returns:
+// - error: an error if the pausing fails.
 func (k Keeper) AdminPauseBridge(
 	ctx sdk.Context,
 	contractAddress common.Address,
@@ -279,6 +285,14 @@ func (k Keeper) AdminPauseBridge(
 	return nil
 }
 
+// AdminUnpauseBridge unpauses the bridge of the StakePlan contract.
+//
+// Parameters:
+// - ctx: the SDK context.
+// - contractAddress: the address of the StakePlan contract.
+//
+// Returns:
+// - error: an error if the unpausing fails.
 func (k Keeper) AdminUnpauseBridge(
 	ctx sdk.Context,
 	contractAddress common.Address,
@@ -305,6 +319,15 @@ func (k Keeper) AdminUnpauseBridge(
 	return nil
 }
 
+// SetPlanDesc sets the description of the StakePlan contract.
+//
+// Parameters:
+// - ctx: the SDK context.
+// - contractAddress: the address of the StakePlan contract.
+// - planDesc: the description to set.
+//
+// Returns:
+// - error: an error if the setting fails.
 func (k Keeper) SetPlanDesc(
 	ctx sdk.Context,
 	contractAddress common.Address,
@@ -334,11 +357,20 @@ func (k Keeper) SetPlanDesc(
 	return nil
 }
 
+// StakePlanName gets the name of the StakePlan contract.
+//
+// Parameters:
+// - ctx: the SDK context.
+// - contractAddress: the address of the StakePlan contract.
+//
+// Returns:
+// - string: the name of the StakePlan contract.
+// - error: an error if the getting fails.
 func (k Keeper) StakePlanName(
 	ctx sdk.Context,
-	contractABI abi.ABI,
 	contractAddress common.Address,
 ) (string, error) {
+	contractABI := contracts.StakePlanContract.ABI
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
@@ -370,7 +402,6 @@ func (k Keeper) StakePlanName(
 //
 // Parameters:
 // - ctx: the SDK context.
-// - contractABI: the address of the YAT contract.
 // - contractAddress: the ABI of the YAT contract.
 //
 // Returns:
@@ -378,9 +409,9 @@ func (k Keeper) StakePlanName(
 // - error: an error if the getting fails.
 func (k Keeper) PlanId(
 	ctx sdk.Context,
-	contractABI abi.ABI,
 	contractAddress common.Address,
 ) (uint64, error) {
+	contractABI := contracts.StakePlanContract.ABI
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
@@ -420,9 +451,9 @@ func (k Keeper) PlanId(
 // - error: an error if the getting fails.
 func (k Keeper) AgentId(
 	ctx sdk.Context,
-	contractABI abi.ABI,
 	contractAddress common.Address,
 ) (uint64, error) {
+	contractABI := contracts.StakePlanContract.ABI
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
@@ -462,9 +493,9 @@ func (k Keeper) AgentId(
 // - error: an error if the getting fails.
 func (k Keeper) PlanDesc(
 	ctx sdk.Context,
-	contractABI abi.ABI,
 	contractAddress common.Address,
 ) (string, error) {
+	contractABI := contracts.StakePlanContract.ABI
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
@@ -492,11 +523,20 @@ func (k Keeper) PlanDesc(
 	return planDesc, nil
 }
 
+// PlanStartBlock gets the start block of the StakePlan contract.
+//
+// Parameters:
+// - ctx: the SDK context.
+// - contractAddress: the address of the StakePlan contract.
+//
+// Returns:
+// - uint64: the start block.
+// - error: an error if the getting fails.
 func (k Keeper) PlanStartBlock(
 	ctx sdk.Context,
-	contractABI abi.ABI,
 	contractAddress common.Address,
 ) (uint64, error) {
+	contractABI := contracts.StakePlanContract.ABI
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
@@ -524,11 +564,20 @@ func (k Keeper) PlanStartBlock(
 	return planStartBlock.Uint64(), nil
 }
 
+// PeriodBlocks gets the period blocks of the StakePlan contract.
+//
+// Parameters:
+// - ctx: the SDK context.
+// - contractAddress: the address of the StakePlan contract.
+//
+// Returns:
+// - uint64: the period blocks.
+// - error: an error if the getting fails.
 func (k Keeper) PeriodBlocks(
 	ctx sdk.Context,
-	contractABI abi.ABI,
 	contractAddress common.Address,
 ) (uint64, error) {
+	contractABI := contracts.StakePlanContract.ABI
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
@@ -556,11 +605,20 @@ func (k Keeper) PeriodBlocks(
 	return periodBlocks.Uint64(), nil
 }
 
+// NextRewardReceiveBlock gets the next reward receive block of the StakePlan contract.
+//
+// Parameters:
+// - ctx: the SDK context.
+// - contractAddress: the address of the StakePlan contract.
+//
+// Returns:
+// - uint64: the next reward receive block.
+// - error: an error if the getting fails.
 func (k Keeper) NextRewardReceiveBlock(
 	ctx sdk.Context,
-	contractABI abi.ABI,
 	contractAddress common.Address,
 ) (uint64, error) {
+	contractABI := contracts.StakePlanContract.ABI
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
@@ -588,11 +646,20 @@ func (k Keeper) NextRewardReceiveBlock(
 	return nextRewardReceiveBlock.Uint64(), nil
 }
 
+// YatContractAddress gets the YAT contract address from the StakePlan contract.
+//
+// Parameters:
+// - ctx: the SDK context.
+// - contractAddress: the address of the StakePlan contract.
+//
+// Returns:
+// - common.Address: the address of the YAT contract.
+// - error: an error if the getting fails.
 func (k Keeper) YatContractAddress(
 	ctx sdk.Context,
-	contractABI abi.ABI,
 	contractAddress common.Address,
 ) (common.Address, error) {
+	contractABI := contracts.StakePlanContract.ABI
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
@@ -620,11 +687,20 @@ func (k Keeper) YatContractAddress(
 	return yatContractAddress, nil
 }
 
+// ClaimRoundId gets the claim round ID from the StakePlan contract.
+//
+// Parameters:
+// - ctx: the SDK context.
+// - contractAddress: the address of the StakePlan contract.
+//
+// Returns:
+// - uint64: the claim round ID.
+// - error: an error if the getting fails.
 func (k Keeper) ClaimRoundId(
 	ctx sdk.Context,
-	contractABI abi.ABI,
 	contractAddress common.Address,
 ) (uint64, error) {
+	contractABI := contracts.StakePlanContract.ABI
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
@@ -652,11 +728,21 @@ func (k Keeper) ClaimRoundId(
 	return claimRoundId.Uint64(), nil
 }
 
+// MerkleRoot gets the Merkle root from the StakePlan contract.
+//
+// Parameters:
+// - ctx: the SDK context.
+// - contractAddress: the address of the StakePlan contract.
+//
+// Returns:
+// - string: the Merkle root.
+// - error: an error if the getting fails.
 func (k Keeper) MerkleRoot(
 	ctx sdk.Context,
-	contractABI abi.ABI,
 	contractAddress common.Address,
+	roundId *big.Int,
 ) (string, error) {
+	contractABI := contracts.StakePlanContract.ABI
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
@@ -664,6 +750,7 @@ func (k Keeper) MerkleRoot(
 		contractAddress,
 		false,
 		types.StakePlanMethodMerkleRoot,
+		roundId,
 	)
 	if err != nil {
 		return "", err
@@ -675,6 +762,7 @@ func (k Keeper) MerkleRoot(
 		)
 	}
 
+	// unpacked to bytes32
 	merkleRoot, ok := unpacked[0].(string)
 	if !ok {
 		return "", errorsmod.Wrapf(
@@ -683,4 +771,46 @@ func (k Keeper) MerkleRoot(
 	}
 
 	return merkleRoot, nil
+}
+
+// ClaimLeafNode claims the leaf node from the StakePlan contract.
+//
+// Parameters:
+// - ctx: the SDK context.
+// - contractAddress: the address of the StakePlan contract.
+// - roundId: the round ID.
+// - leafNode: the leaf node to claim.
+//
+// Returns:
+// - bool: true if the claim is successful.
+// - error: an error if the claiming fails.
+func (k Keeper) ClaimLeafNode(
+	ctx sdk.Context,
+	contractAddress common.Address,
+	roundId *big.Int,
+	leafNode string,
+) (bool, error) {
+	leafNodeBytes := common.HexToHash(leafNode)
+	contractABI := contracts.StakePlanContract.ABI
+	res, err := k.CallEVM(
+		ctx,
+		contractABI,
+		k.getModuleEthAddress(ctx),
+		contractAddress,
+		false,
+		types.StakePlanMethodClaimLeafNode,
+		roundId,
+		leafNodeBytes,
+	)
+	if err != nil {
+		return false, err
+	}
+	unpacked, err := contractABI.Unpack(types.StakePlanMethodMerkleRoot, res.Ret)
+	if err != nil || len(unpacked) == 0 {
+		return false, errorsmod.Wrapf(
+			types.ErrABIUnpack, "failed to unpack Merkle Root from contract %s", contractAddress.Hex(),
+		)
+	}
+
+	return true, nil
 }

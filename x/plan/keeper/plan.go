@@ -17,6 +17,7 @@ func (k Keeper) AddPlan(ctx sdk.Context, plan types.Plan) (types.Plan, error) {
 	// generate the next plan ID
 	planId := k.GetNextNumber(ctx)
 	plan.Id = planId
+	plan.Enabled = types.PlanStatus_Enabled
 	// Deploy the plan contract for plan
 	planIdBigint := sdk.NewIntFromUint64(planId)
 	agentIdBigint := sdk.NewIntFromUint64(plan.AgentId)
@@ -41,6 +42,28 @@ func (k Keeper) AddPlan(ctx sdk.Context, plan types.Plan) (types.Plan, error) {
 	// increment the next plan ID
 	k.setNextNumber(ctx, planId+1)
 	return plan, nil
+}
+
+func (k Keeper) UpdatePlanStatus(ctx sdk.Context, planId uint64, status types.PlanStatus) error {
+	plan, found := k.GetPlan(ctx, planId)
+	if !found {
+		return types.ErrPlanNotFound
+	}
+
+	planAddress := common.HexToAddress(plan.ContractAddress)
+	if status == types.PlanStatus_Enabled {
+		if err := k.AdminPauseBridge(ctx, planAddress); err != nil {
+			return err
+		}
+	} else if status == types.PlanStatus_Disabled {
+		if err := k.AdminUnpauseBridge(ctx, planAddress); err != nil {
+			return err
+		}
+	}
+	// update the plan status
+	plan.Enabled = status
+	k.setPlan(ctx, plan)
+	return nil
 }
 
 // GetPlan retrieves a plan by the plan ID from the Keeper's store.

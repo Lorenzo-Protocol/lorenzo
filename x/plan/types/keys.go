@@ -43,6 +43,7 @@ const (
 	StakePlanMethodYatContractAddress     = "yatContractAddress"
 	StakePlanMethodClaimRoundId           = "claimRoundId"
 	StakePlanMethodMerkleRoot             = "merkleRoot"
+	StakePlanMethodClaimLeafNode          = "claimLeafNode"
 )
 
 const (

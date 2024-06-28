@@ -3,6 +3,7 @@ package lorenzo.plan.v1;
 
 import "gogoproto/gogo.proto";
 
+
 option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/plan/types";
 
 // Plan defines the details of a project
@@ -15,4 +16,10 @@ message Plan {
   string period_blocks = 6[ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false ];
   string yat_contract_address = 7;
   string contract_address = 8;
+  PlanStatus enabled = 9;
+}
+
+enum PlanStatus {
+  Enabled = 0;
+  Disabled = 1;
 }
