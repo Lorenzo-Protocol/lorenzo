@@ -7,6 +7,7 @@ import (
 	context "context"
 	fmt "fmt"
 	_ "github.com/cosmos/cosmos-proto"
+	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/cosmos-sdk/types/msgservice"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	grpc1 "github.com/cosmos/gogoproto/grpc"
@@ -29,34 +30,6 @@ var _ = math.Inf
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
-
-type ClaimsType int32
-
-const (
-	ClaimsType_CLAIM_YAT_Token               ClaimsType = 0
-	ClaimsType_CLAIM_REWARD_AND_WITHDRAW_BTC ClaimsType = 1
-	ClaimsType_ONLY_CLAIM_REWARD             ClaimsType = 2
-)
-
-var ClaimsType_name = map[int32]string{
-	0: "CLAIM_YAT_Token",
-	1: "CLAIM_REWARD_AND_WITHDRAW_BTC",
-	2: "ONLY_CLAIM_REWARD",
-}
-
-var ClaimsType_value = map[string]int32{
-	"CLAIM_YAT_Token":               0,
-	"CLAIM_REWARD_AND_WITHDRAW_BTC": 1,
-	"ONLY_CLAIM_REWARD":             2,
-}
-
-func (x ClaimsType) String() string {
-	return proto.EnumName(ClaimsType_name, int32(x))
-}
-
-func (ClaimsType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_f54797b8bf30f2f9, []int{0}
-}
 
 // MsgUpdateParams is the request type for the Msg/UpdateParams RPC method.
 type MsgUpdateParams struct {
@@ -254,22 +227,18 @@ var xxx_messageInfo_MsgUpgradeYATResponse proto.InternalMessageInfo
 type MsgCreatePlan struct {
 	// name is the name of the plan
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// symbol is the symbol of the plan
-	Symbol string `protobuf:"bytes,2,opt,name=symbol,proto3" json:"symbol,omitempty"`
 	// plan_desc_uri is the URI of the plan description
-	PlanDescUri string `protobuf:"bytes,3,opt,name=plan_desc_uri,json=planDescUri,proto3" json:"plan_desc_uri,omitempty"`
+	PlanDescUri string `protobuf:"bytes,2,opt,name=plan_desc_uri,json=planDescUri,proto3" json:"plan_desc_uri,omitempty"`
 	// agent_id is the unique identifier of the agent
-	AgentId uint64 `protobuf:"varint,4,opt,name=agent_id,json=agentId,proto3" json:"agent_id,omitempty"`
-	// subscription_start_time is the start time of the subscription
-	SubscriptionStartTime uint64 `protobuf:"varint,5,opt,name=subscription_start_time,json=subscriptionStartTime,proto3" json:"subscription_start_time,omitempty"`
+	AgentId uint64 `protobuf:"varint,3,opt,name=agent_id,json=agentId,proto3" json:"agent_id,omitempty"`
+	// plan_start_block is the start block of the plan
+	PlanStartBlock github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,4,opt,name=plan_start_block,json=planStartBlock,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"plan_start_block"`
 	// subscription_end_time is the end time of the subscription
-	SubscriptionEndTime uint64 `protobuf:"varint,6,opt,name=subscription_end_time,json=subscriptionEndTime,proto3" json:"subscription_end_time,omitempty"`
-	// plan_start_time is the start time of the plan
-	EndTime uint64 `protobuf:"varint,7,opt,name=end_time,json=endTime,proto3" json:"end_time,omitempty"`
-	// merkle_root is the merkle root of the plan
-	MerkleRoot string `protobuf:"bytes,8,opt,name=merkle_root,json=merkleRoot,proto3" json:"merkle_root,omitempty"`
+	PeriodBlocks github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,5,opt,name=period_blocks,json=periodBlocks,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"period_blocks"`
+	// yat_contract_address is the address of the yat contract
+	YatContractAddress string `protobuf:"bytes,6,opt,name=yat_contract_address,json=yatContractAddress,proto3" json:"yat_contract_address,omitempty"`
 	// sender is the address of the allowed sender
-	Sender string `protobuf:"bytes,9,opt,name=sender,proto3" json:"sender,omitempty"`
+	Sender string `protobuf:"bytes,7,opt,name=sender,proto3" json:"sender,omitempty"`
 }
 
 func (m *MsgCreatePlan) Reset()         { *m = MsgCreatePlan{} }
@@ -312,13 +281,6 @@ func (m *MsgCreatePlan) GetName() string {
 	return ""
 }
 
-func (m *MsgCreatePlan) GetSymbol() string {
-	if m != nil {
-		return m.Symbol
-	}
-	return ""
-}
-
 func (m *MsgCreatePlan) GetPlanDescUri() string {
 	if m != nil {
 		return m.PlanDescUri
@@ -333,30 +295,9 @@ func (m *MsgCreatePlan) GetAgentId() uint64 {
 	return 0
 }
 
-func (m *MsgCreatePlan) GetSubscriptionStartTime() uint64 {
+func (m *MsgCreatePlan) GetYatContractAddress() string {
 	if m != nil {
-		return m.SubscriptionStartTime
-	}
-	return 0
-}
-
-func (m *MsgCreatePlan) GetSubscriptionEndTime() uint64 {
-	if m != nil {
-		return m.SubscriptionEndTime
-	}
-	return 0
-}
-
-func (m *MsgCreatePlan) GetEndTime() uint64 {
-	if m != nil {
-		return m.EndTime
-	}
-	return 0
-}
-
-func (m *MsgCreatePlan) GetMerkleRoot() string {
-	if m != nil {
-		return m.MerkleRoot
+		return m.YatContractAddress
 	}
 	return ""
 }
@@ -420,10 +361,14 @@ type MsgClaims struct {
 	PlanId uint64 `protobuf:"varint,1,opt,name=plan_id,json=planId,proto3" json:"plan_id,omitempty"`
 	// receiver is the address of the receiver
 	Receiver string `protobuf:"bytes,2,opt,name=receiver,proto3" json:"receiver,omitempty"`
-	// claims_type is the type of the claim
-	ClaimsType ClaimsType `protobuf:"varint,3,opt,name=claims_type,json=claimsType,proto3,enum=lorenzo.plan.v1.ClaimsType" json:"claims_type,omitempty"`
+	// round_id is the unique identifier of the round
+	RoundId github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,3,opt,name=round_id,json=roundId,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"round_id"`
+	// amount is the amount of the claim
+	Amount github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,4,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"amount"`
+	// merkle_proof is the merkle proof of the claim
+	MerkleProof string `protobuf:"bytes,5,opt,name=merkle_proof,json=merkleProof,proto3" json:"merkle_proof,omitempty"`
 	// sender is the address of the governance account or module admin
-	Sender string `protobuf:"bytes,4,opt,name=sender,proto3" json:"sender,omitempty"`
+	Sender string `protobuf:"bytes,6,opt,name=sender,proto3" json:"sender,omitempty"`
 }
 
 func (m *MsgClaims) Reset()         { *m = MsgClaims{} }
@@ -473,11 +418,11 @@ func (m *MsgClaims) GetReceiver() string {
 	return ""
 }
 
-func (m *MsgClaims) GetClaimsType() ClaimsType {
+func (m *MsgClaims) GetMerkleProof() string {
 	if m != nil {
-		return m.ClaimsType
+		return m.MerkleProof
 	}
-	return ClaimsType_CLAIM_YAT_Token
+	return ""
 }
 
 func (m *MsgClaims) GetSender() string {
@@ -489,8 +434,6 @@ func (m *MsgClaims) GetSender() string {
 
 // MsgClaimsResponse is the response type for the Msg/Claims RPC method.
 type MsgClaimsResponse struct {
-	// id is the unique identifier of the agent
-	Id uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 }
 
 func (m *MsgClaimsResponse) Reset()         { *m = MsgClaimsResponse{} }
@@ -526,15 +469,117 @@ func (m *MsgClaimsResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgClaimsResponse proto.InternalMessageInfo
 
-func (m *MsgClaimsResponse) GetId() uint64 {
-	if m != nil {
-		return m.Id
+// MsgCreateYAT is the request type for the Msg/CreateYAT RPC method.
+type MsgCreateYAT struct {
+	// name is the name of the yat contract
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// symbol is the symbol of the yat contract
+	Symbol string `protobuf:"bytes,2,opt,name=symbol,proto3" json:"symbol,omitempty"`
+	// sender is the address of the allowed sender
+	Sender string `protobuf:"bytes,5,opt,name=sender,proto3" json:"sender,omitempty"`
+}
+
+func (m *MsgCreateYAT) Reset()         { *m = MsgCreateYAT{} }
+func (m *MsgCreateYAT) String() string { return proto.CompactTextString(m) }
+func (*MsgCreateYAT) ProtoMessage()    {}
+func (*MsgCreateYAT) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f54797b8bf30f2f9, []int{8}
+}
+func (m *MsgCreateYAT) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgCreateYAT) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgCreateYAT.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
 	}
-	return 0
+}
+func (m *MsgCreateYAT) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCreateYAT.Merge(m, src)
+}
+func (m *MsgCreateYAT) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgCreateYAT) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCreateYAT.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgCreateYAT proto.InternalMessageInfo
+
+func (m *MsgCreateYAT) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *MsgCreateYAT) GetSymbol() string {
+	if m != nil {
+		return m.Symbol
+	}
+	return ""
+}
+
+func (m *MsgCreateYAT) GetSender() string {
+	if m != nil {
+		return m.Sender
+	}
+	return ""
+}
+
+// MsgCreateYATResponse is the response type for the Msg/CreateYAT RPC method.
+type MsgCreateYATResponse struct {
+	// contract_address is the address of the yat contract
+	ContractAddress string `protobuf:"bytes,1,opt,name=contract_address,json=contractAddress,proto3" json:"contract_address,omitempty"`
+}
+
+func (m *MsgCreateYATResponse) Reset()         { *m = MsgCreateYATResponse{} }
+func (m *MsgCreateYATResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgCreateYATResponse) ProtoMessage()    {}
+func (*MsgCreateYATResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f54797b8bf30f2f9, []int{9}
+}
+func (m *MsgCreateYATResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgCreateYATResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgCreateYATResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgCreateYATResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCreateYATResponse.Merge(m, src)
+}
+func (m *MsgCreateYATResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgCreateYATResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCreateYATResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgCreateYATResponse proto.InternalMessageInfo
+
+func (m *MsgCreateYATResponse) GetContractAddress() string {
+	if m != nil {
+		return m.ContractAddress
+	}
+	return ""
 }
 
 func init() {
-	proto.RegisterEnum("lorenzo.plan.v1.ClaimsType", ClaimsType_name, ClaimsType_value)
 	proto.RegisterType((*MsgUpdateParams)(nil), "lorenzo.plan.v1.MsgUpdateParams")
 	proto.RegisterType((*MsgUpdateParamsResponse)(nil), "lorenzo.plan.v1.MsgUpdateParamsResponse")
 	proto.RegisterType((*MsgUpgradeYAT)(nil), "lorenzo.plan.v1.MsgUpgradeYAT")
@@ -543,60 +588,64 @@ func init() {
 	proto.RegisterType((*MsgCreatePlanResponse)(nil), "lorenzo.plan.v1.MsgCreatePlanResponse")
 	proto.RegisterType((*MsgClaims)(nil), "lorenzo.plan.v1.MsgClaims")
 	proto.RegisterType((*MsgClaimsResponse)(nil), "lorenzo.plan.v1.MsgClaimsResponse")
+	proto.RegisterType((*MsgCreateYAT)(nil), "lorenzo.plan.v1.MsgCreateYAT")
+	proto.RegisterType((*MsgCreateYATResponse)(nil), "lorenzo.plan.v1.MsgCreateYATResponse")
 }
 
 func init() { proto.RegisterFile("lorenzo/plan/v1/tx.proto", fileDescriptor_f54797b8bf30f2f9) }
 
 var fileDescriptor_f54797b8bf30f2f9 = []byte{
-	// 765 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x54, 0x4d, 0x4f, 0xeb, 0x46,
-	0x14, 0x8d, 0xf3, 0xf2, 0x42, 0x72, 0xd3, 0x17, 0x78, 0x03, 0x34, 0x8e, 0xdb, 0x86, 0x34, 0x95,
-	0x68, 0x84, 0x44, 0x02, 0xa9, 0xca, 0x02, 0x75, 0x93, 0x10, 0x24, 0x52, 0x01, 0x45, 0xc6, 0x08,
-	0x41, 0x17, 0x96, 0x63, 0x8f, 0x8c, 0x85, 0xed, 0xb1, 0x66, 0x26, 0x88, 0x74, 0xd3, 0xaa, 0xbf,
-	0x80, 0x9f, 0xc2, 0xa2, 0xdb, 0xee, 0x59, 0xa2, 0xae, 0xba, 0x42, 0x2d, 0x2c, 0xf8, 0x1b, 0x95,
-	0xc7, 0xce, 0x27, 0xa1, 0x54, 0xdd, 0xcd, 0x9d, 0x73, 0xee, 0x9d, 0x73, 0xee, 0xcc, 0x5c, 0x90,
-	0x5d, 0x42, 0xb1, 0xff, 0x13, 0xa9, 0x07, 0xae, 0xe1, 0xd7, 0xaf, 0x36, 0xeb, 0xfc, 0xba, 0x16,
-	0x50, 0xc2, 0x09, 0x9a, 0x8f, 0x91, 0x5a, 0x88, 0xd4, 0xae, 0x36, 0x95, 0xa2, 0x49, 0x98, 0x47,
-	0x98, 0x2e, 0xe0, 0x7a, 0x14, 0x44, 0x5c, 0xa5, 0x10, 0x45, 0x75, 0x8f, 0xd9, 0x61, 0x0d, 0x8f,
-	0xd9, 0x31, 0xb0, 0x64, 0x13, 0x9b, 0x44, 0x09, 0xe1, 0x2a, 0xde, 0xfd, 0x7c, 0xfa, 0xd0, 0xc0,
-	0xa0, 0x86, 0x17, 0x17, 0xab, 0xdc, 0x48, 0x30, 0x7f, 0xc0, 0xec, 0x93, 0xc0, 0x32, 0x38, 0x3e,
-	0x12, 0x08, 0xda, 0x82, 0xac, 0xd1, 0xe3, 0x17, 0x84, 0x3a, 0xbc, 0x2f, 0x4b, 0x65, 0xa9, 0x9a,
-	0x6d, 0xc9, 0x7f, 0xfc, 0xb6, 0xbe, 0x14, 0xab, 0x68, 0x5a, 0x16, 0xc5, 0x8c, 0x1d, 0x73, 0xea,
-	0xf8, 0xb6, 0x3a, 0xa2, 0xa2, 0x6f, 0x21, 0x1d, 0xd5, 0x96, 0x93, 0x65, 0xa9, 0x9a, 0x6b, 0x14,
-	0x6a, 0x53, 0xae, 0x6a, 0xd1, 0x01, 0xad, 0xd4, 0xdd, 0xc3, 0x4a, 0x42, 0x8d, 0xc9, 0xdb, 0xf9,
-	0x5f, 0x9f, 0x6f, 0xd7, 0x46, 0x65, 0x2a, 0x45, 0x28, 0x4c, 0x29, 0x52, 0x31, 0x0b, 0x88, 0xcf,
-	0x70, 0xe5, 0x67, 0xf8, 0x20, 0x20, 0x9b, 0x1a, 0x16, 0x3e, 0x6b, 0x6a, 0x68, 0x15, 0xf2, 0x8e,
-	0x17, 0xb8, 0xd8, 0xc3, 0x3e, 0x37, 0xb8, 0x43, 0xfc, 0x48, 0xaf, 0x3a, 0xb5, 0x3b, 0x69, 0x29,
-	0xf9, 0x9f, 0x2d, 0xbd, 0xd0, 0x56, 0x80, 0xe5, 0x09, 0x01, 0x43, 0x65, 0x7f, 0x27, 0x85, 0xb4,
-	0x1d, 0x8a, 0x43, 0xd5, 0xae, 0xe1, 0x23, 0x04, 0x29, 0xdf, 0xf0, 0x70, 0x2c, 0x48, 0xac, 0xd1,
-	0xa7, 0x90, 0x66, 0x7d, 0xaf, 0x4b, 0xdc, 0x48, 0x83, 0x1a, 0x47, 0xa8, 0x02, 0x1f, 0xc2, 0x16,
-	0xe9, 0x16, 0x66, 0xa6, 0xde, 0xa3, 0x8e, 0xfc, 0x4e, 0xc0, 0xb9, 0x70, 0xb3, 0x8d, 0x99, 0x79,
-	0x42, 0x1d, 0x54, 0x84, 0x8c, 0x61, 0x63, 0x9f, 0xeb, 0x8e, 0x25, 0xa7, 0xca, 0x52, 0x35, 0xa5,
-	0xce, 0x89, 0xb8, 0x63, 0xa1, 0x2d, 0x28, 0xb0, 0x5e, 0x97, 0x99, 0xd4, 0x09, 0x42, 0xb7, 0x3a,
-	0xe3, 0x06, 0xe5, 0x3a, 0x77, 0x3c, 0x2c, 0xbf, 0x17, 0xcc, 0xe5, 0x71, 0xf8, 0x38, 0x44, 0x35,
-	0xc7, 0xc3, 0xa8, 0x01, 0x13, 0x80, 0x8e, 0x7d, 0x2b, 0xca, 0x4a, 0x8b, 0xac, 0xc5, 0x71, 0x70,
-	0xd7, 0xb7, 0x44, 0x4e, 0x11, 0x32, 0x43, 0xda, 0x5c, 0x24, 0x03, 0xc7, 0xd0, 0x0a, 0xe4, 0x3c,
-	0x4c, 0x2f, 0x5d, 0xac, 0x53, 0x42, 0xb8, 0x9c, 0x11, 0x1e, 0x20, 0xda, 0x52, 0x09, 0xe1, 0x68,
-	0x03, 0xd2, 0x0c, 0xfb, 0x16, 0xa6, 0x72, 0xf6, 0x8d, 0x2b, 0x88, 0x79, 0xdb, 0xb9, 0xb0, 0xff,
-	0x71, 0x50, 0xf9, 0x5a, 0x34, 0x7f, 0xd4, 0xe2, 0x41, 0xf3, 0x51, 0x1e, 0x92, 0x8e, 0x25, 0x1a,
-	0x9d, 0x52, 0x93, 0x8e, 0x55, 0xf9, 0x5d, 0x82, 0x6c, 0xc8, 0x74, 0x0d, 0xc7, 0x63, 0xa8, 0x00,
-	0x73, 0xa2, 0xb9, 0x43, 0x4a, 0x3a, 0x0c, 0x3b, 0x16, 0x52, 0x20, 0x43, 0xb1, 0x89, 0x9d, 0x2b,
-	0x4c, 0xe3, 0xfb, 0x18, 0xc6, 0xe8, 0x3b, 0xc8, 0x99, 0x22, 0x5d, 0xe7, 0xfd, 0x00, 0x8b, 0xfb,
-	0xc8, 0x37, 0x3e, 0x7b, 0xf1, 0xa0, 0xa3, 0x23, 0xb4, 0x7e, 0x80, 0x55, 0x30, 0x87, 0xeb, 0x31,
-	0xa3, 0xa9, 0xff, 0x63, 0xf4, 0x2b, 0xf8, 0x38, 0x94, 0xff, 0x9a, 0xc9, 0xb5, 0x1f, 0x01, 0x46,
-	0xa7, 0xa3, 0x45, 0x98, 0xdf, 0xd9, 0x6f, 0x76, 0x0e, 0xf4, 0xb3, 0xa6, 0xa6, 0x6b, 0xe4, 0x12,
-	0xfb, 0x0b, 0x09, 0xf4, 0x25, 0x7c, 0x11, 0x6d, 0xaa, 0xbb, 0xa7, 0x4d, 0xb5, 0xad, 0x37, 0x0f,
-	0xdb, 0xfa, 0x69, 0x47, 0xdb, 0x6b, 0xab, 0xcd, 0x53, 0xbd, 0xa5, 0xed, 0x2c, 0x48, 0x68, 0x19,
-	0x3e, 0xfe, 0x70, 0xb8, 0x7f, 0xa6, 0x8f, 0xf3, 0x16, 0x92, 0x8d, 0x87, 0x24, 0xbc, 0x3b, 0x60,
-	0x36, 0x3a, 0x87, 0x4f, 0x26, 0x46, 0x43, 0xf9, 0x45, 0x07, 0xa6, 0xbe, 0xaa, 0x52, 0x7d, 0x8b,
-	0x31, 0x34, 0xa4, 0x01, 0x8c, 0xfd, 0xe4, 0xd2, 0xec, 0xbc, 0x01, 0xae, 0xac, 0xfe, 0x3b, 0x3e,
-	0x5e, 0x75, 0xec, 0x13, 0xce, 0xac, 0x3a, 0xc2, 0x67, 0x57, 0x9d, 0xf1, 0xc2, 0xf6, 0x20, 0x1d,
-	0xbf, 0x26, 0x65, 0x66, 0x86, 0xc0, 0x94, 0xca, 0xeb, 0xd8, 0xa0, 0x92, 0xf2, 0xfe, 0x97, 0xe7,
-	0xdb, 0x35, 0xa9, 0xf5, 0xfd, 0xdd, 0x63, 0x49, 0xba, 0x7f, 0x2c, 0x49, 0x7f, 0x3d, 0x96, 0xa4,
-	0x9b, 0xa7, 0x52, 0xe2, 0xfe, 0xa9, 0x94, 0xf8, 0xf3, 0xa9, 0x94, 0x38, 0xdf, 0xb0, 0x1d, 0x7e,
-	0xd1, 0xeb, 0xd6, 0x4c, 0xe2, 0xd5, 0xf7, 0xa3, 0x72, 0xeb, 0x47, 0xe1, 0xac, 0x36, 0x89, 0x5b,
-	0x1f, 0xcc, 0xf2, 0xeb, 0x68, 0x9a, 0x87, 0x6f, 0x93, 0x75, 0xd3, 0x62, 0x94, 0x7f, 0xf3, 0x4f,
-	0x00, 0x00, 0x00, 0xff, 0xff, 0x46, 0xa8, 0x29, 0x8a, 0x5f, 0x06, 0x00, 0x00,
+	// 793 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x55, 0x4d, 0x6f, 0x1b, 0x45,
+	0x18, 0xce, 0x3a, 0xce, 0x26, 0x7e, 0xed, 0x38, 0x65, 0x30, 0x78, 0xb3, 0x02, 0xd7, 0x58, 0x22,
+	0x98, 0x4a, 0x59, 0xa7, 0x45, 0x70, 0xe8, 0x2d, 0x2e, 0x42, 0x18, 0x51, 0x29, 0x6c, 0x5a, 0x09,
+	0x7a, 0xb1, 0xc6, 0xbb, 0xc3, 0x76, 0x95, 0xdd, 0x9d, 0xd5, 0xcc, 0x38, 0xaa, 0xb9, 0x80, 0xfa,
+	0x0b, 0xfa, 0x53, 0x8a, 0x04, 0xff, 0xa1, 0xc7, 0x8a, 0x13, 0xe2, 0x50, 0xa1, 0xe4, 0xd0, 0xbf,
+	0x81, 0xe6, 0xc3, 0xeb, 0x8f, 0xb8, 0x0d, 0xf5, 0x69, 0xf7, 0x9d, 0xe7, 0x9d, 0x67, 0x9e, 0xf7,
+	0x63, 0xde, 0x01, 0x27, 0xa1, 0x8c, 0x64, 0xbf, 0xd0, 0x5e, 0x9e, 0xe0, 0xac, 0x77, 0x7e, 0xbb,
+	0x27, 0x9e, 0x78, 0x39, 0xa3, 0x82, 0xa2, 0x3d, 0x83, 0x78, 0x12, 0xf1, 0xce, 0x6f, 0xbb, 0xfb,
+	0x01, 0xe5, 0x29, 0xe5, 0x43, 0x05, 0xf7, 0xb4, 0xa1, 0x7d, 0xdd, 0xa6, 0xb6, 0x7a, 0x29, 0x8f,
+	0x24, 0x47, 0xca, 0x23, 0x03, 0x34, 0x22, 0x1a, 0x51, 0xbd, 0x41, 0xfe, 0x99, 0xd5, 0x8f, 0x96,
+	0x0f, 0xcd, 0x31, 0xc3, 0xa9, 0x21, 0xeb, 0x3c, 0xb3, 0x60, 0xef, 0x3e, 0x8f, 0x1e, 0xe6, 0x21,
+	0x16, 0xe4, 0x44, 0x21, 0xe8, 0x2b, 0xa8, 0xe0, 0xb1, 0x78, 0x4c, 0x59, 0x2c, 0x26, 0x8e, 0xd5,
+	0xb6, 0xba, 0x95, 0xbe, 0xf3, 0xd7, 0x1f, 0x87, 0x0d, 0xa3, 0xe2, 0x38, 0x0c, 0x19, 0xe1, 0xfc,
+	0x54, 0xb0, 0x38, 0x8b, 0xfc, 0x99, 0x2b, 0xfa, 0x12, 0x6c, 0xcd, 0xed, 0x94, 0xda, 0x56, 0xb7,
+	0x7a, 0xa7, 0xe9, 0x2d, 0x45, 0xe5, 0xe9, 0x03, 0xfa, 0xe5, 0x17, 0xaf, 0x6e, 0x6e, 0xf8, 0xc6,
+	0xf9, 0x6e, 0xfd, 0xe9, 0xeb, 0xe7, 0xb7, 0x66, 0x34, 0x9d, 0x7d, 0x68, 0x2e, 0x29, 0xf2, 0x09,
+	0xcf, 0x69, 0xc6, 0x49, 0xe7, 0x57, 0xd8, 0x55, 0x50, 0xc4, 0x70, 0x48, 0x7e, 0x3a, 0x7e, 0x80,
+	0x0e, 0xa0, 0x1e, 0xa7, 0x79, 0x42, 0x52, 0x92, 0x09, 0x2c, 0x62, 0x9a, 0x69, 0xbd, 0xfe, 0xd2,
+	0xea, 0x62, 0x48, 0xa5, 0xff, 0x1d, 0xd2, 0x15, 0x6d, 0x4d, 0xf8, 0x60, 0x41, 0x40, 0xa1, 0xec,
+	0xe9, 0xa6, 0x92, 0x76, 0x8f, 0x11, 0xa9, 0x3a, 0xc1, 0x19, 0x42, 0x50, 0xce, 0x70, 0x4a, 0x8c,
+	0x20, 0xf5, 0x8f, 0x3a, 0xb0, 0x2b, 0x53, 0x31, 0x0c, 0x09, 0x0f, 0x86, 0x63, 0x16, 0x6b, 0x29,
+	0x7e, 0x55, 0x2e, 0x7e, 0x4d, 0x78, 0xf0, 0x90, 0xc5, 0x68, 0x1f, 0x76, 0x70, 0x44, 0x32, 0x31,
+	0x8c, 0x43, 0x67, 0xb3, 0x6d, 0x75, 0xcb, 0xfe, 0xb6, 0xb2, 0x07, 0x21, 0xfa, 0x11, 0x6e, 0xa8,
+	0xed, 0x5c, 0x60, 0x26, 0x86, 0xa3, 0x84, 0x06, 0x67, 0x4e, 0x59, 0x05, 0xe3, 0xc9, 0x8c, 0xfe,
+	0xf3, 0xea, 0xe6, 0x41, 0x14, 0x8b, 0xc7, 0xe3, 0x91, 0x17, 0xd0, 0xd4, 0x34, 0x8d, 0xf9, 0x1c,
+	0xf2, 0xf0, 0xac, 0x27, 0x26, 0x39, 0xe1, 0xde, 0x20, 0x13, 0x7e, 0x5d, 0xf2, 0x9c, 0x4a, 0x9a,
+	0xbe, 0x64, 0x41, 0xa7, 0xb0, 0x9b, 0x13, 0x16, 0xd3, 0x50, 0xb3, 0x72, 0x67, 0x6b, 0x2d, 0xda,
+	0x9a, 0x26, 0x51, 0x9c, 0x1c, 0x1d, 0x41, 0x63, 0x82, 0xc5, 0x30, 0xa0, 0x99, 0x60, 0x38, 0x10,
+	0x43, 0xac, 0xb3, 0xec, 0xd8, 0x2a, 0x68, 0x34, 0xc1, 0xe2, 0x9e, 0x81, 0x4c, 0xfe, 0xd1, 0x11,
+	0xd8, 0x9c, 0x64, 0x21, 0x61, 0xce, 0xf6, 0x35, 0x35, 0x32, 0x7e, 0x77, 0xab, 0xb2, 0x40, 0xc6,
+	0xe8, 0x7c, 0xa6, 0xaa, 0x33, 0xab, 0xc1, 0xb4, 0x3a, 0xa8, 0x0e, 0xa5, 0x38, 0x54, 0x95, 0x28,
+	0xfb, 0xa5, 0x38, 0xec, 0xfc, 0x59, 0x82, 0x8a, 0xf4, 0x4c, 0x70, 0x9c, 0x72, 0xd4, 0x84, 0x6d,
+	0x95, 0xd6, 0xc2, 0xc5, 0x96, 0xe6, 0x20, 0x44, 0x2e, 0xec, 0x30, 0x12, 0x90, 0xf8, 0x9c, 0x30,
+	0x53, 0xa9, 0xc2, 0x46, 0x03, 0xd8, 0x61, 0x74, 0x9c, 0x85, 0xd3, 0x32, 0xbd, 0x7b, 0xb2, 0xb6,
+	0xd5, 0xfe, 0x41, 0x88, 0xbe, 0x01, 0x1b, 0xa7, 0x74, 0x9c, 0x89, 0x35, 0x8b, 0x69, 0x76, 0xa3,
+	0x4f, 0xa0, 0x96, 0x12, 0x76, 0x96, 0x10, 0x39, 0x35, 0xe8, 0xcf, 0xba, 0x86, 0x7e, 0x55, 0xaf,
+	0x9d, 0xc8, 0xa5, 0xb9, 0x04, 0xdb, 0xeb, 0x24, 0xf8, 0x7d, 0x78, 0xaf, 0x48, 0x5b, 0xd1, 0xfa,
+	0x13, 0xa8, 0x15, 0x59, 0x97, 0x77, 0x72, 0x55, 0xe3, 0x7f, 0x08, 0x36, 0x9f, 0xa4, 0x23, 0x9a,
+	0x98, 0x3c, 0x1a, 0x6b, 0x4e, 0xcf, 0xd6, 0x3a, 0x7a, 0x8e, 0xa1, 0x31, 0x7f, 0x74, 0x51, 0xef,
+	0xcf, 0xe1, 0xc6, 0x95, 0xae, 0xd3, 0x72, 0xf6, 0x82, 0xc5, 0x96, 0xbb, 0xf3, 0xfb, 0x26, 0x6c,
+	0xde, 0xe7, 0x11, 0x7a, 0x04, 0xb5, 0x85, 0x21, 0xd8, 0xbe, 0x32, 0xbc, 0x96, 0x86, 0x92, 0xdb,
+	0xbd, 0xce, 0xa3, 0x90, 0xf3, 0x00, 0x60, 0x6e, 0x66, 0xb5, 0x56, 0xef, 0x9b, 0xe2, 0xee, 0xc1,
+	0xdb, 0xf1, 0x79, 0xd6, 0xb9, 0x71, 0xb3, 0x92, 0x75, 0x86, 0xaf, 0x66, 0x5d, 0x71, 0x55, 0xbe,
+	0x05, 0xdb, 0x5c, 0x0b, 0x77, 0xe5, 0x0e, 0x85, 0xb9, 0x9d, 0x37, 0x63, 0x05, 0xd3, 0x0f, 0x50,
+	0x99, 0x35, 0xc5, 0xc7, 0x6f, 0x3e, 0x5e, 0xc6, 0xfc, 0xe9, 0x5b, 0xe1, 0x29, 0xa5, 0xbb, 0xf5,
+	0xdb, 0xeb, 0xe7, 0xb7, 0xac, 0xfe, 0x77, 0x2f, 0x2e, 0x5a, 0xd6, 0xcb, 0x8b, 0x96, 0xf5, 0xef,
+	0x45, 0xcb, 0x7a, 0x76, 0xd9, 0xda, 0x78, 0x79, 0xd9, 0xda, 0xf8, 0xfb, 0xb2, 0xb5, 0xf1, 0xe8,
+	0x68, 0xee, 0xca, 0x7c, 0xaf, 0x19, 0x0f, 0x4f, 0xe4, 0x43, 0x17, 0xd0, 0xa4, 0x37, 0x7d, 0x08,
+	0x9f, 0xe8, 0xa7, 0x50, 0x5d, 0xa0, 0x91, 0xad, 0xde, 0xc1, 0x2f, 0xfe, 0x0b, 0x00, 0x00, 0xff,
+	0xff, 0x94, 0xfa, 0x5d, 0xb3, 0x9c, 0x07, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -619,6 +668,8 @@ type MsgClient interface {
 	CreatePlan(ctx context.Context, in *MsgCreatePlan, opts ...grpc.CallOption) (*MsgCreatePlanResponse, error)
 	// CreateClaim defines a method for claims rewards to sender.
 	Claims(ctx context.Context, in *MsgClaims, opts ...grpc.CallOption) (*MsgClaimsResponse, error)
+	// CreateYAT defines a method for creating a new YAT contract.
+	CreateYAT(ctx context.Context, in *MsgCreateYAT, opts ...grpc.CallOption) (*MsgCreateYATResponse, error)
 }
 
 type msgClient struct {
@@ -665,6 +716,15 @@ func (c *msgClient) Claims(ctx context.Context, in *MsgClaims, opts ...grpc.Call
 	return out, nil
 }
 
+func (c *msgClient) CreateYAT(ctx context.Context, in *MsgCreateYAT, opts ...grpc.CallOption) (*MsgCreateYATResponse, error) {
+	out := new(MsgCreateYATResponse)
+	err := c.cc.Invoke(ctx, "/lorenzo.plan.v1.Msg/CreateYAT", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	// UpdateParams defines a method for updating the plan parameters.
@@ -675,6 +735,8 @@ type MsgServer interface {
 	CreatePlan(context.Context, *MsgCreatePlan) (*MsgCreatePlanResponse, error)
 	// CreateClaim defines a method for claims rewards to sender.
 	Claims(context.Context, *MsgClaims) (*MsgClaimsResponse, error)
+	// CreateYAT defines a method for creating a new YAT contract.
+	CreateYAT(context.Context, *MsgCreateYAT) (*MsgCreateYATResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -692,6 +754,9 @@ func (*UnimplementedMsgServer) CreatePlan(ctx context.Context, req *MsgCreatePla
 }
 func (*UnimplementedMsgServer) Claims(ctx context.Context, req *MsgClaims) (*MsgClaimsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Claims not implemented")
+}
+func (*UnimplementedMsgServer) CreateYAT(ctx context.Context, req *MsgCreateYAT) (*MsgCreateYATResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateYAT not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
@@ -770,6 +835,24 @@ func _Msg_Claims_Handler(srv interface{}, ctx context.Context, dec func(interfac
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_CreateYAT_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCreateYAT)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).CreateYAT(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/lorenzo.plan.v1.Msg/CreateYAT",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).CreateYAT(ctx, req.(*MsgCreateYAT))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "lorenzo.plan.v1.Msg",
 	HandlerType: (*MsgServer)(nil),
@@ -789,6 +872,10 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Claims",
 			Handler:    _Msg_Claims_Handler,
+		},
+		{
+			MethodName: "CreateYAT",
+			Handler:    _Msg_CreateYAT_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -943,46 +1030,44 @@ func (m *MsgCreatePlan) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.Sender)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Sender)))
 		i--
-		dAtA[i] = 0x4a
+		dAtA[i] = 0x3a
 	}
-	if len(m.MerkleRoot) > 0 {
-		i -= len(m.MerkleRoot)
-		copy(dAtA[i:], m.MerkleRoot)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.MerkleRoot)))
+	if len(m.YatContractAddress) > 0 {
+		i -= len(m.YatContractAddress)
+		copy(dAtA[i:], m.YatContractAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.YatContractAddress)))
 		i--
-		dAtA[i] = 0x42
+		dAtA[i] = 0x32
 	}
-	if m.EndTime != 0 {
-		i = encodeVarintTx(dAtA, i, uint64(m.EndTime))
-		i--
-		dAtA[i] = 0x38
+	{
+		size := m.PeriodBlocks.Size()
+		i -= size
+		if _, err := m.PeriodBlocks.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintTx(dAtA, i, uint64(size))
 	}
-	if m.SubscriptionEndTime != 0 {
-		i = encodeVarintTx(dAtA, i, uint64(m.SubscriptionEndTime))
-		i--
-		dAtA[i] = 0x30
+	i--
+	dAtA[i] = 0x2a
+	{
+		size := m.PlanStartBlock.Size()
+		i -= size
+		if _, err := m.PlanStartBlock.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintTx(dAtA, i, uint64(size))
 	}
-	if m.SubscriptionStartTime != 0 {
-		i = encodeVarintTx(dAtA, i, uint64(m.SubscriptionStartTime))
-		i--
-		dAtA[i] = 0x28
-	}
+	i--
+	dAtA[i] = 0x22
 	if m.AgentId != 0 {
 		i = encodeVarintTx(dAtA, i, uint64(m.AgentId))
 		i--
-		dAtA[i] = 0x20
+		dAtA[i] = 0x18
 	}
 	if len(m.PlanDescUri) > 0 {
 		i -= len(m.PlanDescUri)
 		copy(dAtA[i:], m.PlanDescUri)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.PlanDescUri)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.Symbol) > 0 {
-		i -= len(m.Symbol)
-		copy(dAtA[i:], m.Symbol)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Symbol)))
 		i--
 		dAtA[i] = 0x12
 	}
@@ -1049,13 +1134,35 @@ func (m *MsgClaims) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.Sender)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Sender)))
 		i--
-		dAtA[i] = 0x22
+		dAtA[i] = 0x32
 	}
-	if m.ClaimsType != 0 {
-		i = encodeVarintTx(dAtA, i, uint64(m.ClaimsType))
+	if len(m.MerkleProof) > 0 {
+		i -= len(m.MerkleProof)
+		copy(dAtA[i:], m.MerkleProof)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.MerkleProof)))
 		i--
-		dAtA[i] = 0x18
+		dAtA[i] = 0x2a
 	}
+	{
+		size := m.Amount.Size()
+		i -= size
+		if _, err := m.Amount.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintTx(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x22
+	{
+		size := m.RoundId.Size()
+		i -= size
+		if _, err := m.RoundId.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintTx(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x1a
 	if len(m.Receiver) > 0 {
 		i -= len(m.Receiver)
 		copy(dAtA[i:], m.Receiver)
@@ -1091,10 +1198,79 @@ func (m *MsgClaimsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.Id != 0 {
-		i = encodeVarintTx(dAtA, i, uint64(m.Id))
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgCreateYAT) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgCreateYAT) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgCreateYAT) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Sender)))
 		i--
-		dAtA[i] = 0x8
+		dAtA[i] = 0x2a
+	}
+	if len(m.Symbol) > 0 {
+		i -= len(m.Symbol)
+		copy(dAtA[i:], m.Symbol)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Symbol)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgCreateYATResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgCreateYATResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgCreateYATResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.ContractAddress) > 0 {
+		i -= len(m.ContractAddress)
+		copy(dAtA[i:], m.ContractAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ContractAddress)))
+		i--
+		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
@@ -1170,10 +1346,6 @@ func (m *MsgCreatePlan) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = len(m.Symbol)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
 	l = len(m.PlanDescUri)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
@@ -1181,16 +1353,11 @@ func (m *MsgCreatePlan) Size() (n int) {
 	if m.AgentId != 0 {
 		n += 1 + sovTx(uint64(m.AgentId))
 	}
-	if m.SubscriptionStartTime != 0 {
-		n += 1 + sovTx(uint64(m.SubscriptionStartTime))
-	}
-	if m.SubscriptionEndTime != 0 {
-		n += 1 + sovTx(uint64(m.SubscriptionEndTime))
-	}
-	if m.EndTime != 0 {
-		n += 1 + sovTx(uint64(m.EndTime))
-	}
-	l = len(m.MerkleRoot)
+	l = m.PlanStartBlock.Size()
+	n += 1 + l + sovTx(uint64(l))
+	l = m.PeriodBlocks.Size()
+	n += 1 + l + sovTx(uint64(l))
+	l = len(m.YatContractAddress)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -1226,8 +1393,13 @@ func (m *MsgClaims) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	if m.ClaimsType != 0 {
-		n += 1 + sovTx(uint64(m.ClaimsType))
+	l = m.RoundId.Size()
+	n += 1 + l + sovTx(uint64(l))
+	l = m.Amount.Size()
+	n += 1 + l + sovTx(uint64(l))
+	l = len(m.MerkleProof)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
 	}
 	l = len(m.Sender)
 	if l > 0 {
@@ -1242,8 +1414,39 @@ func (m *MsgClaimsResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.Id != 0 {
-		n += 1 + sovTx(uint64(m.Id))
+	return n
+}
+
+func (m *MsgCreateYAT) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Symbol)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgCreateYATResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ContractAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
 	}
 	return n
 }
@@ -1646,38 +1849,6 @@ func (m *MsgCreatePlan) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Symbol", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Symbol = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field PlanDescUri", wireType)
 			}
 			var stringLen uint64
@@ -1708,7 +1879,7 @@ func (m *MsgCreatePlan) Unmarshal(dAtA []byte) error {
 			}
 			m.PlanDescUri = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 4:
+		case 3:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field AgentId", wireType)
 			}
@@ -1727,66 +1898,9 @@ func (m *MsgCreatePlan) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 5:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SubscriptionStartTime", wireType)
-			}
-			m.SubscriptionStartTime = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.SubscriptionStartTime |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 6:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SubscriptionEndTime", wireType)
-			}
-			m.SubscriptionEndTime = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.SubscriptionEndTime |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 7:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field EndTime", wireType)
-			}
-			m.EndTime = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.EndTime |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 8:
+		case 4:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MerkleRoot", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field PlanStartBlock", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1814,9 +1928,77 @@ func (m *MsgCreatePlan) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.MerkleRoot = string(dAtA[iNdEx:postIndex])
+			if err := m.PlanStartBlock.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
-		case 9:
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PeriodBlocks", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.PeriodBlocks.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field YatContractAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.YatContractAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 7:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
 			}
@@ -2019,10 +2201,10 @@ func (m *MsgClaims) Unmarshal(dAtA []byte) error {
 			m.Receiver = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 3:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ClaimsType", wireType)
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RoundId", wireType)
 			}
-			m.ClaimsType = 0
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTx
@@ -2032,12 +2214,93 @@ func (m *MsgClaims) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.ClaimsType |= ClaimsType(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.RoundId.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Amount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MerkleProof", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MerkleProof = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
 			}
@@ -2119,11 +2382,61 @@ func (m *MsgClaimsResponse) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: MsgClaimsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
 			}
-			m.Id = 0
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgCreateYAT) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgCreateYAT: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgCreateYAT: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTx
@@ -2133,11 +2446,170 @@ func (m *MsgClaimsResponse) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Id |= uint64(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Symbol", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Symbol = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Sender = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgCreateYATResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgCreateYATResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgCreateYATResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ContractAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ContractAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])

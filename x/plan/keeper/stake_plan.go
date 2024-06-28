@@ -39,11 +39,10 @@ func (k Keeper) DeployStakePlanProxyContract(
 	periodBlocks *big.Int,
 	yatContractAddress common.Address,
 ) (common.Address, error) {
-
 	// pack contract arguments
 	initArgs, err := contracts.StakePlanContract.ABI.Pack(
 		types.StakePlanMethodInitialize,
-		//args
+		// args
 		stakePlanName,
 		planDescUri,
 		planId,
@@ -107,7 +106,6 @@ func (k Keeper) DeployStakePlanProxyContract(
 func (k Keeper) DeployStakePlanLogicContract(
 	ctx sdk.Context,
 ) (common.Address, error) {
-
 	data := make([]byte, len(contracts.StakePlanContract.Bin))
 	copy(data[:len(contracts.StakePlanContract.Bin)], contracts.StakePlanContract.Bin)
 
@@ -153,7 +151,6 @@ func (k Keeper) ClaimYATToken(
 	amount *big.Int,
 	merkleProof string,
 ) error {
-
 	merkleProofBytes := common.HexToHash(merkleProof)
 
 	contractABI := contracts.StakePlanContract.ABI
@@ -230,7 +227,6 @@ func (k Keeper) SetMerkleRoot(
 	contractAddress common.Address,
 	merkleProof string,
 ) error {
-
 	merkleProofBytes := common.HexToHash(merkleProof)
 
 	contractABI := contracts.StakePlanContract.ABI

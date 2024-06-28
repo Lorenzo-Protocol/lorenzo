@@ -4,10 +4,11 @@ import (
 	"github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/ethereum/go-ethereum/common"
 )
 
 func (k Keeper) AddPlan(ctx sdk.Context, plan types.Plan) (types.Plan, error) {
-	// todo: check if the agent not exists
+	// check if the agent not exists
 	_, agentFound := k.agentKeeper.GetAgent(ctx, plan.AgentId)
 	if !agentFound {
 		return types.Plan{}, types.ErrAgentNotFound
@@ -16,27 +17,29 @@ func (k Keeper) AddPlan(ctx sdk.Context, plan types.Plan) (types.Plan, error) {
 	// generate the next plan ID
 	planId := k.GetNextNumber(ctx)
 	plan.Id = planId
-	// Deploy the contract
-	//contractAddress, err := k.DeployStakePlanProxyContract(
-	//	ctx,
-	//	plan.Name,
-	//	plan.PlanDescUri,
-	//	plan.Id,
-	//	plan.AgentId,
-	//	plan.SubscriptionStartTime,
-	//	plan.SubscriptionEndTime,
-	//	plan.EndTime,
-	//	plan.MerkleRoot,
-	//)
-	//if err != nil {
-	//	return types.Plan{}, err
-	//}
-	//plan.ContractAddress = contractAddress.Hex()
-	//
-	//// set the plan
-	//k.setPlan(ctx, plan)
-	//// increment the next plan ID
-	//k.setNextNumber(ctx, planId+1)
+	// Deploy the plan contract for plan
+	planIdBigint := sdk.NewIntFromUint64(planId)
+	agentIdBigint := sdk.NewIntFromUint64(plan.AgentId)
+	yatContractAddr := common.HexToAddress(plan.YatContractAddress)
+	contractAddress, err := k.DeployStakePlanProxyContract(
+		ctx,
+		plan.Name,
+		plan.PlanDescUri,
+		planIdBigint.BigInt(),
+		agentIdBigint.BigInt(),
+		plan.PlanStartBlock.BigInt(),
+		plan.PeriodBlocks.BigInt(),
+		yatContractAddr,
+	)
+	if err != nil {
+		return types.Plan{}, err
+	}
+	plan.ContractAddress = contractAddress.Hex()
+
+	// set the plan
+	k.setPlan(ctx, plan)
+	// increment the next plan ID
+	k.setNextNumber(ctx, planId+1)
 	return plan, nil
 }
 

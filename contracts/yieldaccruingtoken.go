@@ -75,5 +75,4 @@ func init() {
 	if len(StakePlanProxyContract.Bin) == 0 {
 		panic("load YATProxy contract failed")
 	}
-
 }

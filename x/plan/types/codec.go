@@ -16,6 +16,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgCreatePlan{},
 		&MsgClaims{},
 		&MsgUpgradeYAT{},
+		&MsgCreateYAT{},
 	)
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 }

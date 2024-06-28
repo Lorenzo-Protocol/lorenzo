@@ -24,6 +24,9 @@ service Msg {
 
   // CreateClaim defines a method for claims rewards to sender.
   rpc Claims(MsgClaims) returns (MsgClaimsResponse);
+
+  // CreateYAT defines a method for creating a new YAT contract.
+  rpc CreateYAT(MsgCreateYAT) returns (MsgCreateYATResponse);
 }
 
 // MsgUpdateParams is the request type for the Msg/UpdateParams RPC method.
@@ -71,29 +74,23 @@ message MsgCreatePlan {
   // name is the name of the plan
   string name = 1;
 
-  // symbol is the symbol of the plan
-  string symbol = 2;
-
   // plan_desc_uri is the URI of the plan description
-  string plan_desc_uri = 3;
+  string plan_desc_uri = 2;
 
   // agent_id is the unique identifier of the agent
-  uint64 agent_id = 4;
+  uint64 agent_id = 3;
 
-  // subscription_start_time is the start time of the subscription
-  uint64 subscription_start_time = 5;
+  // plan_start_block is the start block of the plan
+  string plan_start_block = 4 [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false ];
 
   // subscription_end_time is the end time of the subscription
-  uint64 subscription_end_time = 6;
+  string period_blocks = 5 [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false ];
 
-  // plan_start_time is the start time of the plan
-  uint64 end_time = 7;
-
-  // merkle_root is the merkle root of the plan
-  string merkle_root = 8;
+  // yat_contract_address is the address of the yat contract
+  string yat_contract_address = 6;
 
   // sender is the address of the allowed sender
-  string sender = 9 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string sender = 7 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
 
 // MsgCreatePlanResponse is the response type for the Msg/CreatePlan RPC method.
@@ -112,22 +109,40 @@ message MsgClaims {
   // receiver is the address of the receiver
   string receiver = 2;
 
-  // claims_type is the type of the claim
-  ClaimsType claims_type = 3;
+  // round_id is the unique identifier of the round
+  string round_id = 3 [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false ];
+
+  // amount is the amount of the claim
+  string amount = 4 [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false ];
+
+  // merkle_proof is the merkle proof of the claim
+  string merkle_proof = 5;
 
   // sender is the address of the governance account or module admin
-  string sender = 4 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string sender = 6 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
 
 // MsgClaimsResponse is the response type for the Msg/Claims RPC method.
 message MsgClaimsResponse {
-  // id is the unique identifier of the agent
-  uint64 id = 1;
 }
 
 
-enum ClaimsType {
-  CLAIM_YAT_Token = 0;
-  CLAIM_REWARD_AND_WITHDRAW_BTC = 1;
-  ONLY_CLAIM_REWARD = 2;
+// MsgCreateYAT is the request type for the Msg/CreateYAT RPC method.
+message MsgCreateYAT {
+  option (cosmos.msg.v1.signer) = "sender";
+
+  // name is the name of the yat contract
+  string name = 1;
+
+  // symbol is the symbol of the yat contract
+  string symbol = 2;
+
+  // sender is the address of the allowed sender
+  string sender = 5 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
+
+// MsgCreateYATResponse is the response type for the Msg/CreateYAT RPC method.
+message MsgCreateYATResponse {
+  // contract_address is the address of the yat contract
+  string contract_address = 1;
 }

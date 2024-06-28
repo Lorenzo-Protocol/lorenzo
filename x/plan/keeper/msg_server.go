@@ -68,14 +68,12 @@ func (m msgServer) CreatePlan(goCtx context.Context, msg *types.MsgCreatePlan) (
 		return nil, errorsmod.Wrapf(types.ErrUnauthorized, "unauthorized")
 	}
 	plan := types.Plan{
-		Name:                  msg.Name,
-		Symbol:                msg.Symbol,
-		PlanDescUri:           msg.PlanDescUri,
-		AgentId:               msg.AgentId,
-		SubscriptionStartTime: msg.SubscriptionStartTime,
-		SubscriptionEndTime:   msg.SubscriptionEndTime,
-		EndTime:               msg.EndTime,
-		MerkleRoot:            msg.MerkleRoot,
+		Name:               msg.Name,
+		PlanDescUri:        msg.PlanDescUri,
+		AgentId:            msg.AgentId,
+		PlanStartBlock:     msg.PlanStartBlock,
+		PeriodBlocks:       msg.PeriodBlocks,
+		YatContractAddress: msg.YatContractAddress,
 	}
 	planResult, err := m.k.AddPlan(ctx, plan)
 	if err != nil {
@@ -99,7 +97,46 @@ func (m msgServer) Claims(goCtx context.Context, msg *types.MsgClaims) (*types.M
 		return nil, err
 	}
 
+	if err := m.k.Withdraw(ctx,
+		msg.PlanId,
+		msg.Receiver,
+		msg.RoundId.BigInt(),
+		msg.Amount.BigInt(),
+		msg.MerkleProof,
+	); err != nil {
+		return nil, err
+	}
+
+	ctx.EventManager().EmitEvent(
+		types.NewClaimsEvent(
+			sender,
+			msg.PlanId,
+			msg.Receiver,
+			msg.RoundId.String(),
+			msg.Amount.String(),
+			msg.MerkleProof,
+		),
+	)
+
 	return &types.MsgClaimsResponse{}, nil
+}
+
+func (m msgServer) CreateYAT(goCtx context.Context, msg *types.MsgCreateYAT) (*types.MsgCreateYATResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	sender := sdk.AccAddress(msg.Sender)
+	if !m.k.Authorized(ctx, sender) {
+		return nil, errorsmod.Wrapf(types.ErrUnauthorized, "unauthorized")
+	}
+	yatContract, err := m.k.DeployYATContract(ctx, msg.Name, msg.Symbol)
+	if err != nil {
+		return nil, err
+	}
+
+	ctx.EventManager().EmitEvent(
+		types.NewCreateYATEvent(sender, yatContract.Hex(), msg.Name, msg.Symbol),
+	)
+
+	return &types.MsgCreateYATResponse{ContractAddress: yatContract.Hex()}, nil
 }
 
 // NewMsgServerImpl returns an implementation of the MsgServer interface

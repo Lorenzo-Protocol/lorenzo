@@ -31,6 +31,12 @@ func (k Keeper) DeployYATContract(
 		symbol,
 		types.ModuleAddress,
 	)
+	if err != nil {
+		return common.Address{}, errorsmod.Wrap(
+			types.ErrABIPack,
+			errorsmod.Wrap(err, "failed to create transaction data").Error(),
+		)
+	}
 	data := make([]byte, len(contracts.YieldAccruingTokenContract.Bin)+len(contractArgs))
 	copy(data[:len(contracts.YieldAccruingTokenContract.Bin)], contracts.YieldAccruingTokenContract.Bin)
 	copy(data[len(contracts.YieldAccruingTokenContract.Bin):], contractArgs)

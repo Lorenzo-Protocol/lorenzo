@@ -12,6 +12,7 @@ var (
 	_ sdk.Msg = (*MsgUpgradeYAT)(nil)
 	_ sdk.Msg = (*MsgCreatePlan)(nil)
 	_ sdk.Msg = (*MsgClaims)(nil)
+	_ sdk.Msg = (*MsgCreateYAT)(nil)
 )
 
 // ValidateBasic executes sanity validation on the provided data
@@ -72,6 +73,23 @@ func (m *MsgClaims) ValidateBasic() error {
 
 // GetSigners returns the expected signers for a MsgAddAgent message
 func (m *MsgClaims) GetSigners() []sdk.AccAddress {
+	addr, _ := sdk.AccAddressFromBech32(m.Sender)
+	return []sdk.AccAddress{addr}
+}
+
+// ValidateBasic executes sanity validation on the provided data
+func (m *MsgCreateYAT) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(m.Sender); err != nil {
+		return errorsmod.Wrap(err, "invalid sender address")
+	}
+	if !common.IsHexAddress(m.Sender) {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidAddress, "invalid sender address")
+	}
+	return nil
+}
+
+// GetSigners returns the expected signers for a MsgAddAgent message
+func (m *MsgCreateYAT) GetSigners() []sdk.AccAddress {
 	addr, _ := sdk.AccAddressFromBech32(m.Sender)
 	return []sdk.AccAddress{addr}
 }
