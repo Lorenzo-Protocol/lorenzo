@@ -240,10 +240,17 @@ func GetUpdatePlanStatusCmd() *cobra.Command {
 				return fmt.Errorf("plan-id must be an integer")
 			}
 
-			planStatus, err := strconv.ParseUint(args[0], 10, 32)
+			planStatusUint32, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
 				return fmt.Errorf("plan-status must be an integer")
 			}
+
+			// Performing upper limit check
+			if planStatusUint32 > 3 {
+				return fmt.Errorf("plan-status must be less than 3")
+			}
+
+			planStatus := types.PlanStatus(planStatusUint32)
 
 			from := clientCtx.GetFromAddress()
 
