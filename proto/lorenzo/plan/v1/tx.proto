@@ -17,8 +17,8 @@ service Msg {
   // UpdateParams defines a method for updating the plan parameters.
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
 
-  // UpgradeYAT defines a governance operation for upgrading an YAT contract
-  rpc UpgradeYAT(MsgUpgradeYAT) returns (MsgUpgradeYATResponse);
+  // UpgradePlan defines a governance operation for upgrading an Plan contract
+  rpc UpgradePlan(MsgUpgradePlan) returns (MsgUpgradePlanResponse);
 
   // CreatePlan defines a method for creating a new plan.
   rpc CreatePlan(MsgCreatePlan) returns (MsgCreatePlanResponse);
@@ -26,11 +26,17 @@ service Msg {
   // CreateClaim defines a method for claims rewards to sender.
   rpc Claims(MsgClaims) returns (MsgClaimsResponse);
 
+  // UpdatePlanStatus defines a method for updating the plan status.
+  rpc UpdatePlanStatus(MsgUpdatePlanStatus) returns (MsgUpdatePlanStatusResponse);
+
   // CreateYAT defines a method for creating a new YAT contract.
   rpc CreateYAT(MsgCreateYAT) returns (MsgCreateYATResponse);
 
-  // UpdatePlanStatus defines a method for updating the plan status.
-  rpc UpdatePlanStatus(MsgUpdatePlanStatus) returns (MsgUpdatePlanStatusResponse);
+  // SetMinter defines a method for setting minter of the YAT contract.
+  rpc SetMinter(MsgSetMinter) returns (MsgSetMinterResponse);
+
+  // RemoveMinter defines a method for removing minter of the YAT contract.
+  rpc RemoveMinter(MsgRemoveMinter) returns (MsgRemoveMinterResponse);
 
 }
 
@@ -54,8 +60,8 @@ message MsgUpdateParams {
 message MsgUpdateParamsResponse {
 }
 
-// MsgUpgradeYAT is the request type for the Msg/UpgradeYAT RPC method.
-message MsgUpgradeYAT {
+// MsgUpgradePlan is the request type for the Msg/UpgradePlan RPC method.
+message MsgUpgradePlan {
   option (cosmos.msg.v1.signer) = "authority";
 
   // implementation is the new yat logic contract address
@@ -69,7 +75,7 @@ message MsgUpgradeYAT {
 }
 
 // MsgUpgradeYATResponse is the response type for the Msg/UpgradeYAT RPC method.
-message MsgUpgradeYATResponse {
+message MsgUpgradePlanResponse {
 }
 
 // MsgCreatePlan is the request type for the Msg/CreatePlan RPC method.
@@ -131,6 +137,25 @@ message MsgClaims {
 message MsgClaimsResponse {
 }
 
+// MsgUpdatePlanStatus is the request type for the Msg/UpdatePlanStatus RPC method.
+message MsgUpdatePlanStatus {
+  option (cosmos.msg.v1.signer) = "sender";
+
+  // plan_id is the unique identifier of the plan
+  uint64 plan_id = 1;
+
+  // status is the status of the plan
+  PlanStatus status = 2;
+
+  // sender is the address of the allowed sender
+  string sender = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
+
+// MsgUpdatePlanStatusResponse is the response type for the Msg/UpdatePlanStatus RPC method.
+message MsgUpdatePlanStatusResponse {
+}
+
+
 
 // MsgCreateYAT is the request type for the Msg/CreateYAT RPC method.
 message MsgCreateYAT {
@@ -152,21 +177,38 @@ message MsgCreateYATResponse {
   string contract_address = 1;
 }
 
-// MsgUpdatePlanStatus is the request type for the Msg/UpdatePlanStatus RPC method.
-message MsgUpdatePlanStatus {
+// MsgSetMinter is the request type for the Msg/SetMinter RPC method.
+message MsgSetMinter {
   option (cosmos.msg.v1.signer) = "sender";
 
-  // plan_id is the unique identifier of the plan
-  uint64 plan_id = 1;
+  // minter is the address of the minter
+  string minter = 1;
 
-  // status is the status of the plan
-  PlanStatus status = 2;
+  // contract_address is the address of the yat contract
+  string contract_address = 2;
 
   // sender is the address of the allowed sender
   string sender = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
 
-// MsgUpdatePlanStatusResponse is the response type for the Msg/UpdatePlanStatus RPC method.
-message MsgUpdatePlanStatusResponse {
+// MsgSetMinterResponse is the response type for the Msg/SetMinter RPC method.
+message MsgSetMinterResponse {
 }
 
+// MsgRemoveMinter is the request type for the Msg/RemoveMinter RPC method.
+message MsgRemoveMinter {
+  option (cosmos.msg.v1.signer) = "sender";
+
+  // minter is the address of the minter
+  string minter = 1;
+
+  // contract_address is the address of the yat contract
+  string contract_address = 2;
+
+  // sender is the address of the allowed sender
+  string sender = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
+
+// MsgRemoveMinterResponse is the response type for the Msg/RemoveMinter RPC method.
+message MsgRemoveMinterResponse {
+}

@@ -19,7 +19,7 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 			panic(err)
 		}
 		// 2. deploy a new plan beacon contract
-		beaconAddr, err := k.DeployBeacon(ctx, logicAddr)
+		beaconAddr, err := k.DeployBeaconForPlan(ctx, logicAddr)
 		if err != nil {
 			panic(err)
 		}

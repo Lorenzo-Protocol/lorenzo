@@ -37,6 +37,11 @@ func (k Keeper) AddPlan(ctx sdk.Context, plan types.Plan) (types.Plan, error) {
 	}
 	plan.ContractAddress = contractAddress.Hex()
 
+	// grant roles from the yat contract to the plan contract
+	if err := k.SetMinter(ctx, yatContractAddr, contractAddress); err != nil {
+		return types.Plan{}, err
+	}
+
 	// set the plan
 	k.setPlan(ctx, plan)
 	// increment the next plan ID

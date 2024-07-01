@@ -128,8 +128,8 @@ func (m *MsgUpdateParamsResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgUpdateParamsResponse proto.InternalMessageInfo
 
-// MsgUpgradeYAT is the request type for the Msg/UpgradeYAT RPC method.
-type MsgUpgradeYAT struct {
+// MsgUpgradePlan is the request type for the Msg/UpgradePlan RPC method.
+type MsgUpgradePlan struct {
 	// implementation is the new yat logic contract address
 	Implementation string `protobuf:"bytes,1,opt,name=implementation,proto3" json:"implementation,omitempty"`
 	// authority is the address of the governance account.
@@ -139,18 +139,18 @@ type MsgUpgradeYAT struct {
 	Authority string `protobuf:"bytes,2,opt,name=authority,proto3" json:"authority,omitempty"`
 }
 
-func (m *MsgUpgradeYAT) Reset()         { *m = MsgUpgradeYAT{} }
-func (m *MsgUpgradeYAT) String() string { return proto.CompactTextString(m) }
-func (*MsgUpgradeYAT) ProtoMessage()    {}
-func (*MsgUpgradeYAT) Descriptor() ([]byte, []int) {
+func (m *MsgUpgradePlan) Reset()         { *m = MsgUpgradePlan{} }
+func (m *MsgUpgradePlan) String() string { return proto.CompactTextString(m) }
+func (*MsgUpgradePlan) ProtoMessage()    {}
+func (*MsgUpgradePlan) Descriptor() ([]byte, []int) {
 	return fileDescriptor_f54797b8bf30f2f9, []int{2}
 }
-func (m *MsgUpgradeYAT) XXX_Unmarshal(b []byte) error {
+func (m *MsgUpgradePlan) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgUpgradeYAT) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgUpgradePlan) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgUpgradeYAT.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgUpgradePlan.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -160,26 +160,26 @@ func (m *MsgUpgradeYAT) XXX_Marshal(b []byte, deterministic bool) ([]byte, error
 		return b[:n], nil
 	}
 }
-func (m *MsgUpgradeYAT) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgUpgradeYAT.Merge(m, src)
+func (m *MsgUpgradePlan) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpgradePlan.Merge(m, src)
 }
-func (m *MsgUpgradeYAT) XXX_Size() int {
+func (m *MsgUpgradePlan) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgUpgradeYAT) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgUpgradeYAT.DiscardUnknown(m)
+func (m *MsgUpgradePlan) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpgradePlan.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgUpgradeYAT proto.InternalMessageInfo
+var xxx_messageInfo_MsgUpgradePlan proto.InternalMessageInfo
 
-func (m *MsgUpgradeYAT) GetImplementation() string {
+func (m *MsgUpgradePlan) GetImplementation() string {
 	if m != nil {
 		return m.Implementation
 	}
 	return ""
 }
 
-func (m *MsgUpgradeYAT) GetAuthority() string {
+func (m *MsgUpgradePlan) GetAuthority() string {
 	if m != nil {
 		return m.Authority
 	}
@@ -187,21 +187,21 @@ func (m *MsgUpgradeYAT) GetAuthority() string {
 }
 
 // MsgUpgradeYATResponse is the response type for the Msg/UpgradeYAT RPC method.
-type MsgUpgradeYATResponse struct {
+type MsgUpgradePlanResponse struct {
 }
 
-func (m *MsgUpgradeYATResponse) Reset()         { *m = MsgUpgradeYATResponse{} }
-func (m *MsgUpgradeYATResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgUpgradeYATResponse) ProtoMessage()    {}
-func (*MsgUpgradeYATResponse) Descriptor() ([]byte, []int) {
+func (m *MsgUpgradePlanResponse) Reset()         { *m = MsgUpgradePlanResponse{} }
+func (m *MsgUpgradePlanResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgUpgradePlanResponse) ProtoMessage()    {}
+func (*MsgUpgradePlanResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_f54797b8bf30f2f9, []int{3}
 }
-func (m *MsgUpgradeYATResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgUpgradePlanResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgUpgradeYATResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgUpgradePlanResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgUpgradeYATResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgUpgradePlanResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -211,17 +211,17 @@ func (m *MsgUpgradeYATResponse) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
-func (m *MsgUpgradeYATResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgUpgradeYATResponse.Merge(m, src)
+func (m *MsgUpgradePlanResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpgradePlanResponse.Merge(m, src)
 }
-func (m *MsgUpgradeYATResponse) XXX_Size() int {
+func (m *MsgUpgradePlanResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgUpgradeYATResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgUpgradeYATResponse.DiscardUnknown(m)
+func (m *MsgUpgradePlanResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpgradePlanResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgUpgradeYATResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgUpgradePlanResponse proto.InternalMessageInfo
 
 // MsgCreatePlan is the request type for the Msg/CreatePlan RPC method.
 type MsgCreatePlan struct {
@@ -469,6 +469,107 @@ func (m *MsgClaimsResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgClaimsResponse proto.InternalMessageInfo
 
+// MsgUpdatePlanStatus is the request type for the Msg/UpdatePlanStatus RPC method.
+type MsgUpdatePlanStatus struct {
+	// plan_id is the unique identifier of the plan
+	PlanId uint64 `protobuf:"varint,1,opt,name=plan_id,json=planId,proto3" json:"plan_id,omitempty"`
+	// status is the status of the plan
+	Status PlanStatus `protobuf:"varint,2,opt,name=status,proto3,enum=lorenzo.plan.v1.PlanStatus" json:"status,omitempty"`
+	// sender is the address of the allowed sender
+	Sender string `protobuf:"bytes,3,opt,name=sender,proto3" json:"sender,omitempty"`
+}
+
+func (m *MsgUpdatePlanStatus) Reset()         { *m = MsgUpdatePlanStatus{} }
+func (m *MsgUpdatePlanStatus) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdatePlanStatus) ProtoMessage()    {}
+func (*MsgUpdatePlanStatus) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f54797b8bf30f2f9, []int{8}
+}
+func (m *MsgUpdatePlanStatus) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdatePlanStatus) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdatePlanStatus.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdatePlanStatus) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdatePlanStatus.Merge(m, src)
+}
+func (m *MsgUpdatePlanStatus) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdatePlanStatus) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdatePlanStatus.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdatePlanStatus proto.InternalMessageInfo
+
+func (m *MsgUpdatePlanStatus) GetPlanId() uint64 {
+	if m != nil {
+		return m.PlanId
+	}
+	return 0
+}
+
+func (m *MsgUpdatePlanStatus) GetStatus() PlanStatus {
+	if m != nil {
+		return m.Status
+	}
+	return PlanStatus_Enabled
+}
+
+func (m *MsgUpdatePlanStatus) GetSender() string {
+	if m != nil {
+		return m.Sender
+	}
+	return ""
+}
+
+// MsgUpdatePlanStatusResponse is the response type for the Msg/UpdatePlanStatus RPC method.
+type MsgUpdatePlanStatusResponse struct {
+}
+
+func (m *MsgUpdatePlanStatusResponse) Reset()         { *m = MsgUpdatePlanStatusResponse{} }
+func (m *MsgUpdatePlanStatusResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdatePlanStatusResponse) ProtoMessage()    {}
+func (*MsgUpdatePlanStatusResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f54797b8bf30f2f9, []int{9}
+}
+func (m *MsgUpdatePlanStatusResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdatePlanStatusResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdatePlanStatusResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdatePlanStatusResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdatePlanStatusResponse.Merge(m, src)
+}
+func (m *MsgUpdatePlanStatusResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdatePlanStatusResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdatePlanStatusResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdatePlanStatusResponse proto.InternalMessageInfo
+
 // MsgCreateYAT is the request type for the Msg/CreateYAT RPC method.
 type MsgCreateYAT struct {
 	// name is the name of the yat contract
@@ -483,7 +584,7 @@ func (m *MsgCreateYAT) Reset()         { *m = MsgCreateYAT{} }
 func (m *MsgCreateYAT) String() string { return proto.CompactTextString(m) }
 func (*MsgCreateYAT) ProtoMessage()    {}
 func (*MsgCreateYAT) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f54797b8bf30f2f9, []int{8}
+	return fileDescriptor_f54797b8bf30f2f9, []int{10}
 }
 func (m *MsgCreateYAT) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -543,7 +644,7 @@ func (m *MsgCreateYATResponse) Reset()         { *m = MsgCreateYATResponse{} }
 func (m *MsgCreateYATResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgCreateYATResponse) ProtoMessage()    {}
 func (*MsgCreateYATResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f54797b8bf30f2f9, []int{9}
+	return fileDescriptor_f54797b8bf30f2f9, []int{11}
 }
 func (m *MsgCreateYATResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -579,28 +680,28 @@ func (m *MsgCreateYATResponse) GetContractAddress() string {
 	return ""
 }
 
-// MsgUpdatePlanStatus is the request type for the Msg/UpdatePlanStatus RPC method.
-type MsgUpdatePlanStatus struct {
-	// plan_id is the unique identifier of the plan
-	PlanId uint64 `protobuf:"varint,1,opt,name=plan_id,json=planId,proto3" json:"plan_id,omitempty"`
-	// status is the status of the plan
-	Status PlanStatus `protobuf:"varint,2,opt,name=status,proto3,enum=lorenzo.plan.v1.PlanStatus" json:"status,omitempty"`
+// MsgSetMinter is the request type for the Msg/SetMinter RPC method.
+type MsgSetMinter struct {
+	// minter is the address of the minter
+	Minter string `protobuf:"bytes,1,opt,name=minter,proto3" json:"minter,omitempty"`
+	// contract_address is the address of the yat contract
+	ContractAddress string `protobuf:"bytes,2,opt,name=contract_address,json=contractAddress,proto3" json:"contract_address,omitempty"`
 	// sender is the address of the allowed sender
 	Sender string `protobuf:"bytes,3,opt,name=sender,proto3" json:"sender,omitempty"`
 }
 
-func (m *MsgUpdatePlanStatus) Reset()         { *m = MsgUpdatePlanStatus{} }
-func (m *MsgUpdatePlanStatus) String() string { return proto.CompactTextString(m) }
-func (*MsgUpdatePlanStatus) ProtoMessage()    {}
-func (*MsgUpdatePlanStatus) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f54797b8bf30f2f9, []int{10}
+func (m *MsgSetMinter) Reset()         { *m = MsgSetMinter{} }
+func (m *MsgSetMinter) String() string { return proto.CompactTextString(m) }
+func (*MsgSetMinter) ProtoMessage()    {}
+func (*MsgSetMinter) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f54797b8bf30f2f9, []int{12}
 }
-func (m *MsgUpdatePlanStatus) XXX_Unmarshal(b []byte) error {
+func (m *MsgSetMinter) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgUpdatePlanStatus) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgSetMinter) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgUpdatePlanStatus.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgSetMinter.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -610,55 +711,55 @@ func (m *MsgUpdatePlanStatus) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return b[:n], nil
 	}
 }
-func (m *MsgUpdatePlanStatus) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgUpdatePlanStatus.Merge(m, src)
+func (m *MsgSetMinter) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSetMinter.Merge(m, src)
 }
-func (m *MsgUpdatePlanStatus) XXX_Size() int {
+func (m *MsgSetMinter) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgUpdatePlanStatus) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgUpdatePlanStatus.DiscardUnknown(m)
+func (m *MsgSetMinter) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSetMinter.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgUpdatePlanStatus proto.InternalMessageInfo
+var xxx_messageInfo_MsgSetMinter proto.InternalMessageInfo
 
-func (m *MsgUpdatePlanStatus) GetPlanId() uint64 {
+func (m *MsgSetMinter) GetMinter() string {
 	if m != nil {
-		return m.PlanId
+		return m.Minter
 	}
-	return 0
+	return ""
 }
 
-func (m *MsgUpdatePlanStatus) GetStatus() PlanStatus {
+func (m *MsgSetMinter) GetContractAddress() string {
 	if m != nil {
-		return m.Status
+		return m.ContractAddress
 	}
-	return PlanStatus_Enabled
+	return ""
 }
 
-func (m *MsgUpdatePlanStatus) GetSender() string {
+func (m *MsgSetMinter) GetSender() string {
 	if m != nil {
 		return m.Sender
 	}
 	return ""
 }
 
-// MsgUpdatePlanStatusResponse is the response type for the Msg/UpdatePlanStatus RPC method.
-type MsgUpdatePlanStatusResponse struct {
+// MsgSetMinterResponse is the response type for the Msg/SetMinter RPC method.
+type MsgSetMinterResponse struct {
 }
 
-func (m *MsgUpdatePlanStatusResponse) Reset()         { *m = MsgUpdatePlanStatusResponse{} }
-func (m *MsgUpdatePlanStatusResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgUpdatePlanStatusResponse) ProtoMessage()    {}
-func (*MsgUpdatePlanStatusResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f54797b8bf30f2f9, []int{11}
+func (m *MsgSetMinterResponse) Reset()         { *m = MsgSetMinterResponse{} }
+func (m *MsgSetMinterResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgSetMinterResponse) ProtoMessage()    {}
+func (*MsgSetMinterResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f54797b8bf30f2f9, []int{13}
 }
-func (m *MsgUpdatePlanStatusResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgSetMinterResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgUpdatePlanStatusResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgSetMinterResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgUpdatePlanStatusResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgSetMinterResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -668,91 +769,202 @@ func (m *MsgUpdatePlanStatusResponse) XXX_Marshal(b []byte, deterministic bool) 
 		return b[:n], nil
 	}
 }
-func (m *MsgUpdatePlanStatusResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgUpdatePlanStatusResponse.Merge(m, src)
+func (m *MsgSetMinterResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSetMinterResponse.Merge(m, src)
 }
-func (m *MsgUpdatePlanStatusResponse) XXX_Size() int {
+func (m *MsgSetMinterResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgUpdatePlanStatusResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgUpdatePlanStatusResponse.DiscardUnknown(m)
+func (m *MsgSetMinterResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSetMinterResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgUpdatePlanStatusResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgSetMinterResponse proto.InternalMessageInfo
+
+// MsgRemoveMinter is the request type for the Msg/RemoveMinter RPC method.
+type MsgRemoveMinter struct {
+	// minter is the address of the minter
+	Minter string `protobuf:"bytes,1,opt,name=minter,proto3" json:"minter,omitempty"`
+	// contract_address is the address of the yat contract
+	ContractAddress string `protobuf:"bytes,2,opt,name=contract_address,json=contractAddress,proto3" json:"contract_address,omitempty"`
+	// sender is the address of the allowed sender
+	Sender string `protobuf:"bytes,3,opt,name=sender,proto3" json:"sender,omitempty"`
+}
+
+func (m *MsgRemoveMinter) Reset()         { *m = MsgRemoveMinter{} }
+func (m *MsgRemoveMinter) String() string { return proto.CompactTextString(m) }
+func (*MsgRemoveMinter) ProtoMessage()    {}
+func (*MsgRemoveMinter) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f54797b8bf30f2f9, []int{14}
+}
+func (m *MsgRemoveMinter) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgRemoveMinter) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgRemoveMinter.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgRemoveMinter) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRemoveMinter.Merge(m, src)
+}
+func (m *MsgRemoveMinter) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgRemoveMinter) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRemoveMinter.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRemoveMinter proto.InternalMessageInfo
+
+func (m *MsgRemoveMinter) GetMinter() string {
+	if m != nil {
+		return m.Minter
+	}
+	return ""
+}
+
+func (m *MsgRemoveMinter) GetContractAddress() string {
+	if m != nil {
+		return m.ContractAddress
+	}
+	return ""
+}
+
+func (m *MsgRemoveMinter) GetSender() string {
+	if m != nil {
+		return m.Sender
+	}
+	return ""
+}
+
+// MsgRemoveMinterResponse is the response type for the Msg/RemoveMinter RPC method.
+type MsgRemoveMinterResponse struct {
+}
+
+func (m *MsgRemoveMinterResponse) Reset()         { *m = MsgRemoveMinterResponse{} }
+func (m *MsgRemoveMinterResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgRemoveMinterResponse) ProtoMessage()    {}
+func (*MsgRemoveMinterResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f54797b8bf30f2f9, []int{15}
+}
+func (m *MsgRemoveMinterResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgRemoveMinterResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgRemoveMinterResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgRemoveMinterResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRemoveMinterResponse.Merge(m, src)
+}
+func (m *MsgRemoveMinterResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgRemoveMinterResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRemoveMinterResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRemoveMinterResponse proto.InternalMessageInfo
 
 func init() {
 	proto.RegisterType((*MsgUpdateParams)(nil), "lorenzo.plan.v1.MsgUpdateParams")
 	proto.RegisterType((*MsgUpdateParamsResponse)(nil), "lorenzo.plan.v1.MsgUpdateParamsResponse")
-	proto.RegisterType((*MsgUpgradeYAT)(nil), "lorenzo.plan.v1.MsgUpgradeYAT")
-	proto.RegisterType((*MsgUpgradeYATResponse)(nil), "lorenzo.plan.v1.MsgUpgradeYATResponse")
+	proto.RegisterType((*MsgUpgradePlan)(nil), "lorenzo.plan.v1.MsgUpgradePlan")
+	proto.RegisterType((*MsgUpgradePlanResponse)(nil), "lorenzo.plan.v1.MsgUpgradePlanResponse")
 	proto.RegisterType((*MsgCreatePlan)(nil), "lorenzo.plan.v1.MsgCreatePlan")
 	proto.RegisterType((*MsgCreatePlanResponse)(nil), "lorenzo.plan.v1.MsgCreatePlanResponse")
 	proto.RegisterType((*MsgClaims)(nil), "lorenzo.plan.v1.MsgClaims")
 	proto.RegisterType((*MsgClaimsResponse)(nil), "lorenzo.plan.v1.MsgClaimsResponse")
-	proto.RegisterType((*MsgCreateYAT)(nil), "lorenzo.plan.v1.MsgCreateYAT")
-	proto.RegisterType((*MsgCreateYATResponse)(nil), "lorenzo.plan.v1.MsgCreateYATResponse")
 	proto.RegisterType((*MsgUpdatePlanStatus)(nil), "lorenzo.plan.v1.MsgUpdatePlanStatus")
 	proto.RegisterType((*MsgUpdatePlanStatusResponse)(nil), "lorenzo.plan.v1.MsgUpdatePlanStatusResponse")
+	proto.RegisterType((*MsgCreateYAT)(nil), "lorenzo.plan.v1.MsgCreateYAT")
+	proto.RegisterType((*MsgCreateYATResponse)(nil), "lorenzo.plan.v1.MsgCreateYATResponse")
+	proto.RegisterType((*MsgSetMinter)(nil), "lorenzo.plan.v1.MsgSetMinter")
+	proto.RegisterType((*MsgSetMinterResponse)(nil), "lorenzo.plan.v1.MsgSetMinterResponse")
+	proto.RegisterType((*MsgRemoveMinter)(nil), "lorenzo.plan.v1.MsgRemoveMinter")
+	proto.RegisterType((*MsgRemoveMinterResponse)(nil), "lorenzo.plan.v1.MsgRemoveMinterResponse")
 }
 
 func init() { proto.RegisterFile("lorenzo/plan/v1/tx.proto", fileDescriptor_f54797b8bf30f2f9) }
 
 var fileDescriptor_f54797b8bf30f2f9 = []byte{
-	// 860 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x56, 0x4f, 0x6f, 0x1b, 0x45,
-	0x14, 0xcf, 0x3a, 0xee, 0x26, 0x79, 0x49, 0x9c, 0x30, 0x0d, 0x78, 0xb3, 0xa5, 0x6e, 0x58, 0x41,
-	0x08, 0x15, 0x59, 0xa7, 0xa9, 0xe0, 0xd0, 0x5b, 0x52, 0x84, 0x30, 0xa2, 0x52, 0xd8, 0xb4, 0x12,
-	0xf4, 0x62, 0x8d, 0x77, 0xa7, 0xdb, 0x55, 0x76, 0x77, 0x56, 0x33, 0xe3, 0xa8, 0xe6, 0x02, 0xea,
-	0x27, 0xe8, 0x95, 0x2b, 0x9f, 0xa0, 0x07, 0xf8, 0x0e, 0x3d, 0x56, 0x9c, 0x10, 0x87, 0x0a, 0x25,
-	0x87, 0x7e, 0x0d, 0x34, 0x7f, 0xbc, 0xfe, 0x5b, 0xb7, 0x98, 0x93, 0xfd, 0xe6, 0xf7, 0xde, 0x6f,
-	0x7e, 0xef, 0xcf, 0x3e, 0x0d, 0x38, 0x29, 0x65, 0x24, 0xff, 0x89, 0x36, 0x8b, 0x14, 0xe7, 0xcd,
-	0xf3, 0x5b, 0x4d, 0xf1, 0xc4, 0x2f, 0x18, 0x15, 0x14, 0x6d, 0x18, 0xc4, 0x97, 0x88, 0x7f, 0x7e,
-	0xcb, 0xdd, 0x0e, 0x29, 0xcf, 0x28, 0x6f, 0x2b, 0xb8, 0xa9, 0x0d, 0xed, 0xeb, 0xd6, 0xb5, 0xd5,
-	0xcc, 0x78, 0x2c, 0x39, 0x32, 0x1e, 0x1b, 0x60, 0x2b, 0xa6, 0x31, 0xd5, 0x01, 0xf2, 0x9f, 0x39,
-	0xfd, 0x70, 0xfc, 0xd2, 0x02, 0x33, 0x9c, 0xf5, 0xc9, 0xdc, 0x09, 0x54, 0x0a, 0x50, 0x98, 0xf7,
-	0xcc, 0x82, 0x8d, 0x7b, 0x3c, 0x7e, 0x50, 0x44, 0x58, 0x90, 0x13, 0x15, 0x85, 0xbe, 0x84, 0x15,
-	0xdc, 0x15, 0x8f, 0x29, 0x4b, 0x44, 0xcf, 0xb1, 0x76, 0xac, 0xbd, 0x95, 0x63, 0xe7, 0xcf, 0xdf,
-	0xf7, 0xb7, 0x8c, 0xc2, 0xa3, 0x28, 0x62, 0x84, 0xf3, 0x53, 0xc1, 0x92, 0x3c, 0x0e, 0x06, 0xae,
-	0xe8, 0x0b, 0xb0, 0xf5, 0xbd, 0x4e, 0x65, 0xc7, 0xda, 0x5b, 0x3d, 0xac, 0xfb, 0x63, 0x19, 0xfb,
-	0xfa, 0x82, 0xe3, 0xea, 0x8b, 0x57, 0x37, 0x16, 0x02, 0xe3, 0x7c, 0xa7, 0xf6, 0xf4, 0xf5, 0xf3,
-	0x9b, 0x03, 0x1a, 0x6f, 0x1b, 0xea, 0x63, 0x8a, 0x02, 0xc2, 0x0b, 0x9a, 0x73, 0xe2, 0xfd, 0x0c,
-	0xeb, 0x0a, 0x8a, 0x19, 0x8e, 0xc8, 0x8f, 0x47, 0xf7, 0xd1, 0x2e, 0xd4, 0x92, 0xac, 0x48, 0x49,
-	0x46, 0x72, 0x81, 0x45, 0x42, 0x73, 0xad, 0x37, 0x18, 0x3b, 0x1d, 0x4d, 0xa9, 0xf2, 0xce, 0x29,
-	0x4d, 0x68, 0xab, 0xc3, 0xfb, 0x23, 0x02, 0x4a, 0x65, 0x4f, 0x17, 0x95, 0xb4, 0xbb, 0x8c, 0x48,
-	0xd5, 0x29, 0xce, 0x11, 0x82, 0x6a, 0x8e, 0x33, 0x62, 0x04, 0xa9, 0xff, 0xc8, 0x83, 0x75, 0x59,
-	0x8a, 0x76, 0x44, 0x78, 0xd8, 0xee, 0xb2, 0x44, 0x4b, 0x09, 0x56, 0xe5, 0xe1, 0x57, 0x84, 0x87,
-	0x0f, 0x58, 0x82, 0xb6, 0x61, 0x19, 0xc7, 0x24, 0x17, 0xed, 0x24, 0x72, 0x16, 0x77, 0xac, 0xbd,
-	0x6a, 0xb0, 0xa4, 0xec, 0x56, 0x84, 0x7e, 0x80, 0x4d, 0x15, 0xce, 0x05, 0x66, 0xa2, 0xdd, 0x49,
-	0x69, 0x78, 0xe6, 0x54, 0x55, 0x32, 0xbe, 0xac, 0xe8, 0xdf, 0xaf, 0x6e, 0xec, 0xc6, 0x89, 0x78,
-	0xdc, 0xed, 0xf8, 0x21, 0xcd, 0xcc, 0x40, 0x99, 0x9f, 0x7d, 0x1e, 0x9d, 0x35, 0x45, 0xaf, 0x20,
-	0xdc, 0x6f, 0xe5, 0x22, 0xa8, 0x49, 0x9e, 0x53, 0x49, 0x73, 0x2c, 0x59, 0xd0, 0x29, 0xac, 0x17,
-	0x84, 0x25, 0x34, 0xd2, 0xac, 0xdc, 0xb9, 0x32, 0x17, 0xed, 0x9a, 0x26, 0x51, 0x9c, 0x1c, 0x1d,
-	0xc0, 0x56, 0x0f, 0x8b, 0x76, 0x48, 0x73, 0xc1, 0x70, 0x28, 0xda, 0x58, 0x57, 0xd9, 0xb1, 0x55,
-	0xd2, 0xa8, 0x87, 0xc5, 0x5d, 0x03, 0x99, 0xfa, 0xa3, 0x03, 0xb0, 0x39, 0xc9, 0x23, 0xc2, 0x9c,
-	0xa5, 0xb7, 0xf4, 0xc8, 0xf8, 0xdd, 0x59, 0x95, 0x0d, 0x32, 0x86, 0xf7, 0xa9, 0xea, 0xce, 0xa0,
-	0x07, 0xfd, 0xee, 0xa0, 0x1a, 0x54, 0x92, 0x48, 0x75, 0xa2, 0x1a, 0x54, 0x92, 0xc8, 0xfb, 0xa3,
-	0x02, 0x2b, 0xd2, 0x33, 0xc5, 0x49, 0xc6, 0x51, 0x1d, 0x96, 0x54, 0x59, 0x4b, 0x17, 0x5b, 0x9a,
-	0xad, 0x08, 0xb9, 0xb0, 0xcc, 0x48, 0x48, 0x92, 0x73, 0xc2, 0x4c, 0xa7, 0x4a, 0x1b, 0xb5, 0x60,
-	0x99, 0xd1, 0x6e, 0x1e, 0xf5, 0xdb, 0xf4, 0xdf, 0x8b, 0xb5, 0xa4, 0xe2, 0x5b, 0x11, 0xfa, 0x1a,
-	0x6c, 0x9c, 0xd1, 0x6e, 0x2e, 0xe6, 0x6c, 0xa6, 0x89, 0x46, 0x1f, 0xc1, 0x5a, 0x46, 0xd8, 0x59,
-	0x4a, 0xe4, 0x46, 0xa1, 0x8f, 0x74, 0x0f, 0x83, 0x55, 0x7d, 0x76, 0x22, 0x8f, 0x86, 0x0a, 0x6c,
-	0xcf, 0x53, 0xe0, 0xab, 0xf0, 0x5e, 0x59, 0xb6, 0x72, 0xf4, 0x7b, 0xb0, 0x56, 0x56, 0x5d, 0x7e,
-	0x93, 0xd3, 0x06, 0xff, 0x03, 0xb0, 0x79, 0x2f, 0xeb, 0xd0, 0xd4, 0xd4, 0xd1, 0x58, 0x43, 0x7a,
-	0x16, 0xe7, 0xd1, 0x73, 0x04, 0x5b, 0xc3, 0x57, 0x97, 0xfd, 0xfe, 0x0c, 0x36, 0x27, 0xa6, 0x4e,
-	0xcb, 0xd9, 0x08, 0x47, 0x47, 0xce, 0xfb, 0xcd, 0x82, 0xab, 0x83, 0x75, 0xa3, 0xbf, 0x0a, 0xd1,
-	0x9d, 0x31, 0x14, 0xb7, 0xc1, 0xe6, 0xca, 0x45, 0xa5, 0x52, 0x3b, 0xbc, 0x36, 0xb9, 0xe5, 0x4a,
-	0x96, 0xc0, 0xb8, 0xfe, 0xdf, 0x3c, 0xaf, 0xc3, 0xb5, 0x29, 0x1a, 0xfb, 0xe9, 0x1e, 0xfe, 0x5a,
-	0x85, 0xc5, 0x7b, 0x3c, 0x46, 0x0f, 0x61, 0x6d, 0x64, 0x91, 0xef, 0x4c, 0x48, 0x1b, 0x5b, 0xac,
-	0xee, 0xde, 0xdb, 0x3c, 0xca, 0x92, 0xde, 0x07, 0x18, 0xda, 0xbb, 0x8d, 0xe9, 0x71, 0x7d, 0xdc,
-	0xdd, 0x9d, 0x8d, 0x0f, 0xb3, 0x0e, 0xad, 0xcc, 0xa9, 0xac, 0x03, 0x7c, 0x3a, 0xeb, 0x94, 0xcf,
-	0xfd, 0x1b, 0xb0, 0xcd, 0xa7, 0xed, 0x4e, 0x8d, 0x50, 0x98, 0xeb, 0xbd, 0x19, 0x2b, 0x99, 0xbe,
-	0x87, 0x95, 0xc1, 0x60, 0x5f, 0x7f, 0xf3, 0xf5, 0x32, 0xe7, 0x4f, 0x66, 0xc2, 0x25, 0xe5, 0x23,
-	0xd8, 0x9c, 0x18, 0xb6, 0x8f, 0x67, 0xb4, 0xa1, 0xf4, 0x72, 0x3f, 0x7f, 0x17, 0xaf, 0xfe, 0x3d,
-	0xee, 0x95, 0x5f, 0x5e, 0x3f, 0xbf, 0x69, 0x1d, 0x7f, 0xfb, 0xe2, 0xa2, 0x61, 0xbd, 0xbc, 0x68,
-	0x58, 0xff, 0x5c, 0x34, 0xac, 0x67, 0x97, 0x8d, 0x85, 0x97, 0x97, 0x8d, 0x85, 0xbf, 0x2e, 0x1b,
-	0x0b, 0x0f, 0x0f, 0x86, 0xd6, 0xcb, 0x77, 0x9a, 0x78, 0xff, 0x44, 0x3e, 0x0a, 0x42, 0x9a, 0x36,
-	0xfb, 0x4f, 0x86, 0x27, 0xfa, 0xd1, 0xa0, 0x96, 0x4d, 0xc7, 0x56, 0x6f, 0x86, 0xdb, 0xff, 0x06,
-	0x00, 0x00, 0xff, 0xff, 0x68, 0xe1, 0xdf, 0xa3, 0xe4, 0x08, 0x00, 0x00,
+	// 948 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x56, 0x4f, 0x4f, 0x1b, 0x47,
+	0x14, 0x67, 0x8d, 0x59, 0xe0, 0x19, 0x0c, 0x9d, 0x50, 0x58, 0x36, 0x8d, 0xa1, 0x56, 0x4b, 0x68,
+	0x54, 0x6c, 0x42, 0xd4, 0x1e, 0x72, 0x83, 0x54, 0x55, 0x5d, 0x15, 0x89, 0x2e, 0x44, 0x6d, 0x72,
+	0xb1, 0x96, 0xdd, 0xc9, 0x66, 0xc5, 0xee, 0x8e, 0x35, 0x33, 0x46, 0x71, 0x4f, 0x51, 0x3e, 0x41,
+	0xa4, 0x7e, 0x83, 0x7e, 0x82, 0x1c, 0xda, 0xef, 0x10, 0xa9, 0x97, 0xa8, 0xa7, 0xaa, 0x87, 0xa8,
+	0x82, 0x43, 0xbe, 0x46, 0x35, 0x7f, 0x3c, 0x5e, 0xdb, 0x1b, 0x48, 0xc9, 0x25, 0x27, 0xfb, 0xcd,
+	0x7b, 0xef, 0x37, 0xbf, 0xf7, 0x6f, 0xde, 0x82, 0x93, 0x10, 0x8a, 0xb3, 0x5f, 0x48, 0xb3, 0x93,
+	0xf8, 0x59, 0xf3, 0xf4, 0x76, 0x93, 0x3f, 0x69, 0x74, 0x28, 0xe1, 0x04, 0x2d, 0x68, 0x4d, 0x43,
+	0x68, 0x1a, 0xa7, 0xb7, 0xdd, 0xd5, 0x80, 0xb0, 0x94, 0xb0, 0xb6, 0x54, 0x37, 0x95, 0xa0, 0x6c,
+	0xdd, 0x15, 0x25, 0x35, 0x53, 0x16, 0x09, 0x8c, 0x94, 0x45, 0x5a, 0xb1, 0x14, 0x91, 0x88, 0x28,
+	0x07, 0xf1, 0x4f, 0x9f, 0x7e, 0x32, 0x7a, 0x69, 0xc7, 0xa7, 0x7e, 0xda, 0x07, 0x73, 0xc7, 0xb4,
+	0x82, 0x80, 0xd4, 0xd5, 0x9f, 0x5b, 0xb0, 0xb0, 0xcf, 0xa2, 0xfb, 0x9d, 0xd0, 0xe7, 0xf8, 0x40,
+	0x7a, 0xa1, 0xaf, 0x61, 0xd6, 0xef, 0xf2, 0xc7, 0x84, 0xc6, 0xbc, 0xe7, 0x58, 0xeb, 0xd6, 0xe6,
+	0xec, 0x9e, 0xf3, 0xd7, 0xef, 0x5b, 0x4b, 0x9a, 0xe1, 0x6e, 0x18, 0x52, 0xcc, 0xd8, 0x21, 0xa7,
+	0x71, 0x16, 0x79, 0x03, 0x53, 0xf4, 0x15, 0xd8, 0xea, 0x5e, 0xa7, 0xb4, 0x6e, 0x6d, 0x56, 0x76,
+	0x56, 0x1a, 0x23, 0x11, 0x37, 0xd4, 0x05, 0x7b, 0xe5, 0x97, 0xaf, 0xd7, 0x26, 0x3c, 0x6d, 0x7c,
+	0xb7, 0xfa, 0xec, 0xcd, 0x8b, 0x5b, 0x03, 0x98, 0xfa, 0x2a, 0xac, 0x8c, 0x30, 0xf2, 0x30, 0xeb,
+	0x90, 0x8c, 0xe1, 0xfa, 0x53, 0x0b, 0xaa, 0x52, 0x17, 0x51, 0x3f, 0xc4, 0x07, 0x89, 0x9f, 0xa1,
+	0x0d, 0xa8, 0xc6, 0x69, 0x27, 0xc1, 0x29, 0xce, 0xb8, 0xcf, 0x63, 0x92, 0x29, 0xc6, 0xde, 0xc8,
+	0xe9, 0x70, 0x50, 0xa5, 0x77, 0x0e, 0x6a, 0x8c, 0x9d, 0x03, 0xcb, 0xc3, 0x0c, 0x0c, 0xb9, 0x67,
+	0x93, 0x30, 0xbf, 0xcf, 0xa2, 0x7b, 0x14, 0x0b, 0xe2, 0x82, 0x1b, 0x82, 0x72, 0xe6, 0xa7, 0x58,
+	0x33, 0x92, 0xff, 0x51, 0x1d, 0xe6, 0x45, 0x36, 0xda, 0x21, 0x66, 0x41, 0xbb, 0x4b, 0x63, 0xc5,
+	0xc5, 0xab, 0x88, 0xc3, 0x6f, 0x30, 0x0b, 0xee, 0xd3, 0x18, 0xad, 0xc2, 0x8c, 0x1f, 0xe1, 0x8c,
+	0xb7, 0xe3, 0xd0, 0x99, 0x5c, 0xb7, 0x36, 0xcb, 0xde, 0xb4, 0x94, 0x5b, 0x21, 0xfa, 0x19, 0x16,
+	0xa5, 0x3b, 0xe3, 0x3e, 0xe5, 0xed, 0xe3, 0x84, 0x04, 0x27, 0x4e, 0x59, 0x46, 0xd3, 0x10, 0x49,
+	0xfd, 0xe7, 0xf5, 0xda, 0x46, 0x14, 0xf3, 0xc7, 0xdd, 0xe3, 0x46, 0x40, 0x52, 0xdd, 0x53, 0xfa,
+	0x67, 0x8b, 0x85, 0x27, 0x4d, 0xde, 0xeb, 0x60, 0xd6, 0x68, 0x65, 0xdc, 0xab, 0x0a, 0x9c, 0x43,
+	0x01, 0xb3, 0x27, 0x50, 0xd0, 0x21, 0xcc, 0x77, 0x30, 0x8d, 0x49, 0xa8, 0x50, 0x99, 0x33, 0x75,
+	0x25, 0xd8, 0x39, 0x05, 0x22, 0x31, 0x19, 0xda, 0x86, 0xa5, 0x9e, 0xcf, 0xdb, 0x01, 0xc9, 0x38,
+	0xf5, 0x03, 0xde, 0xf6, 0x55, 0x9a, 0x1d, 0x5b, 0x06, 0x8d, 0x7a, 0x3e, 0xbf, 0xa7, 0x55, 0xba,
+	0x00, 0x68, 0x1b, 0x6c, 0x86, 0xb3, 0x10, 0x53, 0x67, 0xfa, 0x92, 0x22, 0x69, 0xbb, 0xbb, 0x15,
+	0x51, 0x21, 0x2d, 0xd4, 0x6f, 0xc2, 0xc7, 0x43, 0x35, 0xe8, 0x57, 0x07, 0x55, 0xa1, 0x14, 0x87,
+	0xb2, 0x12, 0x65, 0xaf, 0x14, 0x87, 0xf5, 0x3f, 0x4a, 0x30, 0x2b, 0x2c, 0x13, 0x3f, 0x4e, 0x19,
+	0x5a, 0x81, 0x69, 0x99, 0x56, 0x63, 0x62, 0x0b, 0xb1, 0x15, 0x22, 0x17, 0x66, 0x28, 0x0e, 0x70,
+	0x7c, 0x8a, 0xa9, 0xae, 0x94, 0x91, 0x51, 0x0b, 0x66, 0x28, 0xe9, 0x66, 0x61, 0xbf, 0x4c, 0xff,
+	0x3f, 0x59, 0xd3, 0xd2, 0xbf, 0x15, 0xa2, 0x6f, 0xc1, 0xf6, 0x53, 0xd2, 0xcd, 0xf8, 0x15, 0x8b,
+	0xa9, 0xbd, 0xd1, 0xa7, 0x30, 0x97, 0x62, 0x7a, 0x92, 0x60, 0xf1, 0xa8, 0x90, 0x47, 0xaa, 0x86,
+	0x5e, 0x45, 0x9d, 0x1d, 0x88, 0xa3, 0x5c, 0x82, 0xed, 0xab, 0x24, 0xf8, 0x1a, 0x7c, 0x64, 0xd2,
+	0x66, 0x5a, 0xff, 0x37, 0x0b, 0xae, 0x0d, 0x66, 0x56, 0xf5, 0x15, 0xef, 0x5e, 0x90, 0xd6, 0x3b,
+	0x60, 0x33, 0x69, 0x22, 0x93, 0x5a, 0xdd, 0xb9, 0x3e, 0xfe, 0x54, 0x18, 0x14, 0x4f, 0x9b, 0xe6,
+	0x98, 0x4f, 0x5e, 0x85, 0xf9, 0x0d, 0xb8, 0x5e, 0xc0, 0xd1, 0xc4, 0xd0, 0x83, 0x39, 0xd3, 0x39,
+	0x0f, 0x76, 0x8f, 0x0a, 0x87, 0x77, 0x19, 0x6c, 0xd6, 0x4b, 0x8f, 0x49, 0xa2, 0x7b, 0x41, 0x4b,
+	0xef, 0xcb, 0x6c, 0x17, 0x96, 0xf2, 0x57, 0x9b, 0x9e, 0xfd, 0x02, 0x16, 0xc7, 0x26, 0x47, 0xd1,
+	0x59, 0x08, 0x86, 0xc7, 0x46, 0xbc, 0xe3, 0x82, 0xfe, 0x21, 0xe6, 0xfb, 0x71, 0xc6, 0x31, 0x15,
+	0x54, 0x53, 0xf9, 0x4f, 0x7b, 0x68, 0xa9, 0x10, 0xb3, 0x54, 0x88, 0xf9, 0xbe, 0x51, 0x2d, 0xcb,
+	0xa8, 0x0c, 0x23, 0x93, 0xe8, 0x5f, 0xd5, 0xca, 0xf1, 0x70, 0x4a, 0x4e, 0xf1, 0x07, 0xc3, 0x56,
+	0x6d, 0x9d, 0x3c, 0xa9, 0x3e, 0xe1, 0x9d, 0x3f, 0xa7, 0x60, 0x72, 0x9f, 0x45, 0xe8, 0x21, 0xcc,
+	0x0d, 0xed, 0xc9, 0xf5, 0xb1, 0xa6, 0x1d, 0xd9, 0x5b, 0xee, 0xe6, 0x65, 0x16, 0xa6, 0xd4, 0x3f,
+	0x41, 0x25, 0xbf, 0xd5, 0xd6, 0x8a, 0x1d, 0x8d, 0x81, 0x7b, 0xf3, 0x12, 0x03, 0x03, 0x7c, 0x04,
+	0x90, 0xdb, 0x48, 0xb5, 0x22, 0xb7, 0x81, 0xde, 0xdd, 0xb8, 0x58, 0x6f, 0x50, 0xbf, 0x03, 0x5b,
+	0xbf, 0x9c, 0x6e, 0xa1, 0x87, 0xd4, 0xb9, 0xf5, 0xb7, 0xeb, 0x0c, 0xd2, 0x23, 0x58, 0x1c, 0x7b,
+	0x36, 0x3e, 0xbb, 0x20, 0x6d, 0xc6, 0xca, 0xfd, 0xf2, 0x5d, 0xac, 0xcc, 0x3d, 0x3f, 0xc2, 0xec,
+	0x60, 0xb6, 0x6f, 0xbc, 0x3d, 0xcc, 0x07, 0xbb, 0x47, 0xee, 0xe7, 0x17, 0xaa, 0xf3, 0x90, 0x83,
+	0x79, 0x2b, 0x84, 0x34, 0xea, 0x62, 0xc8, 0xb1, 0xd9, 0x10, 0x2d, 0x36, 0x34, 0x17, 0x85, 0x2d,
+	0x96, 0xb7, 0x28, 0x6e, 0xb1, 0xa2, 0x36, 0x76, 0xa7, 0x9e, 0xbe, 0x79, 0x71, 0xcb, 0xda, 0xfb,
+	0xfe, 0xe5, 0x59, 0xcd, 0x7a, 0x75, 0x56, 0xb3, 0xfe, 0x3d, 0xab, 0x59, 0xcf, 0xcf, 0x6b, 0x13,
+	0xaf, 0xce, 0x6b, 0x13, 0x7f, 0x9f, 0xd7, 0x26, 0x1e, 0x6e, 0xe7, 0x96, 0xcd, 0x0f, 0x0a, 0x74,
+	0xeb, 0x40, 0x7c, 0x25, 0x06, 0x24, 0x69, 0xf6, 0xbf, 0x21, 0x9f, 0xa8, 0xaf, 0x48, 0xb9, 0x7a,
+	0x8e, 0x6d, 0xf9, 0x11, 0x79, 0xe7, 0xbf, 0x00, 0x00, 0x00, 0xff, 0xff, 0xd9, 0x73, 0x0c, 0x0b,
+	0xf5, 0x0a, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -769,16 +981,20 @@ const _ = grpc.SupportPackageIsVersion4
 type MsgClient interface {
 	// UpdateParams defines a method for updating the plan parameters.
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	// UpgradeYAT defines a governance operation for upgrading an YAT contract
-	UpgradeYAT(ctx context.Context, in *MsgUpgradeYAT, opts ...grpc.CallOption) (*MsgUpgradeYATResponse, error)
+	// UpgradePlan defines a governance operation for upgrading an Plan contract
+	UpgradePlan(ctx context.Context, in *MsgUpgradePlan, opts ...grpc.CallOption) (*MsgUpgradePlanResponse, error)
 	// CreatePlan defines a method for creating a new plan.
 	CreatePlan(ctx context.Context, in *MsgCreatePlan, opts ...grpc.CallOption) (*MsgCreatePlanResponse, error)
 	// CreateClaim defines a method for claims rewards to sender.
 	Claims(ctx context.Context, in *MsgClaims, opts ...grpc.CallOption) (*MsgClaimsResponse, error)
-	// CreateYAT defines a method for creating a new YAT contract.
-	CreateYAT(ctx context.Context, in *MsgCreateYAT, opts ...grpc.CallOption) (*MsgCreateYATResponse, error)
 	// UpdatePlanStatus defines a method for updating the plan status.
 	UpdatePlanStatus(ctx context.Context, in *MsgUpdatePlanStatus, opts ...grpc.CallOption) (*MsgUpdatePlanStatusResponse, error)
+	// CreateYAT defines a method for creating a new YAT contract.
+	CreateYAT(ctx context.Context, in *MsgCreateYAT, opts ...grpc.CallOption) (*MsgCreateYATResponse, error)
+	// SetMinter defines a method for setting minter of the YAT contract.
+	SetMinter(ctx context.Context, in *MsgSetMinter, opts ...grpc.CallOption) (*MsgSetMinterResponse, error)
+	// RemoveMinter defines a method for removing minter of the YAT contract.
+	RemoveMinter(ctx context.Context, in *MsgRemoveMinter, opts ...grpc.CallOption) (*MsgRemoveMinterResponse, error)
 }
 
 type msgClient struct {
@@ -798,9 +1014,9 @@ func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts 
 	return out, nil
 }
 
-func (c *msgClient) UpgradeYAT(ctx context.Context, in *MsgUpgradeYAT, opts ...grpc.CallOption) (*MsgUpgradeYATResponse, error) {
-	out := new(MsgUpgradeYATResponse)
-	err := c.cc.Invoke(ctx, "/lorenzo.plan.v1.Msg/UpgradeYAT", in, out, opts...)
+func (c *msgClient) UpgradePlan(ctx context.Context, in *MsgUpgradePlan, opts ...grpc.CallOption) (*MsgUpgradePlanResponse, error) {
+	out := new(MsgUpgradePlanResponse)
+	err := c.cc.Invoke(ctx, "/lorenzo.plan.v1.Msg/UpgradePlan", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -825,6 +1041,15 @@ func (c *msgClient) Claims(ctx context.Context, in *MsgClaims, opts ...grpc.Call
 	return out, nil
 }
 
+func (c *msgClient) UpdatePlanStatus(ctx context.Context, in *MsgUpdatePlanStatus, opts ...grpc.CallOption) (*MsgUpdatePlanStatusResponse, error) {
+	out := new(MsgUpdatePlanStatusResponse)
+	err := c.cc.Invoke(ctx, "/lorenzo.plan.v1.Msg/UpdatePlanStatus", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) CreateYAT(ctx context.Context, in *MsgCreateYAT, opts ...grpc.CallOption) (*MsgCreateYATResponse, error) {
 	out := new(MsgCreateYATResponse)
 	err := c.cc.Invoke(ctx, "/lorenzo.plan.v1.Msg/CreateYAT", in, out, opts...)
@@ -834,9 +1059,18 @@ func (c *msgClient) CreateYAT(ctx context.Context, in *MsgCreateYAT, opts ...grp
 	return out, nil
 }
 
-func (c *msgClient) UpdatePlanStatus(ctx context.Context, in *MsgUpdatePlanStatus, opts ...grpc.CallOption) (*MsgUpdatePlanStatusResponse, error) {
-	out := new(MsgUpdatePlanStatusResponse)
-	err := c.cc.Invoke(ctx, "/lorenzo.plan.v1.Msg/UpdatePlanStatus", in, out, opts...)
+func (c *msgClient) SetMinter(ctx context.Context, in *MsgSetMinter, opts ...grpc.CallOption) (*MsgSetMinterResponse, error) {
+	out := new(MsgSetMinterResponse)
+	err := c.cc.Invoke(ctx, "/lorenzo.plan.v1.Msg/SetMinter", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) RemoveMinter(ctx context.Context, in *MsgRemoveMinter, opts ...grpc.CallOption) (*MsgRemoveMinterResponse, error) {
+	out := new(MsgRemoveMinterResponse)
+	err := c.cc.Invoke(ctx, "/lorenzo.plan.v1.Msg/RemoveMinter", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -847,16 +1081,20 @@ func (c *msgClient) UpdatePlanStatus(ctx context.Context, in *MsgUpdatePlanStatu
 type MsgServer interface {
 	// UpdateParams defines a method for updating the plan parameters.
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
-	// UpgradeYAT defines a governance operation for upgrading an YAT contract
-	UpgradeYAT(context.Context, *MsgUpgradeYAT) (*MsgUpgradeYATResponse, error)
+	// UpgradePlan defines a governance operation for upgrading an Plan contract
+	UpgradePlan(context.Context, *MsgUpgradePlan) (*MsgUpgradePlanResponse, error)
 	// CreatePlan defines a method for creating a new plan.
 	CreatePlan(context.Context, *MsgCreatePlan) (*MsgCreatePlanResponse, error)
 	// CreateClaim defines a method for claims rewards to sender.
 	Claims(context.Context, *MsgClaims) (*MsgClaimsResponse, error)
-	// CreateYAT defines a method for creating a new YAT contract.
-	CreateYAT(context.Context, *MsgCreateYAT) (*MsgCreateYATResponse, error)
 	// UpdatePlanStatus defines a method for updating the plan status.
 	UpdatePlanStatus(context.Context, *MsgUpdatePlanStatus) (*MsgUpdatePlanStatusResponse, error)
+	// CreateYAT defines a method for creating a new YAT contract.
+	CreateYAT(context.Context, *MsgCreateYAT) (*MsgCreateYATResponse, error)
+	// SetMinter defines a method for setting minter of the YAT contract.
+	SetMinter(context.Context, *MsgSetMinter) (*MsgSetMinterResponse, error)
+	// RemoveMinter defines a method for removing minter of the YAT contract.
+	RemoveMinter(context.Context, *MsgRemoveMinter) (*MsgRemoveMinterResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -866,8 +1104,8 @@ type UnimplementedMsgServer struct {
 func (*UnimplementedMsgServer) UpdateParams(ctx context.Context, req *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
 }
-func (*UnimplementedMsgServer) UpgradeYAT(ctx context.Context, req *MsgUpgradeYAT) (*MsgUpgradeYATResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpgradeYAT not implemented")
+func (*UnimplementedMsgServer) UpgradePlan(ctx context.Context, req *MsgUpgradePlan) (*MsgUpgradePlanResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpgradePlan not implemented")
 }
 func (*UnimplementedMsgServer) CreatePlan(ctx context.Context, req *MsgCreatePlan) (*MsgCreatePlanResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreatePlan not implemented")
@@ -875,11 +1113,17 @@ func (*UnimplementedMsgServer) CreatePlan(ctx context.Context, req *MsgCreatePla
 func (*UnimplementedMsgServer) Claims(ctx context.Context, req *MsgClaims) (*MsgClaimsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Claims not implemented")
 }
+func (*UnimplementedMsgServer) UpdatePlanStatus(ctx context.Context, req *MsgUpdatePlanStatus) (*MsgUpdatePlanStatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdatePlanStatus not implemented")
+}
 func (*UnimplementedMsgServer) CreateYAT(ctx context.Context, req *MsgCreateYAT) (*MsgCreateYATResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateYAT not implemented")
 }
-func (*UnimplementedMsgServer) UpdatePlanStatus(ctx context.Context, req *MsgUpdatePlanStatus) (*MsgUpdatePlanStatusResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdatePlanStatus not implemented")
+func (*UnimplementedMsgServer) SetMinter(ctx context.Context, req *MsgSetMinter) (*MsgSetMinterResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetMinter not implemented")
+}
+func (*UnimplementedMsgServer) RemoveMinter(ctx context.Context, req *MsgRemoveMinter) (*MsgRemoveMinterResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemoveMinter not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
@@ -904,20 +1148,20 @@ func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpgradeYAT_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpgradeYAT)
+func _Msg_UpgradePlan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpgradePlan)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).UpgradeYAT(ctx, in)
+		return srv.(MsgServer).UpgradePlan(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/lorenzo.plan.v1.Msg/UpgradeYAT",
+		FullMethod: "/lorenzo.plan.v1.Msg/UpgradePlan",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpgradeYAT(ctx, req.(*MsgUpgradeYAT))
+		return srv.(MsgServer).UpgradePlan(ctx, req.(*MsgUpgradePlan))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -958,24 +1202,6 @@ func _Msg_Claims_Handler(srv interface{}, ctx context.Context, dec func(interfac
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_CreateYAT_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgCreateYAT)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).CreateYAT(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/lorenzo.plan.v1.Msg/CreateYAT",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).CreateYAT(ctx, req.(*MsgCreateYAT))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Msg_UpdatePlanStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgUpdatePlanStatus)
 	if err := dec(in); err != nil {
@@ -994,6 +1220,60 @@ func _Msg_UpdatePlanStatus_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_CreateYAT_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCreateYAT)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).CreateYAT(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/lorenzo.plan.v1.Msg/CreateYAT",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).CreateYAT(ctx, req.(*MsgCreateYAT))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_SetMinter_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgSetMinter)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).SetMinter(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/lorenzo.plan.v1.Msg/SetMinter",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).SetMinter(ctx, req.(*MsgSetMinter))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_RemoveMinter_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgRemoveMinter)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).RemoveMinter(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/lorenzo.plan.v1.Msg/RemoveMinter",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).RemoveMinter(ctx, req.(*MsgRemoveMinter))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "lorenzo.plan.v1.Msg",
 	HandlerType: (*MsgServer)(nil),
@@ -1003,8 +1283,8 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_UpdateParams_Handler,
 		},
 		{
-			MethodName: "UpgradeYAT",
-			Handler:    _Msg_UpgradeYAT_Handler,
+			MethodName: "UpgradePlan",
+			Handler:    _Msg_UpgradePlan_Handler,
 		},
 		{
 			MethodName: "CreatePlan",
@@ -1015,12 +1295,20 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_Claims_Handler,
 		},
 		{
+			MethodName: "UpdatePlanStatus",
+			Handler:    _Msg_UpdatePlanStatus_Handler,
+		},
+		{
 			MethodName: "CreateYAT",
 			Handler:    _Msg_CreateYAT_Handler,
 		},
 		{
-			MethodName: "UpdatePlanStatus",
-			Handler:    _Msg_UpdatePlanStatus_Handler,
+			MethodName: "SetMinter",
+			Handler:    _Msg_SetMinter_Handler,
+		},
+		{
+			MethodName: "RemoveMinter",
+			Handler:    _Msg_RemoveMinter_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -1090,7 +1378,7 @@ func (m *MsgUpdateParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgUpgradeYAT) Marshal() (dAtA []byte, err error) {
+func (m *MsgUpgradePlan) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1100,12 +1388,12 @@ func (m *MsgUpgradeYAT) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgUpgradeYAT) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgUpgradePlan) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgUpgradeYAT) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgUpgradePlan) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1127,7 +1415,7 @@ func (m *MsgUpgradeYAT) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgUpgradeYATResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgUpgradePlanResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1137,12 +1425,12 @@ func (m *MsgUpgradeYATResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgUpgradeYATResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgUpgradePlanResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgUpgradeYATResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgUpgradePlanResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1346,6 +1634,69 @@ func (m *MsgClaimsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgUpdatePlanStatus) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdatePlanStatus) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdatePlanStatus) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Sender)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.Status != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.Status))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.PlanId != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.PlanId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdatePlanStatusResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdatePlanStatusResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdatePlanStatusResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
 func (m *MsgCreateYAT) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -1420,7 +1771,7 @@ func (m *MsgCreateYATResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgUpdatePlanStatus) Marshal() (dAtA []byte, err error) {
+func (m *MsgSetMinter) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1430,12 +1781,12 @@ func (m *MsgUpdatePlanStatus) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgUpdatePlanStatus) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgSetMinter) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgUpdatePlanStatus) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgSetMinter) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1447,20 +1798,24 @@ func (m *MsgUpdatePlanStatus) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x1a
 	}
-	if m.Status != 0 {
-		i = encodeVarintTx(dAtA, i, uint64(m.Status))
+	if len(m.ContractAddress) > 0 {
+		i -= len(m.ContractAddress)
+		copy(dAtA[i:], m.ContractAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ContractAddress)))
 		i--
-		dAtA[i] = 0x10
+		dAtA[i] = 0x12
 	}
-	if m.PlanId != 0 {
-		i = encodeVarintTx(dAtA, i, uint64(m.PlanId))
+	if len(m.Minter) > 0 {
+		i -= len(m.Minter)
+		copy(dAtA[i:], m.Minter)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Minter)))
 		i--
-		dAtA[i] = 0x8
+		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgUpdatePlanStatusResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgSetMinterResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1470,12 +1825,79 @@ func (m *MsgUpdatePlanStatusResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgUpdatePlanStatusResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgSetMinterResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgUpdatePlanStatusResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgSetMinterResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgRemoveMinter) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgRemoveMinter) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgRemoveMinter) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Sender)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.ContractAddress) > 0 {
+		i -= len(m.ContractAddress)
+		copy(dAtA[i:], m.ContractAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ContractAddress)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Minter) > 0 {
+		i -= len(m.Minter)
+		copy(dAtA[i:], m.Minter)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Minter)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgRemoveMinterResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgRemoveMinterResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgRemoveMinterResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1518,7 +1940,7 @@ func (m *MsgUpdateParamsResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgUpgradeYAT) Size() (n int) {
+func (m *MsgUpgradePlan) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1535,7 +1957,7 @@ func (m *MsgUpgradeYAT) Size() (n int) {
 	return n
 }
 
-func (m *MsgUpgradeYATResponse) Size() (n int) {
+func (m *MsgUpgradePlanResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1625,6 +2047,34 @@ func (m *MsgClaimsResponse) Size() (n int) {
 	return n
 }
 
+func (m *MsgUpdatePlanStatus) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.PlanId != 0 {
+		n += 1 + sovTx(uint64(m.PlanId))
+	}
+	if m.Status != 0 {
+		n += 1 + sovTx(uint64(m.Status))
+	}
+	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgUpdatePlanStatusResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
 func (m *MsgCreateYAT) Size() (n int) {
 	if m == nil {
 		return 0
@@ -1659,17 +2109,19 @@ func (m *MsgCreateYATResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgUpdatePlanStatus) Size() (n int) {
+func (m *MsgSetMinter) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.PlanId != 0 {
-		n += 1 + sovTx(uint64(m.PlanId))
+	l = len(m.Minter)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
 	}
-	if m.Status != 0 {
-		n += 1 + sovTx(uint64(m.Status))
+	l = len(m.ContractAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
 	}
 	l = len(m.Sender)
 	if l > 0 {
@@ -1678,7 +2130,37 @@ func (m *MsgUpdatePlanStatus) Size() (n int) {
 	return n
 }
 
-func (m *MsgUpdatePlanStatusResponse) Size() (n int) {
+func (m *MsgSetMinterResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgRemoveMinter) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Minter)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.ContractAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgRemoveMinterResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1858,7 +2340,7 @@ func (m *MsgUpdateParamsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgUpgradeYAT) Unmarshal(dAtA []byte) error {
+func (m *MsgUpgradePlan) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1881,10 +2363,10 @@ func (m *MsgUpgradeYAT) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgUpgradeYAT: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgUpgradePlan: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgUpgradeYAT: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgUpgradePlan: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1972,7 +2454,7 @@ func (m *MsgUpgradeYAT) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgUpgradeYATResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgUpgradePlanResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1995,10 +2477,10 @@ func (m *MsgUpgradeYATResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgUpgradeYATResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgUpgradePlanResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgUpgradeYATResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgUpgradePlanResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -2639,6 +3121,176 @@ func (m *MsgClaimsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+func (m *MsgUpdatePlanStatus) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdatePlanStatus: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdatePlanStatus: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PlanId", wireType)
+			}
+			m.PlanId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.PlanId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
+			}
+			m.Status = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Status |= PlanStatus(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Sender = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdatePlanStatusResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdatePlanStatusResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdatePlanStatusResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
 func (m *MsgCreateYAT) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2867,7 +3519,7 @@ func (m *MsgCreateYATResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgUpdatePlanStatus) Unmarshal(dAtA []byte) error {
+func (m *MsgSetMinter) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2890,17 +3542,17 @@ func (m *MsgUpdatePlanStatus) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgUpdatePlanStatus: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgSetMinter: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgUpdatePlanStatus: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgSetMinter: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PlanId", wireType)
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Minter", wireType)
 			}
-			m.PlanId = 0
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTx
@@ -2910,16 +3562,29 @@ func (m *MsgUpdatePlanStatus) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.PlanId |= uint64(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Minter = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ContractAddress", wireType)
 			}
-			m.Status = 0
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTx
@@ -2929,11 +3594,24 @@ func (m *MsgUpdatePlanStatus) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Status |= PlanStatus(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ContractAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
@@ -2987,7 +3665,7 @@ func (m *MsgUpdatePlanStatus) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgUpdatePlanStatusResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgSetMinterResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3010,10 +3688,206 @@ func (m *MsgUpdatePlanStatusResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgUpdatePlanStatusResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgSetMinterResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgUpdatePlanStatusResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgSetMinterResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgRemoveMinter) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgRemoveMinter: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgRemoveMinter: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Minter", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Minter = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ContractAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ContractAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Sender = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgRemoveMinterResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgRemoveMinterResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgRemoveMinterResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:

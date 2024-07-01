@@ -4,12 +4,57 @@ import (
 	"math/big"
 
 	errorsmod "cosmossdk.io/errors"
-	"github.com/Lorenzo-Protocol/lorenzo/contracts"
-	"github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
+
+	"github.com/Lorenzo-Protocol/lorenzo/contracts"
+	"github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
 )
+
+const (
+	UpdateMinterTypeAdd = iota + 1
+	UpdateMinterTypeRemove
+)
+
+// UpdateMinter updates the minter of a YAT contract.
+//
+// Parameters:
+// - ctx: the SDK context.
+// - contractAddress: the address of the YAT contract.
+// - minter: the address of the minter to update.
+// - added: a boolean indicating if the minter is being added or removed.
+//
+// Returns:
+// - error: an error if the Update Minter fails.
+func (k Keeper) UpdateMinter(
+	ctx sdk.Context,
+	contractAddress string,
+	minter string,
+	updateType int,
+) error {
+	// Check if the contract address is a valid address
+	if !common.IsHexAddress(contractAddress) {
+		return errorsmod.Wrap(types.ErrContractAddress, "invalid contract address")
+	}
+	contractAddr := common.HexToAddress(contractAddress)
+
+	// Check if the minter address is a valid address
+	if !common.IsHexAddress(minter) {
+		return errorsmod.Wrap(types.ErrEthAddress, "invalid Ethereum address")
+	}
+	minterAddr := common.HexToAddress(minter)
+
+	switch updateType {
+	case UpdateMinterTypeAdd:
+		return k.SetMinter(ctx, contractAddr, minterAddr)
+	case UpdateMinterTypeRemove:
+		return k.RemoveMinter(ctx, contractAddr, minterAddr)
+	default:
+		return errorsmod.Wrap(types.ErrInvalidUpdateMinterType, "invalid update type")
+	}
+}
 
 // DeployYATContract deploys a new Yield Accruing Token (YAT) contract.
 //
@@ -144,6 +189,15 @@ func (k Keeper) Mint(
 	return nil
 }
 
+// SetMinter sets a minter for a YAT contract.
+//
+// Parameters:
+// - ctx: the SDK context.
+// - contractAddress: the address of the YAT contract.
+// - minter: the address of the minter to set.
+//
+// Returns:
+// - error: an error if the Set Minter fails.
 func (k Keeper) SetMinter(
 	ctx sdk.Context,
 	contractAddress common.Address,
@@ -173,6 +227,15 @@ func (k Keeper) SetMinter(
 	return nil
 }
 
+// RemoveMinter removes a minter from a YAT contract.
+//
+// Parameters:
+// - ctx: the SDK context.
+// - contractAddress: the address of the YAT contract.
+// - minter: the address of the minter to remove.
+//
+// Returns:
+// - error: an error if the Remove Minter fails.
 func (k Keeper) RemoveMinter(
 	ctx sdk.Context,
 	contractAddress common.Address,

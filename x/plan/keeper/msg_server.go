@@ -38,7 +38,7 @@ func (m msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParam
 	return &types.MsgUpdateParamsResponse{}, nil
 }
 
-func (m msgServer) UpgradeYAT(goCtx context.Context, msg *types.MsgUpgradeYAT) (*types.MsgUpgradeYATResponse, error) {
+func (m msgServer) UpgradePlan(goCtx context.Context, msg *types.MsgUpgradePlan) (*types.MsgUpgradePlanResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	sender := sdk.AccAddress(msg.Authority)
@@ -53,12 +53,18 @@ func (m msgServer) UpgradeYAT(goCtx context.Context, msg *types.MsgUpgradeYAT) (
 	if !common.IsHexAddress(msg.Implementation) {
 		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidAddress, "invalid implementation address")
 	}
-	implementation := common.HexToAddress(msg.Implementation)
-	if err := m.k.UpgradeYAT(ctx, implementation); err != nil {
+	oldImplementation, err := m.k.GetPlanImplementationFromBeacon(ctx)
+	if err != nil {
 		return nil, err
 	}
-
-	return &types.MsgUpgradeYATResponse{}, nil
+	implementation := common.HexToAddress(msg.Implementation)
+	if err := m.k.UpgradeBeaconForPlan(ctx, implementation); err != nil {
+		return nil, err
+	}
+	ctx.EventManager().EmitEvent(
+		types.NewUpgradePlanEvent(sender, oldImplementation.Hex(), msg.Implementation),
+	)
+	return &types.MsgUpgradePlanResponse{}, nil
 }
 
 func (m msgServer) CreatePlan(goCtx context.Context, msg *types.MsgCreatePlan) (*types.MsgCreatePlanResponse, error) {
@@ -146,6 +152,13 @@ func (m msgServer) UpdatePlanStatus(goCtx context.Context, msg *types.MsgUpdateP
 		return nil, errorsmod.Wrapf(types.ErrUnauthorized, "unauthorized")
 	}
 
+	plan, found := m.k.GetPlan(ctx, msg.PlanId)
+	if !found {
+		return nil, errorsmod.Wrapf(types.ErrPlanNotFound, "plan not found")
+	}
+	if plan.Enabled == msg.Status {
+		return nil, errorsmod.Wrapf(types.ErrInvalidPlanStatus, "plan already %s", msg.Status)
+	}
 	switch msg.Status {
 	case types.PlanStatus_Enabled, types.PlanStatus_Disabled:
 		if err := m.k.UpdatePlanStatus(ctx, msg.PlanId, msg.Status); err != nil {
@@ -154,7 +167,47 @@ func (m msgServer) UpdatePlanStatus(goCtx context.Context, msg *types.MsgUpdateP
 	default:
 		return nil, errorsmod.Wrapf(types.ErrInvalidPlanStatus, "invalid plan status: %s", msg.Status)
 	}
+
+	ctx.EventManager().EmitEvent(
+		types.NewUpdatePlanStatusEvent(sender, msg.PlanId, plan.Enabled, msg.Status),
+	)
+
 	return &types.MsgUpdatePlanStatusResponse{}, nil
+}
+
+func (m msgServer) SetMinter(goCtx context.Context, msg *types.MsgSetMinter) (*types.MsgSetMinterResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	sender := sdk.AccAddress(msg.Sender)
+	if !m.k.Authorized(ctx, sender) {
+		return nil, errorsmod.Wrapf(types.ErrUnauthorized, "unauthorized")
+	}
+	if err := m.k.UpdateMinter(ctx, msg.ContractAddress, msg.Minter, UpdateMinterTypeAdd); err != nil {
+		return nil, err
+	}
+
+	ctx.EventManager().EmitEvent(
+		types.NewSetMinterEvent(sender, msg.ContractAddress, msg.Minter),
+	)
+
+	return &types.MsgSetMinterResponse{}, nil
+}
+
+func (m msgServer) RemoveMinter(goCtx context.Context, msg *types.MsgRemoveMinter) (*types.MsgRemoveMinterResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	sender := sdk.AccAddress(msg.Sender)
+	if !m.k.Authorized(ctx, sender) {
+		return nil, errorsmod.Wrapf(types.ErrUnauthorized, "unauthorized")
+	}
+
+	if err := m.k.UpdateMinter(ctx, msg.ContractAddress, msg.Minter, UpdateMinterTypeRemove); err != nil {
+		return nil, err
+	}
+
+	ctx.EventManager().EmitEvent(
+		types.NewRemoveMinterEvent(sender, msg.ContractAddress, msg.Minter),
+	)
+
+	return &types.MsgRemoveMinterResponse{}, nil
 }
 
 // NewMsgServerImpl returns an implementation of the MsgServer interface

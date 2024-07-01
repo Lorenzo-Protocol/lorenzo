@@ -48,6 +48,9 @@ const (
 
 const (
 	BeaconMethodUpgradeTo = "upgradeTo"
+
+	// query method
+	BeaconMethodImplementation = "implementation"
 )
 
 // ModuleAddress is the native module address for the module

@@ -19,6 +19,10 @@ const (
 	AttributeKeyCreatePlanYatContractAddress = "yat_contract_address"
 	AttributeKeyCreatePlanContractAddress    = "contract_address"
 
+	EventTypeUpgradePlan                     = "upgrade_plan"
+	AttributeKeyUpgradePlanOldImplementation = "old_implementation"
+	AttributeKeyUpgradePlanNewImplementation = "new_implementation"
+
 	EventClaims = "claims"
 
 	AttributeKeyClaimsPlanId      = "plan_id"
@@ -31,6 +35,19 @@ const (
 	AttributeKeyCreateYATContractAddress = "yat_contract_address"
 	AttributeKeyCreateYATName            = "name"
 	AttributeKeyCreateYATSymbol          = "symbol"
+
+	// EventUpdatePlanStatus
+	EventTypeUpdatePlanStatus             = "update_plan_status"
+	AttributeKeyUpdatePlanStatusPlanId    = "plan_id"
+	AttributeKeyUpdatePlanStatusOldStatus = "old_status"
+	AttributeKeyUpdatePlanStatusNewStatus = "new_status"
+
+	// Minter
+	EventTypeSetMinter    = "set_minter"
+	EventTypeRemoveMinter = "remove_minter"
+
+	AttributeKeyMinter   = "minter"
+	AttributeKeyContract = "contract"
 
 	AttributeKeySender = sdk.AttributeKeySender
 
@@ -52,6 +69,16 @@ func NewCreatePlanEvent(sender sdk.AccAddress, plan Plan) sdk.Event {
 		sdk.NewAttribute(AttributeKeyCreatePlanPeriodBlocks, plan.PeriodBlocks.String()),
 		sdk.NewAttribute(AttributeKeyCreatePlanYatContractAddress, plan.YatContractAddress),
 		sdk.NewAttribute(AttributeKeyCreatePlanContractAddress, plan.ContractAddress),
+	)
+}
+
+// NewUpgradePlanEvent construct a new plan upgrade sdk.Event
+func NewUpgradePlanEvent(sender sdk.AccAddress, oldImplementation, newImplementation string) sdk.Event {
+	return sdk.NewEvent(
+		EventTypeUpgradePlan,
+		sdk.NewAttribute(AttributeKeySender, sender.String()),
+		sdk.NewAttribute(AttributeKeyUpgradePlanOldImplementation, oldImplementation),
+		sdk.NewAttribute(AttributeKeyUpgradePlanNewImplementation, newImplementation),
 	)
 }
 
@@ -88,5 +115,49 @@ func NewCreateYATEvent(
 		sdk.NewAttribute(AttributeKeyCreateYATContractAddress, yatContractAddress),
 		sdk.NewAttribute(AttributeKeyCreateYATName, name),
 		sdk.NewAttribute(AttributeKeyCreateYATSymbol, symbol),
+	)
+}
+
+// NewSetMinterEvent construct a new set minter sdk.Event
+func NewSetMinterEvent(
+	sender sdk.AccAddress,
+	minter string,
+	contract string,
+) sdk.Event {
+	return sdk.NewEvent(
+		EventTypeSetMinter,
+		sdk.NewAttribute(AttributeKeySender, sender.String()),
+		sdk.NewAttribute(AttributeKeyMinter, minter),
+		sdk.NewAttribute(AttributeKeyContract, contract),
+	)
+}
+
+// NewRemoveMinterEvent construct a new remove minter sdk.Event
+func NewRemoveMinterEvent(
+	sender sdk.AccAddress,
+	minter string,
+	contract string,
+) sdk.Event {
+	return sdk.NewEvent(
+		EventTypeRemoveMinter,
+		sdk.NewAttribute(AttributeKeySender, sender.String()),
+		sdk.NewAttribute(AttributeKeyMinter, minter),
+		sdk.NewAttribute(AttributeKeyContract, contract),
+	)
+}
+
+// NewUpdatePlanStatusEvent construct a new update plan status sdk.Event
+func NewUpdatePlanStatusEvent(
+	sender sdk.AccAddress,
+	planId uint64,
+	oldStatus PlanStatus,
+	newStatus PlanStatus,
+) sdk.Event {
+	return sdk.NewEvent(
+		EventTypeUpdatePlanStatus,
+		sdk.NewAttribute(AttributeKeySender, sender.String()),
+		sdk.NewAttribute(AttributeKeyUpdatePlanStatusPlanId, fmt.Sprintf("%d", planId)),
+		sdk.NewAttribute(AttributeKeyUpdatePlanStatusOldStatus, oldStatus.String()),
+		sdk.NewAttribute(AttributeKeyUpdatePlanStatusNewStatus, newStatus.String()),
 	)
 }

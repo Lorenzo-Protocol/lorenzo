@@ -33,8 +33,10 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(GetCmdUpgradeYAT())
 	cmd.AddCommand(GetCmdCreatePlan())
 	cmd.AddCommand(GetClaimsCmd())
-	cmd.AddCommand(GetCreateYATCmd())
 	cmd.AddCommand(GetUpdatePlanStatusCmd())
+	cmd.AddCommand(GetCreateYATCmd())
+	cmd.AddCommand(GetSetMinterCmd())
+	cmd.AddCommand(GetRemoveMinterCmd())
 	return cmd
 }
 
@@ -63,12 +65,12 @@ func GetCmdUpgradeYAT() *cobra.Command {
 				return fmt.Errorf("invalid implementation address")
 			}
 
-			msgUpgradeYAT := &types.MsgUpgradeYAT{
+			msgUpgradePlan := &types.MsgUpgradePlan{
 				Implementation: implementation,
 				Authority:      from.String(),
 			}
 
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgUpgradeYAT)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgUpgradePlan)
 		},
 	}
 	flags.AddTxFlagsToCmd(cmd)
@@ -219,10 +221,10 @@ func GetCreateYATCmd() *cobra.Command {
 
 func GetUpdatePlanStatusCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-plan-status [name] [symbol]",
+		Use:   "update-plan-status [plan-id] [status]",
 		Short: "Update plan status",
 		Example: fmt.Sprintf(
-			"$ %s tx plan update-plan-status [name] [symbol]"+
+			"$ %s tx plan update-plan-status 1 disabled "+
 				"--from=<key-name> "+
 				"--chain-id=<chain-id> "+
 				"--fees=<fee>",
@@ -239,10 +241,14 @@ func GetUpdatePlanStatusCmd() *cobra.Command {
 			if err != nil {
 				return fmt.Errorf("plan-id must be an integer")
 			}
-
-			planStatusUint32, err := strconv.ParseUint(args[0], 10, 64)
-			if err != nil {
-				return fmt.Errorf("plan-status must be an integer")
+			planStatusUint32 := uint32(0)
+			switch args[1] {
+			case "enabled":
+				planStatusUint32 = uint32(0)
+			case "disabled":
+				planStatusUint32 = uint32(1)
+			default:
+				return fmt.Errorf("status must be either enabled or disabled")
 			}
 
 			// Performing upper limit check
@@ -265,6 +271,100 @@ func GetUpdatePlanStatusCmd() *cobra.Command {
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgUpdatePlanStatus)
+		},
+	}
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func GetSetMinterCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "set-minter [yat-contract] [minter]",
+		Short: "Update plan status",
+		Example: fmt.Sprintf(
+			"$ %s tx plan set-minter [0x...] [0x...] "+
+				"--from=<key-name> "+
+				"--chain-id=<chain-id> "+
+				"--fees=<fee>",
+			version.AppName,
+		),
+		Args: cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			yatContract := args[0]
+			if !common.IsHexAddress(yatContract) {
+				return fmt.Errorf("invalid yat contract address")
+			}
+
+			minter := args[1]
+			if !common.IsHexAddress(minter) {
+				return fmt.Errorf("invalid minter address")
+			}
+
+			from := clientCtx.GetFromAddress()
+
+			msgSetMinter := &types.MsgSetMinter{
+				ContractAddress: yatContract,
+				Minter:          minter,
+				Sender:          from.String(),
+			}
+
+			if msgSetMinter.ValidateBasic() != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgSetMinter)
+		},
+	}
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func GetRemoveMinterCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "remove-minter [yat-contract] [minter]",
+		Short: "Update plan status",
+		Example: fmt.Sprintf(
+			"$ %s tx plan remove-minter [0x...] [0x...] "+
+				"--from=<key-name> "+
+				"--chain-id=<chain-id> "+
+				"--fees=<fee>",
+			version.AppName,
+		),
+		Args: cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			yatContract := args[0]
+			if !common.IsHexAddress(yatContract) {
+				return fmt.Errorf("invalid yat contract address")
+			}
+
+			minter := args[1]
+			if !common.IsHexAddress(minter) {
+				return fmt.Errorf("invalid minter address")
+			}
+
+			from := clientCtx.GetFromAddress()
+
+			msgRemoveMinter := &types.MsgRemoveMinter{
+				ContractAddress: yatContract,
+				Minter:          minter,
+				Sender:          from.String(),
+			}
+
+			if msgRemoveMinter.ValidateBasic() != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgRemoveMinter)
 		},
 	}
 	flags.AddTxFlagsToCmd(cmd)
