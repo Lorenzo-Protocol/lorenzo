@@ -33,7 +33,7 @@ func (k Keeper) GetAgent(ctx sdk.Context, id uint64) (types.Agent, bool) {
 // - ctx: the SDK context.
 //
 // Returns:
-// - int32: the next number, or 1 if it is not found in the store.
+// - uint64: the next number, or 1 if it is not found in the store.
 func (k Keeper) GetNextNumber(ctx sdk.Context) uint64 {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.KeyNextNumber())
