@@ -42,6 +42,11 @@ const (
 	AttributeKeyUpdatePlanStatusOldStatus = "old_status"
 	AttributeKeyUpdatePlanStatusNewStatus = "new_status"
 
+	// SetMerkleRoot
+	EventTypeSetMerkleRoot              = "set_merkle_root"
+	AttributeKeySetMerkleRootMerkleRoot = "merkle_root"
+	AttributeKeySetMerkleRootPlanId     = "plan_id"
+
 	// Minter
 	EventTypeSetMinter    = "set_minter"
 	EventTypeRemoveMinter = "remove_minter"
@@ -159,5 +164,19 @@ func NewUpdatePlanStatusEvent(
 		sdk.NewAttribute(AttributeKeyUpdatePlanStatusPlanId, fmt.Sprintf("%d", planId)),
 		sdk.NewAttribute(AttributeKeyUpdatePlanStatusOldStatus, oldStatus.String()),
 		sdk.NewAttribute(AttributeKeyUpdatePlanStatusNewStatus, newStatus.String()),
+	)
+}
+
+// NewSetMerkleRootEvent construct a new set merkle root sdk.Event
+func NewSetMerkleRootEvent(
+	sender sdk.AccAddress,
+	planId uint64,
+	merkleRoot string,
+) sdk.Event {
+	return sdk.NewEvent(
+		EventTypeSetMerkleRoot,
+		sdk.NewAttribute(AttributeKeySender, sender.String()),
+		sdk.NewAttribute(AttributeKeySetMerkleRootPlanId, fmt.Sprintf("%d", planId)),
+		sdk.NewAttribute(AttributeKeySetMerkleRootMerkleRoot, merkleRoot),
 	)
 }

@@ -773,7 +773,7 @@ func (k Keeper) MerkleRoot(
 	return merkleRoot, nil
 }
 
-// ClaimLeafNode claims the leaf node from the StakePlan contract.
+// ClaimLeafNodeFromPlan claims the leaf node from the StakePlan contract.
 //
 // Parameters:
 // - ctx: the SDK context.
@@ -784,7 +784,7 @@ func (k Keeper) MerkleRoot(
 // Returns:
 // - bool: true if the claim is successful.
 // - error: an error if the claiming fails.
-func (k Keeper) ClaimLeafNode(
+func (k Keeper) ClaimLeafNodeFromPlan(
 	ctx sdk.Context,
 	contractAddress common.Address,
 	roundId *big.Int,

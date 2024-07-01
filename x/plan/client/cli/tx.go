@@ -37,6 +37,7 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(GetCreateYATCmd())
 	cmd.AddCommand(GetSetMinterCmd())
 	cmd.AddCommand(GetRemoveMinterCmd())
+	cmd.AddCommand(GetSetMerkleRootCmd())
 	return cmd
 }
 
@@ -358,6 +359,53 @@ func GetRemoveMinterCmd() *cobra.Command {
 				ContractAddress: yatContract,
 				Minter:          minter,
 				Sender:          from.String(),
+			}
+
+			if msgRemoveMinter.ValidateBasic() != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgRemoveMinter)
+		},
+	}
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func GetSetMerkleRootCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "set-merkle-root [id] [merkle-root]",
+		Short: "Set merkle root for a plan",
+		Example: fmt.Sprintf(
+			"$ %s tx plan set-merkle-root 1 [0x...] "+
+				"--from=<key-name> "+
+				"--chain-id=<chain-id> "+
+				"--fees=<fee>",
+			version.AppName,
+		),
+		Args: cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			planId, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return fmt.Errorf("invalid plan ID: %s, error: %s", args[0], err.Error())
+			}
+
+			merkleRoot := common.HexToHash(args[1])
+			if len(merkleRoot.Bytes()) != 32 {
+				return fmt.Errorf("invalid merkle leaf node")
+			}
+
+			from := clientCtx.GetFromAddress()
+
+			msgRemoveMinter := &types.MsgSetMerkleRoot{
+				PlanId:     planId,
+				MerkleRoot: args[1],
+				Sender:     from.String(),
 			}
 
 			if msgRemoveMinter.ValidateBasic() != nil {

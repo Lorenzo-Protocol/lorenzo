@@ -92,6 +92,35 @@ func (m msgServer) CreatePlan(goCtx context.Context, msg *types.MsgCreatePlan) (
 	return &types.MsgCreatePlanResponse{Id: planResult.Id}, nil
 }
 
+func (m msgServer) SetMerkleRoot(goCtx context.Context, msg *types.MsgSetMerkleRoot) (*types.MsgSetMerkleRootResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	sender := sdk.AccAddress(msg.Sender)
+	if !m.k.Authorized(ctx, sender) {
+		return nil, errorsmod.Wrapf(types.ErrUnauthorized, "unauthorized")
+	}
+
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
+
+	plan, found := m.k.GetPlan(ctx, msg.PlanId)
+	if !found {
+		return nil, errorsmod.Wrapf(types.ErrPlanNotFound, "plan not found")
+	}
+
+	contractAddr := common.HexToAddress(plan.ContractAddress)
+
+	if err := m.k.SetMerkleRoot(ctx, contractAddr, msg.MerkleRoot); err != nil {
+		return nil, err
+	}
+
+	ctx.EventManager().EmitEvent(
+		types.NewSetMerkleRootEvent(sender, msg.PlanId, msg.MerkleRoot),
+	)
+
+	return &types.MsgSetMerkleRootResponse{}, nil
+}
+
 func (m msgServer) Claims(goCtx context.Context, msg *types.MsgClaims) (*types.MsgClaimsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	sender := sdk.AccAddress(msg.Sender)

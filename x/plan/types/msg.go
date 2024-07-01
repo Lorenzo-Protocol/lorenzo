@@ -1,6 +1,8 @@
 package types
 
 import (
+	"fmt"
+
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -16,6 +18,7 @@ var (
 	_ sdk.Msg = (*MsgUpdatePlanStatus)(nil)
 	_ sdk.Msg = (*MsgSetMinter)(nil)
 	_ sdk.Msg = (*MsgRemoveMinter)(nil)
+	_ sdk.Msg = (*MsgSetMerkleRoot)(nil)
 )
 
 // ValidateBasic executes sanity validation on the provided data
@@ -73,6 +76,10 @@ func (m *MsgClaims) ValidateBasic() error {
 	}
 	if !common.IsHexAddress(m.Receiver) {
 		return errorsmod.Wrap(ErrReceiver, "invalid receiver address")
+	}
+	merkleProof := common.HexToHash(m.MerkleProof)
+	if len(merkleProof.Bytes()) != 32 {
+		return fmt.Errorf("invalid merkle proof")
 	}
 	return nil
 }
@@ -141,6 +148,24 @@ func (m *MsgRemoveMinter) ValidateBasic() error {
 
 // GetSigners returns the expected signers for a MsgAddAgent message
 func (m *MsgRemoveMinter) GetSigners() []sdk.AccAddress {
+	addr, _ := sdk.AccAddressFromBech32(m.Sender)
+	return []sdk.AccAddress{addr}
+}
+
+// ValidateBasic executes sanity validation on the provided data
+func (m *MsgSetMerkleRoot) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(m.Sender); err != nil {
+		return errorsmod.Wrap(err, "invalid sender address")
+	}
+	merkleRoot := common.HexToHash(m.MerkleRoot)
+	if len(merkleRoot.Bytes()) != 32 {
+		return fmt.Errorf("invalid merkle root")
+	}
+	return nil
+}
+
+// GetSigners returns the expected signers for a MsgAddAgent message
+func (m *MsgSetMerkleRoot) GetSigners() []sdk.AccAddress {
 	addr, _ := sdk.AccAddressFromBech32(m.Sender)
 	return []sdk.AccAddress{addr}
 }
