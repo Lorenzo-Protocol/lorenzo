@@ -7,6 +7,8 @@ import (
 	"testing"
 	"time"
 
+	appparams "github.com/Lorenzo-Protocol/lorenzo/app/params"
+
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/spf13/cast"
 	"github.com/stretchr/testify/require"
@@ -90,7 +92,7 @@ func Setup(t *testing.T) *app.LorenzoApp {
 	acc := authtypes.NewBaseAccount(senderPubKey.Address().Bytes(), senderPubKey, 0, 0)
 	balance := banktypes.Balance{
 		Address: acc.GetAddress().String(),
-		Coins:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(100000000000000))),
+		Coins:   sdk.NewCoins(sdk.NewCoin(appparams.BaseDenom, sdk.NewInt(100000000000000))),
 	}
 	genesisAccounts := []authtypes.GenesisAccount{acc}
 	return SetupWithGenesisValSet(t, valSet, genesisAccounts, balance)

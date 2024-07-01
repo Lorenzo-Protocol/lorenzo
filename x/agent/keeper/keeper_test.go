@@ -7,6 +7,8 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+
+	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -34,6 +36,9 @@ type KeeperTestSuite struct {
 
 	ctx    sdk.Context
 	keeper keeper.Keeper
+
+	msgServer   types.MsgServer
+	queryClient types.QueryClient
 }
 
 func TestKeeperTestSuite(t *testing.T) {
@@ -50,11 +55,22 @@ func (suite *KeeperTestSuite) SetupTest() {
 	}
 
 	app := helpers.SetupWithGenesisMergeFn(suite.T(), merge)
-	suite.ctx = app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.GetBaseApp().NewContext(false, tmproto.Header{})
+
+	queryHelper := baseapp.NewQueryServerTestHelper(ctx, app.InterfaceRegistry())
+	types.RegisterQueryServer(queryHelper, keeper.NewQuerierImpl(&app.AgentKeeper))
+	queryClient := types.NewQueryClient(queryHelper)
+
+	suite.ctx = ctx
 	suite.keeper = app.AgentKeeper
+
+	suite.msgServer = keeper.NewMsgServerImpl(app.AgentKeeper)
+	suite.queryClient = queryClient
 }
 
 func (suite *KeeperTestSuite) TestGetAgent() {
+	suite.SetupTest()
+
 	suite.Run("not found", func() {
 		_, has := suite.keeper.GetAgent(suite.ctx, 2)
 		suite.False(has)
