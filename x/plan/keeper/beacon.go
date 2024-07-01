@@ -13,7 +13,7 @@ import (
 	"github.com/ethereum/go-ethereum/crypto"
 )
 
-// DeployBeacon deploys a new Yield Accruing Token (YAT) contract.
+// DeployBeaconForPlan deploys a new Yield Accruing Token (YAT) contract.
 //
 // Parameters:
 // - ctx: the SDK context.
@@ -21,7 +21,7 @@ import (
 // Returns:
 // - common.Address: the address of the deployed contract.
 // - error: an error if the deployment fails.
-func (k Keeper) DeployBeacon(
+func (k Keeper) DeployBeaconForPlan(
 	ctx sdk.Context,
 	implementation common.Address,
 ) (common.Address, error) {
@@ -58,7 +58,7 @@ func (k Keeper) DeployBeacon(
 	return contractAddr, nil
 }
 
-// UpgradeYAT upgrades the YAT contract to a new implementation.
+// UpgradeBeaconForPlan upgrades the Plan contract to a new implementation.
 //
 // Parameters:
 // - ctx: the SDK context.
@@ -66,7 +66,7 @@ func (k Keeper) DeployBeacon(
 //
 // Returns:
 // - error: an error if the upgrade fails.
-func (k Keeper) UpgradeYAT(
+func (k Keeper) UpgradeBeaconForPlan(
 	ctx sdk.Context,
 	implementation common.Address,
 ) error {
@@ -102,5 +102,61 @@ func (k Keeper) UpgradeYAT(
 			res.Revert(),
 		)
 	}
+
 	return nil
+}
+
+// GetPlanImplementationFromBeacon returns the implementation address of the Plan Logic contract.
+//
+// Parameters:
+// - ctx: the SDK context.
+// Returns:
+// - common.Address: the address of the implementation contract.
+// - error: an error if the implementation address is not found.
+func (k Keeper) GetPlanImplementationFromBeacon(
+	ctx sdk.Context,
+) (common.Address, error) {
+	params := k.GetParams(ctx)
+
+	if len(params.Beacon) == 0 {
+		return common.Address{}, errorsmod.Wrapf(types.ErrBeaconNotSet, "beacon not set")
+	}
+	contractABI := contracts.StakePlanContract.ABI
+
+	beacon := common.HexToAddress(params.Beacon)
+
+	caller := k.getModuleEthAddress(ctx)
+
+	res, err := k.CallEVM(
+		ctx,
+		contractABI,
+		caller,
+		beacon,
+		false,
+		types.BeaconMethodImplementation,
+	)
+	if err != nil {
+		return common.Address{}, err
+	}
+	if res.Failed() {
+		return common.Address{}, errorsmod.Wrapf(
+			types.ErrVMExecution, "failed to get implementation address reason: %s",
+			res.Revert(),
+		)
+	}
+
+	unpacked, err := contractABI.Unpack(types.BeaconMethodImplementation, res.Ret)
+	if err != nil || len(unpacked) == 0 {
+		return common.Address{}, errorsmod.Wrapf(
+			types.ErrABIUnpack, "failed to unpack plan description from contract %s", beacon.Hex(),
+		)
+	}
+	implementation, ok := unpacked[0].(common.Address)
+	if !ok {
+		return common.Address{}, errorsmod.Wrapf(
+			types.ErrABIUnpack, "failed to unpack plan description from contract %s", beacon.Hex(),
+		)
+	}
+
+	return implementation, nil
 }

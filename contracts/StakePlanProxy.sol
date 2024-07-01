@@ -3,7 +3,7 @@ pragma solidity ^0.8.17;
 
 import "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
 
-contract YATProxy is BeaconProxy {
+contract StakePlanProxy is BeaconProxy {
     /**
      * @dev Initializes the proxy with `beacon`.
      *

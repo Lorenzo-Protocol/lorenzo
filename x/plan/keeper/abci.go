@@ -14,12 +14,12 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 	if len(params.Beacon) == 0 {
 		// deploy a new beacon proxy contract & deploy a new plan logic contract
 		// 1. deploy a new plan logic contract
-		logicAddr, err := k.DeployYATLogicContract(ctx)
+		logicAddr, err := k.DeployStakePlanLogicContract(ctx)
 		if err != nil {
 			panic(err)
 		}
 		// 2. deploy a new plan beacon contract
-		beaconAddr, err := k.DeployBeacon(ctx, logicAddr)
+		beaconAddr, err := k.DeployBeaconForPlan(ctx, logicAddr)
 		if err != nil {
 			panic(err)
 		}
