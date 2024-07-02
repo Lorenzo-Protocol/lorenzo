@@ -12,6 +12,10 @@ type Querier struct {
 	*Keeper
 }
 
+func NewQuerier(k *Keeper) Querier {
+	return Querier{k}
+}
+
 func (q Querier) TokenPairs(ctx context.Context, request *types.QueryTokenPairsRequest) (*types.QueryTokenPairsResponse, error) {
 	// TODO implement me
 	panic("implement me")
