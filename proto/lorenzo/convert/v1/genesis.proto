@@ -1,0 +1,17 @@
+syntax = "proto3";
+package lorenzo.convert.v1;
+
+import "gogoproto/gogo.proto";
+import "lorenzo/convert/v1/convert.proto";
+
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/convert/types";
+
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  repeated TokenPair token_pairs = 2 [(gogoproto.nullable) = false];
+}
+
+message Params {
+  bool enable_convert = 1;
+  bool enable_evm_hook = 2 [(gogoproto.customname) = "EnableEVMHook"];
+}
