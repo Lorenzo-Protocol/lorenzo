@@ -12,3 +12,4 @@ repos:
     rev: v1.59.1
     hooks:
       - id: golangci-lint
+        stages: [ push ]
