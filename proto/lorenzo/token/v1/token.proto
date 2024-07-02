@@ -1,10 +1,10 @@
 syntax = "proto3";
-package lorenzo.convert.v1;
+package lorenzo.token.v1;
 
 import "cosmos/bank/v1beta1/bank.proto";
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/convert/types";
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/token/types";
 
 // Ownership defines the ownership of an erc20 contract
 enum Ownership {

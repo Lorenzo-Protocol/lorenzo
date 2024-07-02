@@ -1,8 +1,8 @@
 syntax = "proto3";
-package lorenzo.convert.v1;
+package lorenzo.token.v1;
 
 import "gogoproto/gogo.proto";
-import "lorenzo/convert/v1/convert.proto";
+import "lorenzo/token/v1/token.proto";
 
 option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/convert/types";
 

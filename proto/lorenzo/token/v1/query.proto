@@ -1,11 +1,11 @@
 syntax = "proto3";
-package lorenzo.convert.v1;
+package lorenzo.token.v1;
 
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
-import "lorenzo/convert/v1/convert.proto";
-import "lorenzo/convert/v1/genesis.proto";
+import "lorenzo/token/v1/token.proto";
+import "lorenzo/token/v1/genesis.proto";
 
 
 option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/convert/types";
@@ -13,17 +13,17 @@ option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/convert/types";
 service Query {
   // TokenPairs retrieves registered token pairs
   rpc TokenPairs(QueryTokenPairsRequest) returns (QueryTokenPairsResponse) {
-    option (google.api.http).get = "/lorenzo/convert/v1/token_pairs";
+    option (google.api.http).get = "/lorenzo/token/v1/token_pairs";
   }
 
   // TokenPair retrieves a registered token pair
   rpc TokenPair(QueryTokenPairRequest) returns (QueryTokenPairResponse) {
-    option (google.api.http).get = "/lorenzo/convert/v1/token_pairs/{token}";
+    option (google.api.http).get = "/lorenzo/token/v1/token_pairs/{token}";
   }
 
   // Params retrieves the convert module params
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/lorenzo/convert/v1/params";
+    option (google.api.http).get = "/lorenzo/token/v1/params";
   }
 }
 

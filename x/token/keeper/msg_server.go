@@ -3,7 +3,7 @@ package keeper
 import (
 	"context"
 
-	v1 "github.com/Lorenzo-Protocol/lorenzo/x/convert/types"
+	v1 "github.com/Lorenzo-Protocol/lorenzo/x/token/types"
 )
 
 var _ v1.MsgServer = msgServer{}
