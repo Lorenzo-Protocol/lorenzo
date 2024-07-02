@@ -1,4 +1,4 @@
-package convert
+package token
 
 import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"

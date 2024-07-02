@@ -3,7 +3,7 @@ package keeper
 import (
 	"context"
 
-	"github.com/Lorenzo-Protocol/lorenzo/x/convert/types"
+	"github.com/Lorenzo-Protocol/lorenzo/x/token/types"
 )
 
 var _ types.QueryServer = Querier{}
