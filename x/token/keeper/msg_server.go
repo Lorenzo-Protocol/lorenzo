@@ -3,26 +3,30 @@ package keeper
 import (
 	"context"
 
-	v1 "github.com/Lorenzo-Protocol/lorenzo/x/token/types"
+	"github.com/Lorenzo-Protocol/lorenzo/x/token/types"
 )
 
-var _ v1.MsgServer = msgServer{}
+var _ types.MsgServer = msgServer{}
 
 type msgServer struct {
 	*Keeper
 }
 
-func (m msgServer) ConvertCoin(ctx context.Context, coin *v1.MsgConvertCoin) (*v1.MsgConvertCoinResponse, error) {
+func NewMsgServer(k *Keeper) types.MsgServer {
+	return &msgServer{k}
+}
+
+func (m msgServer) ConvertCoin(ctx context.Context, coin *types.MsgConvertCoin) (*types.MsgConvertCoinResponse, error) {
 	// TODO implement me
 	panic("implement me")
 }
 
-func (m msgServer) ConvertERC20(ctx context.Context, erc20 *v1.MsgConvertERC20) (*v1.MsgConvertERC20Response, error) {
+func (m msgServer) ConvertERC20(ctx context.Context, erc20 *types.MsgConvertERC20) (*types.MsgConvertERC20Response, error) {
 	// TODO implement me
 	panic("implement me")
 }
 
-func (m msgServer) UpdateParams(ctx context.Context, params *v1.MsgUpdateParams) (*v1.MsgUpdateParamsResponse, error) {
+func (m msgServer) UpdateParams(ctx context.Context, params *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
 	// TODO implement me
 	panic("implement me")
 }
