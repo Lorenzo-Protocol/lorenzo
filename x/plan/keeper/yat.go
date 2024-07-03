@@ -3,13 +3,14 @@ package keeper
 import (
 	"math/big"
 
+	contractsplan "github.com/Lorenzo-Protocol/lorenzo/contracts/plan"
+
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 
-	"github.com/Lorenzo-Protocol/lorenzo/contracts"
 	"github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
 )
 
@@ -40,11 +41,29 @@ func (k Keeper) UpdateMinter(
 	}
 	contractAddr := common.HexToAddress(contractAddress)
 
+	// check if the contract address does exist
+	yatAcct := k.evmKeeper.GetAccountWithoutBalance(ctx, contractAddr)
+	if yatAcct == nil {
+		return types.ErrYatContractNotFound
+	}
+	if !yatAcct.IsContract() {
+		return types.ErrYatContractNotContract
+	}
+
 	// Check if the minter address is a valid address
 	if !common.IsHexAddress(minter) {
 		return errorsmod.Wrap(types.ErrEthAddress, "invalid Ethereum address")
 	}
 	minterAddr := common.HexToAddress(minter)
+
+	// check if the minter address does exist
+	minterAcct := k.evmKeeper.GetAccountWithoutBalance(ctx, minterAddr)
+	if minterAcct == nil {
+		return types.ErrStakePlanContractNotFound
+	}
+	if !minterAcct.IsContract() {
+		return types.ErrStakePlanContractNotContract
+	}
 
 	switch updateType {
 	case UpdateMinterTypeAdd:
@@ -70,7 +89,7 @@ func (k Keeper) DeployYATContract(
 	name,
 	symbol string,
 ) (common.Address, error) {
-	contractArgs, err := contracts.YieldAccruingTokenContract.ABI.Pack(
+	contractArgs, err := contractsplan.YieldAccruingTokenContract.ABI.Pack(
 		"",
 		name,
 		symbol,
@@ -82,9 +101,9 @@ func (k Keeper) DeployYATContract(
 			errorsmod.Wrap(err, "failed to create transaction data").Error(),
 		)
 	}
-	data := make([]byte, len(contracts.YieldAccruingTokenContract.Bin)+len(contractArgs))
-	copy(data[:len(contracts.YieldAccruingTokenContract.Bin)], contracts.YieldAccruingTokenContract.Bin)
-	copy(data[len(contracts.YieldAccruingTokenContract.Bin):], contractArgs)
+	data := make([]byte, len(contractsplan.YieldAccruingTokenContract.Bin)+len(contractArgs))
+	copy(data[:len(contractsplan.YieldAccruingTokenContract.Bin)], contractsplan.YieldAccruingTokenContract.Bin)
+	copy(data[len(contractsplan.YieldAccruingTokenContract.Bin):], contractArgs)
 
 	deployer := k.getModuleEthAddress(ctx)
 	nonce, err := k.accountKeeper.GetSequence(ctx, deployer.Bytes())
@@ -124,7 +143,7 @@ func (k Keeper) ClaimReward(
 	erc20Addr common.Address,
 	amount *big.Int,
 ) error {
-	contractABI := contracts.YieldAccruingTokenContract.ABI
+	contractABI := contractsplan.YieldAccruingTokenContract.ABI
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
@@ -164,7 +183,7 @@ func (k Keeper) Mint(
 	contractAddress, to common.Address,
 	amount *big.Int,
 ) error {
-	contractABI := contracts.YieldAccruingTokenContract.ABI
+	contractABI := contractsplan.YieldAccruingTokenContract.ABI
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
@@ -203,7 +222,7 @@ func (k Keeper) SetMinter(
 	contractAddress common.Address,
 	minter common.Address,
 ) error {
-	contractABI := contracts.YieldAccruingTokenContract.ABI
+	contractABI := contractsplan.YieldAccruingTokenContract.ABI
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
@@ -241,7 +260,7 @@ func (k Keeper) RemoveMinter(
 	contractAddress common.Address,
 	minter common.Address,
 ) error {
-	contractABI := contracts.YieldAccruingTokenContract.ABI
+	contractABI := contractsplan.YieldAccruingTokenContract.ABI
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
@@ -263,4 +282,85 @@ func (k Keeper) RemoveMinter(
 		)
 	}
 	return nil
+}
+
+func (k Keeper) GetOwner(
+	ctx sdk.Context,
+	contractAddress common.Address,
+) (common.Address, error) {
+	contractABI := contractsplan.YieldAccruingTokenContract.ABI
+	res, err := k.CallEVM(
+		ctx,
+		contractABI,
+		k.getModuleEthAddress(ctx),
+		contractAddress,
+		true,
+		types.YATMethodOwner,
+	)
+	if err != nil {
+		return common.Address{}, err
+	}
+	unpacked, err := contractABI.Unpack("owner", res.Ret)
+	if err != nil {
+		return common.Address{}, errorsmod.Wrapf(
+			types.ErrABIUnpack, "failed to unpack owner: %s", err.Error(),
+		)
+	}
+	yatContractAddress, ok := unpacked[0].(common.Address)
+	if !ok {
+		return common.Address{}, errorsmod.Wrapf(
+			types.ErrABIUnpack, "failed to convert YAT contract address to address from contract %s", contractAddress.Hex(),
+		)
+	}
+	if res.Failed() {
+		return common.Address{}, errorsmod.Wrapf(
+			types.ErrVMExecution, "failed to yat contract: %s, reason: %s",
+			contractAddress.String(),
+			res.Revert(),
+		)
+	}
+	return yatContractAddress, nil
+}
+
+func (k Keeper) HasRoleFromYAT(
+	ctx sdk.Context,
+	contractAddress common.Address,
+	roleName string,
+	account common.Address,
+) (bool, error) {
+	contractABI := contractsplan.YieldAccruingTokenContract.ABI
+	role := crypto.Keccak256Hash([]byte(roleName))
+	res, err := k.CallEVM(
+		ctx,
+		contractABI,
+		k.getModuleEthAddress(ctx),
+		contractAddress,
+		true,
+		types.YATMethodHasRole,
+		role,
+		account,
+	)
+	if err != nil {
+		return false, err
+	}
+	unpacked, err := contractABI.Unpack(types.YATMethodHasRole, res.Ret)
+	if err != nil {
+		return false, errorsmod.Wrapf(
+			types.ErrABIUnpack, "failed to unpack hasRole: %s", err.Error(),
+		)
+	}
+	hasRole, ok := unpacked[0].(bool)
+	if !ok {
+		return false, errorsmod.Wrapf(
+			types.ErrABIUnpack, "failed to convert hasRole to bool from contract %s", contractAddress.Hex(),
+		)
+	}
+	if res.Failed() {
+		return false, errorsmod.Wrapf(
+			types.ErrVMExecution, "failed to yat contract: %s, reason: %s",
+			contractAddress.String(),
+			res.Revert(),
+		)
+	}
+	return hasRole, nil
 }

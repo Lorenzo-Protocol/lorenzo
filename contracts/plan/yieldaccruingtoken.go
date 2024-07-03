@@ -1,4 +1,4 @@
-package contracts
+package plan
 
 import (
 	_ "embed" // embed compiled smart contract

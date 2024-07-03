@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"math/big"
 
+	contractsplan "github.com/Lorenzo-Protocol/lorenzo/contracts/plan"
+
 	errorsmod "cosmossdk.io/errors"
-	"github.com/Lorenzo-Protocol/lorenzo/contracts"
 	"github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ethereum/go-ethereum/common"
@@ -38,7 +39,7 @@ func (k Keeper) DeployStakePlanProxyContract(
 	yatContractAddress common.Address,
 ) (common.Address, error) {
 	// pack contract arguments
-	initArgs, err := contracts.StakePlanContract.ABI.Pack(
+	initArgs, err := contractsplan.StakePlanContract.ABI.Pack(
 		types.StakePlanMethodInitialize,
 		// args
 		stakePlanName,
@@ -59,7 +60,7 @@ func (k Keeper) DeployStakePlanProxyContract(
 	}
 
 	// pack proxy contract arguments
-	contractArgs, err := contracts.StakePlanProxyContract.ABI.Pack(
+	contractArgs, err := contractsplan.StakePlanProxyContract.ABI.Pack(
 		"",
 		common.HexToAddress(params.Beacon),
 		initArgs,
@@ -68,9 +69,9 @@ func (k Keeper) DeployStakePlanProxyContract(
 		return common.Address{}, errorsmod.Wrap(types.ErrABIPack, fmt.Sprintf("failed to pack contract arguments: %s", err))
 	}
 
-	data := make([]byte, len(contracts.YieldAccruingTokenContract.Bin)+len(contractArgs))
-	copy(data[:len(contracts.YieldAccruingTokenContract.Bin)], contracts.YieldAccruingTokenContract.Bin)
-	copy(data[len(contracts.YieldAccruingTokenContract.Bin):], contractArgs)
+	data := make([]byte, len(contractsplan.StakePlanProxyContract.Bin)+len(contractArgs))
+	copy(data[:len(contractsplan.StakePlanProxyContract.Bin)], contractsplan.StakePlanProxyContract.Bin)
+	copy(data[len(contractsplan.StakePlanProxyContract.Bin):], contractArgs)
 
 	// deployer is the module address
 	deployer := k.getModuleEthAddress(ctx)
@@ -104,8 +105,17 @@ func (k Keeper) DeployStakePlanProxyContract(
 func (k Keeper) DeployStakePlanLogicContract(
 	ctx sdk.Context,
 ) (common.Address, error) {
-	data := make([]byte, len(contracts.StakePlanContract.Bin))
-	copy(data[:len(contracts.StakePlanContract.Bin)], contracts.StakePlanContract.Bin)
+	// pack proxy contract arguments
+	contractArgs, err := contractsplan.StakePlanContract.ABI.Pack(
+		"",
+	)
+	if err != nil {
+		return common.Address{}, errorsmod.Wrapf(
+			types.ErrABIPack, "contract arguments are invalid: %s", err.Error())
+	}
+	data := make([]byte, len(contractsplan.StakePlanContract.Bin)+len(contractArgs))
+	copy(data[:len(contractsplan.StakePlanContract.Bin)], contractsplan.StakePlanContract.Bin)
+	copy(data[len(contractsplan.StakePlanContract.Bin):], contractArgs)
 
 	deployer := k.getModuleEthAddress(ctx)
 	nonce, err := k.accountKeeper.GetSequence(ctx, deployer.Bytes())
@@ -151,7 +161,7 @@ func (k Keeper) ClaimYATToken(
 ) error {
 	merkleProofBytes := common.HexToHash(merkleProof)
 
-	contractABI := contracts.StakePlanContract.ABI
+	contractABI := contractsplan.StakePlanContract.ABI
 	_, err := k.CallEVM(
 		ctx,
 		contractABI,
@@ -186,7 +196,7 @@ func (k Keeper) MintFromStakePlan(
 	contractAddress, to common.Address,
 	amount *big.Int,
 ) error {
-	contractABI := contracts.StakePlanContract.ABI
+	contractABI := contractsplan.StakePlanContract.ABI
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
@@ -227,7 +237,7 @@ func (k Keeper) SetMerkleRoot(
 ) error {
 	merkleProofBytes := common.HexToHash(merkleProof)
 
-	contractABI := contracts.StakePlanContract.ABI
+	contractABI := contractsplan.StakePlanContract.ABI
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
@@ -263,7 +273,7 @@ func (k Keeper) AdminPauseBridge(
 	ctx sdk.Context,
 	contractAddress common.Address,
 ) error {
-	contractABI := contracts.StakePlanContract.ABI
+	contractABI := contractsplan.StakePlanContract.ABI
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
@@ -297,7 +307,7 @@ func (k Keeper) AdminUnpauseBridge(
 	ctx sdk.Context,
 	contractAddress common.Address,
 ) error {
-	contractABI := contracts.StakePlanContract.ABI
+	contractABI := contractsplan.StakePlanContract.ABI
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
@@ -333,7 +343,7 @@ func (k Keeper) SetPlanDesc(
 	contractAddress common.Address,
 	planDesc string,
 ) error {
-	contractABI := contracts.StakePlanContract.ABI
+	contractABI := contractsplan.StakePlanContract.ABI
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
@@ -370,7 +380,7 @@ func (k Keeper) StakePlanName(
 	ctx sdk.Context,
 	contractAddress common.Address,
 ) (string, error) {
-	contractABI := contracts.StakePlanContract.ABI
+	contractABI := contractsplan.StakePlanContract.ABI
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
@@ -411,7 +421,7 @@ func (k Keeper) PlanId(
 	ctx sdk.Context,
 	contractAddress common.Address,
 ) (uint64, error) {
-	contractABI := contracts.StakePlanContract.ABI
+	contractABI := contractsplan.StakePlanContract.ABI
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
@@ -453,7 +463,7 @@ func (k Keeper) AgentId(
 	ctx sdk.Context,
 	contractAddress common.Address,
 ) (uint64, error) {
-	contractABI := contracts.StakePlanContract.ABI
+	contractABI := contractsplan.StakePlanContract.ABI
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
@@ -495,7 +505,7 @@ func (k Keeper) PlanDesc(
 	ctx sdk.Context,
 	contractAddress common.Address,
 ) (string, error) {
-	contractABI := contracts.StakePlanContract.ABI
+	contractABI := contractsplan.StakePlanContract.ABI
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
@@ -536,7 +546,7 @@ func (k Keeper) PlanStartBlock(
 	ctx sdk.Context,
 	contractAddress common.Address,
 ) (uint64, error) {
-	contractABI := contracts.StakePlanContract.ABI
+	contractABI := contractsplan.StakePlanContract.ABI
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
@@ -577,7 +587,7 @@ func (k Keeper) PeriodBlocks(
 	ctx sdk.Context,
 	contractAddress common.Address,
 ) (uint64, error) {
-	contractABI := contracts.StakePlanContract.ABI
+	contractABI := contractsplan.StakePlanContract.ABI
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
@@ -618,7 +628,7 @@ func (k Keeper) NextRewardReceiveBlock(
 	ctx sdk.Context,
 	contractAddress common.Address,
 ) (uint64, error) {
-	contractABI := contracts.StakePlanContract.ABI
+	contractABI := contractsplan.StakePlanContract.ABI
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
@@ -659,7 +669,7 @@ func (k Keeper) YatContractAddress(
 	ctx sdk.Context,
 	contractAddress common.Address,
 ) (common.Address, error) {
-	contractABI := contracts.StakePlanContract.ABI
+	contractABI := contractsplan.StakePlanContract.ABI
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
@@ -700,7 +710,7 @@ func (k Keeper) ClaimRoundId(
 	ctx sdk.Context,
 	contractAddress common.Address,
 ) (uint64, error) {
-	contractABI := contracts.StakePlanContract.ABI
+	contractABI := contractsplan.StakePlanContract.ABI
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
@@ -742,7 +752,7 @@ func (k Keeper) MerkleRoot(
 	contractAddress common.Address,
 	roundId *big.Int,
 ) (string, error) {
-	contractABI := contracts.StakePlanContract.ABI
+	contractABI := contractsplan.StakePlanContract.ABI
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,
@@ -791,7 +801,7 @@ func (k Keeper) ClaimLeafNodeFromPlan(
 	leafNode string,
 ) (bool, error) {
 	leafNodeBytes := common.HexToHash(leafNode)
-	contractABI := contracts.StakePlanContract.ABI
+	contractABI := contractsplan.StakePlanContract.ABI
 	res, err := k.CallEVM(
 		ctx,
 		contractABI,

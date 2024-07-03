@@ -22,6 +22,8 @@ const (
 	YATMethodMint         = "mint"
 	YATMethodSetMinter    = "setMinter"
 	YATMethodRemoveMinter = "removeMinter"
+	YATMethodHasRole      = "hasRole"
+	YATMethodOwner        = "owner"
 )
 
 const (

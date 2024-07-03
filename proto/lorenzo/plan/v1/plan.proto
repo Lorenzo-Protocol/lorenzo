@@ -20,6 +20,6 @@ message Plan {
 }
 
 enum PlanStatus {
-  Enabled = 0;
-  Disabled = 1;
+  Pause = 0;
+  Unpause = 1;
 }

@@ -3,8 +3,15 @@ package types
 import (
 	"fmt"
 
+	"github.com/ethereum/go-ethereum/common"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
+
+// DefaultParams returns a default set of parameters.
+func DefaultParams() Params {
+	return Params{}
+}
 
 // Validate validates the Params struct.
 //
@@ -13,6 +20,10 @@ import (
 func (p Params) Validate() error {
 	if err := ValidateAddressList(p.AllowList); err != nil {
 		return err
+	}
+
+	if len(p.Beacon) != 0 && !common.IsHexAddress(p.Beacon) {
+		return fmt.Errorf("invalid beacon address: %s", p.Beacon)
 	}
 
 	return nil

@@ -58,7 +58,13 @@ func (m *MsgCreatePlan) ValidateBasic() error {
 		return errorsmod.Wrap(err, "invalid sender address")
 	}
 	if !common.IsHexAddress(m.YatContractAddress) {
-		return errorsmod.Wrap(ErrContractAddress, "invalid yat contract address")
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "invalid yat contract address")
+	}
+	if len(m.Name) == 0 {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "plan name cannot be empty")
+	}
+	if m.AgentId == 0 {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "agent id cannot be zero")
 	}
 	return nil
 }
@@ -95,6 +101,12 @@ func (m *MsgCreateYAT) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.Sender); err != nil {
 		return errorsmod.Wrap(err, "invalid sender address")
 	}
+	if len(m.Name) == 0 {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "yat name cannot be empty")
+	}
+	if len(m.Symbol) == 0 {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "yat symbol cannot be empty")
+	}
 	return nil
 }
 
@@ -108,6 +120,9 @@ func (m *MsgCreateYAT) GetSigners() []sdk.AccAddress {
 func (m *MsgUpdatePlanStatus) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.Sender); err != nil {
 		return errorsmod.Wrap(err, "invalid sender address")
+	}
+	if m.Status < 0 || m.Status > 2 {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "invalid status")
 	}
 	return nil
 }
@@ -123,8 +138,12 @@ func (m *MsgSetMinter) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.Sender); err != nil {
 		return errorsmod.Wrap(err, "invalid sender address")
 	}
+	if !common.IsHexAddress(m.Minter) {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "invalid minter address")
+
+	}
 	if !common.IsHexAddress(m.ContractAddress) {
-		return errorsmod.Wrap(ErrContractAddress, "invalid yat contract address")
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "invalid yat contract address")
 	}
 	return nil
 }
@@ -140,8 +159,12 @@ func (m *MsgRemoveMinter) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.Sender); err != nil {
 		return errorsmod.Wrap(err, "invalid sender address")
 	}
+	if !common.IsHexAddress(m.Minter) {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "invalid minter address")
+
+	}
 	if !common.IsHexAddress(m.ContractAddress) {
-		return errorsmod.Wrap(ErrContractAddress, "invalid yat contract address")
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "invalid yat contract address")
 	}
 	return nil
 }

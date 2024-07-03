@@ -17,11 +17,20 @@ func (k Keeper) AddPlan(ctx sdk.Context, plan types.Plan) (types.Plan, error) {
 	// generate the next plan ID
 	planId := k.GetNextNumber(ctx)
 	plan.Id = planId
-	plan.Enabled = types.PlanStatus_Enabled
+	plan.Enabled = types.PlanStatus_Unpause
 	// Deploy the plan contract for plan
 	planIdBigint := sdk.NewIntFromUint64(planId)
 	agentIdBigint := sdk.NewIntFromUint64(plan.AgentId)
+
 	yatContractAddr := common.HexToAddress(plan.YatContractAddress)
+	// TODO: checking if the yat contract exists?
+	acct := k.evmKeeper.GetAccountWithoutBalance(ctx, yatContractAddr)
+	if acct == nil {
+		return types.Plan{}, types.ErrYatContractNotFound
+	}
+	if !acct.IsContract() {
+		return types.Plan{}, types.ErrYatContractNotContract
+	}
 	contractAddress, err := k.DeployStakePlanProxyContract(
 		ctx,
 		plan.Name,
@@ -56,11 +65,11 @@ func (k Keeper) UpdatePlanStatus(ctx sdk.Context, planId uint64, status types.Pl
 	}
 
 	planAddress := common.HexToAddress(plan.ContractAddress)
-	if status == types.PlanStatus_Enabled {
+	if status == types.PlanStatus_Pause {
 		if err := k.AdminPauseBridge(ctx, planAddress); err != nil {
 			return err
 		}
-	} else if status == types.PlanStatus_Disabled {
+	} else if status == types.PlanStatus_Unpause {
 		if err := k.AdminUnpauseBridge(ctx, planAddress); err != nil {
 			return err
 		}

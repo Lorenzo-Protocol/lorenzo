@@ -48,7 +48,7 @@ func (m msgServer) AddAgent(goctx context.Context, msg *types.MsgAddAgent) (*typ
 		return nil, errorsmod.Wrapf(types.ErrUnAuthorized, "invalid sender :%s, not authorized", msg.Sender)
 	}
 
-	agentID := m.k.addAgent(ctx, msg.Name, msg.BtcReceivingAddress, msg.EthAddr, msg.Description, msg.Url)
+	agentID := m.k.AddAgent(ctx, msg.Name, msg.BtcReceivingAddress, msg.EthAddr, msg.Description, msg.Url)
 
 	ctx.EventManager().EmitTypedEvent(&types.EventAddAgent{ //nolint:errcheck,gosec
 		Id:                  agentID,

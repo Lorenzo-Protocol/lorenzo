@@ -3,10 +3,11 @@ package keeper
 import (
 	"fmt"
 
+	contractsplan "github.com/Lorenzo-Protocol/lorenzo/contracts/plan"
+
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	errorsmod "cosmossdk.io/errors"
-	"github.com/Lorenzo-Protocol/lorenzo/contracts"
 	"github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ethereum/go-ethereum/common"
@@ -26,7 +27,7 @@ func (k Keeper) DeployBeaconForPlan(
 	implementation common.Address,
 ) (common.Address, error) {
 	deployer := k.getModuleEthAddress(ctx)
-	contractArgs, err := contracts.BeaconContract.ABI.Pack(
+	contractArgs, err := contractsplan.BeaconContract.ABI.Pack(
 		"",
 		implementation,
 		deployer,
@@ -35,9 +36,9 @@ func (k Keeper) DeployBeaconForPlan(
 		return common.Address{}, errorsmod.Wrap(types.ErrABIPack, fmt.Sprintf("failed to pack contract arguments: %s", err))
 	}
 
-	data := make([]byte, len(contracts.BeaconContract.Bin)+len(contractArgs))
-	copy(data[:len(contracts.BeaconContract.Bin)], contracts.BeaconContract.Bin)
-	copy(data[len(contracts.BeaconContract.Bin):], contractArgs)
+	data := make([]byte, len(contractsplan.BeaconContract.Bin)+len(contractArgs))
+	copy(data[:len(contractsplan.BeaconContract.Bin)], contractsplan.BeaconContract.Bin)
+	copy(data[len(contractsplan.BeaconContract.Bin):], contractArgs)
 
 	nonce, err := k.accountKeeper.GetSequence(ctx, deployer.Bytes())
 	if err != nil {
@@ -86,7 +87,7 @@ func (k Keeper) UpgradeBeaconForPlan(
 
 	res, err := k.CallEVM(
 		ctx,
-		contracts.BeaconContract.ABI,
+		contractsplan.BeaconContract.ABI,
 		caller,
 		beacon,
 		true,
@@ -121,7 +122,7 @@ func (k Keeper) GetPlanImplementationFromBeacon(
 	if len(params.Beacon) == 0 {
 		return common.Address{}, errorsmod.Wrapf(types.ErrBeaconNotSet, "beacon not set")
 	}
-	contractABI := contracts.StakePlanContract.ABI
+	contractABI := contractsplan.BeaconContract.ABI
 
 	beacon := common.HexToAddress(params.Beacon)
 

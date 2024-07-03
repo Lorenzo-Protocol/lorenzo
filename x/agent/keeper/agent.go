@@ -92,7 +92,7 @@ func (k Keeper) getAgents(ctx sdk.Context) (agents []types.Agent) {
 	return agents
 }
 
-// addAgent adds a new agent to the Keeper's store.
+// AddAgent adds a new agent to the Keeper's store.
 //
 // Parameters:
 // - ctx: the SDK context.
@@ -104,7 +104,7 @@ func (k Keeper) getAgents(ctx sdk.Context) (agents []types.Agent) {
 //
 // Returns:
 // - uint64: the ID of the newly added agent.
-func (k Keeper) addAgent(ctx sdk.Context, name, btcReceivingAddress, ethAddr, description, url string) uint64 {
+func (k Keeper) AddAgent(ctx sdk.Context, name, btcReceivingAddress, ethAddr, description, url string) uint64 {
 	id := k.GetNextNumber(ctx)
 	agent := types.Agent{
 		Id:                  id,

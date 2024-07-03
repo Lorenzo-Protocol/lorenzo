@@ -624,7 +624,7 @@ func (m *MsgUpdatePlanStatus) GetStatus() PlanStatus {
 	if m != nil {
 		return m.Status
 	}
-	return PlanStatus_Enabled
+	return PlanStatus_Pause
 }
 
 func (m *MsgUpdatePlanStatus) GetSender() string {

@@ -41,9 +41,12 @@ func (m msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParam
 func (m msgServer) UpgradePlan(goCtx context.Context, msg *types.MsgUpgradePlan) (*types.MsgUpgradePlanResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	sender := sdk.AccAddress(msg.Authority)
+	sender, err := sdk.AccAddressFromBech32(msg.Authority)
+	if err != nil {
+		return nil, err
+	}
 
-	if m.k.authority != msg.Authority || !m.k.Authorized(ctx, sender) {
+	if m.k.authority != msg.Authority && !m.k.Authorized(ctx, sender) {
 		return nil, errorsmod.Wrapf(
 			sdkerrors.ErrUnauthorized,
 			"unauthorized",
@@ -69,9 +72,15 @@ func (m msgServer) UpgradePlan(goCtx context.Context, msg *types.MsgUpgradePlan)
 
 func (m msgServer) CreatePlan(goCtx context.Context, msg *types.MsgCreatePlan) (*types.MsgCreatePlanResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	sender := sdk.AccAddress(msg.Sender)
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return nil, err
+	}
 	if !m.k.Authorized(ctx, sender) {
 		return nil, errorsmod.Wrapf(types.ErrUnauthorized, "unauthorized")
+	}
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
 	}
 	plan := types.Plan{
 		Name:               msg.Name,
@@ -94,7 +103,10 @@ func (m msgServer) CreatePlan(goCtx context.Context, msg *types.MsgCreatePlan) (
 
 func (m msgServer) SetMerkleRoot(goCtx context.Context, msg *types.MsgSetMerkleRoot) (*types.MsgSetMerkleRootResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	sender := sdk.AccAddress(msg.Sender)
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return nil, err
+	}
 	if !m.k.Authorized(ctx, sender) {
 		return nil, errorsmod.Wrapf(types.ErrUnauthorized, "unauthorized")
 	}
@@ -123,10 +135,13 @@ func (m msgServer) SetMerkleRoot(goCtx context.Context, msg *types.MsgSetMerkleR
 
 func (m msgServer) Claims(goCtx context.Context, msg *types.MsgClaims) (*types.MsgClaimsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	sender := sdk.AccAddress(msg.Sender)
-	if !m.k.Authorized(ctx, sender) {
-		return nil, errorsmod.Wrapf(types.ErrUnauthorized, "unauthorized")
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return nil, err
 	}
+	//if !m.k.Authorized(ctx, sender) {
+	//	return nil, errorsmod.Wrapf(types.ErrUnauthorized, "unauthorized")
+	//}
 
 	if err := msg.ValidateBasic(); err != nil {
 		return nil, err
@@ -158,9 +173,15 @@ func (m msgServer) Claims(goCtx context.Context, msg *types.MsgClaims) (*types.M
 
 func (m msgServer) CreateYAT(goCtx context.Context, msg *types.MsgCreateYAT) (*types.MsgCreateYATResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	sender := sdk.AccAddress(msg.Sender)
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return nil, err
+	}
 	if !m.k.Authorized(ctx, sender) {
 		return nil, errorsmod.Wrapf(types.ErrUnauthorized, "unauthorized")
+	}
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
 	}
 	yatContract, err := m.k.DeployYATContract(ctx, msg.Name, msg.Symbol)
 	if err != nil {
@@ -176,11 +197,16 @@ func (m msgServer) CreateYAT(goCtx context.Context, msg *types.MsgCreateYAT) (*t
 
 func (m msgServer) UpdatePlanStatus(goCtx context.Context, msg *types.MsgUpdatePlanStatus) (*types.MsgUpdatePlanStatusResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	sender := sdk.AccAddress(msg.Sender)
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return nil, err
+	}
 	if !m.k.Authorized(ctx, sender) {
 		return nil, errorsmod.Wrapf(types.ErrUnauthorized, "unauthorized")
 	}
-
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	plan, found := m.k.GetPlan(ctx, msg.PlanId)
 	if !found {
 		return nil, errorsmod.Wrapf(types.ErrPlanNotFound, "plan not found")
@@ -188,13 +214,9 @@ func (m msgServer) UpdatePlanStatus(goCtx context.Context, msg *types.MsgUpdateP
 	if plan.Enabled == msg.Status {
 		return nil, errorsmod.Wrapf(types.ErrInvalidPlanStatus, "plan already %s", msg.Status)
 	}
-	switch msg.Status {
-	case types.PlanStatus_Enabled, types.PlanStatus_Disabled:
-		if err := m.k.UpdatePlanStatus(ctx, msg.PlanId, msg.Status); err != nil {
-			return nil, err
-		}
-	default:
-		return nil, errorsmod.Wrapf(types.ErrInvalidPlanStatus, "invalid plan status: %s", msg.Status)
+
+	if err := m.k.UpdatePlanStatus(ctx, msg.PlanId, msg.Status); err != nil {
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvent(
@@ -206,9 +228,15 @@ func (m msgServer) UpdatePlanStatus(goCtx context.Context, msg *types.MsgUpdateP
 
 func (m msgServer) SetMinter(goCtx context.Context, msg *types.MsgSetMinter) (*types.MsgSetMinterResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	sender := sdk.AccAddress(msg.Sender)
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return nil, err
+	}
 	if !m.k.Authorized(ctx, sender) {
 		return nil, errorsmod.Wrapf(types.ErrUnauthorized, "unauthorized")
+	}
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
 	}
 	if err := m.k.UpdateMinter(ctx, msg.ContractAddress, msg.Minter, UpdateMinterTypeAdd); err != nil {
 		return nil, err
@@ -223,11 +251,16 @@ func (m msgServer) SetMinter(goCtx context.Context, msg *types.MsgSetMinter) (*t
 
 func (m msgServer) RemoveMinter(goCtx context.Context, msg *types.MsgRemoveMinter) (*types.MsgRemoveMinterResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	sender := sdk.AccAddress(msg.Sender)
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return nil, err
+	}
 	if !m.k.Authorized(ctx, sender) {
 		return nil, errorsmod.Wrapf(types.ErrUnauthorized, "unauthorized")
 	}
-
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	if err := m.k.UpdateMinter(ctx, msg.ContractAddress, msg.Minter, UpdateMinterTypeRemove); err != nil {
 		return nil, err
 	}
