@@ -113,6 +113,66 @@ e2e-test-all: e2e-test-ibc e2e-test-ibc-timeout
 .PHONY: e2e-test-ibc e2e-test-ibc-timeout e2e-test-all
 
 ###############################################################################
+###                           Tests & Simulation                            ###
+###############################################################################
+
+test: test-unit
+test-all: test-unit test-race
+# For unit tests we don't want to execute the upgrade tests in tests/e2e but
+# we want to include all unit tests in the subfolders (tests/e2e/*)
+PACKAGES_UNIT=$(shell go list ./... | grep -v '/tests/e2e$$')
+TEST_PACKAGES=./...
+TEST_TARGETS := test-unit test-unit-cover test-race
+
+# Test runs-specific rules. To add a new test target, just add
+# a new rule, customise ARGS or TEST_PACKAGES ad libitum, and
+# append the new rule to the TEST_TARGETS list.
+test-unit: ARGS=-timeout=15m -race
+test-unit: TEST_PACKAGES=$(PACKAGES_UNIT)
+
+test-race: ARGS=-race
+test-race: TEST_PACKAGES=$(PACKAGES_NOSIMULATION)
+$(TEST_TARGETS): run-tests
+
+test-unit-cover: ARGS=-timeout=15m -race -coverprofile=coverage.txt -covermode=atomic
+test-unit-cover: TEST_PACKAGES=$(PACKAGES_UNIT)
+
+test-e2e:
+	@if [ -z "$(TARGET_VERSION)" ]; then \
+		echo "Building docker image from local codebase"; \
+		make build-docker; \
+	fi
+	@mkdir -p ./build
+	@rm -rf build/.tabid
+	@INITIAL_VERSION=$(INITIAL_VERSION) TARGET_VERSION=$(TARGET_VERSION) \
+	E2E_SKIP_CLEANUP=$(E2E_SKIP_CLEANUP) MOUNT_PATH=$(MOUNT_PATH) CHAIN_ID=$(CHAIN_ID) \
+	go test -v ./tests/e2e -run ^TestIntegrationTestSuite$
+
+run-tests:
+ifneq (,$(shell which tparse 2>/dev/null))
+	go test -mod=readonly -json $(ARGS) $(EXTRA_ARGS) $(TEST_PACKAGES) | tparse
+else
+	go test -mod=readonly $(ARGS)  $(EXTRA_ARGS) $(TEST_PACKAGES)
+endif
+
+test-import:
+	@go test ./tests/importer -v --vet=off --run=TestImportBlocks --datadir tmp \
+	--blockchain blockchain
+	rm -rf tests/importer/tmp
+
+test-rpc:
+	./scripts/integration-test-all.sh -t "rpc" -q 1 -z 1 -s 2 -m "rpc" -r "true"
+
+test-rpc-pending:
+	./scripts/integration-test-all.sh -t "pending" -q 1 -z 1 -s 2 -m "pending" -r "true"
+
+.PHONY: run-tests test test-all test-import test-rpc $(TEST_TARGETS)
+
+benchmark:
+	@go test -mod=readonly -bench=. $(PACKAGES_NOSIMULATION)
+.PHONY: benchmark
+
+###############################################################################
 ###                                Protobuf                                 ###
 ###############################################################################
 
