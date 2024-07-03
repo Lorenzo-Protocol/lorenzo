@@ -58,7 +58,7 @@ func (suite *KeeperTestSuite) TestPlansQuery() {
 			expectErr: false,
 			malleate: func() {
 				suite.Commit()
-				//create agent
+				// create agent
 				name := "sinohope4"
 				btcReceivingAddress := "3C7VPws9fMW3kcwRJvMkSVdqMs4SAhQCqq"
 				ethAddr := "0x6508d68f4e5931f93fadc3b7afac5092e195b80f"
@@ -124,7 +124,7 @@ func (suite *KeeperTestSuite) TestPlanQuery() {
 			expectErr: false,
 			malleate: func() {
 				suite.Commit()
-				//create agent
+				// create agent
 				name := "sinohope4"
 				btcReceivingAddress := "3C7VPws9fMW3kcwRJvMkSVdqMs4SAhQCqq"
 				ethAddr := "0x6508d68f4e5931f93fadc3b7afac5092e195b80f"

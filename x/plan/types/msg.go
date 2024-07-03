@@ -140,7 +140,6 @@ func (m *MsgSetMinter) ValidateBasic() error {
 	}
 	if !common.IsHexAddress(m.Minter) {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "invalid minter address")
-
 	}
 	if !common.IsHexAddress(m.ContractAddress) {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "invalid yat contract address")
@@ -161,7 +160,6 @@ func (m *MsgRemoveMinter) ValidateBasic() error {
 	}
 	if !common.IsHexAddress(m.Minter) {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "invalid minter address")
-
 	}
 	if !common.IsHexAddress(m.ContractAddress) {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "invalid yat contract address")

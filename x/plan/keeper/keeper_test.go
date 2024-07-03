@@ -2,6 +2,8 @@ package keeper_test
 
 import (
 	"encoding/json"
+	"testing"
+	"time"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 
@@ -12,9 +14,6 @@ import (
 
 	appparams "github.com/Lorenzo-Protocol/lorenzo/app/params"
 	evmtypes "github.com/evmos/ethermint/x/evm/types"
-
-	"testing"
-	"time"
 
 	feemarkettypes "github.com/evmos/ethermint/x/feemarket/types"
 
@@ -32,9 +31,7 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-var (
-	testAdmin = helpers.CreateTestAddrs(1)[0]
-)
+var testAdmin = helpers.CreateTestAddrs(1)[0]
 
 type KeeperTestSuite struct {
 	suite.Suite
@@ -106,7 +103,6 @@ func (suite *KeeperTestSuite) SetupTest() {
 	queryClient := types.NewQueryClient(queryHelper)
 	suite.msgServer = keeper.NewMsgServerImpl(suite.lorenzoApp.PlanKeeper)
 	suite.queryClient = queryClient
-
 }
 
 // Commit commits and starts a new block with an updated context.

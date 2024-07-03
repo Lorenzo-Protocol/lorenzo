@@ -75,7 +75,6 @@ func (suite *KeeperTestSuite) TestUpdateParams() {
 }
 
 func (suite *KeeperTestSuite) TestCreatPlan() {
-
 	testCases := []struct {
 		name       string
 		request    *types.MsgCreatePlan
@@ -105,7 +104,7 @@ func (suite *KeeperTestSuite) TestCreatPlan() {
 				Sender:             testAdmin.String(),
 			},
 			malleate: func(request *types.MsgCreatePlan) {
-				//create agent
+				// create agent
 				name := "sinohope4"
 				btcReceivingAddress := "3C7VPws9fMW3kcwRJvMkSVdqMs4SAhQCqq"
 				ethAddr := "0x6508d68f4e5931f93fadc3b7afac5092e195b80f"
@@ -131,7 +130,7 @@ func (suite *KeeperTestSuite) TestCreatPlan() {
 			},
 			malleate: func(request *types.MsgCreatePlan) {
 				suite.Commit()
-				//create agent
+				// create agent
 				name := "sinohope4"
 				btcReceivingAddress := "3C7VPws9fMW3kcwRJvMkSVdqMs4SAhQCqq"
 				ethAddr := "0x6508d68f4e5931f93fadc3b7afac5092e195b80f"
@@ -147,7 +146,6 @@ func (suite *KeeperTestSuite) TestCreatPlan() {
 				suite.Require().NoError(err)
 
 				request.YatContractAddress = yatAddr.Hex()
-
 			},
 			validation: func() {
 				plan, found := suite.lorenzoApp.PlanKeeper.GetPlan(suite.ctx, uint64(1))
@@ -160,7 +158,7 @@ func (suite *KeeperTestSuite) TestCreatPlan() {
 
 				planContractAddress := common.HexToAddress(plan.ContractAddress)
 
-				//YatContractAddress
+				// YatContractAddress
 				yatContractAddress, err := suite.lorenzoApp.PlanKeeper.YatContractAddress(suite.ctx, planContractAddress)
 				suite.Require().NoError(err)
 				suite.Require().Equal(yatContractAddress, common.HexToAddress(plan.YatContractAddress))
@@ -187,17 +185,17 @@ func (suite *KeeperTestSuite) TestCreatPlan() {
 				suite.Require().NoError(err)
 				suite.Require().Equal(planStartBlock, plan.PlanStartBlock.Uint64())
 
-				//PeriodBlocks
+				// PeriodBlocks
 				periodBlocks, err := suite.lorenzoApp.PlanKeeper.PeriodBlocks(suite.ctx, planContractAddress)
 				suite.Require().NoError(err)
 				suite.Require().Equal(periodBlocks, plan.PeriodBlocks.Uint64())
 
-				//NextRewardReceiveBlock
+				// NextRewardReceiveBlock
 				nextRewardReceiveBlock, err := suite.lorenzoApp.PlanKeeper.NextRewardReceiveBlock(suite.ctx, planContractAddress)
 				suite.Require().NoError(err)
 				suite.Require().Equal(nextRewardReceiveBlock, plan.PlanStartBlock.Uint64()+plan.PeriodBlocks.Uint64())
 
-				//ClaimRoundId
+				// ClaimRoundId
 				claimRoundId, err := suite.lorenzoApp.PlanKeeper.ClaimRoundId(suite.ctx, planContractAddress)
 				suite.Require().NoError(err)
 				suite.Require().Equal(claimRoundId, uint64(0))
@@ -276,7 +274,6 @@ func (suite *KeeperTestSuite) TestUpgradePlan() {
 			},
 			expectErr: false,
 			validation: func(request *types.MsgUpgradePlan) {
-
 				planImplementation, err := suite.lorenzoApp.PlanKeeper.GetPlanImplementationFromBeacon(suite.ctx)
 				suite.Require().NoError(err)
 				suite.Require().Equal(planImplementation.Hex(), request.Implementation)
@@ -339,7 +336,7 @@ func (suite *KeeperTestSuite) TestUpdatePlanStatus() {
 			},
 			malleate: func() {
 				suite.Commit()
-				//create agent
+				// create agent
 				name := "sinohope4"
 				btcReceivingAddress := "3C7VPws9fMW3kcwRJvMkSVdqMs4SAhQCqq"
 				ethAddr := "0x6508d68f4e5931f93fadc3b7afac5092e195b80f"
@@ -378,7 +375,7 @@ func (suite *KeeperTestSuite) TestUpdatePlanStatus() {
 			},
 			malleate: func() {
 				suite.Commit()
-				//create agent
+				// create agent
 				name := "sinohope4"
 				btcReceivingAddress := "3C7VPws9fMW3kcwRJvMkSVdqMs4SAhQCqq"
 				ethAddr := "0x6508d68f4e5931f93fadc3b7afac5092e195b80f"
@@ -417,7 +414,7 @@ func (suite *KeeperTestSuite) TestUpdatePlanStatus() {
 			},
 			malleate: func() {
 				suite.Commit()
-				//create agent
+				// create agent
 				name := "sinohope4"
 				btcReceivingAddress := "3C7VPws9fMW3kcwRJvMkSVdqMs4SAhQCqq"
 				ethAddr := "0x6508d68f4e5931f93fadc3b7afac5092e195b80f"
@@ -672,7 +669,7 @@ func (suite *KeeperTestSuite) TestSetMinter() {
 			},
 			malleate: func(request *types.MsgSetMinter) {
 				suite.Commit()
-				//create agent
+				// create agent
 				name := "sinohope4"
 				btcReceivingAddress := "3C7VPws9fMW3kcwRJvMkSVdqMs4SAhQCqq"
 				ethAddr := "0x6508d68f4e5931f93fadc3b7afac5092e195b80f"
@@ -706,7 +703,6 @@ func (suite *KeeperTestSuite) TestSetMinter() {
 			},
 			expectErr: false,
 			validation: func(request *types.MsgSetMinter) {
-
 				yatAddress := common.HexToAddress(request.ContractAddress)
 				minterAddress := common.HexToAddress(request.Minter)
 				found, err := suite.lorenzoApp.PlanKeeper.HasRoleFromYAT(
@@ -804,7 +800,7 @@ func (suite *KeeperTestSuite) TestRemoveMinter() {
 			},
 			malleate: func(request *types.MsgRemoveMinter) {
 				suite.Commit()
-				//create agent
+				// create agent
 				name := "sinohope4"
 				btcReceivingAddress := "3C7VPws9fMW3kcwRJvMkSVdqMs4SAhQCqq"
 				ethAddr := "0x6508d68f4e5931f93fadc3b7afac5092e195b80f"
@@ -845,7 +841,6 @@ func (suite *KeeperTestSuite) TestRemoveMinter() {
 			},
 			expectErr: false,
 			validation: func(request *types.MsgRemoveMinter) {
-
 				yatAddress := common.HexToAddress(request.ContractAddress)
 				minterAddress := common.HexToAddress(request.Minter)
 				found, err := suite.lorenzoApp.PlanKeeper.HasRoleFromYAT(
