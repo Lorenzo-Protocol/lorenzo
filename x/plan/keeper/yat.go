@@ -183,6 +183,11 @@ func (k Keeper) Mint(
 	contractAddress, to common.Address,
 	amount *big.Int,
 ) error {
+	// check if contractAddress is zero address
+	zeroAddr := common.Address{}
+	if contractAddress == zeroAddr {
+		return errorsmod.Wrap(types.ErrContractAddress, "invalid contract address")
+	}
 	contractABI := contractsplan.YieldAccruingTokenContract.ABI
 	res, err := k.CallEVM(
 		ctx,
