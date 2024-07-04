@@ -23,6 +23,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+// GenesisState defines the token module's genesis state.
 type GenesisState struct {
 	Params     Params      `protobuf:"bytes,1,opt,name=params,proto3" json:"params"`
 	TokenPairs []TokenPair `protobuf:"bytes,2,rep,name=token_pairs,json=tokenPairs,proto3" json:"token_pairs"`
@@ -75,6 +76,7 @@ func (m *GenesisState) GetTokenPairs() []TokenPair {
 	return nil
 }
 
+// Params defines the token module parameters.
 type Params struct {
 	EnableConvert bool `protobuf:"varint,1,opt,name=enable_convert,json=enableConvert,proto3" json:"enable_convert,omitempty"`
 	EnableEVMHook bool `protobuf:"varint,2,opt,name=enable_evm_hook,json=enableEvmHook,proto3" json:"enable_evm_hook,omitempty"`
