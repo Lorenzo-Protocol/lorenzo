@@ -1,8 +1,11 @@
 package types
 
+import "fmt"
+
 // ERC20Data represents the ERC20 token details used to map
 // the token to a Cosmos Coin
 type ERC20Data struct {
+	Address  string
 	Name     string
 	Symbol   string
 	Decimals uint8
@@ -24,10 +27,25 @@ type ERC20BoolResponse struct {
 }
 
 // NewERC20Data creates a new ERC20Data instance
-func NewERC20Data(name, symbol string, decimals uint8) ERC20Data {
+func NewERC20Data(address, name, symbol string, decimals uint8) ERC20Data {
 	return ERC20Data{
+		Address:  address,
 		Name:     name,
 		Symbol:   symbol,
 		Decimals: decimals,
 	}
+}
+
+// BaseDenom constructs coin base denom for an erc20 contract.
+func (d ERC20Data) BaseDenom() string {
+	return fmt.Sprintf("%s/%s", DenomPrefix, d.Address)
+}
+
+// Description returns coin description for an erc20 contract.
+func (d ERC20Data) Description() string {
+	return fmt.Sprintf("erc20/%s mapping to cosmos sdk coin", d.Address)
+}
+
+func (d ERC20Data) SanitizedName() string {
+	panic("implement me")
 }

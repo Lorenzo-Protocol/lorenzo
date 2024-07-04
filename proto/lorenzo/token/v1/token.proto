@@ -24,7 +24,7 @@ message TokenPair {
   option (gogoproto.equal) = true;
   // erc20 contract hex format address
   string contract_address = 1;
-  // sdk coin denomination
+  // sdk coin base denomination
   string denom = 2;
   // allows for token conversion
   bool enabled = 3;

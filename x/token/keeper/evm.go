@@ -15,9 +15,94 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	errortypes "github.com/cosmos/cosmos-sdk/types/errors"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
+	"github.com/Lorenzo-Protocol/lorenzo/contracts/erc20"
 	"github.com/Lorenzo-Protocol/lorenzo/x/token/types"
 )
+
+// DeployERC20Contract deploys an ERC20 contract for a given coin metadata.
+func (k Keeper) DeployERC20Contract(ctx sdk.Context, coinMetadata banktypes.Metadata) (common.Address, error) {
+	decimals := uint8(0)
+
+	// get the maximum decimal unit
+	if len(coinMetadata.DenomUnits) > 0 {
+		decimalsIdx := len(coinMetadata.DenomUnits) - 1
+		decimals = uint8(coinMetadata.DenomUnits[decimalsIdx].Exponent)
+	}
+
+	contractArgs, err := erc20.ERC20MinterBurnerDecimalsContract.ABI.Pack("", coinMetadata.Name, coinMetadata.Symbol, decimals)
+
+	if err != nil {
+		return common.Address{}, errorsmod.Wrapf(types.ErrABIPack, "coin metadata is invalid %s: %s", coinMetadata.Name, err.Error())
+	}
+
+	data := make([]byte, len(erc20.ERC20MinterBurnerDecimalsContract.Bin)+len(contractArgs))
+	copy(data[:len(erc20.ERC20MinterBurnerDecimalsContract.Bin)], erc20.ERC20MinterBurnerDecimalsContract.Bin)
+	copy(data[len(erc20.ERC20MinterBurnerDecimalsContract.Bin):], contractArgs)
+
+	nonce, err := k.accountKeeper.GetSequence(ctx, types.ModuleAddress.Bytes())
+	if err != nil {
+		return common.Address{}, err
+	}
+
+	contractAddr := crypto.CreateAddress(types.ModuleAddress, nonce)
+	_, err = k.CallEVMWithData(ctx, types.ModuleAddress, nil, data, true)
+	if err != nil {
+		return common.Address{}, errorsmod.Wrapf(err, "failed to deploy contract for %s", coinMetadata.Name)
+	}
+
+	return contractAddr, nil
+}
+
+// QueryERC20Contract returns the data of a deployed ERC20 contract
+func (k Keeper) QueryERC20Contract(ctx sdk.Context, contract common.Address) (types.ERC20Data, error) {
+	var (
+		nameRes    types.ERC20StringResponse
+		symbolRes  types.ERC20StringResponse
+		decimalRes types.ERC20Uint8Response
+	)
+
+	erc20 := erc20.ERC20MinterBurnerDecimalsContract.ABI
+
+	// Name
+	res, err := k.CallEVM(ctx, erc20, types.ModuleAddress, contract, false, "name")
+	if err != nil {
+		return types.ERC20Data{}, err
+	}
+
+	if err := erc20.UnpackIntoInterface(&nameRes, "name", res.Ret); err != nil {
+		return types.ERC20Data{}, errorsmod.Wrapf(
+			types.ErrABIUnpack, "failed to unpack name: %s", err.Error(),
+		)
+	}
+
+	// Symbol
+	res, err = k.CallEVM(ctx, erc20, types.ModuleAddress, contract, false, "symbol")
+	if err != nil {
+		return types.ERC20Data{}, err
+	}
+
+	if err := erc20.UnpackIntoInterface(&symbolRes, "symbol", res.Ret); err != nil {
+		return types.ERC20Data{}, errorsmod.Wrapf(
+			types.ErrABIUnpack, "failed to unpack symbol: %s", err.Error(),
+		)
+	}
+
+	// Decimals
+	res, err = k.CallEVM(ctx, erc20, types.ModuleAddress, contract, false, "decimals")
+	if err != nil {
+		return types.ERC20Data{}, err
+	}
+
+	if err := erc20.UnpackIntoInterface(&decimalRes, "decimals", res.Ret); err != nil {
+		return types.ERC20Data{}, errorsmod.Wrapf(
+			types.ErrABIUnpack, "failed to unpack decimals: %s", err.Error(),
+		)
+	}
+
+	return types.NewERC20Data(contract.String(), nameRes.Value, symbolRes.Value, decimalRes.Value), nil
+}
 
 // BalanceOf returns the balance of an account in a given contract
 func (k Keeper) BalanceOf(
