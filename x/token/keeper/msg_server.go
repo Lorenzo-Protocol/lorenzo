@@ -42,7 +42,7 @@ func (m msgServer) ConvertCoin(goCtx context.Context, msg *types.MsgConvertCoin)
 	acc := m.evmKeeper.GetAccountWithoutBalance(ctx, erc20)
 
 	if acc == nil || !acc.IsContract() {
-		m.DeleteTokenPair(ctx, pair)
+		m.RemoveTokenPair(ctx, pair)
 		m.Logger(ctx).Debug(
 			"deleting self-destructed token pair from state",
 			"contract", pair.ContractAddress,
@@ -83,7 +83,7 @@ func (m msgServer) ConvertERC20(goCtx context.Context, msg *types.MsgConvertERC2
 	acc := m.evmKeeper.GetAccountWithoutBalance(ctx, erc20)
 
 	if acc == nil || !acc.IsContract() {
-		m.DeleteTokenPair(ctx, pair)
+		m.RemoveTokenPair(ctx, pair)
 		m.Logger(ctx).Debug(
 			"deleting self-destructed token pair from state",
 			"contract", pair.ContractAddress,
@@ -111,9 +111,7 @@ func (m msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParam
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	if err := m.SetParams(ctx, msg.Params); err != nil {
-		return nil, err
-	}
+	m.SetParams(ctx, msg.Params)
 
 	return &types.MsgUpdateParamsResponse{}, nil
 }
