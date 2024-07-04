@@ -28,7 +28,7 @@ type Keeper struct {
 //  1. global conversion is enabled
 //  2. token pair conversion is enabled
 //  3. receiver address is not blocked by bank module.
-//  4. coin are enabled for bank module transfers
+//  4. coins are enabled for bank module transfers
 func (k Keeper) MintEnabled(
 	ctx sdk.Context,
 	sender, receiver sdk.AccAddress,
