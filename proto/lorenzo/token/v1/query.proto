@@ -8,7 +8,7 @@ import "lorenzo/token/v1/token.proto";
 import "lorenzo/token/v1/genesis.proto";
 
 
-option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/convert/types";
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/token/types";
 
 service Query {
   // TokenPairs retrieves registered token pairs

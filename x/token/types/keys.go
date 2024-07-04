@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	ModuleName = "convert"
+	ModuleName = "token"
 
 	// StoreKey to be used when creating the KVStore
 	StoreKey = ModuleName
