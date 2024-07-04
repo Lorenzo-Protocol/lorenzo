@@ -5,7 +5,7 @@ import (
 )
 
 var (
-	ErrERC20Disabled          = errorsmod.Register(ModuleName, 2, "erc20 module is disabled")
+	ErrConvertDisabled        = errorsmod.Register(ModuleName, 2, "token module is disabled")
 	ErrInternalTokenPair      = errorsmod.Register(ModuleName, 3, "internal ethereum token mapping error")
 	ErrTokenPairNotFound      = errorsmod.Register(ModuleName, 4, "token pair not found")
 	ErrTokenPairAlreadyExists = errorsmod.Register(ModuleName, 5, "token pair already exists")
@@ -16,5 +16,5 @@ var (
 	ErrABIUnpack              = errorsmod.Register(ModuleName, 10, "contract ABI unpack failed")
 	ErrEVMDenom               = errorsmod.Register(ModuleName, 11, "EVM denomination registration")
 	ErrEVMCall                = errorsmod.Register(ModuleName, 12, "EVM call unexpected error")
-	ErrERC20TokenPairDisabled = errorsmod.Register(ModuleName, 13, "erc20 token pair is disabled")
+	ErrTokenPairDisabled      = errorsmod.Register(ModuleName, 13, "token pair is disabled")
 )
