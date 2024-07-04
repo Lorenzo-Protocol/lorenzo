@@ -130,6 +130,7 @@ func (m *QueryTokenPairsResponse) GetPagination() *query.PageResponse {
 
 // QueryTokenPairRequest is the request type for the Query/TokenPair RPC method.
 type QueryTokenPairRequest struct {
+	// token can be either coin denom or erc20 contract address.
 	Token string `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
 }
 
