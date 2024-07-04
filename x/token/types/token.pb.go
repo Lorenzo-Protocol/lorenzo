@@ -24,7 +24,9 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// Ownership defines the ownership of an erc20 contract
+// Ownership defines the ownership of an erc20 contract, if ownership belongs to:
+// - token module: the token origin is sdk coin.
+// - external account: the token origin is erc20 contract.
 type Ownership int32
 
 const (
@@ -58,7 +60,7 @@ func (Ownership) EnumDescriptor() ([]byte, []int) {
 
 // TokenPair defines a pairing of a cosmos coin and an erc20 token
 type TokenPair struct {
-	// erc20 contract address
+	// erc20 contract hex format address
 	ContractAddress string `protobuf:"bytes,1,opt,name=contract_address,json=contractAddress,proto3" json:"contract_address,omitempty"`
 	// sdk coin denomination
 	Denom string `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`

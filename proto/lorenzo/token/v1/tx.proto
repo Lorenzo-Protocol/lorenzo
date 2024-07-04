@@ -23,9 +23,9 @@ service Msg {
 message MsgConvertCoin {
   // coin to be converted
   cosmos.base.v1beta1.Coin coin = 1 [(gogoproto.nullable) = false];
-  // receiver of the erc20 token
+  // receiver of the erc20 token, evm hex format address.
   string receiver = 2;
-  // sender of the coin
+  // sender of the coin, lorenzo bech32 format address.
   string sender = 3;
 }
 

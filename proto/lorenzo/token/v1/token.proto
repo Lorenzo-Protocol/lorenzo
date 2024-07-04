@@ -6,7 +6,9 @@ import "gogoproto/gogo.proto";
 
 option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/token/types";
 
-// Ownership defines the ownership of an erc20 contract
+// Ownership defines the ownership of an erc20 contract, if ownership belongs to:
+// - token module: the token origin is sdk coin.
+// - external account: the token origin is erc20 contract.
 enum Ownership {
   option (gogoproto.goproto_enum_prefix) = false;
   // undefined owner
@@ -20,7 +22,7 @@ enum Ownership {
 // TokenPair defines a pairing of a cosmos coin and an erc20 token
 message TokenPair {
   option (gogoproto.equal) = true;
-  // erc20 contract address
+  // erc20 contract hex format address
   string contract_address = 1;
   // sdk coin denomination
   string denom = 2;

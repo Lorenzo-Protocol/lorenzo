@@ -7,7 +7,6 @@ import (
 	context "context"
 	cosmossdk_io_math "cosmossdk.io/math"
 	fmt "fmt"
-	types1 "github.com/Lorenzo-Protocol/lorenzo/x/convert/types"
 	_ "github.com/cosmos/cosmos-proto"
 	types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/cosmos-sdk/types/msgservice"
@@ -38,9 +37,9 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 type MsgConvertCoin struct {
 	// coin to be converted
 	Coin types.Coin `protobuf:"bytes,1,opt,name=coin,proto3" json:"coin"`
-	// receiver of the erc20 token
+	// receiver of the erc20 token, evm hex format address.
 	Receiver string `protobuf:"bytes,2,opt,name=receiver,proto3" json:"receiver,omitempty"`
-	// sender of the coin
+	// sender of the coin, lorenzo bech32 format address.
 	Sender string `protobuf:"bytes,3,opt,name=sender,proto3" json:"sender,omitempty"`
 }
 
@@ -241,7 +240,7 @@ type MsgUpdateParams struct {
 	// authority is the address that can update the parameters
 	Authority string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
 	// params are the new parameters
-	Params types1.Params `protobuf:"bytes,2,opt,name=params,proto3" json:"params"`
+	Params Params `protobuf:"bytes,2,opt,name=params,proto3" json:"params"`
 }
 
 func (m *MsgUpdateParams) Reset()         { *m = MsgUpdateParams{} }
@@ -284,11 +283,11 @@ func (m *MsgUpdateParams) GetAuthority() string {
 	return ""
 }
 
-func (m *MsgUpdateParams) GetParams() types1.Params {
+func (m *MsgUpdateParams) GetParams() Params {
 	if m != nil {
 		return m.Params
 	}
-	return types1.Params{}
+	return Params{}
 }
 
 type MsgUpdateParamsResponse struct {
