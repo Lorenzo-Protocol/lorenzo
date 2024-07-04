@@ -15,6 +15,20 @@ func (k Keeper) RemoveTokenPair(ctx sdk.Context, tokenPair types.TokenPair) {
 	k.DeleteTokenPairIdByDenom(ctx, tokenPair.Denom)
 }
 
+// IsRegisteredByDenom checks if a token pair is registered by coin denom.
+func (k Keeper) IsRegisteredByDenom(ctx sdk.Context, denom string) bool {
+	store := ctx.KVStore(k.storeKey)
+	key := types.PrefixTokenPairIdByDenomStoreKey(denom)
+	return store.Has(key)
+}
+
+// IsRegisteredByERC20 checks if a token pair is registered by erc20 address
+func (k Keeper) IsRegisteredByERC20(ctx sdk.Context, erc20Addr common.Address) bool {
+	store := ctx.KVStore(k.storeKey)
+	key := types.PrefixTokenPairIdByERC20StoreKey(erc20Addr)
+	return store.Has(key)
+}
+
 // GetTokenPairId returns the token pair id by either denom or erc20 address.
 func (k Keeper) GetTokenPairId(ctx sdk.Context, token string) []byte {
 	if common.IsHexAddress(token) {
@@ -40,8 +54,8 @@ func (k Keeper) GetTokenPair(ctx sdk.Context, id []byte) (types.TokenPair, bool)
 	}
 
 	store := ctx.KVStore(k.storeKey)
-	keys := types.PrefixTokenPairStoreKey(id)
-	bz := store.Get(keys)
+	key := types.PrefixTokenPairStoreKey(id)
+	bz := store.Get(key)
 	if len(bz) == 0 {
 		return pair, false
 	}
