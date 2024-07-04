@@ -26,9 +26,11 @@ func (m msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParam
 		return nil, errorsmod.Wrapf(
 			govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", m.k.authority, msg.Authority)
 	}
+
 	if err := msg.Params.Validate(); err != nil {
 		return nil, govtypes.ErrInvalidProposalMsg.Wrapf("invalid parameter: %v", err)
 	}
+
 	sdkCtx := sdk.UnwrapSDKContext(goCtx)
 
 	if err := m.k.SetParams(sdkCtx, msg.Params); err != nil {
@@ -79,9 +81,6 @@ func (m msgServer) CreatePlan(goCtx context.Context, msg *types.MsgCreatePlan) (
 	if !m.k.Authorized(ctx, sender) {
 		return nil, errorsmod.Wrapf(types.ErrUnauthorized, "unauthorized")
 	}
-	if err := msg.ValidateBasic(); err != nil {
-		return nil, err
-	}
 	plan := types.Plan{
 		Name:               msg.Name,
 		PlanDescUri:        msg.PlanDescUri,
@@ -111,10 +110,6 @@ func (m msgServer) SetMerkleRoot(goCtx context.Context, msg *types.MsgSetMerkleR
 		return nil, errorsmod.Wrapf(types.ErrUnauthorized, "unauthorized")
 	}
 
-	if err := msg.ValidateBasic(); err != nil {
-		return nil, err
-	}
-
 	plan, found := m.k.GetPlan(ctx, msg.PlanId)
 	if !found {
 		return nil, errorsmod.Wrapf(types.ErrPlanNotFound, "plan not found")
@@ -137,13 +132,6 @@ func (m msgServer) Claims(goCtx context.Context, msg *types.MsgClaims) (*types.M
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	sender, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
-		return nil, err
-	}
-	//if !m.k.Authorized(ctx, sender) {
-	//	return nil, errorsmod.Wrapf(types.ErrUnauthorized, "unauthorized")
-	//}
-
-	if err := msg.ValidateBasic(); err != nil {
 		return nil, err
 	}
 
@@ -180,9 +168,6 @@ func (m msgServer) CreateYAT(goCtx context.Context, msg *types.MsgCreateYAT) (*t
 	if !m.k.Authorized(ctx, sender) {
 		return nil, errorsmod.Wrapf(types.ErrUnauthorized, "unauthorized")
 	}
-	if err := msg.ValidateBasic(); err != nil {
-		return nil, err
-	}
 	yatContract, err := m.k.DeployYATContract(ctx, msg.Name, msg.Symbol)
 	if err != nil {
 		return nil, err
@@ -204,9 +189,7 @@ func (m msgServer) UpdatePlanStatus(goCtx context.Context, msg *types.MsgUpdateP
 	if !m.k.Authorized(ctx, sender) {
 		return nil, errorsmod.Wrapf(types.ErrUnauthorized, "unauthorized")
 	}
-	if err := msg.ValidateBasic(); err != nil {
-		return nil, err
-	}
+
 	plan, found := m.k.GetPlan(ctx, msg.PlanId)
 	if !found {
 		return nil, errorsmod.Wrapf(types.ErrPlanNotFound, "plan not found")
@@ -235,9 +218,7 @@ func (m msgServer) SetMinter(goCtx context.Context, msg *types.MsgSetMinter) (*t
 	if !m.k.Authorized(ctx, sender) {
 		return nil, errorsmod.Wrapf(types.ErrUnauthorized, "unauthorized")
 	}
-	if err := msg.ValidateBasic(); err != nil {
-		return nil, err
-	}
+
 	if err := m.k.UpdateMinter(ctx, msg.ContractAddress, msg.Minter, UpdateMinterTypeAdd); err != nil {
 		return nil, err
 	}
@@ -258,9 +239,7 @@ func (m msgServer) RemoveMinter(goCtx context.Context, msg *types.MsgRemoveMinte
 	if !m.k.Authorized(ctx, sender) {
 		return nil, errorsmod.Wrapf(types.ErrUnauthorized, "unauthorized")
 	}
-	if err := msg.ValidateBasic(); err != nil {
-		return nil, err
-	}
+
 	if err := m.k.UpdateMinter(ctx, msg.ContractAddress, msg.Minter, UpdateMinterTypeRemove); err != nil {
 		return nil, err
 	}

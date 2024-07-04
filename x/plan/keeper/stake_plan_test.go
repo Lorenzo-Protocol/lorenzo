@@ -9,7 +9,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 )
 
-func (suite *KeeperTestSuite) TestQueryStakePlan() {
+func (suite *KeeperTestSuite) TestStakePlan() {
 	testCases := []struct {
 		name       string
 		plan       *types.Plan

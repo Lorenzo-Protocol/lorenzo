@@ -84,7 +84,7 @@ func (m *MsgClaims) ValidateBasic() error {
 		return errorsmod.Wrap(ErrReceiver, "invalid receiver address")
 	}
 	merkleProof := common.HexToHash(m.MerkleProof)
-	if len(merkleProof.Bytes()) != 32 {
+	if merkleProof.String() != m.MerkleProof {
 		return fmt.Errorf("invalid merkle proof")
 	}
 	return nil
@@ -121,7 +121,10 @@ func (m *MsgUpdatePlanStatus) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.Sender); err != nil {
 		return errorsmod.Wrap(err, "invalid sender address")
 	}
-	if m.Status < 0 || m.Status > 2 {
+	if m.PlanId == 0 {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "plan id cannot be zero")
+	}
+	if m.Status < 0 || m.Status > 1 {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "invalid status")
 	}
 	return nil
@@ -178,9 +181,14 @@ func (m *MsgSetMerkleRoot) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.Sender); err != nil {
 		return errorsmod.Wrap(err, "invalid sender address")
 	}
+
+	if m.PlanId == 0 {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "plan id cannot be zero")
+	}
+
 	merkleRoot := common.HexToHash(m.MerkleRoot)
-	if len(merkleRoot.Bytes()) != 32 {
-		return fmt.Errorf("invalid merkle root")
+	if merkleRoot.String() != m.MerkleRoot {
+		return fmt.Errorf("invalid merkle proof")
 	}
 	return nil
 }

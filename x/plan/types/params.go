@@ -13,6 +13,13 @@ func DefaultParams() Params {
 	return Params{}
 }
 
+func NewParams(allowList []string, beacon string) Params {
+	return Params{
+		AllowList: allowList,
+		Beacon:    beacon,
+	}
+}
+
 // Validate validates the Params struct.
 //
 // It does not take any parameters.
