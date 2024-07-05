@@ -32,7 +32,6 @@ func (k Keeper) DeployERC20Contract(ctx sdk.Context, coinMetadata banktypes.Meta
 	}
 
 	contractArgs, err := erc20.ERC20MinterBurnerDecimalsContract.ABI.Pack("", coinMetadata.Name, coinMetadata.Symbol, decimals)
-
 	if err != nil {
 		return common.Address{}, errorsmod.Wrapf(types.ErrABIPack, "coin metadata is invalid %s: %s", coinMetadata.Name, err.Error())
 	}

@@ -20,7 +20,6 @@ type Keeper struct {
 	accountKeeper types.AccountKeeper
 	bankKeeper    types.BankKeeper
 	evmKeeper     types.EVMKeeper
-	stakingKeeper types.StakingKeeper
 }
 
 // MintEnabled checks whether the token is allowed to mint and convert:
@@ -32,7 +31,8 @@ type Keeper struct {
 func (k Keeper) MintEnabled(
 	ctx sdk.Context,
 	sender, receiver sdk.AccAddress,
-	token string) (types.TokenPair, error) {
+	token string,
+) (types.TokenPair, error) {
 	panic("implement me")
 }
 
