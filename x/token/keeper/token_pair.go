@@ -29,6 +29,23 @@ func (k Keeper) IsRegisteredByERC20(ctx sdk.Context, erc20Addr common.Address) b
 	return store.Has(key)
 }
 
+// GetTokenPairs returns all token pairs.
+func (k Keeper) GetTokenPairs(ctx sdk.Context) []types.TokenPair {
+	var tokenPairs []types.TokenPair
+
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.KeyPrefixTokenPair)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var tokenPair types.TokenPair
+		k.cdc.MustUnmarshal(iterator.Value(), &tokenPair)
+		tokenPairs = append(tokenPairs, tokenPair)
+	}
+
+	return tokenPairs
+}
+
 // GetTokenPairId returns the token pair id by either denom or erc20 address.
 func (k Keeper) GetTokenPairId(ctx sdk.Context, token string) []byte {
 	if common.IsHexAddress(token) {
