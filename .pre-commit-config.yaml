@@ -13,3 +13,4 @@ repos:
     hooks:
       - id: golangci-lint
         stages: [ push ]
+        always_run: true
