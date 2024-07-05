@@ -18,6 +18,11 @@ type msgServer struct {
 	*Keeper
 }
 
+// NewMsgServer creates a new token MsgServer instance
+func NewMsgServer(k *Keeper) types.MsgServer {
+	return &msgServer{Keeper: k}
+}
+
 // RegisterCoin implements MsgServer.RegisterCoin
 func (m msgServer) RegisterCoin(goCtx context.Context, msg *types.MsgRegisterCoin) (*types.MsgRegisterCoinResponse, error) {
 	if m.authority.String() != msg.Authority {
