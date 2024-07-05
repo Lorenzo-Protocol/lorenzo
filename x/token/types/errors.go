@@ -17,4 +17,6 @@ var (
 	ErrEVMDenom               = errorsmod.Register(ModuleName, 11, "EVM denomination registration")
 	ErrEVMCall                = errorsmod.Register(ModuleName, 12, "EVM call unexpected error")
 	ErrTokenPairDisabled      = errorsmod.Register(ModuleName, 13, "token pair is disabled")
+	ErrInvalidToken           = errorsmod.Register(ModuleName, 14, "invalid token")
+	ErrInvalidDenom           = errorsmod.Register(ModuleName, 15, "invalid denom")
 )
