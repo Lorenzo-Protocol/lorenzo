@@ -22,6 +22,25 @@ type Keeper struct {
 	evmKeeper     types.EVMKeeper
 }
 
+// NewKeeper creates a new token keeper
+func NewKeeper(
+	cdc codec.BinaryCodec,
+	storeKey storetypes.StoreKey,
+	authority sdk.AccAddress,
+	accountKeeper types.AccountKeeper,
+	bankKeeper types.BankKeeper,
+	evmKeeper types.EVMKeeper,
+) *Keeper {
+	return &Keeper{
+		storeKey:      storeKey,
+		cdc:           cdc,
+		authority:     authority,
+		accountKeeper: accountKeeper,
+		bankKeeper:    bankKeeper,
+		evmKeeper:     evmKeeper,
+	}
+}
+
 // MintEnabled checks whether the token is allowed to mint and convert:
 // It returns the token pair without error if:
 //  1. global conversion is enabled
