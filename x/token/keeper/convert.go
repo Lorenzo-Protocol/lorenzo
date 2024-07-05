@@ -30,7 +30,7 @@ func (k Keeper) ConvertCoinNativeCoin(
 	}
 
 	// 2. mint tokens on contract
-	erc20ABI := erc20.ERC20MinterBurnerDecimalsContract.ABI
+	erc20ABI := erc20.ERC20MinterBurnerDecimalsContract.ABI // nolint: staticcheck
 	erc20Addr := pair.GetERC20ContractAddress()
 	balanceBefore := k.BalanceOf(ctx, erc20ABI, erc20Addr, receiver)
 	if balanceBefore == nil {
@@ -105,7 +105,7 @@ func (k Keeper) ConvertCoinNativeERC20(
 	}
 
 	// 2. un-escrow tokens from contract and sent to receiver
-	erc20ABI := erc20.ERC20MinterBurnerDecimalsContract.ABI
+	erc20ABI := erc20.ERC20MinterBurnerDecimalsContract.ABI // nolint: staticcheck
 	erc20Addr := pair.GetERC20ContractAddress()
 	balanceBefore := k.BalanceOf(ctx, erc20ABI, erc20Addr, receiver)
 	if balanceBefore == nil {
@@ -193,7 +193,7 @@ func (k Keeper) ConvertERC20NativeCoin(
 	receiver sdk.AccAddress,
 	sender common.Address,
 ) (*types.MsgConvertERC20Response, error) {
-	erc20ABI := erc20.ERC20MinterBurnerDecimalsContract.ABI
+	erc20ABI := erc20.ERC20MinterBurnerDecimalsContract.ABI // nolint: staticcheck
 	erc20Addr := pair.GetERC20ContractAddress()
 	balanceCoinBefore := k.bankKeeper.GetBalance(ctx, receiver, pair.Denom)
 	balanceTokenBefore := k.BalanceOf(ctx, erc20ABI, erc20Addr, sender)
@@ -279,7 +279,7 @@ func (k Keeper) ConvertERC20NativeERC20(
 	receiver sdk.AccAddress,
 	sender common.Address,
 ) (*types.MsgConvertERC20Response, error) {
-	erc20ABI := erc20.ERC20MinterBurnerDecimalsContract.ABI
+	erc20ABI := erc20.ERC20MinterBurnerDecimalsContract.ABI // nolint: staticcheck
 	erc20Addr := pair.GetERC20ContractAddress()
 	balanceCoinBefore := k.bankKeeper.GetBalance(ctx, receiver, pair.Denom)
 	balanceTokenBefore := k.BalanceOf(ctx, erc20ABI, erc20Addr, types.ModuleAddress)
