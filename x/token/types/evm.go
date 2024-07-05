@@ -46,6 +46,7 @@ func (d ERC20Data) Description() string {
 	return fmt.Sprintf("erc20/%s mapping to cosmos sdk coin", d.Address)
 }
 
+// SanitizedName sanitizes the erc20 name to be an acceptable denom.
 func (d ERC20Data) SanitizedName() string {
-	panic("implement me")
+	return SanitizeERC20Name(d.Name)
 }
