@@ -28,6 +28,12 @@ func (k Keeper) RegisterCoin(ctx sdk.Context, coinMetadata banktypes.Metadata) (
 		)
 	}
 
+	if err := k.CompareOrSetMetadata(ctx, coinMetadata); err != nil {
+		return nil, errorsmod.Wrapf(
+			types.ErrInternalTokenPair, "coin metadata is invalid %s", coinMetadata.Name,
+		)
+	}
+
 	addr, err := k.DeployERC20Contract(ctx, coinMetadata)
 	if err != nil {
 		return nil, errorsmod.Wrap(
@@ -141,4 +147,17 @@ func (k Keeper) ToggleConversion(ctx sdk.Context, token string) (types.TokenPair
 	k.SetTokenPair(ctx, pair)
 
 	return pair, nil
+}
+
+// CompareOrSetMetadata checks if a coin metadata exists, if
+// - exists: metadata passed must be same as stored one
+// - non-exists: call SetDenomMetaData to store one
+func (k Keeper) CompareOrSetMetadata(ctx sdk.Context, coinMetadata banktypes.Metadata) error {
+	meta, found := k.bankKeeper.GetDenomMetaData(ctx, coinMetadata.Base)
+	if !found {
+		k.bankKeeper.SetDenomMetaData(ctx, coinMetadata)
+		return nil
+	}
+
+	return types.CompareMetadata(meta, coinMetadata)
 }
