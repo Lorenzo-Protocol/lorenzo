@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/Lorenzo-Protocol/lorenzo/x/token/client/cli"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
@@ -16,6 +15,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
+	"github.com/Lorenzo-Protocol/lorenzo/x/token/client/cli"
 	"github.com/Lorenzo-Protocol/lorenzo/x/token/keeper"
 	"github.com/Lorenzo-Protocol/lorenzo/x/token/types"
 )
@@ -61,6 +61,14 @@ type AppModule struct {
 	AppModuleBasic
 
 	keeper keeper.Keeper
+}
+
+// NewAppModule creates a new AppModule object
+func NewAppModule(cdc codec.Codec, keeper keeper.Keeper) AppModule {
+	return AppModule{
+		AppModuleBasic: AppModuleBasic{cdc: cdc},
+		keeper:         keeper,
+	}
 }
 
 // RegisterServices registers the module's services.
