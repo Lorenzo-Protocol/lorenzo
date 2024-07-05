@@ -10,6 +10,9 @@ import (
 func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 	registry.RegisterImplementations(
 		(*sdk.Msg)(nil),
+		&MsgRegisterCoin{},
+		&MsgRegisterERC20{},
+		&MsgToggleConversion{},
 		&MsgConvertCoin{},
 		&MsgConvertERC20{},
 		&MsgUpdateParams{},
