@@ -102,7 +102,8 @@ func (m *MsgToggleConversion) GetSigners() []sdk.AccAddress {
 func (m *MsgConvertCoin) ValidateBasic() error {
 	if err := ValidateERC20Denom(m.Coin.Denom); err != nil {
 		if err := ibctransfertypes.ValidateIBCDenom(m.Coin.Denom); err != nil {
-			return errorsmod.Wrapf(ErrInvalidDenom, "%s is neither valid erc20, nor native denom, nor ibc denom")
+			return errorsmod.Wrapf(ErrInvalidDenom,
+				"%s is neither valid erc20, nor native denom, nor ibc denom", m.Coin.Denom)
 		}
 	}
 

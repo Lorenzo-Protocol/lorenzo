@@ -35,7 +35,7 @@ func (k Keeper) GetTokenPairs(ctx sdk.Context) []types.TokenPair {
 
 	store := ctx.KVStore(k.storeKey)
 	iterator := sdk.KVStorePrefixIterator(store, types.KeyPrefixTokenPair)
-	defer iterator.Close()
+	defer iterator.Close() //nolint:errcheck
 
 	for ; iterator.Valid(); iterator.Next() {
 		var tokenPair types.TokenPair
