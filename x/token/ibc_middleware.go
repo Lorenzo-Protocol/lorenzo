@@ -16,50 +16,50 @@ var _ porttypes.IBCModule = &IBCMiddleware{}
 // IBCMiddleware implements the ICS26 callbacks for the transfer middleware given
 // the erc20 keeper and the underlying application.
 type IBCMiddleware struct {
-	keeper keeper.Keeper
+	keeper.Keeper
 }
 
 func (I IBCMiddleware) OnChanOpenInit(ctx sdk.Context, order types.Order, connectionHops []string, portID string, channelID string, channelCap *capabilitytypes.Capability, counterparty types.Counterparty, version string) (string, error) {
-	//TODO implement me
+	// TODO implement me
 	panic("implement me")
 }
 
 func (I IBCMiddleware) OnChanOpenTry(ctx sdk.Context, order types.Order, connectionHops []string, portID, channelID string, channelCap *capabilitytypes.Capability, counterparty types.Counterparty, counterpartyVersion string) (version string, err error) {
-	//TODO implement me
+	// TODO implement me
 	panic("implement me")
 }
 
 func (I IBCMiddleware) OnChanOpenAck(ctx sdk.Context, portID, channelID string, counterpartyChannelID string, counterpartyVersion string) error {
-	//TODO implement me
+	// TODO implement me
 	panic("implement me")
 }
 
 func (I IBCMiddleware) OnChanOpenConfirm(ctx sdk.Context, portID, channelID string) error {
-	//TODO implement me
+	// TODO implement me
 	panic("implement me")
 }
 
 func (I IBCMiddleware) OnChanCloseInit(ctx sdk.Context, portID, channelID string) error {
-	//TODO implement me
+	// TODO implement me
 	panic("implement me")
 }
 
 func (I IBCMiddleware) OnChanCloseConfirm(ctx sdk.Context, portID, channelID string) error {
-	//TODO implement me
+	// TODO implement me
 	panic("implement me")
 }
 
 func (I IBCMiddleware) OnRecvPacket(ctx sdk.Context, packet types.Packet, relayer sdk.AccAddress) ibcexported.Acknowledgement {
-	//TODO implement me
+	// TODO implement me
 	panic("implement me")
 }
 
 func (I IBCMiddleware) OnAcknowledgementPacket(ctx sdk.Context, packet types.Packet, acknowledgement []byte, relayer sdk.AccAddress) error {
-	//TODO implement me
+	// TODO implement me
 	panic("implement me")
 }
 
 func (I IBCMiddleware) OnTimeoutPacket(ctx sdk.Context, packet types.Packet, relayer sdk.AccAddress) error {
-	//TODO implement me
+	// TODO implement me
 	panic("implement me")
 }
