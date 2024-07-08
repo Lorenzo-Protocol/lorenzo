@@ -16,7 +16,6 @@ import (
 // - denom that doesn't follow rules as considered as non erc20 denom
 func ValidateERC20Denom(denom string) error {
 	denomSplit := strings.SplitN(denom, "/", 2)
-
 	if denomSplit[0] != DenomPrefix || len(denomSplit) != 2 {
 		return fmt.Errorf("denom deosn't follow rules of erc20 denom")
 	}
