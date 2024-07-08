@@ -73,7 +73,7 @@ func (suite *KeeperTestSuite) TestUpdateParams() {
 	}
 }
 
-func (suite *KeeperTestSuite) TestCreatPlan() {
+func (suite *KeeperTestSuite) TestCreatePlan() {
 	testCases := []struct {
 		name       string
 		request    *types.MsgCreatePlan
