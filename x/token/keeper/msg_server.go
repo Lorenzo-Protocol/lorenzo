@@ -161,7 +161,8 @@ func (m msgServer) ConvertCoin(goCtx context.Context, msg *types.MsgConvertCoin)
 }
 
 // ConvertERC20 implements MsgServer.ConvertERC20
-func (m msgServer) ConvertERC20(goCtx context.Context, msg *types.MsgConvertERC20) (*types.MsgConvertERC20Response, error) {
+// NOTE: impl it as keeper method as we need to export it as expected keeper for lorenzo ibc transfer wrapper.
+func (k Keeper) ConvertERC20(goCtx context.Context, msg *types.MsgConvertERC20) (*types.MsgConvertERC20Response, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	sender := common.HexToAddress(msg.Sender)
@@ -171,18 +172,18 @@ func (m msgServer) ConvertERC20(goCtx context.Context, msg *types.MsgConvertERC2
 	}
 
 	// check if the token pair is enabled for minting and converting.
-	pair, err := m.MintEnabled(ctx, sender.Bytes(), receiver, msg.ContractAddress)
+	pair, err := k.MintEnabled(ctx, sender.Bytes(), receiver, msg.ContractAddress)
 	if err != nil {
 		return nil, err
 	}
 
 	// NOTE: check if the contract is self-destructed
 	erc20 := common.HexToAddress(pair.ContractAddress)
-	acc := m.evmKeeper.GetAccountWithoutBalance(ctx, erc20)
+	acc := k.evmKeeper.GetAccountWithoutBalance(ctx, erc20)
 
 	if acc == nil || !acc.IsContract() {
-		m.RemoveTokenPair(ctx, pair)
-		m.Logger(ctx).Debug(
+		k.RemoveTokenPair(ctx, pair)
+		k.Logger(ctx).Debug(
 			"deleting self-destructed token pair from state",
 			"contract", pair.ContractAddress,
 		)
@@ -193,9 +194,9 @@ func (m msgServer) ConvertERC20(goCtx context.Context, msg *types.MsgConvertERC2
 	// execute as per token destination type.
 	switch {
 	case pair.IsNativeCoin():
-		return m.ConvertERC20NativeCoin(ctx, pair, msg, receiver, sender) // case 1.2
+		return k.ConvertERC20NativeCoin(ctx, pair, msg, receiver, sender) // case 1.2
 	case pair.IsNativeERC20():
-		return m.ConvertERC20NativeERC20(ctx, pair, msg, receiver, sender) // case 2.1
+		return k.ConvertERC20NativeERC20(ctx, pair, msg, receiver, sender) // case 2.1
 	default:
 		return nil, types.ErrUndefinedOwner
 	}
