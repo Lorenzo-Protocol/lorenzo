@@ -12,8 +12,8 @@ message Plan {
   string name = 2;
   string plan_desc_uri = 3;
   uint64 agent_id = 4;
-  string plan_start_block = 5[ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false ];
-  string period_blocks = 6[ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false ];
+  uint64 plan_start_block = 5;
+  uint64 period_blocks = 6;
   string yat_contract_address = 7;
   string contract_address = 8;
   PlanStatus enabled = 9;

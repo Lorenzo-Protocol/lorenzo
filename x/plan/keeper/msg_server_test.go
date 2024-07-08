@@ -97,8 +97,8 @@ func (suite *KeeperTestSuite) TestCreatPlan() {
 				Name:               "lorenzo-stake-plan",
 				PlanDescUri:        "https://lorenzo-protocol.io/lorenzo-stake-plan",
 				AgentId:            uint64(1),
-				PlanStartBlock:     sdkmath.NewInt(1000),
-				PeriodBlocks:       sdkmath.NewInt(1000),
+				PlanStartBlock:     1000,
+				PeriodBlocks:       1000,
 				YatContractAddress: "0xbCC0CdF7683120a1965A343245FA602314C13b9A",
 				Sender:             testAdmin.String(),
 			},
@@ -123,8 +123,8 @@ func (suite *KeeperTestSuite) TestCreatPlan() {
 				Name:           "lorenzo-stake-plan",
 				PlanDescUri:    "https://lorenzo-protocol.io/lorenzo-stake-plan",
 				AgentId:        uint64(1),
-				PlanStartBlock: sdkmath.NewInt(1000),
-				PeriodBlocks:   sdkmath.NewInt(1000),
+				PlanStartBlock: 1000,
+				PeriodBlocks:   1000,
 				Sender:         testAdmin.String(),
 			},
 			malleate: func(request *types.MsgCreatePlan) {
@@ -152,8 +152,8 @@ func (suite *KeeperTestSuite) TestCreatPlan() {
 				suite.Require().Equal(plan.Name, "lorenzo-stake-plan")
 				suite.Require().Equal(plan.PlanDescUri, "https://lorenzo-protocol.io/lorenzo-stake-plan")
 				suite.Require().Equal(plan.AgentId, uint64(1))
-				suite.Require().Equal(plan.PlanStartBlock, sdkmath.NewInt(1000))
-				suite.Require().Equal(plan.PeriodBlocks, sdkmath.NewInt(1000))
+				suite.Require().Equal(plan.PlanStartBlock, uint64(1000))
+				suite.Require().Equal(plan.PeriodBlocks, uint64(1000))
 
 				planContractAddress := common.HexToAddress(plan.ContractAddress)
 
@@ -182,17 +182,17 @@ func (suite *KeeperTestSuite) TestCreatPlan() {
 				// PlanStartBlock
 				planStartBlock, err := suite.lorenzoApp.PlanKeeper.PlanStartBlock(suite.ctx, planContractAddress)
 				suite.Require().NoError(err)
-				suite.Require().Equal(planStartBlock, plan.PlanStartBlock.Uint64())
+				suite.Require().Equal(planStartBlock, plan.PlanStartBlock)
 
 				// PeriodBlocks
 				periodBlocks, err := suite.lorenzoApp.PlanKeeper.PeriodBlocks(suite.ctx, planContractAddress)
 				suite.Require().NoError(err)
-				suite.Require().Equal(periodBlocks, plan.PeriodBlocks.Uint64())
+				suite.Require().Equal(periodBlocks, plan.PeriodBlocks)
 
 				// NextRewardReceiveBlock
 				nextRewardReceiveBlock, err := suite.lorenzoApp.PlanKeeper.NextRewardReceiveBlock(suite.ctx, planContractAddress)
 				suite.Require().NoError(err)
-				suite.Require().Equal(nextRewardReceiveBlock, plan.PlanStartBlock.Uint64()+plan.PeriodBlocks.Uint64())
+				suite.Require().Equal(nextRewardReceiveBlock, plan.PlanStartBlock+plan.PeriodBlocks)
 
 				// ClaimRoundId
 				claimRoundId, err := suite.lorenzoApp.PlanKeeper.ClaimRoundId(suite.ctx, planContractAddress)
@@ -355,8 +355,8 @@ func (suite *KeeperTestSuite) TestUpdatePlanStatus() {
 					Name:               "lorenzo-stake-plan",
 					PlanDescUri:        "https://lorenzo-protocol.io/lorenzo-stake-plan",
 					AgentId:            uint64(1),
-					PlanStartBlock:     sdkmath.NewInt(1000),
-					PeriodBlocks:       sdkmath.NewInt(1000),
+					PlanStartBlock:     1000,
+					PeriodBlocks:       1000,
 					YatContractAddress: yatAddr.Hex(),
 				}
 
@@ -394,8 +394,8 @@ func (suite *KeeperTestSuite) TestUpdatePlanStatus() {
 					Name:               "lorenzo-stake-plan",
 					PlanDescUri:        "https://lorenzo-protocol.io/lorenzo-stake-plan",
 					AgentId:            uint64(1),
-					PlanStartBlock:     sdkmath.NewInt(1000),
-					PeriodBlocks:       sdkmath.NewInt(1000),
+					PlanStartBlock:     1000,
+					PeriodBlocks:       1000,
 					YatContractAddress: yatAddr.Hex(),
 				}
 
@@ -486,8 +486,8 @@ func (suite *KeeperTestSuite) TestSetMerkleRoot() {
 					Name:               "lorenzo-stake-plan",
 					PlanDescUri:        "https://lorenzo-protocol.io/lorenzo-stake-plan",
 					AgentId:            uint64(1),
-					PlanStartBlock:     sdkmath.NewInt(1000),
-					PeriodBlocks:       sdkmath.NewInt(1000),
+					PlanStartBlock:     1000,
+					PeriodBlocks:       1000,
 					YatContractAddress: yatAddr.Hex(),
 				}
 
@@ -585,8 +585,8 @@ func (suite *KeeperTestSuite) TestClaims() {
 					Name:               "lorenzo-stake-plan",
 					PlanDescUri:        "https://lorenzo-protocol.io/lorenzo-stake-plan",
 					AgentId:            uint64(1),
-					PlanStartBlock:     sdkmath.NewInt(1000),
-					PeriodBlocks:       sdkmath.NewInt(1000),
+					PlanStartBlock:     1000,
+					PeriodBlocks:       1000,
 					YatContractAddress: yatAddr.Hex(),
 				}
 
@@ -776,8 +776,8 @@ func (suite *KeeperTestSuite) TestSetMinter() {
 					Name:               "lorenzo-stake-plan",
 					PlanDescUri:        "https://lorenzo-protocol.io/lorenzo-stake-plan",
 					AgentId:            uint64(1),
-					PlanStartBlock:     sdkmath.NewInt(1000),
-					PeriodBlocks:       sdkmath.NewInt(1000),
+					PlanStartBlock:     1000,
+					PeriodBlocks:       1000,
 					YatContractAddress: yatAddr.Hex(),
 				}
 
@@ -907,8 +907,8 @@ func (suite *KeeperTestSuite) TestRemoveMinter() {
 					Name:               "lorenzo-stake-plan",
 					PlanDescUri:        "https://lorenzo-protocol.io/lorenzo-stake-plan",
 					AgentId:            uint64(1),
-					PlanStartBlock:     sdkmath.NewInt(1000),
-					PeriodBlocks:       sdkmath.NewInt(1000),
+					PlanStartBlock:     1000,
+					PeriodBlocks:       1000,
 					YatContractAddress: yatAddr.Hex(),
 				}
 

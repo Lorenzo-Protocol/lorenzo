@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"fmt"
+	"math/big"
 
 	sdkmath "cosmossdk.io/math"
 	"github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
@@ -23,8 +24,8 @@ func (suite *KeeperTestSuite) TestStakePlan() {
 				Name:               "lorenzo-stake-plan",
 				PlanDescUri:        "https://lorenzo-protocol.io/lorenzo-stake-plan",
 				AgentId:            1,
-				PlanStartBlock:     sdkmath.NewInt(1000),
-				PeriodBlocks:       sdkmath.NewInt(1000),
+				PlanStartBlock:     1000,
+				PeriodBlocks:       1000,
 				YatContractAddress: "",
 				Enabled:            types.PlanStatus_Unpause,
 			},
@@ -45,8 +46,8 @@ func (suite *KeeperTestSuite) TestStakePlan() {
 					plan.PlanDescUri,
 					sdkmath.NewIntFromUint64(plan.Id).BigInt(),
 					sdkmath.NewIntFromUint64(plan.AgentId).BigInt(),
-					plan.PlanStartBlock.BigInt(),
-					plan.PeriodBlocks.BigInt(),
+					big.NewInt(int64(plan.PlanStartBlock)),
+					big.NewInt(int64(plan.PeriodBlocks)),
 					yatAddr,
 				)
 				suite.Require().NoError(err)
@@ -76,12 +77,12 @@ func (suite *KeeperTestSuite) TestStakePlan() {
 				// Plan start block
 				planStartBlock, err := suite.keeper.PlanStartBlock(suite.ctx, address)
 				suite.Require().NoError(err)
-				suite.Require().Equal(plan.PlanStartBlock.Uint64(), planStartBlock)
+				suite.Require().Equal(plan.PlanStartBlock, planStartBlock)
 
 				// Period blocks
 				periodBlocks, err := suite.keeper.PeriodBlocks(suite.ctx, address)
 				suite.Require().NoError(err)
-				suite.Require().Equal(plan.PeriodBlocks.Uint64(), periodBlocks)
+				suite.Require().Equal(plan.PeriodBlocks, periodBlocks)
 			},
 		},
 	}

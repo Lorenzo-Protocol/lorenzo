@@ -95,10 +95,10 @@ message MsgCreatePlan {
   uint64 agent_id = 3;
 
   // plan_start_block is the start block of the plan
-  string plan_start_block = 4 [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false ];
+  uint64 plan_start_block = 4;
 
   // subscription_end_time is the end time of the subscription
-  string period_blocks = 5 [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false ];
+  uint64 period_blocks = 5;
 
   // yat_contract_address is the address of the yat contract
   string yat_contract_address = 6;

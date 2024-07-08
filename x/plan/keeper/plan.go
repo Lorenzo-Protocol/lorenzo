@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"math/big"
+
 	"github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -23,7 +25,7 @@ func (k Keeper) AddPlan(ctx sdk.Context, plan types.Plan) (types.Plan, error) {
 	agentIdBigint := sdk.NewIntFromUint64(plan.AgentId)
 
 	yatContractAddr := common.HexToAddress(plan.YatContractAddress)
-	// TODO: checking if the yat contract exists?
+
 	acct := k.evmKeeper.GetAccountWithoutBalance(ctx, yatContractAddr)
 	if acct == nil {
 		return types.Plan{}, types.ErrYatContractNotFound
@@ -37,8 +39,8 @@ func (k Keeper) AddPlan(ctx sdk.Context, plan types.Plan) (types.Plan, error) {
 		plan.PlanDescUri,
 		planIdBigint.BigInt(),
 		agentIdBigint.BigInt(),
-		plan.PlanStartBlock.BigInt(),
-		plan.PeriodBlocks.BigInt(),
+		big.NewInt(int64(plan.PlanStartBlock)),
+		big.NewInt(int64(plan.PeriodBlocks)),
 		yatContractAddr,
 	)
 	if err != nil {

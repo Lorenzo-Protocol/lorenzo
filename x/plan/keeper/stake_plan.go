@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"math/big"
 
+	"github.com/ethereum/go-ethereum/common/hexutil"
+
 	contractsplan "github.com/Lorenzo-Protocol/lorenzo/contracts/plan"
 
 	errorsmod "cosmossdk.io/errors"
@@ -784,14 +786,14 @@ func (k Keeper) MerkleRoot(
 	}
 
 	// unpacked to bytes32
-	merkleRoot, ok := unpacked[0].(common.Hash)
+	merkleRoot, ok := unpacked[0].([32]byte)
 	if !ok {
 		return "", errorsmod.Wrapf(
 			types.ErrABIUnpack, "failed to convert Merkle Root to string from contract %s", contractAddress.Hex(),
 		)
 	}
 
-	return merkleRoot.Hex(), nil
+	return hexutil.Encode(merkleRoot[:]), nil
 }
 
 // ClaimLeafNodeFromPlan claims the leaf node from the StakePlan contract.

@@ -70,8 +70,8 @@ func NewCreatePlanEvent(sender sdk.AccAddress, plan Plan) sdk.Event {
 		sdk.NewAttribute(AttributeKeyCreatePlanName, plan.Name),
 		sdk.NewAttribute(AttributeKeyCreatePlanDescUri, plan.PlanDescUri),
 		sdk.NewAttribute(AttributeKeyCreatePlanAgentId, fmt.Sprintf("%d", plan.AgentId)),
-		sdk.NewAttribute(AttributeKeyCreatePlanPlanStartBlock, plan.PlanStartBlock.String()),
-		sdk.NewAttribute(AttributeKeyCreatePlanPeriodBlocks, plan.PeriodBlocks.String()),
+		sdk.NewAttribute(AttributeKeyCreatePlanPlanStartBlock, fmt.Sprintf("%d", plan.PlanStartBlock)),
+		sdk.NewAttribute(AttributeKeyCreatePlanPeriodBlocks, fmt.Sprintf("%d", plan.PeriodBlocks)),
 		sdk.NewAttribute(AttributeKeyCreatePlanYatContractAddress, plan.YatContractAddress),
 		sdk.NewAttribute(AttributeKeyCreatePlanContractAddress, plan.ContractAddress),
 	)
