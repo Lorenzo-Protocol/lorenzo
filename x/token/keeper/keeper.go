@@ -3,7 +3,9 @@ package keeper
 import (
 	"fmt"
 
+	errorsmod "cosmossdk.io/errors"
 	"github.com/cometbft/cometbft/libs/log"
+	errortypes "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
@@ -47,12 +49,41 @@ func NewKeeper(
 //  2. token pair conversion is enabled
 //  3. receiver address is not blocked by bank module.
 //  4. coins are enabled for bank module transfers
+//  5. sender must be the same as receiver
 func (k Keeper) MintEnabled(
 	ctx sdk.Context,
 	sender, receiver sdk.AccAddress,
 	token string,
 ) (types.TokenPair, error) {
-	panic("implement me")
+	if !k.IsConvertEnabled(ctx) {
+		return types.TokenPair{}, errorsmod.Wrapf(types.ErrConvertDisabled,
+			"token module is disabled")
+	}
+
+	id := k.GetTokenPairId(ctx, token)
+	pair, found := k.GetTokenPair(ctx, id)
+	if !found {
+		return types.TokenPair{}, errorsmod.Wrapf(types.ErrTokenPairNotFound,
+			"token pair not found for token %s", token)
+	}
+
+	if !pair.Enabled {
+		return types.TokenPair{}, errorsmod.Wrapf(types.ErrTokenPairDisabled,
+			"token pair is disabled for token %s", token)
+	}
+
+	if k.bankKeeper.BlockedAddr(receiver.Bytes()) {
+		return types.TokenPair{}, errorsmod.Wrapf(errortypes.ErrUnauthorized,
+			"%s is not allowed to receive transactions", receiver,
+		)
+	}
+
+	if !k.bankKeeper.IsSendEnabledCoin(ctx, sdk.Coin{Denom: pair.Denom}) && !sender.Equals(receiver) {
+		return types.TokenPair{}, errorsmod.Wrapf(errortypes.ErrUnauthorized,
+			"coin is not allowed to be sent")
+	}
+
+	return pair, nil
 }
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
