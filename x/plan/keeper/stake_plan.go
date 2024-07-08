@@ -160,9 +160,13 @@ func (k Keeper) ClaimYATToken(
 	merkleProof string,
 ) error {
 	merkleProofBytes := common.HexToHash(merkleProof)
+	if roundId == nil {
+		return errorsmod.Wrap(types.ErrABIPack, "round ID is nil")
+	}
 
+	merkleProofArgs := []common.Hash{merkleProofBytes}
 	contractABI := contractsplan.StakePlanContract.ABI
-	_, err := k.CallEVM(
+	res, err := k.CallEVM(
 		ctx,
 		contractABI,
 		k.getModuleEthAddress(ctx),
@@ -173,10 +177,17 @@ func (k Keeper) ClaimYATToken(
 		account,
 		roundId,
 		amount,
-		merkleProofBytes,
+		merkleProofArgs,
 	)
 	if err != nil {
 		return err
+	}
+	if res.Failed() {
+		return errorsmod.Wrapf(
+			types.ErrVMExecution, "failed to stake plan contract: %s, reason: %s",
+			contractAddress.String(),
+			res.Revert(),
+		)
 	}
 	return nil
 }
@@ -226,16 +237,16 @@ func (k Keeper) MintFromStakePlan(
 // Parameters:
 // - ctx: the SDK context.
 // - contractAddress: the address of the StakePlan contract.
-// - merkleProof: the Merkle proof to set.
+// - merkleRoot: the Merkle root to set.
 //
 // Returns:
 // - error: an error if the setting fails.
 func (k Keeper) SetMerkleRoot(
 	ctx sdk.Context,
 	contractAddress common.Address,
-	merkleProof string,
+	merkleRoot string,
 ) error {
-	merkleProofBytes := common.HexToHash(merkleProof)
+	merkleProofBytes := common.HexToHash(merkleRoot)
 
 	contractABI := contractsplan.StakePlanContract.ABI
 	res, err := k.CallEVM(
@@ -244,7 +255,7 @@ func (k Keeper) SetMerkleRoot(
 		k.getModuleEthAddress(ctx),
 		contractAddress,
 		true,
-		types.StakePlanMethodClaimYATToken,
+		types.StakePlanMethodSetMerkleRoot,
 		// args
 		merkleProofBytes,
 	)
@@ -773,14 +784,14 @@ func (k Keeper) MerkleRoot(
 	}
 
 	// unpacked to bytes32
-	merkleRoot, ok := unpacked[0].(string)
+	merkleRoot, ok := unpacked[0].(common.Hash)
 	if !ok {
 		return "", errorsmod.Wrapf(
 			types.ErrABIUnpack, "failed to convert Merkle Root to string from contract %s", contractAddress.Hex(),
 		)
 	}
 
-	return merkleRoot, nil
+	return merkleRoot.Hex(), nil
 }
 
 // ClaimLeafNodeFromPlan claims the leaf node from the StakePlan contract.
@@ -815,12 +826,20 @@ func (k Keeper) ClaimLeafNodeFromPlan(
 	if err != nil {
 		return false, err
 	}
-	unpacked, err := contractABI.Unpack(types.StakePlanMethodMerkleRoot, res.Ret)
+	unpacked, err := contractABI.Unpack(types.StakePlanMethodClaimLeafNode, res.Ret)
 	if err != nil || len(unpacked) == 0 {
 		return false, errorsmod.Wrapf(
 			types.ErrABIUnpack, "failed to unpack Merkle Root from contract %s", contractAddress.Hex(),
 		)
 	}
 
-	return true, nil
+	// unpacked to bool
+	success, ok := unpacked[0].(bool)
+	if !ok {
+		return false, errorsmod.Wrapf(
+			types.ErrABIUnpack, "failed to convert Merkle Root to string from contract %s", contractAddress.Hex(),
+		)
+	}
+
+	return success, nil
 }

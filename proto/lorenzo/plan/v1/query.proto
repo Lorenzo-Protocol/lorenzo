@@ -29,7 +29,7 @@ service Query {
 
   // ClaimLeafNode queries a plan by id.
   rpc ClaimLeafNode(QueryClaimLeafNodeRequest) returns (QueryClaimLeafNodeResponse) {
-    option (google.api.http).get = "/lorenzo/plan/v1/plans/{id}/claim_leaf_node";
+    option (google.api.http).get = "/lorenzo/plan/v1/plans/{id}/claim-leaf-node";
   }
 }
 

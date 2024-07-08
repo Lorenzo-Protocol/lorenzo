@@ -135,6 +135,11 @@ func (m msgServer) Claims(goCtx context.Context, msg *types.MsgClaims) (*types.M
 		return nil, err
 	}
 
+	_, found := m.k.GetPlan(ctx, msg.PlanId)
+	if !found {
+		return nil, errorsmod.Wrapf(types.ErrPlanNotFound, "plan not found")
+	}
+
 	if err := m.k.Withdraw(ctx,
 		msg.PlanId,
 		msg.Receiver,

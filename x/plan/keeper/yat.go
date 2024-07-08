@@ -369,3 +369,43 @@ func (k Keeper) HasRoleFromYAT(
 	}
 	return hasRole, nil
 }
+
+func (k Keeper) BalanceOfFromYAT(
+	ctx sdk.Context,
+	contractAddress common.Address,
+	account common.Address,
+) (*big.Int, error) {
+	contractABI := contractsplan.YieldAccruingTokenContract.ABI
+	res, err := k.CallEVM(
+		ctx,
+		contractABI,
+		k.getModuleEthAddress(ctx),
+		contractAddress,
+		true,
+		types.YATMethodBalanceOf,
+		account,
+	)
+	if err != nil {
+		return nil, err
+	}
+	unpacked, err := contractABI.Unpack(types.YATMethodBalanceOf, res.Ret)
+	if err != nil {
+		return nil, errorsmod.Wrapf(
+			types.ErrABIUnpack, "failed to unpack balanceOf: %s", err.Error(),
+		)
+	}
+	balance, ok := unpacked[0].(*big.Int)
+	if !ok {
+		return nil, errorsmod.Wrapf(
+			types.ErrABIUnpack, "failed to convert balance to big.Int from contract %s", contractAddress.Hex(),
+		)
+	}
+	if res.Failed() {
+		return nil, errorsmod.Wrapf(
+			types.ErrVMExecution, "failed to yat contract: %s, reason: %s",
+			contractAddress.String(),
+			res.Revert(),
+		)
+	}
+	return balance, nil
+}

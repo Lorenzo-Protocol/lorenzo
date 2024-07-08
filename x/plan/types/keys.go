@@ -24,6 +24,7 @@ const (
 	YATMethodRemoveMinter = "removeMinter"
 	YATMethodHasRole      = "hasRole"
 	YATMethodOwner        = "owner"
+	YATMethodBalanceOf    = "balanceOf"
 )
 
 const (
@@ -33,6 +34,7 @@ const (
 	StakePlanMethodAdminPauseBridge   = "adminPauseBridge"
 	StakePlanMethodAdminUnpauseBridge = "adminUnpauseBridge"
 	StakePlanMethodSetPlanDesc        = "setPlanDesc"
+	StakePlanMethodSetMerkleRoot      = "setMerkleRoot"
 
 	// query method
 	StakePlanMethodStakePlanName          = "stakePlanName"

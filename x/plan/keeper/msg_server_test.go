@@ -434,8 +434,8 @@ func (suite *KeeperTestSuite) TestSetMerkleRoot() {
 	testCases := []struct {
 		name       string
 		request    *types.MsgSetMerkleRoot
-		malleate   func()
-		validation func()
+		malleate   func() string
+		validation func(string, *types.MsgSetMerkleRoot)
 		expectErr  bool
 	}{
 		{
@@ -448,12 +448,72 @@ func (suite *KeeperTestSuite) TestSetMerkleRoot() {
 			request:   &types.MsgSetMerkleRoot{Sender: "lrz1tffj9qp3wpdnuds443c86wffrac4jkapkjmmcy"},
 			expectErr: true,
 		},
+		{
+			name: "fail - plan not found",
+			request: &types.MsgSetMerkleRoot{
+				Sender:     testAdmin.String(),
+				PlanId:     1,
+				MerkleRoot: "0x34337eb06160f22cfc735517076cb8d69f60afae27700d20e918cfb41f9faca7",
+			},
+			expectErr: true,
+		},
+		{
+			name: "success - valid set merkle root",
+			request: &types.MsgSetMerkleRoot{
+				Sender:     testAdmin.String(),
+				PlanId:     1,
+				MerkleRoot: "0x34337eb06160f22cfc735517076cb8d69f60afae27700d20e918cfb41f9faca7",
+			},
+			malleate: func() string {
+				suite.Commit()
+				// create agent
+				name := "sinohope4"
+				btcReceivingAddress := "3C7VPws9fMW3kcwRJvMkSVdqMs4SAhQCqq"
+				ethAddr := "0x6508d68f4e5931f93fadc3b7afac5092e195b80f"
+				description := "lorenzo"
+				url := "https://lorenzo-protocol.io"
+				agentId := suite.lorenzoApp.AgentKeeper.AddAgent(
+					suite.ctx,
+					name, btcReceivingAddress, ethAddr, description, url)
+				suite.Require().NotEqual(agentId, 0)
+				suite.Require().Equal(agentId, uint64(1))
+
+				yatAddr, err := suite.lorenzoApp.PlanKeeper.DeployYATContract(
+					suite.ctx, "lorenzo", "ALRZ")
+				suite.Require().NoError(err)
+				// create plan
+				planReq := types.Plan{
+					Name:               "lorenzo-stake-plan",
+					PlanDescUri:        "https://lorenzo-protocol.io/lorenzo-stake-plan",
+					AgentId:            uint64(1),
+					PlanStartBlock:     sdkmath.NewInt(1000),
+					PeriodBlocks:       sdkmath.NewInt(1000),
+					YatContractAddress: yatAddr.Hex(),
+				}
+
+				planResult, err := suite.lorenzoApp.PlanKeeper.AddPlan(suite.ctx, planReq)
+				suite.Require().NoError(err)
+				return planResult.ContractAddress
+			},
+			validation: func(contractAddrHex string, request *types.MsgSetMerkleRoot) {
+				contractAddr := common.HexToAddress(contractAddrHex)
+				roundId, err := suite.lorenzoApp.PlanKeeper.ClaimRoundId(suite.ctx, contractAddr)
+				suite.Require().NoError(err)
+				suite.Require().Equal(roundId, uint64(1))
+				merkleRoot, err := suite.lorenzoApp.PlanKeeper.MerkleRoot(
+					suite.ctx, contractAddr, sdkmath.NewIntFromUint64(roundId-1).BigInt())
+				suite.Require().NoError(err)
+				suite.Require().Equal(merkleRoot, request.MerkleRoot)
+			},
+			expectErr: false,
+		},
 	}
 	for _, tc := range testCases {
 		suite.Run(fmt.Sprintf("MsgSetMerkleRoot - %s", tc.name), func() {
 			suite.SetupTest()
+			var contractAddrHex string
 			if tc.malleate != nil {
-				tc.malleate()
+				contractAddrHex = tc.malleate()
 			}
 			_, err := suite.msgServer.SetMerkleRoot(suite.ctx, tc.request)
 			if tc.expectErr {
@@ -462,7 +522,7 @@ func (suite *KeeperTestSuite) TestSetMerkleRoot() {
 				suite.Require().NoError(err)
 			}
 			if tc.validation != nil {
-				tc.validation()
+				tc.validation(contractAddrHex, tc.request)
 			}
 		})
 	}
@@ -480,6 +540,81 @@ func (suite *KeeperTestSuite) TestClaims() {
 			name:      "fail - invalid sender",
 			request:   &types.MsgClaims{Sender: "foobar"},
 			expectErr: true,
+		},
+		{
+			name: "fail - plan not found",
+			request: &types.MsgClaims{
+				Sender:      "lrz1cpldpp5960ed8s63w4v9fml84w875wv0emcda5",
+				PlanId:      1,
+				Receiver:    "lrz1cpldpp5960ed8s63w4v9fml84w875wv0emcda5",
+				RoundId:     sdkmath.NewInt(0),
+				Amount:      sdkmath.NewInt(100),
+				MerkleProof: "0x1764cb495e1c2565f6d033e298a2d46a527c93a5a48c8b318fa05e9b07489b33",
+			},
+			expectErr: true,
+		},
+		{
+			name: "success - valid claims",
+			request: &types.MsgClaims{
+				Sender:      "lrz1cpldpp5960ed8s63w4v9fml84w875wv0emcda5",
+				PlanId:      1,
+				Receiver:    "0xc07ed08685d3F2D3c351755854EFE7ab8fEa398F",
+				RoundId:     sdkmath.NewInt(0),
+				Amount:      sdkmath.NewInt(100),
+				MerkleProof: "0x365cc96c249dc95f3f2e4934371b55ee1c5ef9e6f6da6407b1ec26aa6cd12109",
+			},
+			malleate: func() {
+				suite.Commit()
+				// create agent
+				name := "sinohope4"
+				btcReceivingAddress := "3C7VPws9fMW3kcwRJvMkSVdqMs4SAhQCqq"
+				ethAddr := "0x6508d68f4e5931f93fadc3b7afac5092e195b80f"
+				description := "lorenzo"
+				url := "https://lorenzo-protocol.io"
+				agentId := suite.lorenzoApp.AgentKeeper.AddAgent(
+					suite.ctx,
+					name, btcReceivingAddress, ethAddr, description, url)
+				suite.Require().NotEqual(agentId, 0)
+				suite.Require().Equal(agentId, uint64(1))
+
+				yatAddr, err := suite.lorenzoApp.PlanKeeper.DeployYATContract(
+					suite.ctx, "lorenzo", "ALRZ")
+				suite.Require().NoError(err)
+				// create plan
+				planReq := types.Plan{
+					Name:               "lorenzo-stake-plan",
+					PlanDescUri:        "https://lorenzo-protocol.io/lorenzo-stake-plan",
+					AgentId:            uint64(1),
+					PlanStartBlock:     sdkmath.NewInt(1000),
+					PeriodBlocks:       sdkmath.NewInt(1000),
+					YatContractAddress: yatAddr.Hex(),
+				}
+
+				planResult, err := suite.lorenzoApp.PlanKeeper.AddPlan(suite.ctx, planReq)
+				suite.Require().NoError(err)
+
+				// set merkle root
+				merkelRoot := "0x39c19150c14c397b133682e95742b651babde3418edaaa4375a3197604159346"
+				err = suite.lorenzoApp.PlanKeeper.SetMerkleRoot(
+					suite.ctx,
+					common.HexToAddress(planResult.ContractAddress),
+					merkelRoot)
+				suite.Require().NoError(err)
+
+				// set minter
+				err = suite.lorenzoApp.PlanKeeper.SetMinter(suite.ctx, yatAddr, common.HexToAddress(planResult.ContractAddress))
+				suite.Require().NoError(err)
+			},
+			validation: func() {
+				plan, found := suite.lorenzoApp.PlanKeeper.GetPlan(suite.ctx, uint64(1))
+				suite.Require().True(found)
+				amount, err := suite.lorenzoApp.PlanKeeper.BalanceOfFromYAT(
+					suite.ctx, common.HexToAddress(plan.YatContractAddress),
+					common.HexToAddress("0xc07ed08685d3F2D3c351755854EFE7ab8fEa398F"))
+				suite.Require().NoError(err)
+				suite.Require().Equal(amount, sdkmath.NewInt(100).BigInt())
+			},
+			expectErr: false,
 		},
 	}
 	for _, tc := range testCases {

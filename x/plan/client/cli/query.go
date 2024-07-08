@@ -141,7 +141,7 @@ func GetCmdQueryClaimLeafNode() *cobra.Command {
 			}
 
 			req := &types.QueryClaimLeafNodeRequest{
-				LeafNode: args[3],
+				LeafNode: args[2],
 				Id:       planId,
 				RoundId:  roundId,
 			}
