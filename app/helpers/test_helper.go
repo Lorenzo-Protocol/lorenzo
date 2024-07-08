@@ -36,7 +36,7 @@ import (
 
 // SimAppChainID hardcoded chainID for simulation
 const (
-	SimAppChainID = "lorenzo_9001-1"
+	SimAppChainID = "lorenzo_8329-1"
 )
 
 // DefaultConsensusParams defines the default Tendermint consensus params used

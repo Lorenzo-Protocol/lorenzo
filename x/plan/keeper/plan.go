@@ -1,13 +1,16 @@
 package keeper
 
 import (
+	"math/big"
+
 	"github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/ethereum/go-ethereum/common"
 )
 
 func (k Keeper) AddPlan(ctx sdk.Context, plan types.Plan) (types.Plan, error) {
-	// todo: check if the agent not exists
+	// check if the agent not exists
 	_, agentFound := k.agentKeeper.GetAgent(ctx, plan.AgentId)
 	if !agentFound {
 		return types.Plan{}, types.ErrAgentNotFound
@@ -16,29 +19,67 @@ func (k Keeper) AddPlan(ctx sdk.Context, plan types.Plan) (types.Plan, error) {
 	// generate the next plan ID
 	planId := k.GetNextNumber(ctx)
 	plan.Id = planId
-	// Deploy the contract
-	contractAddress, err := k.DeployYATProxyContract(
+	plan.Enabled = types.PlanStatus_Unpause
+	// Deploy the plan contract for plan
+	planIdBigint := sdk.NewIntFromUint64(planId)
+	agentIdBigint := sdk.NewIntFromUint64(plan.AgentId)
+
+	yatContractAddr := common.HexToAddress(plan.YatContractAddress)
+
+	acct := k.evmKeeper.GetAccountWithoutBalance(ctx, yatContractAddr)
+	if acct == nil {
+		return types.Plan{}, types.ErrYatContractNotFound
+	}
+	if !acct.IsContract() {
+		return types.Plan{}, types.ErrYatContractNotContract
+	}
+	contractAddress, err := k.DeployStakePlanProxyContract(
 		ctx,
 		plan.Name,
-		plan.Symbol,
 		plan.PlanDescUri,
-		plan.Id,
-		plan.AgentId,
-		plan.SubscriptionStartTime,
-		plan.SubscriptionEndTime,
-		plan.EndTime,
-		plan.MerkleRoot,
+		planIdBigint.BigInt(),
+		agentIdBigint.BigInt(),
+		big.NewInt(int64(plan.PlanStartBlock)),
+		big.NewInt(int64(plan.PeriodBlocks)),
+		yatContractAddr,
 	)
 	if err != nil {
 		return types.Plan{}, err
 	}
 	plan.ContractAddress = contractAddress.Hex()
 
+	// grant roles from the yat contract to the plan contract
+	if err := k.SetMinter(ctx, yatContractAddr, contractAddress); err != nil {
+		return types.Plan{}, err
+	}
+
 	// set the plan
 	k.setPlan(ctx, plan)
 	// increment the next plan ID
 	k.setNextNumber(ctx, planId+1)
 	return plan, nil
+}
+
+func (k Keeper) UpdatePlanStatus(ctx sdk.Context, planId uint64, status types.PlanStatus) error {
+	plan, found := k.GetPlan(ctx, planId)
+	if !found {
+		return types.ErrPlanNotFound
+	}
+
+	planAddress := common.HexToAddress(plan.ContractAddress)
+	if status == types.PlanStatus_Pause {
+		if err := k.AdminPauseBridge(ctx, planAddress); err != nil {
+			return err
+		}
+	} else if status == types.PlanStatus_Unpause {
+		if err := k.AdminUnpauseBridge(ctx, planAddress); err != nil {
+			return err
+		}
+	}
+	// update the plan status
+	plan.Enabled = status
+	k.setPlan(ctx, plan)
+	return nil
 }
 
 // GetPlan retrieves a plan by the plan ID from the Keeper's store.
