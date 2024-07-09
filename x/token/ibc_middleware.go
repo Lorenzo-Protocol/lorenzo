@@ -1,10 +1,14 @@
 package token
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
+	errortypes "github.com/cosmos/cosmos-sdk/types/errors"
+	ibctransfer "github.com/cosmos/ibc-go/v7/modules/apps/transfer"
+	transfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 
 	"github.com/cosmos/ibc-go/v7/modules/core/04-channel/types"
+	channeltypes "github.com/cosmos/ibc-go/v7/modules/core/04-channel/types"
 	porttypes "github.com/cosmos/ibc-go/v7/modules/core/05-port/types"
 	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
 
@@ -13,53 +17,74 @@ import (
 
 var _ porttypes.IBCModule = &IBCMiddleware{}
 
-// IBCMiddleware implements the ICS26 callbacks for the transfer middleware given
-// the erc20 keeper and the underlying application.
+// IBCMiddleware implements the ICS26 callbacks for the ibctransfer module.
 type IBCMiddleware struct {
-	keeper.Keeper
+	*ibctransfer.IBCModule
+	keeper keeper.Keeper
 }
 
-func (I IBCMiddleware) OnChanOpenInit(ctx sdk.Context, order types.Order, connectionHops []string, portID string, channelID string, channelCap *capabilitytypes.Capability, counterparty types.Counterparty, version string) (string, error) {
-	// TODO implement me
-	panic("implement me")
+// OnRecvPacket implements the ICS-26 interface.
+func (im IBCMiddleware) OnRecvPacket(
+	ctx sdk.Context,
+	packet types.Packet,
+	relayer sdk.AccAddress,
+) ibcexported.Acknowledgement {
+	ack := im.IBCModule.OnRecvPacket(ctx, packet, relayer)
+	if !ack.Success() {
+		return ack
+	}
+
+	// post-processing
+	return im.keeper.OnRecvPacket(ctx, packet, ack)
 }
 
-func (I IBCMiddleware) OnChanOpenTry(ctx sdk.Context, order types.Order, connectionHops []string, portID, channelID string, channelCap *capabilitytypes.Capability, counterparty types.Counterparty, counterpartyVersion string) (version string, err error) {
-	// TODO implement me
-	panic("implement me")
+// OnAcknowledgementPacket implements the ICS-26 interface. If it successfully handles OnAcknowledgementPacket,
+// a post-processing handler will try refunding the token transferred and convert the coin to an ERC20 token,
+// provided the constraints are met.
+func (im IBCMiddleware) OnAcknowledgementPacket(
+	ctx sdk.Context,
+	packet types.Packet,
+	acknowledgement []byte,
+	relayer sdk.AccAddress,
+) error {
+	var ack channeltypes.Acknowledgement
+	if err := transfertypes.ModuleCdc.UnmarshalJSON(acknowledgement, &ack); err != nil {
+		return errorsmod.Wrapf(errortypes.ErrUnknownRequest,
+			"cannot unmarshal ICS-20 transfer packet acknowledgement: %v", err)
+	}
+
+	var data transfertypes.FungibleTokenPacketData
+	if err := transfertypes.ModuleCdc.UnmarshalJSON(packet.GetData(), &data); err != nil {
+		return errorsmod.Wrapf(errortypes.ErrUnknownRequest,
+			"cannot unmarshal ICS-20 transfer packet data: %s", err.Error())
+	}
+
+	if err := im.IBCModule.OnAcknowledgementPacket(ctx, packet, acknowledgement, relayer); err != nil {
+		return err
+	}
+
+	// post-processing
+	return im.keeper.OnAcknowledgementPacket(ctx, packet, data, ack)
 }
 
-func (I IBCMiddleware) OnChanOpenAck(ctx sdk.Context, portID, channelID string, counterpartyChannelID string, counterpartyVersion string) error {
-	// TODO implement me
-	panic("implement me")
-}
+// OnTimeoutPacket implements the ICS-26 interface. If it successfully handles OnTimeoutPacket,
+// a post-processing handler will try refunding the token converted on previous sending,
+// provided the constraints are met.
+func (im IBCMiddleware) OnTimeoutPacket(
+	ctx sdk.Context,
+	packet types.Packet,
+	relayer sdk.AccAddress,
+) error {
+	var data transfertypes.FungibleTokenPacketData
+	if err := transfertypes.ModuleCdc.UnmarshalJSON(packet.GetData(), &data); err != nil {
+		return errorsmod.Wrapf(errortypes.ErrUnknownRequest,
+			"cannot unmarshal ICS-20 transfer packet data: %s", err.Error())
+	}
 
-func (I IBCMiddleware) OnChanOpenConfirm(ctx sdk.Context, portID, channelID string) error {
-	// TODO implement me
-	panic("implement me")
-}
+	if err := im.IBCModule.OnTimeoutPacket(ctx, packet, relayer); err != nil {
+		return err
+	}
 
-func (I IBCMiddleware) OnChanCloseInit(ctx sdk.Context, portID, channelID string) error {
-	// TODO implement me
-	panic("implement me")
-}
-
-func (I IBCMiddleware) OnChanCloseConfirm(ctx sdk.Context, portID, channelID string) error {
-	// TODO implement me
-	panic("implement me")
-}
-
-func (I IBCMiddleware) OnRecvPacket(ctx sdk.Context, packet types.Packet, relayer sdk.AccAddress) ibcexported.Acknowledgement {
-	// TODO implement me
-	panic("implement me")
-}
-
-func (I IBCMiddleware) OnAcknowledgementPacket(ctx sdk.Context, packet types.Packet, acknowledgement []byte, relayer sdk.AccAddress) error {
-	// TODO implement me
-	panic("implement me")
-}
-
-func (I IBCMiddleware) OnTimeoutPacket(ctx sdk.Context, packet types.Packet, relayer sdk.AccAddress) error {
-	// TODO implement me
-	panic("implement me")
+	// post-processing
+	return im.keeper.OnTimeoutPacket(ctx, packet, data)
 }
