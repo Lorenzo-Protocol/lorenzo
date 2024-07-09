@@ -9,11 +9,9 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	errortypes "github.com/cosmos/cosmos-sdk/types/errors"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"golang.org/x/exp/slices"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	authante "github.com/cosmos/cosmos-sdk/x/auth/ante"
 
 	ethante "github.com/evmos/ethermint/app/ante"
@@ -26,7 +24,7 @@ type TxFeeChecker func(ctx sdk.Context, feeTx sdk.FeeTx) (sdk.Coins, int64, erro
 func NewDynamicFeeChecker(evmKeeper ethante.DynamicFeeEVMKeeper, feeKeeper FeeKeeper) authante.TxFeeChecker {
 	return func(ctx sdk.Context, tx sdk.Tx) (sdk.Coins, int64, error) {
 		// Check if the transaction contains any non-free messages
-		hasNonFreeMsg := checkNonFeeTx(ctx, feeKeeper, tx)
+		hasNonFreeMsg := feeKeeper.HasNonFeeTx(ctx, tx)
 		if !hasNonFreeMsg {
 			return []sdk.Coin{}, 0, nil
 		}
@@ -149,14 +147,4 @@ func getTxPriority(fees sdk.Coins, gas int64) int64 {
 	}
 
 	return priority
-}
-
-func checkNonFeeTx(ctx sdk.Context, feeKeeper FeeKeeper, tx sdk.Tx) bool {
-	// Check if the transaction contains any non-free messages
-	feeParams := feeKeeper.GetParams(ctx)
-	hasNonFreeMsg := slices.ContainsFunc(tx.GetMsgs(), func(m sdk.Msg) bool {
-		exist := slices.Contains(feeParams.NonFeeMsgs, sdk.MsgTypeURL(m))
-		return !exist
-	})
-	return hasNonFreeMsg
 }

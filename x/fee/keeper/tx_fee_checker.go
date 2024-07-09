@@ -11,10 +11,28 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
+// HasNonFeeTx checks if the transaction contains any non-free messages.
+//
+// Parameters:
+// - ctx: the SDK context.
+// - tx: the transaction to check.
+//
+// Returns:
+// - bool: true if the transaction contains any non-free messages, false otherwise.
+func (k Keeper) HasNonFeeTx(ctx sdk.Context, tx sdk.Tx) bool {
+	params := k.GetParams(ctx)
+	hasNonFreeMsg := slices.ContainsFunc(tx.GetMsgs(), func(m sdk.Msg) bool {
+		exist := slices.Contains(params.NonFeeMsgs, sdk.MsgTypeURL(m))
+		return !exist
+	})
+	return hasNonFreeMsg
+}
+
 // TxFeeChecker generates a function that checks transaction fees based on the given parameters.
 //
 // Takes in the the Keeper as parameters.
 // Returns a function that takes in the context and transaction, and returns Coins, int64, and error.
+// Deprecation: This function is deprecated and will be removed in the future.
 func TxFeeChecker(k *Keeper) func(ctx sdk.Context, tx sdk.Tx) (sdk.Coins, int64, error) {
 	return func(ctx sdk.Context, tx sdk.Tx) (sdk.Coins, int64, error) {
 		params := k.GetParams(ctx)

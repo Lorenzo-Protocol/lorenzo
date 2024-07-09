@@ -1,7 +1,6 @@
 package cosmos
 
 import (
-	feetypes "github.com/Lorenzo-Protocol/lorenzo/x/fee/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
@@ -29,5 +28,5 @@ type StakingKeeper interface {
 }
 
 type FeeKeeper interface {
-	GetParams(ctx sdk.Context) (params feetypes.Params)
+	HasNonFeeTx(ctx sdk.Context, tx sdk.Tx) bool
 }
