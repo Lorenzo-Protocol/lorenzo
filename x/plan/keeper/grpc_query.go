@@ -3,6 +3,8 @@ package keeper
 import (
 	"context"
 
+	"github.com/ethereum/go-ethereum/common"
+
 	"github.com/cosmos/cosmos-sdk/types/query"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -11,6 +13,8 @@ import (
 
 	"github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
 )
+
+var _ types.QueryServer = Querier{}
 
 type Querier struct {
 	*Keeper
@@ -57,6 +61,23 @@ func (q Querier) Plan(goCtx context.Context, req *types.QueryPlanRequest) (*type
 	}
 
 	return &types.QueryPlanResponse{Plan: plan}, nil
+}
+
+func (q Querier) ClaimLeafNode(goCtx context.Context, req *types.QueryClaimLeafNodeRequest) (*types.QueryClaimLeafNodeResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	plan, found := q.GetPlan(ctx, req.Id)
+	if !found {
+		return nil, types.ErrPlanNotFound
+	}
+
+	contractAddr := common.HexToAddress(plan.ContractAddress)
+
+	result, err := q.Keeper.ClaimLeafNodeFromPlan(ctx, contractAddr, req.RoundId.BigInt(), req.LeafNode)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryClaimLeafNodeResponse{Success: result}, nil
 }
 
 // NewQuerierImpl returns an implementation of the captains QueryServer interface.

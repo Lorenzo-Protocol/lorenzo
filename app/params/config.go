@@ -14,7 +14,7 @@ const (
 	BaseDenom = "alrz"
 
 	// BaseDenomUnit defines the base denomination unit for Photons.
-	// 1 DYM = 1x10^{BaseDenomUnit} adym
+	// 1 LRZ = 1x10^{BaseDenomUnit} alrz
 	BaseDenomUnit = 18
 
 	Bech32Prefix = "lrz"
