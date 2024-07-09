@@ -22,6 +22,7 @@ import (
 type MinGasPriceDecorator struct {
 	feesKeeper ethante.FeeMarketKeeper
 	evmKeeper  ethante.EVMKeeper
+	feeKeeper  FeeKeeper
 }
 
 // NewMinGasPriceDecorator creates a new MinGasPriceDecorator instance used only for
@@ -31,6 +32,12 @@ func NewMinGasPriceDecorator(fk ethante.FeeMarketKeeper, ek ethante.EVMKeeper) M
 }
 
 func (mpd MinGasPriceDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
+	// Check if the transaction contains any non-free messages
+	hasNonFreeMsg := checkNonFeeTx(ctx, mpd.feeKeeper, tx)
+	if !hasNonFreeMsg {
+		return next(ctx, tx, simulate)
+	}
+
 	feeTx, ok := tx.(sdk.FeeTx)
 	if !ok {
 		return ctx, errorsmod.Wrapf(errortypes.ErrInvalidType, "invalid transaction type %T, expected sdk.FeeTx", tx)

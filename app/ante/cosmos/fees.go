@@ -2,12 +2,10 @@ package cosmos
 
 import (
 	"fmt"
-	"math"
 
 	errorsmod "cosmossdk.io/errors"
-	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	errortypes "github.com/cosmos/cosmos-sdk/types/errors"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authante "github.com/cosmos/cosmos-sdk/x/auth/ante"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
@@ -20,34 +18,28 @@ import (
 //
 // CONTRACT: Tx must implement FeeTx interface to use DeductFeeDecorator
 type DeductFeeDecorator struct {
-	accountKeeper      authante.AccountKeeper
-	bankKeeper         BankKeeper
-	distributionKeeper DistributionKeeper
-	feegrantKeeper     authante.FeegrantKeeper
-	stakingKeeper      StakingKeeper
-	txFeeChecker       TxFeeChecker
+	accountKeeper  authante.AccountKeeper
+	bankKeeper     BankKeeper
+	feegrantKeeper authante.FeegrantKeeper
+	txFeeChecker   authante.TxFeeChecker
 }
 
 // NewDeductFeeDecorator returns a new DeductFeeDecorator.
 func NewDeductFeeDecorator(
 	ak authante.AccountKeeper,
 	bk BankKeeper,
-	dk DistributionKeeper,
 	fk authante.FeegrantKeeper,
-	sk StakingKeeper,
-	tfc TxFeeChecker,
+	tfc authante.TxFeeChecker,
 ) DeductFeeDecorator {
 	if tfc == nil {
 		tfc = checkTxFeeWithValidatorMinGasPrices
 	}
 
 	return DeductFeeDecorator{
-		accountKeeper:      ak,
-		bankKeeper:         bk,
-		distributionKeeper: dk,
-		feegrantKeeper:     fk,
-		stakingKeeper:      sk,
-		txFeeChecker:       tfc,
+		accountKeeper:  ak,
+		bankKeeper:     bk,
+		feegrantKeeper: fk,
+		txFeeChecker:   tfc,
 	}
 }
 
@@ -56,11 +48,11 @@ func NewDeductFeeDecorator(
 func (dfd DeductFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (sdk.Context, error) {
 	feeTx, ok := tx.(sdk.FeeTx)
 	if !ok {
-		return ctx, errorsmod.Wrap(errortypes.ErrTxDecode, "Tx must be a FeeTx")
+		return ctx, errorsmod.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx")
 	}
 
 	if !simulate && ctx.BlockHeight() > 0 && feeTx.GetGas() <= 0 {
-		return ctx, errorsmod.Wrap(errortypes.ErrInvalidGasLimit, "must provide positive gas")
+		return ctx, errorsmod.Wrap(sdkerrors.ErrInvalidGasLimit, "must provide positive gas")
 	}
 
 	var (
@@ -76,10 +68,7 @@ func (dfd DeductFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bo
 		}
 	}
 
-	feePayer := feeTx.FeePayer()
-	feeGranter := feeTx.FeeGranter()
-
-	if err = dfd.deductFee(ctx, tx, fee, feePayer, feeGranter); err != nil {
+	if err = dfd.checkDeductFee(ctx, tx, fee); err != nil {
 		return ctx, err
 	}
 
@@ -88,31 +77,31 @@ func (dfd DeductFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bo
 	return next(newCtx, tx, simulate)
 }
 
-// deductFee checks if the fee payer has enough funds to pay for the fees and deducts them.
+// checkDeductFee checks if the fee payer has enough funds to pay for the fees and deducts them.
 // If the spendable balance is not enough, it tries to claim enough staking rewards to cover the fees.
-func (dfd DeductFeeDecorator) deductFee(ctx sdk.Context, sdkTx sdk.Tx, fees sdk.Coins, feePayer, feeGranter sdk.AccAddress) error {
-	if fees.IsZero() {
-		return nil
+func (dfd DeductFeeDecorator) checkDeductFee(ctx sdk.Context, sdkTx sdk.Tx, fee sdk.Coins) error {
+	feeTx, ok := sdkTx.(sdk.FeeTx)
+	if !ok {
+		return sdkerrors.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx")
 	}
 
 	if addr := dfd.accountKeeper.GetModuleAddress(authtypes.FeeCollectorName); addr == nil {
 		return fmt.Errorf("fee collector module account (%s) has not been set", authtypes.FeeCollectorName)
 	}
 
-	// by default, deduct fees from feePayer address
+	feePayer := feeTx.FeePayer()
+	feeGranter := feeTx.FeeGranter()
 	deductFeesFrom := feePayer
 
-	// if feegranter is set, then deduct the fee from the feegranter account.
-	// this works only when feegrant is enabled.
+	// if feegranter set deduct fee from feegranter account.
+	// this works with only when feegrant enabled.
 	if feeGranter != nil {
 		if dfd.feegrantKeeper == nil {
-			return errortypes.ErrInvalidRequest.Wrap("fee grants are not enabled")
-		}
-
-		if !feeGranter.Equals(feePayer) {
-			err := dfd.feegrantKeeper.UseGrantedFees(ctx, feeGranter, feePayer, fees, sdkTx.GetMsgs())
+			return sdkerrors.ErrInvalidRequest.Wrap("fee grants are not enabled")
+		} else if !feeGranter.Equals(feePayer) {
+			err := dfd.feegrantKeeper.UseGrantedFees(ctx, feeGranter, feePayer, fee, sdkTx.GetMsgs())
 			if err != nil {
-				return errorsmod.Wrapf(err, "%s does not not allow to pay fees for %s", feeGranter, feePayer)
+				return sdkerrors.Wrapf(err, "%s does not allow to pay fees for %s", feeGranter, feePayer)
 			}
 		}
 
@@ -121,86 +110,23 @@ func (dfd DeductFeeDecorator) deductFee(ctx sdk.Context, sdkTx sdk.Tx, fees sdk.
 
 	deductFeesFromAcc := dfd.accountKeeper.GetAccount(ctx, deductFeesFrom)
 	if deductFeesFromAcc == nil {
-		return errortypes.ErrUnknownAddress.Wrapf("fee payer address: %s does not exist", deductFeesFrom)
+		return sdkerrors.ErrUnknownAddress.Wrapf("fee payer address: %s does not exist", deductFeesFrom)
 	}
 
 	// deduct the fees
-	if err := authante.DeductFees(dfd.bankKeeper, ctx, deductFeesFromAcc, fees); err != nil {
-		return fmt.Errorf("%q has insufficient funds and failed to claim sufficient staking rewards to pay for fees: %w", deductFeesFrom.String(), err)
+	if !fee.IsZero() {
+		if err := authante.DeductFees(dfd.bankKeeper, ctx, deductFeesFromAcc, fee); err != nil {
+			return fmt.Errorf("%q has insufficient funds and failed to claim sufficient staking rewards to pay for fees: %w", deductFeesFrom.String(), err)
+		}
 	}
 
 	events := sdk.Events{
 		sdk.NewEvent(
 			sdk.EventTypeTx,
-			sdk.NewAttribute(sdk.AttributeKeyFee, fees.String()),
+			sdk.NewAttribute(sdk.AttributeKeyFee, fee.String()),
 			sdk.NewAttribute(sdk.AttributeKeyFeePayer, deductFeesFrom.String()),
 		),
 	}
 	ctx.EventManager().EmitEvents(events)
-
 	return nil
-}
-
-// checkTxFeeWithValidatorMinGasPrices implements the default fee logic, where the minimum price per
-// unit of gas is fixed and set by each validator, and the tx priority is computed from the gas price.
-func checkTxFeeWithValidatorMinGasPrices(ctx sdk.Context, feeTx sdk.FeeTx) (sdk.Coins, int64, error) {
-	feeCoins := feeTx.GetFee()
-	gas := feeTx.GetGas()
-
-	// Ensure that the provided fees meets a minimum threshold for the validator,
-	// if this is a CheckTx. This is only for local mempool purposes, and thus
-	// is only ran on CheckTx.
-	if ctx.IsCheckTx() {
-		if err := checkFeeCoinsAgainstMinGasPrices(ctx, feeCoins, gas); err != nil {
-			return nil, 0, err
-		}
-	}
-
-	priority := getTxPriority(feeCoins, int64(gas)) //#nosec G701 -- gosec warning about integer overflow is not relevant here
-	return feeCoins, priority, nil
-}
-
-// checkFeeCoinsAgainstMinGasPrices checks if the provided fee coins are greater than or equal to the
-// required fees, that are based on the minimum gas prices and the gas. If not, it will return an error.
-func checkFeeCoinsAgainstMinGasPrices(ctx sdk.Context, feeCoins sdk.Coins, gas uint64) error {
-	minGasPrices := ctx.MinGasPrices()
-	if minGasPrices.IsZero() {
-		return nil
-	}
-
-	requiredFees := make(sdk.Coins, len(minGasPrices))
-
-	// Determine the required fees by multiplying each required minimum gas
-	// price by the gas limit, where fee = ceil(minGasPrice * gasLimit).
-	glDec := sdkmath.LegacyNewDec(int64(gas)) //#nosec G701 -- gosec warning about integer overflow is not relevant here
-	for i, gp := range minGasPrices {
-		fee := gp.Amount.Mul(glDec)
-		requiredFees[i] = sdk.NewCoin(gp.Denom, fee.Ceil().RoundInt())
-	}
-
-	if !feeCoins.IsAnyGTE(requiredFees) {
-		return errorsmod.Wrapf(errortypes.ErrInsufficientFee, "insufficient fees; got: %s required: %s", feeCoins, requiredFees)
-	}
-
-	return nil
-}
-
-// getTxPriority returns a naive tx priority based on the amount of the smallest denomination of the gas price
-// provided in a transaction.
-// NOTE: This implementation should be used with a great consideration as it opens potential attack vectors
-// where txs with multiple coins could not be prioritized as expected.
-func getTxPriority(fees sdk.Coins, gas int64) int64 {
-	var priority int64
-	for _, c := range fees {
-		p := int64(math.MaxInt64)
-		gasPrice := c.Amount.QuoRaw(gas)
-		if gasPrice.IsInt64() {
-			p = gasPrice.Int64()
-		}
-		if priority == 0 || p < priority {
-			priority = p
-		}
-	}
-
-	return priority
 }

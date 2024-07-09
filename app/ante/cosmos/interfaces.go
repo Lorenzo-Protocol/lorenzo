@@ -1,6 +1,7 @@
 package cosmos
 
 import (
+	feetypes "github.com/Lorenzo-Protocol/lorenzo/x/fee/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
@@ -25,4 +26,8 @@ type DistributionKeeper interface {
 type StakingKeeper interface {
 	BondDenom(ctx sdk.Context) string
 	IterateDelegations(ctx sdk.Context, delegator sdk.AccAddress, fn func(index int64, delegation stakingtypes.DelegationI) (stop bool))
+}
+
+type FeeKeeper interface {
+	GetParams(ctx sdk.Context) (params feetypes.Params)
 }

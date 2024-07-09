@@ -7,6 +7,8 @@ import (
 	"os"
 	"path/filepath"
 
+	cosmosante "github.com/Lorenzo-Protocol/lorenzo/app/ante/cosmos"
+
 	"github.com/gorilla/mux"
 	"github.com/rakyll/statik/fs"
 	"github.com/spf13/cast"
@@ -559,6 +561,7 @@ func NewLorenzoApp(
 		ExtensionOptionChecker: nil, // uses default
 		BtcConfig:              btcConfig,
 		FeeKeeper:              app.FeeKeeper,
+		TxFeeChecker:           cosmosante.NewDynamicFeeChecker(app.EvmKeeper, app.FeeKeeper),
 	})
 	if err != nil {
 		panic(err)
