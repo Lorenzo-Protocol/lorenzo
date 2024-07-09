@@ -32,7 +32,7 @@ func GetQueryCmd() *cobra.Command {
 // GetQueryTokenPairsCmd queries all registered token pairs
 func GetQueryTokenPairsCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "token-pair",
+		Use:   "token-pairs",
 		Short: "Query token pairs",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
