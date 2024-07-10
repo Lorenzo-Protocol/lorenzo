@@ -34,14 +34,14 @@ func NewKeeper(
 	bankKeeper types.BankKeeper,
 	scopedKeeper exported.ScopedKeeper,
 	tokenKeeper types.TokenKeeper,
-) Keeper {
+) *Keeper {
 	transferKeeper := keeper.NewKeeper(
 		cdc, storeKey, paramSpace,
 		ics4Wrapper, channelKeeper, portKeeper,
 		accountKeeper, bankKeeper, scopedKeeper,
 	)
 
-	return Keeper{
+	return &Keeper{
 		Keeper:        &transferKeeper,
 		bankKeeper:    bankKeeper,
 		tokenKeeper:   tokenKeeper,

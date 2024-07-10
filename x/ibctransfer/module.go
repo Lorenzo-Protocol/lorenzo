@@ -18,14 +18,19 @@ var (
 	_ module.HasServices         = AppModule{}
 )
 
+// AppModuleBasic embeds the IBC transfer AppModuleBasic
+type AppModuleBasic struct {
+	*ibctransfer.AppModuleBasic
+}
+
 // AppModule is a wrapper around the ibc transfer module
 type AppModule struct {
 	*ibctransfer.AppModule
-	keeper keeper.Keeper
+	keeper *keeper.Keeper
 }
 
 // NewAppModule creates a new AppModule
-func NewAppModule(k keeper.Keeper) AppModule {
+func NewAppModule(k *keeper.Keeper) AppModule {
 	ics20AppModule := ibctransfer.NewAppModule(*k.Keeper)
 
 	return AppModule{

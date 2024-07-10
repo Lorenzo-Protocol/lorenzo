@@ -223,7 +223,7 @@ var xxx_messageInfo_MsgRegisterERC20Response proto.InternalMessageInfo
 type MsgToggleConversion struct {
 	// authority is the address that can update the parameters
 	Authority string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
-	// token is in format of either coin denom or erc20 contract address
+	// token is in format of either coin base denom or erc20 contract address
 	Token string `protobuf:"bytes,2,opt,name=token,proto3" json:"token,omitempty"`
 }
 
