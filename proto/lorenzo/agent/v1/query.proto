@@ -3,6 +3,7 @@ package lorenzo.agent.v1;
 
 import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
 import "google/api/annotations.proto";
 import "lorenzo/agent/v1/agent.proto";
 
@@ -17,7 +18,7 @@ service Query {
 
   // Agent queries the agent of the specified escrow_address
   rpc Agent(QueryAgentRequest) returns (QueryAgentResponse) {
-    option (google.api.http).get = "/lorenzo/agent/v1/agent/{id}";
+    option (google.api.http).get = "/lorenzo/agent/v1/agents/{id}";
   }
 
   // Admin queries the admin of the agent module
@@ -27,12 +28,15 @@ service Query {
 }
 
 // QueryAgentsRequest is the request type for the Query/Agents RPC method.
-message QueryAgentsRequest {}
+message QueryAgentsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
 
 // QueryAgentsResponse is the response type for the Query/Agents RPC method.
 message QueryAgentsResponse {
   // Agent Contains the details of the agent.
   repeated Agent agents = 1 [ (gogoproto.nullable) = false ];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryAgentRequest is the request type for the Query/Agent RPC method.

@@ -5,6 +5,10 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/ethereum/go-ethereum/common"
+
+	sdkmath "cosmossdk.io/math"
+
 	"github.com/cosmos/cosmos-sdk/client/flags"
 
 	"github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
@@ -24,6 +28,7 @@ func GetQueryCmd() *cobra.Command {
 	cmd.AddCommand(GetCmdQueryParams())
 	cmd.AddCommand(GetCmdQueryPlan())
 	cmd.AddCommand(GetCmdQueryPlans())
+	cmd.AddCommand(GetCmdQueryClaimLeafNode())
 	return cmd
 }
 
@@ -109,5 +114,44 @@ func GetCmdQueryPlans() *cobra.Command {
 	}
 	flags.AddQueryFlagsToCmd(cmd)
 	flags.AddPaginationFlagsToCmd(cmd, "plans")
+	return cmd
+}
+
+func GetCmdQueryClaimLeafNode() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "claim-leaf-node [id] [round-id] [leaf-node]",
+		Short: "claim a leaf node",
+		Args:  cobra.ExactArgs(3),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+			planId, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return fmt.Errorf("invalid plan ID: %s, error: %s", args[0], err.Error())
+			}
+
+			roundId, ok := sdkmath.NewIntFromString(args[1])
+			if !ok {
+				return fmt.Errorf("invalid round ID: %s", args[1])
+			}
+
+			leafNode := common.HexToHash(args[2])
+			if len(leafNode.Bytes()) != 32 {
+				return fmt.Errorf("invalid merkle leaf node")
+			}
+
+			req := &types.QueryClaimLeafNodeRequest{
+				LeafNode: args[2],
+				Id:       planId,
+				RoundId:  roundId,
+			}
+			res, err := queryClient.ClaimLeafNode(context.Background(), req)
+			if err != nil {
+				return err
+			}
+			return clientCtx.PrintProto(res)
+		},
+	}
+	flags.AddQueryFlagsToCmd(cmd)
 	return cmd
 }

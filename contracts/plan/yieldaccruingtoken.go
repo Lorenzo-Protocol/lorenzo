@@ -1,4 +1,4 @@
-package contracts
+package plan
 
 import (
 	_ "embed" // embed compiled smart contract
@@ -8,8 +8,10 @@ import (
 )
 
 var (
-	//go:embed compiled_contracts/YATProxy.json
-	YATProxyJSON []byte //nolint: golint
+	//go:embed compiled_contracts/StakePlanProxy.json
+	StakePlanProxyJSON []byte //nolint: golint
+	//go:embed compiled_contracts/StakePlan.json
+	StakePlanJSON []byte //nolint: golint
 
 	//go:embed compiled_contracts/UpgradeableBeacon.json
 	BeaconJSON []byte //nolint: golint
@@ -20,11 +22,14 @@ var (
 	// YieldAccruingTokenContract is the compiled yield accruing token contract
 	YieldAccruingTokenContract evmtypes.CompiledContract
 
+	// StakePlanContract is the compiled StakePlan contract
+	StakePlanContract evmtypes.CompiledContract
+
 	// BeaconContract is the compiled beacon contract proxy
 	BeaconContract evmtypes.CompiledContract
 
-	// YATProxyContract is the compiled yat contract proxy
-	YATProxyContract evmtypes.CompiledContract
+	// StakePlanProxyContract is the compiled StakePlan contract proxy
+	StakePlanProxyContract evmtypes.CompiledContract
 )
 
 func init() {
@@ -39,6 +44,19 @@ func init() {
 		panic("load YieldAccruingToken contract failed")
 	}
 
+	// contract code
+	// https://github.com/Lorenzo-Protocol/builtin-contracts/blob/main/contracts/StakePlan.sol
+	// unmarshal the compiled StakePlanContract contract
+	err = json.Unmarshal(StakePlanJSON, &StakePlanContract)
+	if err != nil {
+		panic(err)
+	}
+
+	if len(StakePlanContract.Bin) == 0 {
+		panic("load StakePlan contract failed")
+	}
+
+	// unmarshal the compiled BeaconContract contract
 	err = json.Unmarshal(BeaconJSON, &BeaconContract)
 	if err != nil {
 		panic(err)
@@ -48,12 +66,13 @@ func init() {
 		panic("load Beacon contract failed")
 	}
 
-	err = json.Unmarshal(YATProxyJSON, &YATProxyContract)
+	// unmarshal the compiled StakePlanProxyContract contract
+	err = json.Unmarshal(StakePlanProxyJSON, &StakePlanProxyContract)
 	if err != nil {
 		panic(err)
 	}
 
-	if len(YATProxyContract.Bin) == 0 {
-		panic("load YATProxy contract failed")
+	if len(StakePlanProxyContract.Bin) == 0 {
+		panic("load StakePlanProxy contract failed")
 	}
 }

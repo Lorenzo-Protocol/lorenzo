@@ -17,8 +17,10 @@ func (k Keeper) InitGenesis(ctx sdk.Context, genState types.GenesisState) {
 			maxNumber = agent.Id
 		}
 	}
-	admin := sdk.MustAccAddressFromBech32(genState.Admin)
-	k.setAdmin(ctx, admin)
+	if len(genState.Admin) > 0 {
+		admin := sdk.MustAccAddressFromBech32(genState.Admin)
+		k.setAdmin(ctx, admin)
+	}
 	k.setNextNumber(ctx, maxNumber+1)
 }
 
