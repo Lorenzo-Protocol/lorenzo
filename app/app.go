@@ -558,7 +558,7 @@ func NewLorenzoApp(
 		FeegrantKeeper:         app.FeeGrantKeeper,
 		SignModeHandler:        encodingConfig.TxConfig.SignModeHandler(),
 		MaxTxGasWanted:         maxGasWanted,
-		ExtensionOptionChecker: nil, // uses default
+		ExtensionOptionChecker: ethermint.HasDynamicFeeExtensionOption,
 		BtcConfig:              btcConfig,
 		FeeKeeper:              app.FeeKeeper,
 		TxFeeChecker:           cosmosante.NewDynamicFeeChecker(app.EvmKeeper, app.FeeKeeper),
