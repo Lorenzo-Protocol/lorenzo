@@ -62,7 +62,7 @@ func (Ownership) EnumDescriptor() ([]byte, []int) {
 type TokenPair struct {
 	// erc20 contract hex format address
 	ContractAddress string `protobuf:"bytes,1,opt,name=contract_address,json=contractAddress,proto3" json:"contract_address,omitempty"`
-	// sdk coin denomination
+	// sdk coin base denomination
 	Denom string `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
 	// allows for token conversion
 	Enabled bool `protobuf:"varint,3,opt,name=enabled,proto3" json:"enabled,omitempty"`

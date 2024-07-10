@@ -64,6 +64,10 @@ import (
 	feetypes "github.com/Lorenzo-Protocol/lorenzo/x/fee/types"
 	"github.com/Lorenzo-Protocol/lorenzo/x/plan"
 	plantypes "github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
+
+	ics20wrapper "github.com/Lorenzo-Protocol/lorenzo/x/ibctransfer"
+	"github.com/Lorenzo-Protocol/lorenzo/x/token"
+	tokentypes "github.com/Lorenzo-Protocol/lorenzo/x/token/types"
 )
 
 // this line is used by starport scaffolding # stargate/wasm/app/enabledProposals
@@ -105,24 +109,28 @@ var (
 		crisis.AppModuleBasic{},
 		slashing.AppModuleBasic{},
 		feegrantmodule.AppModuleBasic{},
-		ibc.AppModuleBasic{},
 		upgrade.AppModuleBasic{},
 		evidence.AppModuleBasic{},
-		ibctransfer.AppModuleBasic{},
 		vesting.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
+
+		// ibc modules
+		ibc.AppModuleBasic{},
+		ics20wrapper.AppModuleBasic{AppModuleBasic: &ibctransfer.AppModuleBasic{}}, // ibc trasnfer wrapper
 
 		// Ethermint modules
 		evm.AppModuleBasic{},
 		feemarket.AppModuleBasic{},
 
-		// slef modules
+		// lorenzo modules
 		btclightclient.AppModuleBasic{},
 		btcstaking.AppModuleBasic{},
 		fee.AppModuleBasic{},
 		agent.AppModuleBasic{},
 		plan.AppModuleBasic{},
+		token.AppModuleBasic{},
 	)
+
 	// module account permissions
 	maccPerms = map[string][]string{
 		authtypes.FeeCollectorName:     nil,
@@ -137,8 +145,9 @@ var (
 		evmtypes.ModuleName:        {authtypes.Minter, authtypes.Burner}, // used for secure addition and subtraction of balance using module account
 		btcstakingtypes.ModuleName: {authtypes.Minter, authtypes.Burner},
 
-		// self module
-		plantypes.ModuleName: nil,
+		// lorenzo module
+		plantypes.ModuleName:  nil,
+		tokentypes.ModuleName: {authtypes.Minter, authtypes.Burner},
 	}
 )
 
@@ -213,23 +222,23 @@ func appModules(
 		),
 		upgrade.NewAppModule(app.UpgradeKeeper),
 		evidence.NewAppModule(*app.EvidenceKeeper),
-		ibc.NewAppModule(app.IBCKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 
-		app.transferModule,
-
-		// this line is used by starport scaffolding # stargate/app/appModule
+		// ibc modules
+		ibc.NewAppModule(app.IBCKeeper),
+		ics20wrapper.NewAppModule(app.ICS20WrapperKeeper), // wrapper module on ibc transfer
 
 		// Ethermint app modules
 		evm.NewAppModule(app.EvmKeeper, app.AccountKeeper, app.GetSubspace(evmtypes.ModuleName).WithKeyTable(evmtypes.ParamKeyTable())),
 		feemarket.NewAppModule(app.FeeMarketKeeper, app.GetSubspace(feemarkettypes.ModuleName).WithKeyTable(feemarkettypes.ParamKeyTable())),
 
-		// self modules
+		// lorenzo modules
 		btclightclient.NewAppModule(appCodec, app.BTCLightClientKeeper),
 		fee.NewAppModule(appCodec, app.FeeKeeper),
 		btcstaking.NewAppModule(appCodec, app.BTCStakingKeeper),
 		agent.NewAppModule(appCodec, app.AgentKeeper),
 		plan.NewAppModule(appCodec, app.PlanKeeper),
+		token.NewAppModule(appCodec, app.TokenKeeper),
 	}
 }
 
@@ -273,6 +282,7 @@ func orderBeginBlockers() []string {
 		feetypes.ModuleName,
 		agenttypes.ModuleName,
 		plantypes.ModuleName,
+		tokentypes.ModuleName,
 	}
 }
 
@@ -313,6 +323,7 @@ func orderEndBlockers() []string {
 		feetypes.ModuleName,
 		agenttypes.ModuleName,
 		plantypes.ModuleName,
+		tokentypes.ModuleName,
 	}
 }
 
@@ -351,12 +362,12 @@ func orderInitBlockers() []string {
 		evidencetypes.ModuleName,
 
 		// self module
-
 		btclightclienttypes.ModuleName,
 		btcstakingtypes.ModuleName,
 		feetypes.ModuleName,
 		agenttypes.ModuleName,
 		plantypes.ModuleName,
+		tokentypes.ModuleName,
 
 		// NOTE: crisis module must go at the end to check for invariants on each module
 		crisistypes.ModuleName,
