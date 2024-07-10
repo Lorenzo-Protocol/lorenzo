@@ -23,7 +23,8 @@ type IBCMiddleware struct {
 	keeper keeper.Keeper
 }
 
-// OnRecvPacket implements the ICS-26 interface.
+// OnRecvPacket implements the ICS-26 interface. If it successfully handles OnRecvPacket, a
+// post-processing handler will try converting the coin to an ERC20 token.
 func (im IBCMiddleware) OnRecvPacket(
 	ctx sdk.Context,
 	packet types.Packet,
@@ -39,8 +40,7 @@ func (im IBCMiddleware) OnRecvPacket(
 }
 
 // OnAcknowledgementPacket implements the ICS-26 interface. If it successfully handles OnAcknowledgementPacket,
-// a post-processing handler will try refunding the token transferred and convert the coin to an ERC20 token,
-// provided the constraints are met.
+// a post-processing handler will try refunding the token transferred and convert the coin to an ERC20 token.
 func (im IBCMiddleware) OnAcknowledgementPacket(
 	ctx sdk.Context,
 	packet types.Packet,
@@ -68,8 +68,7 @@ func (im IBCMiddleware) OnAcknowledgementPacket(
 }
 
 // OnTimeoutPacket implements the ICS-26 interface. If it successfully handles OnTimeoutPacket,
-// a post-processing handler will try refunding the token converted on previous sending,
-// provided the constraints are met.
+// a post-processing handler will try refunding the token converted on previous sending.
 func (im IBCMiddleware) OnTimeoutPacket(
 	ctx sdk.Context,
 	packet types.Packet,
