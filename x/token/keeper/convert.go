@@ -14,8 +14,8 @@ import (
 	"github.com/Lorenzo-Protocol/lorenzo/x/token/types"
 )
 
-// ConvertCoinNativeCoin converts token from bank to contract. Token source is sdk.Coin.
-func (k Keeper) ConvertCoinNativeCoin(
+// ConvertNativeCoinToVoucherERC20 converts token from bank to contract. Token source is sdk.Coin.
+func (k Keeper) ConvertNativeCoinToVoucherERC20(
 	ctx sdk.Context,
 	pair types.TokenPair,
 	msg *types.MsgConvertCoin,
@@ -90,8 +90,8 @@ func (k Keeper) ConvertCoinNativeCoin(
 	return &types.MsgConvertCoinResponse{}, nil
 }
 
-// ConvertCoinNativeERC20 converts token from bank to contract. Token source is ERC20 contract.
-func (k Keeper) ConvertCoinNativeERC20(
+// ConvertVoucherCoinToNativeERC20 converts token from bank to contract. Token source is ERC20 contract.
+func (k Keeper) ConvertVoucherCoinToNativeERC20(
 	ctx sdk.Context,
 	pair types.TokenPair,
 	msg *types.MsgConvertCoin,
@@ -185,8 +185,8 @@ func (k Keeper) ConvertCoinNativeERC20(
 	return &types.MsgConvertCoinResponse{}, nil
 }
 
-// ConvertERC20NativeCoin converts token from contract to bank. Token destination is sdk.Coin.
-func (k Keeper) ConvertERC20NativeCoin(
+// ConvertVoucherERC20ToNativeCoin converts token from contract to bank. Token destination is sdk.Coin.
+func (k Keeper) ConvertVoucherERC20ToNativeCoin(
 	ctx sdk.Context,
 	pair types.TokenPair,
 	msg *types.MsgConvertERC20,
@@ -271,8 +271,8 @@ func (k Keeper) ConvertERC20NativeCoin(
 	return &types.MsgConvertERC20Response{}, nil
 }
 
-// ConvertERC20NativeERC20 converts token from contract to contract. Token destination is ERC20 contract.
-func (k Keeper) ConvertERC20NativeERC20(
+// ConvertNativeERC20ToVoucherCoin converts token from contract to contract. Token destination is ERC20 contract.
+func (k Keeper) ConvertNativeERC20ToVoucherCoin(
 	ctx sdk.Context,
 	pair types.TokenPair,
 	msg *types.MsgConvertERC20,

@@ -69,9 +69,6 @@ import (
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
 
-	/* ------------------------------ ibc imports ----------------------------- */
-	ibctransfer "github.com/cosmos/ibc-go/v7/modules/apps/transfer"
-	ibctransferkeeper "github.com/cosmos/ibc-go/v7/modules/apps/transfer/keeper"
 	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 	ibcclient "github.com/cosmos/ibc-go/v7/modules/core/02-client"
 	ibcclienttypes "github.com/cosmos/ibc-go/v7/modules/core/02-client/types"
@@ -112,6 +109,11 @@ import (
 	feetypes "github.com/Lorenzo-Protocol/lorenzo/x/fee/types"
 	plankeeper "github.com/Lorenzo-Protocol/lorenzo/x/plan/keeper"
 	plantypes "github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
+
+	ics20wrapper "github.com/Lorenzo-Protocol/lorenzo/x/ibctransfer"
+	ics20wrapperkeeper "github.com/Lorenzo-Protocol/lorenzo/x/ibctransfer/keeper"
+	tokenkeeper "github.com/Lorenzo-Protocol/lorenzo/x/token/keeper"
+	tokentypes "github.com/Lorenzo-Protocol/lorenzo/x/token/types"
 )
 
 var (
@@ -157,22 +159,26 @@ type LorenzoApp struct {
 	CrisisKeeper          *crisiskeeper.Keeper
 	UpgradeKeeper         *upgradekeeper.Keeper
 	ParamsKeeper          paramskeeper.Keeper
-	IBCKeeper             *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
 	EvidenceKeeper        *evidencekeeper.Keeper
-	TransferKeeper        ibctransferkeeper.Keeper
 	FeeGrantKeeper        feegrantkeeper.Keeper
 	ConsensusParamsKeeper consensuskeeper.Keeper
+
+	// IBC keepers
+	IBCKeeper *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
+	//TransferKeeper   ibctransferkeeper.Keeper
+	ICS20WrapperKeeper *ics20wrapperkeeper.Keeper
 
 	// Ethermint keepers
 	EvmKeeper       *evmkeeper.Keeper
 	FeeMarketKeeper feemarketkeeper.Keeper
 
-	// self keeper
+	// Lorenzo keeper
 	BTCLightClientKeeper btclightclientkeeper.Keeper
 	FeeKeeper            *feekeeper.Keeper
 	AgentKeeper          agentkeeper.Keeper
 	BTCStakingKeeper     btcstakingkeeper.Keeper
 	PlanKeeper           *plankeeper.Keeper
+	TokenKeeper          *tokenkeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
@@ -180,8 +186,6 @@ type LorenzoApp struct {
 
 	// the module manager
 	mm *module.Manager
-
-	transferModule ibctransfer.AppModule
 
 	// module configurator
 	configurator module.Configurator
@@ -243,14 +247,15 @@ func NewLorenzoApp(
 		crisistypes.StoreKey,
 		govtypes.StoreKey,
 		paramstypes.StoreKey,
-		ibcexported.StoreKey,
 		upgradetypes.StoreKey,
 		feegrant.StoreKey,
 		consensustypes.StoreKey,
-
 		evidencetypes.StoreKey,
-		ibctransfertypes.StoreKey,
 		capabilitytypes.StoreKey,
+
+		// ibc keys
+		ibcexported.StoreKey,
+		ibctransfertypes.StoreKey,
 
 		// ethermint keys
 		evmtypes.StoreKey,
@@ -260,8 +265,9 @@ func NewLorenzoApp(
 		btcstakingtypes.StoreKey,
 		agenttypes.StoreKey,
 
-		// self modules
+		// lorenzo module keys
 		plantypes.StoreKey,
+		tokentypes.StoreKey,
 	)
 
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey, evmtypes.TransientKey, feemarkettypes.TransientKey)
@@ -416,19 +422,6 @@ func NewLorenzoApp(
 		scopedIBCKeeper,
 	)
 
-	// Create IBC Transfer Keepers
-	app.TransferKeeper = ibctransferkeeper.NewKeeper(
-		appCodec,
-		keys[ibctransfertypes.StoreKey],
-		app.GetSubspace(ibctransfertypes.ModuleName),
-		app.IBCKeeper.ChannelKeeper,
-		app.IBCKeeper.ChannelKeeper,
-		&app.IBCKeeper.PortKeeper,
-		app.AccountKeeper,
-		app.BankKeeper,
-		scopedTransferKeeper,
-	)
-
 	// Create evidence Keeper for to register the IBC light client misbehaviour evidence route
 	app.EvidenceKeeper = evidencekeeper.NewKeeper(
 		appCodec,
@@ -460,8 +453,6 @@ func NewLorenzoApp(
 		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper))
 
 	app.GovKeeper.SetLegacyRouter(govRouter)
-
-	app.transferModule = ibctransfer.NewAppModule(app.TransferKeeper)
 
 	btclightclientKeeper := btclightclientkeeper.NewKeeper(
 		appCodec,
@@ -498,12 +489,34 @@ func NewLorenzoApp(
 		app.AgentKeeper,
 	)
 
-	transferStack := ibctransfer.NewIBCModule(app.TransferKeeper)
+	app.TokenKeeper = tokenkeeper.NewKeeper(
+		appCodec,
+		keys[tokentypes.StoreKey],
+		authtypes.NewModuleAddress(govtypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.EvmKeeper,
+	)
+
+	// ibc transfer keeper wrapper
+	app.ICS20WrapperKeeper = ics20wrapperkeeper.NewKeeper(
+		appCodec,
+		keys[ibctransfertypes.StoreKey],
+		app.GetSubspace(ibctransfertypes.ModuleName),
+		app.IBCKeeper.ChannelKeeper,
+		app.IBCKeeper.ChannelKeeper,
+		&app.IBCKeeper.PortKeeper,
+		app.AccountKeeper,
+		app.BankKeeper,
+		scopedTransferKeeper,
+		app.TokenKeeper,
+	)
+
+	transferStack := ics20wrapper.NewIBCModule(app.ICS20WrapperKeeper)
 
 	// Create static IBC router, add transfer route, then set and seal it
 	ibcRouter := ibcporttypes.NewRouter()
 	ibcRouter.AddRoute(ibctransfertypes.ModuleName, transferStack)
-	// this line is used by starport scaffolding # ibc/app/router
 	app.IBCKeeper.SetRouter(ibcRouter)
 
 	/****  Module Options ****/

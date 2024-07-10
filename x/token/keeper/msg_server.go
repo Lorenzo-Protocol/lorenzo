@@ -119,7 +119,21 @@ func (m msgServer) ToggleConversion(goCtx context.Context, msg *types.MsgToggleC
 	return &types.MsgToggleConversionResponse{}, nil
 }
 
+// UpdateParams implements MsgServer.UpdateParams
+func (m msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
+	if m.authority.String() != msg.Authority {
+		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner,
+			"invalid authority; expected %s, got %s", m.authority.String(), msg.Authority)
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	m.SetParams(ctx, msg.Params)
+
+	return &types.MsgUpdateParamsResponse{}, nil
+}
+
 // ConvertCoin implements MsgServer.ConvertCoin
+// NOTE: impl it as keeper method as we need to export it as expected keeper for lorenzo ibc transfer wrapper.
 func (k Keeper) ConvertCoin(goCtx context.Context, msg *types.MsgConvertCoin) (*types.MsgConvertCoinResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
@@ -152,9 +166,9 @@ func (k Keeper) ConvertCoin(goCtx context.Context, msg *types.MsgConvertCoin) (*
 	// execute as per token source type.
 	switch {
 	case pair.IsNativeCoin():
-		return k.ConvertCoinNativeCoin(ctx, pair, msg, receiver, sender)
+		return k.ConvertNativeCoinToVoucherERC20(ctx, pair, msg, receiver, sender)
 	case pair.IsNativeERC20():
-		return k.ConvertCoinNativeERC20(ctx, pair, msg, receiver, sender)
+		return k.ConvertVoucherCoinToNativeERC20(ctx, pair, msg, receiver, sender)
 	default:
 		return nil, types.ErrUndefinedOwner
 	}
@@ -194,23 +208,10 @@ func (k Keeper) ConvertERC20(goCtx context.Context, msg *types.MsgConvertERC20) 
 	// execute as per token destination type.
 	switch {
 	case pair.IsNativeCoin():
-		return k.ConvertERC20NativeCoin(ctx, pair, msg, receiver, sender) // case 1.2
+		return k.ConvertVoucherERC20ToNativeCoin(ctx, pair, msg, receiver, sender) // case 1.2
 	case pair.IsNativeERC20():
-		return k.ConvertERC20NativeERC20(ctx, pair, msg, receiver, sender) // case 2.1
+		return k.ConvertNativeERC20ToVoucherCoin(ctx, pair, msg, receiver, sender) // case 2.1
 	default:
 		return nil, types.ErrUndefinedOwner
 	}
-}
-
-// UpdateParams implements MsgServer.UpdateParams
-func (m msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
-	if m.authority.String() != msg.Authority {
-		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner,
-			"invalid authority; expected %s, got %s", m.authority.String(), msg.Authority)
-	}
-
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	m.SetParams(ctx, msg.Params)
-
-	return &types.MsgUpdateParamsResponse{}, nil
 }
