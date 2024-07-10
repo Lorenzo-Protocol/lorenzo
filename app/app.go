@@ -483,8 +483,6 @@ func NewLorenzoApp(
 		app.BTCLightClientKeeper,
 	)
 
-	app.BTCStakingKeeper = btcstakingkeeper.NewKeeper(appCodec, keys[btcstakingtypes.StoreKey], app.BTCLightClientKeeper, app.BankKeeper, authtypes.NewModuleAddress(govtypes.ModuleName).String())
-
 	// self keeper
 	app.PlanKeeper = plankeeper.NewKeeper(
 		appCodec,
@@ -495,6 +493,8 @@ func NewLorenzoApp(
 		app.EvmKeeper,
 		app.AgentKeeper,
 	)
+
+	app.BTCStakingKeeper = btcstakingkeeper.NewKeeper(appCodec, keys[btcstakingtypes.StoreKey], app.BTCLightClientKeeper, app.BankKeeper, app.PlanKeeper, authtypes.NewModuleAddress(govtypes.ModuleName).String())
 
 	transferStack := ibctransfer.NewIBCModule(app.TransferKeeper)
 

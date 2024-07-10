@@ -3,6 +3,7 @@ package keeper
 import (
 	"bytes"
 	"context"
+	"encoding/binary"
 	"encoding/hex"
 	"fmt"
 
@@ -116,6 +117,26 @@ func canPerformMint(signer sdk.AccAddress, p types.Params) bool {
 	return false
 }
 
+func checkBTCTxDepth(stakingTxDepth uint64, btcAmount uint64) error {
+	if btcAmount < Dep0Amount { // no depth check required
+	} else if btcAmount < Dep1Amount { // at least 1 depth
+		if stakingTxDepth < 1 {
+			return types.ErrBlkHdrNotConfirmed.Wrapf("not k-deep: k=1; depth=%d", stakingTxDepth)
+		}
+	} else if btcAmount < Dep2Amount {
+		if stakingTxDepth < 2 {
+			return types.ErrBlkHdrNotConfirmed.Wrapf("not k-deep: k=2; depth=%d", stakingTxDepth)
+		}
+	} else if btcAmount < Dep3Amount {
+		if stakingTxDepth < 3 {
+			return types.ErrBlkHdrNotConfirmed.Wrapf("not k-deep: k=3; depth=%d", stakingTxDepth)
+		}
+	} else if stakingTxDepth < 4 {
+		return types.ErrBlkHdrNotConfirmed.Wrapf("not k-deep: k=4; depth=%d", stakingTxDepth)
+	}
+	return nil
+}
+
 func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreateBTCStaking) (*types.MsgCreateBTCStakingResponse, error) {
 	stakingMsgTx, err := NewBTCTxFromBytes(req.StakingTx.Transaction)
 	if err != nil {
@@ -151,6 +172,7 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 	}
 	var mintToAddr []byte
 	var btcAmount uint64
+	var planContractAddress *common.Address = nil
 	if common.IsHexAddress(receiver.EthAddr) {
 		signers := req.GetSigners()
 		if len(signers) == 0 || !canPerformMint(req.GetSigners()[0], *p) {
@@ -159,25 +181,30 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 		mintToAddr = common.HexToAddress(receiver.EthAddr).Bytes()
 		btcAmount, err = ExtractPaymentTo(stakingMsgTx, btcReceivingAddr)
 	} else {
-		btcAmount, mintToAddr, err = ExtractPaymentToWithOpReturnId(stakingMsgTx, btcReceivingAddr)
+		var op_return_msg []byte
+		btcAmount, op_return_msg, err = ExtractPaymentToWithOpReturnId(stakingMsgTx, btcReceivingAddr)
+		if err == nil {
+			if len(op_return_msg) == 20 {
+				mintToAddr = op_return_msg
+			} else if len(op_return_msg) == 28 {
+				mintToAddr = op_return_msg[:20]
+				planId := binary.LittleEndian.Uint64(op_return_msg[20:])
+				plan, found := ms.planKeeper.GetPlan(ctx, planId)
+				if found && common.IsHexAddress(plan.ContractAddress) {
+					addr := common.HexToAddress(plan.ContractAddress)
+					planContractAddress = &addr
+				}
+			} else {
+				return nil, types.ErrMintToAddr
+			}
+		}
 	}
 	if err != nil || btcAmount == 0 {
 		return nil, types.ErrInvalidTransaction
-	} else if btcAmount < Dep0Amount { // no depth check required
-	} else if btcAmount < Dep1Amount { // at least 1 depth
-		if stakingTxDepth < 1 {
-			return nil, types.ErrBlkHdrNotConfirmed.Wrapf("not k-deep: k=1; depth=%d", stakingTxDepth)
-		}
-	} else if btcAmount < Dep2Amount {
-		if stakingTxDepth < 2 {
-			return nil, types.ErrBlkHdrNotConfirmed.Wrapf("not k-deep: k=2; depth=%d", stakingTxDepth)
-		}
-	} else if btcAmount < Dep3Amount {
-		if stakingTxDepth < 3 {
-			return nil, types.ErrBlkHdrNotConfirmed.Wrapf("not k-deep: k=3; depth=%d", stakingTxDepth)
-		}
-	} else if stakingTxDepth < 4 {
-		return nil, types.ErrBlkHdrNotConfirmed.Wrapf("not k-deep: k=4; depth=%d", stakingTxDepth)
+	}
+	err = checkBTCTxDepth(stakingTxDepth, btcAmount)
+	if err != nil {
+		return nil, err
 	}
 	if len(mintToAddr) != 20 {
 		return nil, types.ErrMintToAddr.Wrap(hex.EncodeToString(mintToAddr))
@@ -200,12 +227,22 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 	if err != nil {
 		return nil, types.ErrTransferToAddr.Wrap(err.Error())
 	}
+	var mintYatResult string = "ok"
+	if planContractAddress != nil {
+		err = ms.planKeeper.MintFromStakePlan(ctx, *planContractAddress, common.BytesToAddress(mintToAddr), toMintAmount.BigInt())
+		if err != nil {
+			mintYatResult = err.Error()
+		}
+	} else {
+		mintYatResult = "Plan not found"
+	}
 	bctStakingRecord := types.BTCStakingRecord{
 		TxHash:          stakingTxHash[:],
 		Amount:          btcAmount,
 		MintToAddr:      mintToAddr,
 		BtcReceiverName: receiver.Name,
 		BtcReceiverAddr: receiver.Addr,
+		MintYatResult:   mintYatResult,
 	}
 	err = ms.addBTCStakingRecord(ctx, &bctStakingRecord)
 	if err != nil {
