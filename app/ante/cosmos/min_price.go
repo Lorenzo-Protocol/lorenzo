@@ -41,8 +41,8 @@ func NewMinGasPriceDecorator(
 
 func (mpd MinGasPriceDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
 	// Check if the transaction contains any non-free messages
-	hasNonFreeMsg := mpd.feeKeeper.HasNonFeeTx(ctx, tx)
-	if !hasNonFreeMsg {
+	hasPaidMsg := mpd.feeKeeper.HasPaidMsg(ctx, tx)
+	if !hasPaidMsg {
 		return next(ctx, tx, simulate)
 	}
 

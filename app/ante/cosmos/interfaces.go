@@ -28,5 +28,5 @@ type StakingKeeper interface {
 }
 
 type FeeKeeper interface {
-	HasNonFeeTx(ctx sdk.Context, tx sdk.Tx) bool
+	HasPaidMsg(ctx sdk.Context, tx sdk.Tx) bool
 }

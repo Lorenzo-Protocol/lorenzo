@@ -24,8 +24,8 @@ type TxFeeChecker func(ctx sdk.Context, feeTx sdk.FeeTx) (sdk.Coins, int64, erro
 func NewDynamicFeeChecker(evmKeeper ethante.DynamicFeeEVMKeeper, feeKeeper FeeKeeper) authante.TxFeeChecker {
 	return func(ctx sdk.Context, tx sdk.Tx) (sdk.Coins, int64, error) {
 		// Check if the transaction contains any non-free messages
-		hasNonFreeMsg := feeKeeper.HasNonFeeTx(ctx, tx)
-		if !hasNonFreeMsg {
+		hasPaidMsg := feeKeeper.HasPaidMsg(ctx, tx)
+		if !hasPaidMsg {
 			return []sdk.Coin{}, 0, nil
 		}
 
