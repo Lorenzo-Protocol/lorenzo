@@ -28,6 +28,7 @@ const (
 var (
 	authority = authtypes.NewModuleAddress(govtypes.ModuleName)
 	tester    = helpers.CreateTestAddrs(1)[0]
+	tester2   = helpers.CreateTestAddrs(1)[0]
 
 	coinMetadata = banktypes.Metadata{
 		Description: "",
@@ -225,8 +226,7 @@ func (suite *KeeperTestSuite) TestRegisterERC20() {
 			expectPass: false,
 			malleateDeploy: func() string {
 				// empty symbol!
-				contractAddr, err := suite.DeployERC20ContractWithCommit(erc20Name, "", erc20Decimals)
-				suite.Require().NoError(err)
+				contractAddr := suite.utilsERC20Deploy(erc20Name, "", erc20Decimals)
 				suite.T().Log(contractAddr.String())
 				return contractAddr.String()
 			},
@@ -246,9 +246,8 @@ func (suite *KeeperTestSuite) TestRegisterERC20() {
 			if tc.malleateDeploy != nil {
 				contractAddr = tc.malleateDeploy()
 			} else {
-				addr, err := suite.DeployERC20ContractWithCommit(erc20Name, erc20Symbol, erc20Decimals)
+				addr := suite.utilsERC20Deploy(erc20Name, erc20Symbol, erc20Decimals)
 				contractAddr = addr.String()
-				suite.Require().NoError(err)
 			}
 
 			if tc.malleate != nil {
@@ -402,8 +401,348 @@ func (suite *KeeperTestSuite) TestUpdateParams() {
 	}
 }
 
-func (suite *KeeperTestSuite) TestConvertCoin() {
+func (suite *KeeperTestSuite) TestConvertNativeCoinToVoucherERC20() {
+	testcases := []struct {
+		name               string
+		sender             string
+		expectPass         bool
+		malleateMintEnable func()
+		malleateMsg        func(coin *types.MsgConvertCoin)
+	}{
+		{
+			name:       "fail: mint disabled due to token module disabled",
+			expectPass: false,
+			malleateMintEnable: func() {
+				suite.app.TokenKeeper.SetParams(suite.ctx, types.Params{
+					EnableConvert: false,
+				})
+				suite.Commit()
+			},
+		},
+		{
+			name:       "fail: mint disabled due to token pair is disabled",
+			expectPass: false,
+			malleateMintEnable: func() {
+				_, err := suite.msgServer.ToggleConversion(suite.ctx, &types.MsgToggleConversion{
+					Authority: authority.String(),
+					Token:     coinBaseDenom,
+				})
+				suite.Require().NoError(err)
+				suite.Commit()
+			},
+		},
+		//{
+		//	name:       "fail: mint disabled due to receiver is blocked",
+		//	expectPass: false,
+		//	malleate: func() {
+		//		// TODO: set block addr when init bank keeper.
+		//	},
+		//},
+		{
+			name:       "fail: mint disabled due to receiver is not sender and coin is not allowed to send",
+			expectPass: false,
+			malleateMsg: func(coin *types.MsgConvertCoin) {
+				coin.Receiver = common.BytesToAddress(authority).String()
+			},
+			malleateMintEnable: func() {
+				suite.app.BankKeeper.SetSendEnabled(suite.ctx, coinBaseDenom, false)
+				suite.Commit()
+			},
+		},
+		{
+			name:       "success: convert native coin to voucher erc20",
+			expectPass: true,
+		},
+		{
+			name:       "fail: native coin is not enough",
+			expectPass: false,
+			malleateMsg: func(coin *types.MsgConvertCoin) {
+				coin.Coin = sdk.NewInt64Coin(coinMetadata.Base, 1_000_001)
+			},
+		},
+	}
+
+	for _, tc := range testcases {
+		suite.Run(tc.name, func() {
+			suite.SetupTest()
+			sender := tester
+			receiver := tester2
+
+			pair := suite.utilsFundAndRegisterCoin(coinMetadata, sender, 1_000_000)
+
+			msg := &types.MsgConvertCoin{
+				Sender:   sender.String(),
+				Receiver: common.BytesToAddress(receiver).String(),
+				Coin:     sdk.NewInt64Coin(coinMetadata.Base, 1_000),
+			}
+
+			if tc.malleateMintEnable != nil {
+				tc.malleateMintEnable()
+			}
+
+			if tc.malleateMsg != nil {
+				tc.malleateMsg(msg)
+			}
+
+			_, err := suite.msgServer.ConvertCoin(suite.ctx, msg)
+
+			if tc.expectPass {
+				suite.Require().NoError(err)
+
+				// check balance
+				coin := suite.app.BankKeeper.GetBalance(suite.ctx, sender, coinMetadata.Base)
+				suite.Require().Equal(int64(999_000), coin.Amount.Int64())
+
+				erc20balance := suite.utilsERC20BalanceOf(common.HexToAddress(pair.ContractAddress), common.BytesToAddress(receiver))
+				suite.Require().Equal(int64(1_000), erc20balance)
+
+			} else {
+				suite.Require().Error(err)
+				suite.T().Log(err)
+			}
+		})
+	}
 }
 
-func (suite *KeeperTestSuite) TestConvertERC20() {
+func (suite *KeeperTestSuite) TestConvertVoucherERC20ToNativeCoin() {
+	testcases := []struct {
+		name        string
+		sender      string
+		expectPass  bool
+		malleateMsg func(msg *types.MsgConvertERC20)
+	}{
+		{
+			name:       "success: convert voucher erc20 to native coin",
+			expectPass: true,
+		},
+		{
+			name:       "fail: voucher token is not enough",
+			expectPass: false,
+			malleateMsg: func(msg *types.MsgConvertERC20) {
+				msg.Amount = sdk.NewInt(1_000_001)
+			},
+		},
+	}
+
+	for _, tc := range testcases {
+		suite.Run(tc.name, func() {
+			suite.SetupTest()
+			// convert all native coin to voucher erc20
+			pair := suite.utilsFundAndRegisterCoin(coinMetadata, tester, 1_000_000)
+			_, err := suite.msgServer.ConvertCoin(suite.ctx, &types.MsgConvertCoin{
+				Sender:   tester.String(),
+				Receiver: common.BytesToAddress(tester).String(),
+				Coin:     sdk.NewInt64Coin(coinMetadata.Base, 1_000_000),
+			})
+			suite.Require().NoError(err)
+			coin := suite.app.BankKeeper.GetBalance(suite.ctx, tester, coinMetadata.Base)
+			suite.Require().Equal(int64(0), coin.Amount.Int64())
+			erc20balance := suite.utilsERC20BalanceOf(common.HexToAddress(pair.ContractAddress), common.BytesToAddress(tester))
+			suite.Require().Equal(int64(1_000_000), erc20balance)
+
+			msg := &types.MsgConvertERC20{
+				Sender:          common.BytesToAddress(tester).String(),
+				Receiver:        tester.String(),
+				ContractAddress: pair.ContractAddress,
+				Amount:          sdk.NewInt(1_000),
+			}
+
+			if tc.malleateMsg != nil {
+				tc.malleateMsg(msg)
+			}
+
+			_, err = suite.msgServer.ConvertERC20(suite.ctx, msg)
+
+			if tc.expectPass {
+				suite.Require().NoError(err)
+
+				// check balance
+				erc20balance := suite.utilsERC20BalanceOf(common.HexToAddress(pair.ContractAddress), common.BytesToAddress(tester))
+				suite.Require().Equal(int64(999_000), erc20balance)
+
+				coin2 := suite.app.BankKeeper.GetBalance(suite.ctx, tester, coinMetadata.Base)
+				suite.Require().Equal(int64(1_000), coin2.Amount.Int64())
+
+				supply := suite.app.BankKeeper.GetSupply(suite.ctx, coinMetadata.Base)
+				suite.Require().Equal(int64(1_000_000), supply.Amount.Int64())
+
+			} else {
+				suite.Require().Error(err)
+				suite.T().Log(err)
+			}
+		})
+	}
+}
+
+func (suite *KeeperTestSuite) TestConvertNativeERC20ToVoucherCoin() {
+	testcases := []struct {
+		name               string
+		sender             string
+		expectPass         bool
+		malleateMintEnable func(pair types.TokenPair)
+		malleateMsg        func(coin *types.MsgConvertERC20)
+	}{
+		{
+			name:       "fail: mint disabled due to token module disabled",
+			expectPass: false,
+			malleateMintEnable: func(pair types.TokenPair) {
+				suite.app.TokenKeeper.SetParams(suite.ctx, types.Params{
+					EnableConvert: false,
+				})
+				suite.Commit()
+			},
+		},
+		{
+			name:       "fail: mint disabled due to token pair is disabled",
+			expectPass: false,
+			malleateMintEnable: func(pair types.TokenPair) {
+				_, err := suite.msgServer.ToggleConversion(suite.ctx, &types.MsgToggleConversion{
+					Authority: authority.String(),
+					Token:     pair.Denom,
+				})
+				suite.Require().NoError(err)
+				suite.Commit()
+			},
+		},
+		//{
+		//	name:       "fail: mint disabled due to receiver is blocked",
+		//	expectPass: false,
+		//	malleate: func() {
+		//		// TODO: set block addr when init bank keeper.
+		//	},
+		//},
+		{
+			name:       "fail: mint disabled due to receiver is not sender and coin is not allowed to send",
+			expectPass: false,
+			malleateMsg: func(msg *types.MsgConvertERC20) {
+				msg.Receiver = authority.String()
+			},
+			malleateMintEnable: func(pair types.TokenPair) {
+				suite.app.BankKeeper.SetSendEnabled(suite.ctx, pair.Denom, false)
+				suite.Commit()
+			},
+		},
+		{
+			name:       "success: convert native erc20 to voucher coin",
+			expectPass: true,
+		},
+		{
+			name:       "fail: native erc20 is not enough",
+			expectPass: false,
+			malleateMsg: func(msg *types.MsgConvertERC20) {
+				msg.Amount = sdk.NewInt(1_000_001)
+			},
+		},
+	}
+
+	for _, tc := range testcases {
+		suite.Run(tc.name, func() {
+			suite.SetupTest()
+			// deploy erc20, fund tester, and register pair for erc20
+			pair, contractAddr := suite.utilsFundAndRegisterERC20(
+				erc20Name, erc20Symbol, erc20Decimals,
+				common.BytesToAddress(tester), 1_000_000)
+
+			msg := &types.MsgConvertERC20{
+				ContractAddress: contractAddr.String(),
+				Amount:          sdk.NewInt(1_000),
+				Receiver:        tester.String(),
+				Sender:          common.BytesToAddress(tester).String(),
+			}
+
+			if tc.malleateMintEnable != nil {
+				tc.malleateMintEnable(pair)
+			}
+
+			if tc.malleateMsg != nil {
+				tc.malleateMsg(msg)
+			}
+
+			// set account
+			suite.app.AccountKeeper.SetAccount(suite.ctx,
+				suite.app.AccountKeeper.NewAccountWithAddress(suite.ctx, tester))
+
+			_, err := suite.msgServer.ConvertERC20(suite.ctx, msg)
+
+			if tc.expectPass {
+				suite.T().Log(tester.String())
+				suite.Require().NoError(err)
+				// query balance
+				token := suite.utilsERC20BalanceOf(contractAddr, common.BytesToAddress(tester))
+				suite.Require().Equal(int64(999_000), token)
+				coin := suite.app.BankKeeper.GetBalance(suite.ctx, tester, pair.Denom)
+				suite.Require().Equal(int64(1_000), coin.Amount.Int64())
+			} else {
+				suite.Require().Error(err)
+			}
+		})
+	}
+}
+
+func (suite *KeeperTestSuite) TestConvertVoucherCoinToNativeERC20() {
+	testcases := []struct {
+		name        string
+		sender      string
+		expectPass  bool
+		malleateMsg func(msg *types.MsgConvertCoin)
+	}{
+		{
+			name:       "success: convert native erc20 to voucher coin",
+			expectPass: true,
+		},
+		{
+			name:       "fail: native erc20 is not enough",
+			expectPass: false,
+			malleateMsg: func(msg *types.MsgConvertCoin) {
+				msg.Coin.Amount = sdk.NewInt(1_000_001)
+			},
+		},
+	}
+
+	for _, tc := range testcases {
+		suite.Run(tc.name, func() {
+			suite.SetupTest()
+
+			// deploy erc20, fund tester, and register pair for erc20
+			pair, contractAddr := suite.utilsFundAndRegisterERC20(
+				erc20Name, erc20Symbol, erc20Decimals,
+				common.BytesToAddress(tester), 1_000_000)
+
+			// set account
+			suite.app.AccountKeeper.SetAccount(suite.ctx,
+				suite.app.AccountKeeper.NewAccountWithAddress(suite.ctx, tester))
+
+			// convert to voucher coin first.
+			_, err := suite.msgServer.ConvertERC20(suite.ctx, &types.MsgConvertERC20{
+				ContractAddress: contractAddr.String(),
+				Amount:          sdk.NewInt(1_000_000),
+				Receiver:        tester.String(),
+				Sender:          common.BytesToAddress(tester).String(),
+			})
+			suite.Require().NoError(err)
+
+			msg := &types.MsgConvertCoin{
+				Sender:   tester.String(),
+				Receiver: common.BytesToAddress(tester).String(),
+				Coin:     sdk.NewInt64Coin(pair.Denom, 1_000),
+			}
+
+			if tc.malleateMsg != nil {
+				tc.malleateMsg(msg)
+			}
+
+			_, err = suite.msgServer.ConvertCoin(suite.ctx, msg)
+
+			if tc.expectPass {
+				suite.Require().NoError(err)
+				// query balance
+				coin := suite.app.BankKeeper.GetBalance(suite.ctx, tester, pair.Denom)
+				suite.Require().Equal(int64(999_000), coin.Amount.Int64())
+				token := suite.utilsERC20BalanceOf(contractAddr, common.BytesToAddress(tester))
+				suite.Require().Equal(int64(1_000), token)
+			} else {
+				suite.Require().Error(err)
+			}
+		})
+	}
 }
