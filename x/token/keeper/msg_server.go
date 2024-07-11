@@ -18,8 +18,8 @@ type msgServer struct {
 	*Keeper
 }
 
-// NewMsgServer creates a new token MsgServer instance
-func NewMsgServer(k *Keeper) types.MsgServer {
+// NewMsgServerImpl creates a new token MsgServer instance
+func NewMsgServerImpl(k *Keeper) types.MsgServer {
 	return &msgServer{Keeper: k}
 }
 

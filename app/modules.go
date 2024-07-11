@@ -116,7 +116,7 @@ var (
 
 		// ibc modules
 		ibc.AppModuleBasic{},
-		ics20wrapper.AppModuleBasic{AppModuleBasic: &ibctransfer.AppModuleBasic{}}, // ibc trasnfer wrapper
+		ics20wrapper.AppModuleBasic{AppModuleBasic: &ibctransfer.AppModuleBasic{}}, // ibc transfer wrapper
 
 		// Ethermint modules
 		evm.AppModuleBasic{},
