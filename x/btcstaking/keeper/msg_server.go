@@ -140,23 +140,23 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 	if err := req.StakingTx.VerifyInclusion(stakingTxHeader.Header, btclcParams.PowLimit); err != nil {
 		return nil, types.ErrBTCTxNotIncluded.Wrap(err.Error())
 	}
-	_, receiver := findReceiver(p.Receivers, req.Receiver)
-	if receiver == nil {
-		return nil, types.ErrInvalidReceivingAddr.Wrapf("Receiver(%s) not exists", req.Receiver)
+	agent, foundAgent := ms.agentKeeper.GetAgent(ctx, req.AgentId)
+	if !foundAgent {
+		return nil, types.ErrInvalidReceivingAddr.Wrapf("Agent(%d) not exists", req.AgentId)
 	}
 
-	btcReceivingAddr, err := btcutil.DecodeAddress(receiver.Addr, btclcParams)
+	btcReceivingAddr, err := btcutil.DecodeAddress(agent.BtcReceivingAddress, btclcParams)
 	if err != nil {
 		return nil, types.ErrInvalidReceivingAddr.Wrap(err.Error())
 	}
 	var mintToAddr []byte
 	var btcAmount uint64
-	if common.IsHexAddress(receiver.EthAddr) {
+	if common.IsHexAddress(agent.EthAddr) {
 		signers := req.GetSigners()
 		if len(signers) == 0 || !canPerformMint(req.GetSigners()[0], *p) {
 			return nil, types.ErrNotInAllowList
 		}
-		mintToAddr = common.HexToAddress(receiver.EthAddr).Bytes()
+		mintToAddr = common.HexToAddress(agent.EthAddr).Bytes()
 		btcAmount, err = ExtractPaymentTo(stakingMsgTx, btcReceivingAddr)
 	} else {
 		btcAmount, mintToAddr, err = ExtractPaymentToWithOpReturnId(stakingMsgTx, btcReceivingAddr)
@@ -204,8 +204,8 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 		TxHash:          stakingTxHash[:],
 		Amount:          btcAmount,
 		MintToAddr:      mintToAddr,
-		BtcReceiverName: receiver.Name,
-		BtcReceiverAddr: receiver.Addr,
+		BtcReceiverName: agent.Name,
+		BtcReceiverAddr: agent.BtcReceivingAddress,
 	}
 	err = ms.addBTCStakingRecord(ctx, &bctStakingRecord)
 	if err != nil {

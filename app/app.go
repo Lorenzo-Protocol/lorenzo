@@ -483,7 +483,7 @@ func NewLorenzoApp(
 		app.BTCLightClientKeeper,
 	)
 
-	app.BTCStakingKeeper = btcstakingkeeper.NewKeeper(appCodec, keys[btcstakingtypes.StoreKey], app.BTCLightClientKeeper, app.BankKeeper, authtypes.NewModuleAddress(govtypes.ModuleName).String())
+	app.BTCStakingKeeper = btcstakingkeeper.NewKeeper(appCodec, keys[btcstakingtypes.StoreKey], app.BTCLightClientKeeper, app.AgentKeeper, app.BankKeeper, authtypes.NewModuleAddress(govtypes.ModuleName).String())
 
 	// self keeper
 	app.PlanKeeper = plankeeper.NewKeeper(

@@ -20,6 +20,7 @@ type (
 		bankKeeper bankkeeper.Keeper
 
 		btclcKeeper types.BTCLightClientKeeper
+		agentKeeper types.AgentKeeper
 
 		// the address capable of executing a MsgUpdateParams message. Typically, this
 		// should be the x/gov module account.
@@ -32,6 +33,7 @@ func NewKeeper(
 	storeKey storetypes.StoreKey,
 
 	btclcKeeper types.BTCLightClientKeeper,
+	agentKeeper types.AgentKeeper,
 	bankKeeper bankkeeper.Keeper,
 
 	authority string,
@@ -41,6 +43,7 @@ func NewKeeper(
 		storeKey: storeKey,
 
 		btclcKeeper: btclcKeeper,
+        agentKeeper: agentKeeper,
 		bankKeeper:  bankKeeper,
 
 		authority: authority,
