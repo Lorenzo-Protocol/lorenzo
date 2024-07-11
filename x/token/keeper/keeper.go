@@ -33,6 +33,10 @@ func NewKeeper(
 	bankKeeper types.BankKeeper,
 	evmKeeper types.EVMKeeper,
 ) *Keeper {
+	if addr := accountKeeper.GetModuleAddress(types.ModuleName); addr == nil {
+		panic(fmt.Sprintf("the x/%s module account has not been set", types.ModuleName))
+	}
+
 	return &Keeper{
 		storeKey:      storeKey,
 		cdc:           cdc,

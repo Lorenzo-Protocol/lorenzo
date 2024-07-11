@@ -76,7 +76,9 @@ func (k Keeper) RegisterERC20(ctx sdk.Context, contract common.Address) (*types.
 func (k Keeper) CreateCoinMetadata(ctx sdk.Context, contract common.Address) (*banktypes.Metadata, error) {
 	erc20Data, err := k.QueryERC20Contract(ctx, contract)
 	if err != nil {
-		return nil, err
+		return nil, errorsmod.Wrap(
+			types.ErrEVMCall, "fail to query contract",
+		)
 	}
 
 	// check if base denom already exists

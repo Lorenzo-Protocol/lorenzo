@@ -291,7 +291,7 @@ format:
 # Currently only support for compiling ERC20 contracts.
 CONTRACTS_PRJ := erc20
 CONTRACTS_DIR := contracts/$(CONTRACTS_PRJ)
-
+EVM_VERSION := paris
 COMPILED_DIR := $(CONTRACTS_DIR)/compiled_contracts
 TMP_DIR := $(CONTRACTS_DIR)/tmp
 TMP_COMPILED := $(TMP_DIR)/compiled.json
@@ -318,7 +318,7 @@ contracts-create-json:
   		mkdir -p $(TMP_DIR) ;\
   		mkdir -p $(COMPILED_DIR) ;\
 		echo "\nCompiling solidity contract $${c}..." ;\
-		solc --combined-json abi,bin $(CONTRACTS_DIR)/$${c}.sol > $(TMP_COMPILED);\
+		solc --evm-version $(EVM_VERSION) --combined-json abi,bin $(CONTRACTS_DIR)/$${c}.sol > $(TMP_COMPILED);\
 		echo "Formatting JSON..." ;\
 		get_contract=$$(jq '.contracts["$(CONTRACTS_DIR)/'$$c'.sol:'$$c'"]' $(TMP_COMPILED)) ;\
 		add_contract_name=$$(echo $$get_contract | jq '. + { "contractName": "'$$c'" }') ;\

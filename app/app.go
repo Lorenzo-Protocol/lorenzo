@@ -165,7 +165,7 @@ type LorenzoApp struct {
 
 	// IBC keepers
 	IBCKeeper *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
-	//TransferKeeper   ibctransferkeeper.Keeper
+	// TransferKeeper   ibctransferkeeper.Keeper
 	ICS20WrapperKeeper *ics20wrapperkeeper.Keeper
 
 	// Ethermint keepers
