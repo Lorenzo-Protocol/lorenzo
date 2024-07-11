@@ -6,12 +6,8 @@ import (
 	"github.com/Lorenzo-Protocol/lorenzo/x/token/types"
 )
 
-// ImportGenesis initializes the token module's state from a given genesis state
-func (k Keeper) ImportGenesis(ctx sdk.Context, gs *types.GenesisState) {
-	if addr := k.accountKeeper.GetModuleAddress(types.ModuleName); addr == nil {
-		panic("the token module account has not been set")
-	}
-
+// InitGenesis initializes the token module's state from a given genesis state
+func (k Keeper) InitGenesis(ctx sdk.Context, gs *types.GenesisState) {
 	k.SetParams(ctx, gs.Params)
 
 	for _, pair := range gs.TokenPairs {
@@ -20,6 +16,8 @@ func (k Keeper) ImportGenesis(ctx sdk.Context, gs *types.GenesisState) {
 		k.SetTokenPairIdByDenom(ctx, pair.Denom, id)
 		k.SetTokenPairIdByERC20(ctx, pair.GetERC20ContractAddress(), id)
 	}
+
+	k.accountKeeper.GetModuleAccount(ctx, types.ModuleName)
 }
 
 // ExportGenesis exports the genesis state
