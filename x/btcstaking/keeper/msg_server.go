@@ -190,7 +190,7 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 				mintToAddr = op_return_msg[:20]
 				planId := binary.LittleEndian.Uint64(op_return_msg[20:])
 				plan, found := ms.planKeeper.GetPlan(ctx, planId)
-				if found && common.IsHexAddress(plan.ContractAddress) {
+				if found && common.IsHexAddress(plan.ContractAddress) && plan.AgentId == req.AgentId {
 					addr := common.HexToAddress(plan.ContractAddress)
 					planContractAddress = &addr
 				}
