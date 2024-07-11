@@ -52,8 +52,7 @@ func NewKeeper(
 //  1. global conversion is enabled
 //  2. token pair conversion is enabled
 //  3. receiver address is not blocked by bank module.
-//  4. coins are enabled for bank module transfers
-//  5. sender must be the same as receiver
+//  4. if receiver is not equal to sender, then the coin must be allowed to send.
 func (k Keeper) MintEnabled(
 	ctx sdk.Context,
 	sender, receiver sdk.AccAddress,
@@ -82,7 +81,7 @@ func (k Keeper) MintEnabled(
 		)
 	}
 
-	if !k.bankKeeper.IsSendEnabledCoin(ctx, sdk.Coin{Denom: pair.Denom}) && !sender.Equals(receiver) {
+	if !sender.Equals(receiver) && !k.bankKeeper.IsSendEnabledCoin(ctx, sdk.Coin{Denom: pair.Denom}) {
 		return types.TokenPair{}, errorsmod.Wrapf(errortypes.ErrUnauthorized,
 			"coin is not allowed to be sent")
 	}
