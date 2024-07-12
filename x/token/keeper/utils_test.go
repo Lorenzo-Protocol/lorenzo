@@ -58,7 +58,7 @@ func (suite *KeeperTestSuite) utilsFundAndRegisterERC20(
 
 func (suite *KeeperTestSuite) utilsERC20BalanceOf(contract, address common.Address) int64 {
 	erc20ABI := erc20.ERC20MinterBurnerDecimalsContract.ABI
-	balance := suite.app.TokenKeeper.BalanceOf(suite.ctx, erc20ABI, contract, address)
+	balance := suite.app.TokenKeeper.ERC20BalanceOf(suite.ctx, erc20ABI, contract, address)
 	return balance.Int64()
 }
 
