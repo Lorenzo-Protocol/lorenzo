@@ -103,8 +103,8 @@ func (k Keeper) QueryERC20Contract(ctx sdk.Context, contract common.Address) (ty
 	return types.NewERC20Data(contract.String(), nameRes.Value, symbolRes.Value, decimalRes.Value), nil
 }
 
-// BalanceOf returns the balance of an account in a given contract
-func (k Keeper) BalanceOf(
+// ERC20BalanceOf returns the balance of an account in a given contract
+func (k Keeper) ERC20BalanceOf(
 	ctx sdk.Context,
 	abi abi.ABI,
 	contract, account common.Address,
@@ -213,13 +213,17 @@ func (k Keeper) CallEVMWithData(
 	return res, nil
 }
 
-func (k Keeper) monitorApprovalEvent(res *evmtypes.MsgEthereumTxResponse) error {
+// assureNoApprovalEvent returns an error if TxResponse contains an Approval event.
+// NOTE: When an erc20 contract is not owned/deployed by the module, token module need to track if
+// there's any approval events emitted out of calling on Transfer(to, amount). This is only a basic
+// strategy to prevent these contracts implementing any malicious logic in Transfer(to, amount). The
+// ideal way is to inspect the contract code and make sure it's safe, before passing that registry.
+func (k Keeper) assureNoApprovalEvent(res *evmtypes.MsgEthereumTxResponse) error {
 	if res == nil || len(res.Logs) == 0 {
 		return nil
 	}
 
-	logApprovalSig := []byte("Approval(address,address,uint256)")
-	logApprovalSigHash := crypto.Keccak256Hash(logApprovalSig)
+	logApprovalSigHash := crypto.Keccak256Hash([]byte("Approval(address,address,uint256)"))
 
 	for _, log := range res.Logs {
 		if log.Topics[0] == logApprovalSigHash.Hex() {
