@@ -32,7 +32,7 @@ func (k Keeper) ConvertNativeCoinToVoucherERC20(
 	// 2. mint tokens on contract
 	erc20ABI := erc20.ERC20MinterBurnerDecimalsContract.ABI // nolint: staticcheck
 	erc20Addr := pair.GetERC20ContractAddress()
-	balanceBefore := k.BalanceOf(ctx, erc20ABI, erc20Addr, receiver)
+	balanceBefore := k.ERC20BalanceOf(ctx, erc20ABI, erc20Addr, receiver)
 	if balanceBefore == nil {
 		return nil, errorsmod.Wrapf(types.ErrEVMCall, "failed to retrieve balance")
 	}
@@ -44,7 +44,7 @@ func (k Keeper) ConvertNativeCoinToVoucherERC20(
 	}
 
 	// 3. check erc20 balances before and after
-	balanceAfter := k.BalanceOf(ctx, erc20ABI, erc20Addr, receiver)
+	balanceAfter := k.ERC20BalanceOf(ctx, erc20ABI, erc20Addr, receiver)
 	if balanceAfter == nil {
 		return nil, errorsmod.Wrapf(types.ErrEVMCall, "failed to retrieve balance")
 	}
@@ -90,101 +90,6 @@ func (k Keeper) ConvertNativeCoinToVoucherERC20(
 	return &types.MsgConvertCoinResponse{}, nil
 }
 
-// ConvertVoucherCoinToNativeERC20 converts token from bank to contract. Token source is ERC20 contract.
-func (k Keeper) ConvertVoucherCoinToNativeERC20(
-	ctx sdk.Context,
-	pair types.TokenPair,
-	msg *types.MsgConvertCoin,
-	receiver common.Address,
-	sender sdk.AccAddress,
-) (*types.MsgConvertCoinResponse, error) {
-	// 1. escrow coins on module account
-	coins := sdk.Coins{msg.Coin}
-	if err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, coins); err != nil {
-		return nil, errorsmod.Wrap(err, "failed to escrow coins")
-	}
-
-	// 2. un-escrow tokens from contract and sent to receiver
-	erc20ABI := erc20.ERC20MinterBurnerDecimalsContract.ABI // nolint: staticcheck
-	erc20Addr := pair.GetERC20ContractAddress()
-	balanceBefore := k.BalanceOf(ctx, erc20ABI, erc20Addr, receiver)
-	if balanceBefore == nil {
-		return nil, errorsmod.Wrapf(types.ErrEVMCall, "failed to retrieve balance")
-	}
-
-	res, err := k.CallEVM(ctx, erc20ABI, types.ModuleAddress, erc20Addr, true, "transfer", receiver, msg.Coin.Amount.BigInt())
-	if err != nil {
-		return nil, err
-	}
-
-	// 3. check unpacked return
-	var unpackedRet types.ERC20BoolResponse
-	if err := erc20ABI.UnpackIntoInterface(&unpackedRet, "transfer", res.Ret); err != nil {
-		return nil, err
-	}
-	if !unpackedRet.Value {
-		return nil, errorsmod.Wrap(types.ErrEVMCall, "failed to transfer tokens")
-	}
-
-	// 4. check balances before and after
-	balanceAfter := k.BalanceOf(ctx, erc20ABI, erc20Addr, receiver)
-	if balanceAfter == nil {
-		return nil, errorsmod.Wrap(types.ErrEVMCall, "failed to retrieve balance")
-	}
-	balanceExpected := big.NewInt(0).Add(balanceBefore, msg.Coin.Amount.BigInt())
-	if balanceAfter.Cmp(balanceExpected) != 0 {
-		return nil, errorsmod.Wrapf(
-			types.ErrBalanceInvariance,
-			"invalid token balance - expected: %v, actual: %v", balanceExpected, balanceAfter,
-		)
-	}
-
-	// 5. burn escrowed coins from module account
-	err = k.bankKeeper.BurnCoins(ctx, types.ModuleName, coins)
-	if err != nil {
-		return nil, errorsmod.Wrap(err, "failed to burn coins")
-	}
-
-	// 6. monitor unexpected approval
-	if err := k.monitorApprovalEvent(res); err != nil {
-		return nil, err
-	}
-
-	defer func() {
-		telemetry.IncrCounterWithLabels(
-			[]string{"tx", "msg", "convert", "coin", "total"},
-			1,
-			[]metrics.Label{
-				telemetry.NewLabel("denom", pair.Denom),
-			},
-		)
-
-		if msg.Coin.Amount.IsInt64() {
-			telemetry.IncrCounterWithLabels(
-				[]string{"tx", "msg", "convert", "coin", "amount", "total"},
-				float32(msg.Coin.Amount.Int64()),
-				[]metrics.Label{
-					telemetry.NewLabel("denom", pair.Denom),
-				},
-			)
-		}
-	}()
-
-	ctx.EventManager().EmitEvents(
-		sdk.Events{
-			sdk.NewEvent(
-				types.EventTypeConvertCoin,
-				sdk.NewAttribute(sdk.AttributeKeySender, msg.Sender),
-				sdk.NewAttribute(types.AttributeKeyReceiver, msg.Receiver),
-				sdk.NewAttribute(sdk.AttributeKeyAmount, msg.Coin.Amount.String()),
-				sdk.NewAttribute(types.AttributeKeyCosmosCoin, msg.Coin.Denom),
-				sdk.NewAttribute(types.AttributeKeyERC20Token, pair.ContractAddress),
-			),
-		},
-	)
-	return &types.MsgConvertCoinResponse{}, nil
-}
-
 // ConvertVoucherERC20ToNativeCoin converts token from contract to bank. Token destination is sdk.Coin.
 func (k Keeper) ConvertVoucherERC20ToNativeCoin(
 	ctx sdk.Context,
@@ -196,7 +101,7 @@ func (k Keeper) ConvertVoucherERC20ToNativeCoin(
 	erc20ABI := erc20.ERC20MinterBurnerDecimalsContract.ABI // nolint: staticcheck
 	erc20Addr := pair.GetERC20ContractAddress()
 	balanceCoinBefore := k.bankKeeper.GetBalance(ctx, receiver, pair.Denom)
-	balanceTokenBefore := k.BalanceOf(ctx, erc20ABI, erc20Addr, sender)
+	balanceTokenBefore := k.ERC20BalanceOf(ctx, erc20ABI, erc20Addr, sender)
 	if balanceTokenBefore == nil {
 		return nil, errorsmod.Wrap(types.ErrEVMCall, "failed to retrieve balance")
 	}
@@ -223,7 +128,7 @@ func (k Keeper) ConvertVoucherERC20ToNativeCoin(
 		)
 	}
 
-	balanceTokenAfter := k.BalanceOf(ctx, erc20ABI, erc20Addr, sender)
+	balanceTokenAfter := k.ERC20BalanceOf(ctx, erc20ABI, erc20Addr, sender)
 	if balanceTokenAfter == nil {
 		return nil, errorsmod.Wrap(types.ErrEVMCall, "failed to retrieve balance")
 	}
@@ -271,6 +176,103 @@ func (k Keeper) ConvertVoucherERC20ToNativeCoin(
 	return &types.MsgConvertERC20Response{}, nil
 }
 
+// ConvertVoucherCoinToNativeERC20 converts token from bank to contract. Token source is ERC20 contract.
+func (k Keeper) ConvertVoucherCoinToNativeERC20(
+	ctx sdk.Context,
+	pair types.TokenPair,
+	msg *types.MsgConvertCoin,
+	receiver common.Address,
+	sender sdk.AccAddress,
+) (*types.MsgConvertCoinResponse, error) {
+	// 1. escrow coins on module account
+	coins := sdk.Coins{msg.Coin}
+	if err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, coins); err != nil {
+		return nil, errorsmod.Wrap(err, "failed to escrow coins")
+	}
+
+	// 2. un-escrow tokens from contract and sent to receiver
+	erc20ABI := erc20.ERC20MinterBurnerDecimalsContract.ABI // nolint: staticcheck
+	erc20Addr := pair.GetERC20ContractAddress()
+	balanceBefore := k.ERC20BalanceOf(ctx, erc20ABI, erc20Addr, receiver)
+	if balanceBefore == nil {
+		return nil, errorsmod.Wrapf(types.ErrEVMCall, "failed to retrieve balance")
+	}
+
+	res, err := k.CallEVM(ctx, erc20ABI, types.ModuleAddress, erc20Addr, true,
+		"transfer", receiver, msg.Coin.Amount.BigInt())
+	if err != nil {
+		return nil, err
+	}
+
+	// 3. check unpacked return
+	var unpackedRet types.ERC20BoolResponse
+	if err := erc20ABI.UnpackIntoInterface(&unpackedRet, "transfer", res.Ret); err != nil {
+		return nil, err
+	}
+	if !unpackedRet.Value {
+		return nil, errorsmod.Wrap(types.ErrEVMCall, "failed to transfer tokens")
+	}
+
+	// 4. check balances before and after
+	balanceAfter := k.ERC20BalanceOf(ctx, erc20ABI, erc20Addr, receiver)
+	if balanceAfter == nil {
+		return nil, errorsmod.Wrap(types.ErrEVMCall, "failed to retrieve balance")
+	}
+
+	balanceExpected := big.NewInt(0).Add(balanceBefore, msg.Coin.Amount.BigInt())
+	if balanceAfter.Cmp(balanceExpected) != 0 {
+		return nil, errorsmod.Wrapf(
+			types.ErrBalanceInvariance,
+			"invalid token balance - expected: %v, actual: %v", balanceExpected, balanceAfter,
+		)
+	}
+
+	// 5. burn escrowed coins from module account
+	err = k.bankKeeper.BurnCoins(ctx, types.ModuleName, coins)
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "failed to burn coins")
+	}
+
+	// 6. monitor unexpected approval
+	if err := k.assureNoApprovalEvent(res); err != nil {
+		return nil, err
+	}
+
+	defer func() {
+		telemetry.IncrCounterWithLabels(
+			[]string{"tx", "msg", "convert", "coin", "total"},
+			1,
+			[]metrics.Label{
+				telemetry.NewLabel("denom", pair.Denom),
+			},
+		)
+
+		if msg.Coin.Amount.IsInt64() {
+			telemetry.IncrCounterWithLabels(
+				[]string{"tx", "msg", "convert", "coin", "amount", "total"},
+				float32(msg.Coin.Amount.Int64()),
+				[]metrics.Label{
+					telemetry.NewLabel("denom", pair.Denom),
+				},
+			)
+		}
+	}()
+
+	ctx.EventManager().EmitEvents(
+		sdk.Events{
+			sdk.NewEvent(
+				types.EventTypeConvertCoin,
+				sdk.NewAttribute(sdk.AttributeKeySender, msg.Sender),
+				sdk.NewAttribute(types.AttributeKeyReceiver, msg.Receiver),
+				sdk.NewAttribute(sdk.AttributeKeyAmount, msg.Coin.Amount.String()),
+				sdk.NewAttribute(types.AttributeKeyCosmosCoin, msg.Coin.Denom),
+				sdk.NewAttribute(types.AttributeKeyERC20Token, pair.ContractAddress),
+			),
+		},
+	)
+	return &types.MsgConvertCoinResponse{}, nil
+}
+
 // ConvertNativeERC20ToVoucherCoin converts token from contract to contract. Token destination is ERC20 contract.
 func (k Keeper) ConvertNativeERC20ToVoucherCoin(
 	ctx sdk.Context,
@@ -282,7 +284,7 @@ func (k Keeper) ConvertNativeERC20ToVoucherCoin(
 	erc20ABI := erc20.ERC20MinterBurnerDecimalsContract.ABI // nolint: staticcheck
 	erc20Addr := pair.GetERC20ContractAddress()
 	balanceCoinBefore := k.bankKeeper.GetBalance(ctx, receiver, pair.Denom)
-	balanceTokenBefore := k.BalanceOf(ctx, erc20ABI, erc20Addr, types.ModuleAddress)
+	balanceTokenBefore := k.ERC20BalanceOf(ctx, erc20ABI, erc20Addr, types.ModuleAddress)
 	if balanceTokenBefore == nil {
 		return nil, errorsmod.Wrap(types.ErrEVMCall, "failed to retrieve balance")
 	}
@@ -302,7 +304,7 @@ func (k Keeper) ConvertNativeERC20ToVoucherCoin(
 	}
 
 	// 2. check token balances before and after
-	balanceTokenAfter := k.BalanceOf(ctx, erc20ABI, erc20Addr, types.ModuleAddress)
+	balanceTokenAfter := k.ERC20BalanceOf(ctx, erc20ABI, erc20Addr, types.ModuleAddress)
 	if balanceTokenAfter == nil {
 		return nil, errorsmod.Wrap(types.ErrEVMCall, "failed to retrieve balance")
 	}
@@ -334,7 +336,7 @@ func (k Keeper) ConvertNativeERC20ToVoucherCoin(
 	}
 
 	// 5. monitor unexpected approval
-	if err := k.monitorApprovalEvent(res); err != nil {
+	if err := k.assureNoApprovalEvent(res); err != nil {
 		return nil, err
 	}
 
