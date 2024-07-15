@@ -23,8 +23,8 @@ import (
 // - planDescUri: the URI of the plan description.
 // - planId: the plan ID.
 // - agentId: the agent ID.
-// - planStartBlock: the start block of the plan.
-// - periodBlocks: the period blocks of the plan.
+// - PlanStartTime: the start block of the plan.
+// - PeriodTime: the period blocks of the plan.
 // - yatContractAddress: the address of the YAT contract.
 //
 // Returns:
@@ -36,8 +36,8 @@ func (k Keeper) DeployStakePlanProxyContract(
 	planDescUri string,
 	planId *big.Int,
 	agentId *big.Int,
-	planStartBlock *big.Int,
-	periodBlocks *big.Int,
+	PlanStartTime *big.Int,
+	PeriodTime *big.Int,
 	yatContractAddress common.Address,
 ) (common.Address, error) {
 	// pack contract arguments
@@ -48,8 +48,8 @@ func (k Keeper) DeployStakePlanProxyContract(
 		planDescUri,
 		planId,
 		agentId,
-		planStartBlock,
-		periodBlocks,
+		PlanStartTime,
+		PeriodTime,
 		yatContractAddress,
 	)
 	if err != nil {
@@ -546,7 +546,7 @@ func (k Keeper) PlanDesc(
 	return planDesc, nil
 }
 
-// PlanStartBlock gets the start block of the StakePlan contract.
+// PlanStartTime gets the start block of the StakePlan contract.
 //
 // Parameters:
 // - ctx: the SDK context.
@@ -555,7 +555,7 @@ func (k Keeper) PlanDesc(
 // Returns:
 // - uint64: the start block.
 // - error: an error if the getting fails.
-func (k Keeper) PlanStartBlock(
+func (k Keeper) PlanStartTime(
 	ctx sdk.Context,
 	contractAddress common.Address,
 ) (uint64, error) {
@@ -566,28 +566,28 @@ func (k Keeper) PlanStartBlock(
 		k.getModuleEthAddress(ctx),
 		contractAddress,
 		false,
-		types.StakePlanMethodPlanStartBlock,
+		types.StakePlanMethodPlanStartTime,
 	)
 	if err != nil {
 		return 0, err
 	}
-	unpacked, err := contractABI.Unpack(types.StakePlanMethodPlanStartBlock, res.Ret)
+	unpacked, err := contractABI.Unpack(types.StakePlanMethodPlanStartTime, res.Ret)
 	if err != nil || len(unpacked) == 0 {
 		return 0, errorsmod.Wrapf(
 			types.ErrABIUnpack, "failed to unpack Plan Start Block from contract %s", contractAddress.Hex(),
 		)
 	}
-	planStartBlock, ok := unpacked[0].(*big.Int)
+	PlanStartTime, ok := unpacked[0].(*big.Int)
 	if !ok {
 		return 0, errorsmod.Wrapf(
 			types.ErrABIUnpack, "failed to convert Plan Start Block to uint64 from contract %s", contractAddress.Hex(),
 		)
 	}
 
-	return planStartBlock.Uint64(), nil
+	return PlanStartTime.Uint64(), nil
 }
 
-// PeriodBlocks gets the period blocks of the StakePlan contract.
+// PeriodTime gets the period blocks of the StakePlan contract.
 //
 // Parameters:
 // - ctx: the SDK context.
@@ -596,7 +596,7 @@ func (k Keeper) PlanStartBlock(
 // Returns:
 // - uint64: the period blocks.
 // - error: an error if the getting fails.
-func (k Keeper) PeriodBlocks(
+func (k Keeper) PeriodTime(
 	ctx sdk.Context,
 	contractAddress common.Address,
 ) (uint64, error) {
@@ -607,28 +607,28 @@ func (k Keeper) PeriodBlocks(
 		k.getModuleEthAddress(ctx),
 		contractAddress,
 		false,
-		types.StakePlanMethodPeriodBlocks,
+		types.StakePlanMethodPeriodTime,
 	)
 	if err != nil {
 		return 0, err
 	}
-	unpacked, err := contractABI.Unpack(types.StakePlanMethodPeriodBlocks, res.Ret)
+	unpacked, err := contractABI.Unpack(types.StakePlanMethodPeriodTime, res.Ret)
 	if err != nil || len(unpacked) == 0 {
 		return 0, errorsmod.Wrapf(
 			types.ErrABIUnpack, "failed to unpack period blocks from contract %s", contractAddress.Hex(),
 		)
 	}
-	periodBlocks, ok := unpacked[0].(*big.Int)
+	PeriodTime, ok := unpacked[0].(*big.Int)
 	if !ok {
 		return 0, errorsmod.Wrapf(
 			types.ErrABIUnpack, "failed to convert period blocks  to uint64 from contract %s", contractAddress.Hex(),
 		)
 	}
 
-	return periodBlocks.Uint64(), nil
+	return PeriodTime.Uint64(), nil
 }
 
-// NextRewardReceiveBlock gets the next reward receive block of the StakePlan contract.
+// NextRewardReceiveTime gets the next reward receive block of the StakePlan contract.
 //
 // Parameters:
 // - ctx: the SDK context.
@@ -637,7 +637,7 @@ func (k Keeper) PeriodBlocks(
 // Returns:
 // - uint64: the next reward receive block.
 // - error: an error if the getting fails.
-func (k Keeper) NextRewardReceiveBlock(
+func (k Keeper) NextRewardReceiveTime(
 	ctx sdk.Context,
 	contractAddress common.Address,
 ) (uint64, error) {
@@ -648,12 +648,12 @@ func (k Keeper) NextRewardReceiveBlock(
 		k.getModuleEthAddress(ctx),
 		contractAddress,
 		false,
-		types.StakePlanMethodNextRewardReceiveBlock,
+		types.StakePlanMethodNextRewardReceiveTime,
 	)
 	if err != nil {
 		return 0, err
 	}
-	unpacked, err := contractABI.Unpack(types.StakePlanMethodNextRewardReceiveBlock, res.Ret)
+	unpacked, err := contractABI.Unpack(types.StakePlanMethodNextRewardReceiveTime, res.Ret)
 	if err != nil || len(unpacked) == 0 {
 		return 0, errorsmod.Wrapf(
 			types.ErrABIUnpack, "failed to unpack Next Reward Receive Block from contract %s", contractAddress.Hex(),

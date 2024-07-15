@@ -37,17 +37,17 @@ const (
 	StakePlanMethodSetMerkleRoot      = "setMerkleRoot"
 
 	// query method
-	StakePlanMethodStakePlanName          = "stakePlanName"
-	StakePlanMethodPlanDesc               = "planDesc"
-	StakePlanMethodPlanId                 = "planId"
-	StakePlanMethodAgentId                = "agentId"
-	StakePlanMethodPlanStartBlock         = "planStartBlock"
-	StakePlanMethodPeriodBlocks           = "periodBlocks"
-	StakePlanMethodNextRewardReceiveBlock = "nextRewardReceiveBlock"
-	StakePlanMethodYatContractAddress     = "yatContractAddress"
-	StakePlanMethodClaimRoundId           = "claimRoundId"
-	StakePlanMethodMerkleRoot             = "merkleRoot"
-	StakePlanMethodClaimLeafNode          = "claimLeafNode"
+	StakePlanMethodStakePlanName         = "stakePlanName"
+	StakePlanMethodPlanDesc              = "planDesc"
+	StakePlanMethodPlanId                = "planId"
+	StakePlanMethodAgentId               = "agentId"
+	StakePlanMethodPlanStartTime         = "planStartTime"
+	StakePlanMethodPeriodTime            = "periodTime"
+	StakePlanMethodNextRewardReceiveTime = "nextRewardReceiveTime"
+	StakePlanMethodYatContractAddress    = "yatContractAddress"
+	StakePlanMethodClaimRoundId          = "claimRoundId"
+	StakePlanMethodMerkleRoot            = "merkleRoot"
+	StakePlanMethodClaimLeafNode         = "claimLeafNode"
 )
 
 const (

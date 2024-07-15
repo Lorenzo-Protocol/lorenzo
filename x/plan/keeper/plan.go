@@ -39,8 +39,8 @@ func (k Keeper) AddPlan(ctx sdk.Context, plan types.Plan) (types.Plan, error) {
 		plan.PlanDescUri,
 		planIdBigint.BigInt(),
 		agentIdBigint.BigInt(),
-		big.NewInt(int64(plan.PlanStartBlock)),
-		big.NewInt(int64(plan.PeriodBlocks)),
+		big.NewInt(int64(plan.PlanStartTime)),
+		big.NewInt(int64(plan.PeriodTime)),
 		yatContractAddr,
 	)
 	if err != nil {

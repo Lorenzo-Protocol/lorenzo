@@ -20,4 +20,5 @@ var (
 	ErrYatContractNotContract       = errorsmod.Register(ModuleName, 16, "yat contract is not a contract")
 	ErrStakePlanContractNotFound    = errorsmod.Register(ModuleName, 17, "stake plan contract not found")
 	ErrStakePlanContractNotContract = errorsmod.Register(ModuleName, 18, "stake plan contract is not a contract")
+	ErrInvalidPlanStartTime         = errorsmod.Register(ModuleName, 19, "invalid plan start time")
 )

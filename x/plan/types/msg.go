@@ -66,6 +66,12 @@ func (m *MsgCreatePlan) ValidateBasic() error {
 	if m.AgentId == 0 {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "agent id cannot be zero")
 	}
+	if m.PlanStartTime == 0 {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "plan start time cannot be zero")
+	}
+	if m.PeriodTime == 0 {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "period time cannot be zero")
+	}
 	return nil
 }
 
