@@ -9,8 +9,12 @@ import (
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 )
 
-var router = upgrades.NewUpgradeRouter().
-	Register(v200.Upgrade)
+var router = upgrades.NewUpgradeRouter()
+
+func init() {
+	// register v2.0 upgrade plan
+	router.Register(v200.Upgrade)
+}
 
 // RegisterUpgradePlans register a handler of upgrade plan
 func (app *LorenzoApp) RegisterUpgradePlans() {
@@ -51,6 +55,7 @@ func (app *LorenzoApp) setupUpgradeStoreLoaders() {
 }
 
 func (app *LorenzoApp) setupUpgradeHandlers() {
+	// SAFE: upgrade handlers are registered in the init function
 	for upgradeName, upgrade := range router.Routers() {
 		app.UpgradeKeeper.SetUpgradeHandler(
 			upgradeName,
