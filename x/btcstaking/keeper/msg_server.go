@@ -19,7 +19,10 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 )
 
-const EthAddrLen = 42
+const (
+	EthAddrBytesLen = 20
+	PlanIDLen       = 8
+)
 
 const (
 	Dep0Amount = 4e5
@@ -173,6 +176,7 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 	var mintToAddr []byte
 	var btcAmount uint64
 	var planContractAddress *common.Address = nil
+	var mintYatResult string = ""
 	if common.IsHexAddress(agent.EthAddr) {
 		signers := req.GetSigners()
 		if len(signers) == 0 || !canPerformMint(req.GetSigners()[0], *p) {
@@ -184,13 +188,19 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 		var op_return_msg []byte
 		btcAmount, op_return_msg, err = ExtractPaymentToWithOpReturnId(stakingMsgTx, btcReceivingAddr)
 		if err == nil {
-			if len(op_return_msg) == 20 {
+			if len(op_return_msg) == EthAddrBytesLen {
 				mintToAddr = op_return_msg
-			} else if len(op_return_msg) == 28 {
-				mintToAddr = op_return_msg[:20]
-				planId := binary.LittleEndian.Uint64(op_return_msg[20:])
+			} else if len(op_return_msg) == EthAddrBytesLen+PlanIDLen {
+				mintToAddr = op_return_msg[:EthAddrBytesLen]
+				planId := binary.LittleEndian.Uint64(op_return_msg[EthAddrBytesLen:])
 				plan, found := ms.planKeeper.GetPlan(ctx, planId)
-				if found && common.IsHexAddress(plan.ContractAddress) && plan.AgentId == req.AgentId {
+				if plan.AgentId != req.AgentId {
+					mintYatResult = "AgentId not match"
+				} else if !found {
+					mintYatResult = "Plan not found"
+				} else if !common.IsHexAddress(plan.ContractAddress) {
+					mintYatResult = "invalid ContractAddress"
+				} else {
 					addr := common.HexToAddress(plan.ContractAddress)
 					planContractAddress = &addr
 				}
@@ -206,7 +216,7 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 	if err != nil {
 		return nil, err
 	}
-	if len(mintToAddr) != 20 {
+	if len(mintToAddr) != EthAddrBytesLen {
 		return nil, types.ErrMintToAddr.Wrap(hex.EncodeToString(mintToAddr))
 	}
 
@@ -227,13 +237,14 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 	if err != nil {
 		return nil, types.ErrTransferToAddr.Wrap(err.Error())
 	}
-	var mintYatResult string = "ok"
 	if planContractAddress != nil {
 		err = ms.planKeeper.MintFromStakePlan(ctx, *planContractAddress, common.BytesToAddress(mintToAddr), toMintAmount.BigInt())
 		if err != nil {
 			mintYatResult = err.Error()
+		} else {
+			mintYatResult = "ok"
 		}
-	} else {
+	} else if len(mintYatResult) == 0 {
 		mintYatResult = "Plan not found"
 	}
 	bctStakingRecord := types.BTCStakingRecord{
