@@ -119,6 +119,15 @@ func (k Keeper) AddAgent(ctx sdk.Context, name, btcReceivingAddress, ethAddr, de
 	return id
 }
 
+func (k Keeper) SetAdmin(ctx sdk.Context, admin sdk.AccAddress) error {
+	// check if the sender is the current admin
+	if !k.GetAdmin(ctx).Equals(admin) {
+		return types.ErrAdminExists
+	}
+	k.setAdmin(ctx, admin)
+	return nil
+}
+
 // setNextNumber sets the next number in the Keeper's store.
 //
 // ctx - the SDK context.
