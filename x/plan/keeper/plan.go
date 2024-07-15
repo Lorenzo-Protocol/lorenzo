@@ -82,6 +82,27 @@ func (k Keeper) UpdatePlanStatus(ctx sdk.Context, planId uint64, status types.Pl
 	return nil
 }
 
+// Mint mints the token for the plan.
+//
+// Parameters:
+// - ctx: the SDK context.
+// - planId: the plan ID.
+//
+// Returns:
+// - error: an error if the operation fails.
+func (k Keeper) Mint(ctx sdk.Context, planId uint64, to common.Address, amount *big.Int) error {
+	plan, found := k.GetPlan(ctx, planId)
+	if !found {
+		return types.ErrPlanNotFound
+	}
+
+	planAddress := common.HexToAddress(plan.ContractAddress)
+	if err := k.MintFromStakePlan(ctx, planAddress, to, amount); err != nil {
+		return err
+	}
+	return nil
+}
+
 // GetPlan retrieves a plan by the plan ID from the Keeper's store.
 //
 // Parameters:
