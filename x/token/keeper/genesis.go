@@ -17,7 +17,9 @@ func (k Keeper) InitGenesis(ctx sdk.Context, gs *types.GenesisState) {
 		k.SetTokenPairIdByERC20(ctx, pair.GetERC20ContractAddress(), id)
 	}
 
-	k.accountKeeper.GetModuleAccount(ctx, types.ModuleName)
+	if acc := k.accountKeeper.GetModuleAccount(ctx, types.ModuleName); acc == nil {
+		panic("the token module account has not been set")
+	}
 }
 
 // ExportGenesis exports the genesis state

@@ -29,6 +29,7 @@ func (h Hooks) PostTxProcessing(ctx sdk.Context, msg core.Message, receipt *etht
 	return h.keeper.PostTxProcessing(ctx, msg, receipt)
 }
 
+// PostTxProcessing searches for erc20 transfer event specific to module account, and continues conversion of sdk logic.
 func (k Keeper) PostTxProcessing(
 	ctx sdk.Context,
 	_ core.Message,
@@ -42,19 +43,18 @@ func (k Keeper) PostTxProcessing(
 	erc20 := erc20.ERC20MinterBurnerDecimalsContract.ABI
 
 	for i, log := range receipt.Logs {
-		// Note: the `Transfer` event contains 3 topics (id, from, to)
+		// transfer event topics length equals 3
 		if len(log.Topics) != 3 {
 			continue
 		}
 
-		// Check if event is included in ERC20
+		// check transfer event and unpack its data
 		eventID := log.Topics[0]
 		event, err := erc20.EventByID(eventID)
 		if err != nil {
 			continue
 		}
 
-		// Check if event is a `Transfer` event.
 		if event.Name != types.ERC20EventTransfer {
 			k.Logger(ctx).Info("emitted event", "name", event.Name, "signature", event.Sig)
 			continue
@@ -70,13 +70,13 @@ func (k Keeper) PostTxProcessing(
 			continue
 		}
 
+		// check positive amount of tokens transferred
 		tokens, ok := transferEvent[0].(*big.Int)
-		// safety check and ignore if amount not positive
 		if !ok || tokens == nil || tokens.Sign() != 1 {
 			continue
 		}
 
-		// Check that the contract is a registered token pair
+		// only handle contract that are registered.
 		contractAddr := log.Address
 		id := k.GetTokenPairIdByERC20(ctx, contractAddr)
 		pair, found := k.GetTokenPair(ctx, id)
@@ -84,13 +84,13 @@ func (k Keeper) PostTxProcessing(
 			continue
 		}
 
-		// Check if tokens are sent to module address
+		// token must be sent to the module account evm address
 		to := common.BytesToAddress(log.Topics[2].Bytes())
 		if !bytes.Equal(to.Bytes(), types.ModuleAddress.Bytes()) {
 			continue
 		}
 
-		// Check that conversion for the pair is enabled. Fail
+		// if pair conversion is enabled.
 		if !pair.Enabled {
 			// continue to allow transfers for the ERC20 in case the token pair is
 			// disabled
@@ -121,7 +121,7 @@ func (k Keeper) PostTxProcessing(
 			continue
 		}
 
-		// Only need last 20 bytes from log.topics
+		// get sender address
 		from := common.BytesToAddress(log.Topics[1].Bytes())
 		recipient := sdk.AccAddress(from.Bytes())
 
