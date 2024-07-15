@@ -64,7 +64,7 @@ func GetCmdQueryParams() *cobra.Command {
 // Returns *cobra.Command.
 func GetCmdQueryPlan() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "plan",
+		Use:   "plan [id]",
 		Short: "query a plan by id",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
