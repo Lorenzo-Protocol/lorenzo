@@ -81,6 +81,12 @@ func (m msgServer) CreatePlan(goCtx context.Context, msg *types.MsgCreatePlan) (
 	if !m.k.Authorized(ctx, sender) {
 		return nil, errorsmod.Wrapf(types.ErrUnauthorized, "unauthorized")
 	}
+	// Check if the plan's start time greater than current block time
+	if int64(msg.PlanStartTime) < ctx.BlockTime().Unix() {
+		return nil, errorsmod.Wrapf(
+			types.ErrInvalidPlanStartTime,
+			"plan start time should be greater than current block time")
+	}
 	plan := types.Plan{
 		Name:               msg.Name,
 		PlanDescUri:        msg.PlanDescUri,

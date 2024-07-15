@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"fmt"
 	"math/big"
+	"time"
 
 	"github.com/ethereum/go-ethereum/crypto"
 
@@ -83,7 +84,7 @@ func (suite *KeeperTestSuite) TestPlansQuery() {
 					Name:               "lorenzo-stake-plan",
 					PlanDescUri:        "https://lorenzo-protocol.io/lorenzo-stake-plan",
 					AgentId:            uint64(1),
-					PlanStartTime:      1000,
+					PlanStartTime:      uint64(time.Now().UTC().Unix()) + 1000,
 					PeriodTime:         1000,
 					YatContractAddress: yatAddr.Hex(),
 				}
@@ -149,7 +150,7 @@ func (suite *KeeperTestSuite) TestPlanQuery() {
 					Name:               "lorenzo-stake-plan",
 					PlanDescUri:        "https://lorenzo-protocol.io/lorenzo-stake-plan",
 					AgentId:            uint64(1),
-					PlanStartTime:      1000,
+					PlanStartTime:      uint64(time.Now().UTC().Unix()) + 1000,
 					PeriodTime:         1000,
 					YatContractAddress: yatAddr.Hex(),
 				}
@@ -217,7 +218,7 @@ func (suite *KeeperTestSuite) TestClaimLeafNodeQuery() {
 					Name:               "lorenzo-stake-plan",
 					PlanDescUri:        "https://lorenzo-protocol.io/lorenzo-stake-plan",
 					AgentId:            uint64(1),
-					PlanStartTime:      1000,
+					PlanStartTime:      uint64(time.Now().UTC().Unix()) + 1000,
 					PeriodTime:         1000,
 					YatContractAddress: yatAddr.Hex(),
 				}
@@ -289,7 +290,7 @@ func (suite *KeeperTestSuite) TestClaimLeafNodeQuery() {
 					Name:               "lorenzo-stake-plan",
 					PlanDescUri:        "https://lorenzo-protocol.io/lorenzo-stake-plan",
 					AgentId:            uint64(1),
-					PlanStartTime:      1000,
+					PlanStartTime:      uint64(time.Now().UTC().Unix()) + 1000,
 					PeriodTime:         1000,
 					YatContractAddress: yatAddr.Hex(),
 				}

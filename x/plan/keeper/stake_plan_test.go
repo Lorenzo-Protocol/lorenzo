@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"fmt"
 	"math/big"
+	"time"
 
 	sdkmath "cosmossdk.io/math"
 	"github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
@@ -24,7 +25,7 @@ func (suite *KeeperTestSuite) TestStakePlan() {
 				Name:               "lorenzo-stake-plan",
 				PlanDescUri:        "https://lorenzo-protocol.io/lorenzo-stake-plan",
 				AgentId:            1,
-				PlanStartTime:      1000,
+				PlanStartTime:      uint64(time.Now().UTC().Unix()) + 1000,
 				PeriodTime:         1000,
 				YatContractAddress: "",
 				Enabled:            types.PlanStatus_Unpause,
