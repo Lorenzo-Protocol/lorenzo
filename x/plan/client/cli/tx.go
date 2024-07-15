@@ -185,7 +185,7 @@ func GetClaimsCmd() *cobra.Command {
 
 func GetCreateYATCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "creat-yat [name] [symbol]",
+		Use:   "create-yat [name] [symbol]",
 		Short: "Creates a new YAT contract",
 		Example: fmt.Sprintf(
 			"$ %s tx plan creat-yat [name] [symbol]"+

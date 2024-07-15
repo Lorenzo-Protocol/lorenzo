@@ -24,8 +24,8 @@ func (suite *KeeperTestSuite) TestStakePlan() {
 				Name:               "lorenzo-stake-plan",
 				PlanDescUri:        "https://lorenzo-protocol.io/lorenzo-stake-plan",
 				AgentId:            1,
-				PlanStartBlock:     1000,
-				PeriodBlocks:       1000,
+				PlanStartTime:      1000,
+				PeriodTime:         1000,
 				YatContractAddress: "",
 				Enabled:            types.PlanStatus_Unpause,
 			},
@@ -46,8 +46,8 @@ func (suite *KeeperTestSuite) TestStakePlan() {
 					plan.PlanDescUri,
 					sdkmath.NewIntFromUint64(plan.Id).BigInt(),
 					sdkmath.NewIntFromUint64(plan.AgentId).BigInt(),
-					big.NewInt(int64(plan.PlanStartBlock)),
-					big.NewInt(int64(plan.PeriodBlocks)),
+					big.NewInt(int64(plan.PlanStartTime)),
+					big.NewInt(int64(plan.PeriodTime)),
 					yatAddr,
 				)
 				suite.Require().NoError(err)
@@ -75,14 +75,14 @@ func (suite *KeeperTestSuite) TestStakePlan() {
 				suite.Require().Equal(plan.PlanDescUri, planDesc)
 
 				// Plan start block
-				planStartBlock, err := suite.keeper.PlanStartBlock(suite.ctx, address)
+				PlanStartTime, err := suite.keeper.PlanStartTime(suite.ctx, address)
 				suite.Require().NoError(err)
-				suite.Require().Equal(plan.PlanStartBlock, planStartBlock)
+				suite.Require().Equal(plan.PlanStartTime, PlanStartTime)
 
 				// Period blocks
-				periodBlocks, err := suite.keeper.PeriodBlocks(suite.ctx, address)
+				PeriodTime, err := suite.keeper.PeriodTime(suite.ctx, address)
 				suite.Require().NoError(err)
-				suite.Require().Equal(plan.PeriodBlocks, periodBlocks)
+				suite.Require().Equal(plan.PeriodTime, PeriodTime)
 			},
 		},
 	}

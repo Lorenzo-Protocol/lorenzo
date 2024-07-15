@@ -94,11 +94,11 @@ message MsgCreatePlan {
   // agent_id is the unique identifier of the agent
   uint64 agent_id = 3;
 
-  // plan_start_block is the start block of the plan
-  uint64 plan_start_block = 4;
+  // plan_start_time is the start time of the plan
+  uint64 plan_start_time = 4;
 
-  // subscription_end_time is the end time of the subscription
-  uint64 period_blocks = 5;
+  // period_time is the period time of the plan
+  uint64 period_time = 5;
 
   // yat_contract_address is the address of the yat contract
   string yat_contract_address = 6;

@@ -85,8 +85,8 @@ func (m msgServer) CreatePlan(goCtx context.Context, msg *types.MsgCreatePlan) (
 		Name:               msg.Name,
 		PlanDescUri:        msg.PlanDescUri,
 		AgentId:            msg.AgentId,
-		PlanStartBlock:     msg.PlanStartBlock,
-		PeriodBlocks:       msg.PeriodBlocks,
+		PlanStartTime:      msg.PlanStartTime,
+		PeriodTime:         msg.PeriodTime,
 		YatContractAddress: msg.YatContractAddress,
 	}
 	planResult, err := m.k.AddPlan(ctx, plan)
