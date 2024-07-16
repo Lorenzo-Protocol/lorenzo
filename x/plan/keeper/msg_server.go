@@ -141,9 +141,14 @@ func (m msgServer) Claims(goCtx context.Context, msg *types.MsgClaims) (*types.M
 		return nil, err
 	}
 
-	_, found := m.k.GetPlan(ctx, msg.PlanId)
+	plan, found := m.k.GetPlan(ctx, msg.PlanId)
 	if !found {
 		return nil, errorsmod.Wrapf(types.ErrPlanNotFound, "plan not found")
+	}
+
+	// check if the plan is disabled
+	if plan.Enabled == types.PlanStatus_Pause {
+		return nil, errorsmod.Wrapf(types.ErrPlanPaused, "plan is paused")
 	}
 
 	if err := m.k.Withdraw(ctx,
