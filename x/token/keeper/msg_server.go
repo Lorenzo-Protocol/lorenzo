@@ -208,9 +208,9 @@ func (k Keeper) ConvertERC20(goCtx context.Context, msg *types.MsgConvertERC20) 
 	// execute as per token destination type.
 	switch {
 	case pair.IsNativeCoin():
-		return k.ConvertVoucherERC20ToNativeCoin(ctx, pair, msg, receiver, sender) // case 1.2
+		return k.ConvertVoucherERC20ToNativeCoin(ctx, pair, msg, receiver, sender)
 	case pair.IsNativeERC20():
-		return k.ConvertNativeERC20ToVoucherCoin(ctx, pair, msg, receiver, sender) // case 2.1
+		return k.ConvertNativeERC20ToVoucherCoin(ctx, pair, msg, receiver, sender)
 	default:
 		return nil, types.ErrUndefinedOwner
 	}
