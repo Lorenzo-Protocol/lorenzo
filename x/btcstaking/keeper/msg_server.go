@@ -65,7 +65,7 @@ func ExtractPaymentTo(tx *wire.MsgTx, addr btcutil.Address) (uint64, error) {
 	return amt, nil
 }
 
-func ExtractPaymentToWithOpReturnId(tx *wire.MsgTx, addr btcutil.Address) (uint64, []byte, error) {
+func ExtractPaymentToWithOpReturnIdAndDust(tx *wire.MsgTx, addr btcutil.Address, dustAmount int64) (uint64, []byte, error) {
 	payToAddrScript, err := txscript.PayToAddrScript(addr)
 	if err != nil {
 		return 0, nil, fmt.Errorf("invalid address")
@@ -74,7 +74,7 @@ func ExtractPaymentToWithOpReturnId(tx *wire.MsgTx, addr btcutil.Address) (uint6
 	foundOpReturnId := false
 	var opReturnId []byte
 	for _, out := range tx.TxOut {
-		if bytes.Equal(out.PkScript, payToAddrScript) {
+		if bytes.Equal(out.PkScript, payToAddrScript) && out.Value >= dustAmount {
 			amt += uint64(out.Value)
 		} else {
 			pkScript := out.PkScript
@@ -90,6 +90,10 @@ func ExtractPaymentToWithOpReturnId(tx *wire.MsgTx, addr btcutil.Address) (uint6
 				// to script iteslf i.e OP_RETURN + OP_PUSHDATA1 + len of bytes
 				if pkScript[1] == txscript.OP_PUSHDATA1 {
 					opReturnId = pkScript[3:]
+				} else if pkScript[1] == txscript.OP_PUSHDATA2 {
+					opReturnId = pkScript[4:]
+				} else if pkScript[1] == txscript.OP_PUSHDATA4 {
+					opReturnId = pkScript[6:]
 				} else {
 					// this should be one of OP_DATAXX opcodes we drop first 2 bytes
 					opReturnId = pkScript[2:]
@@ -159,7 +163,7 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 		mintToAddr = common.HexToAddress(receiver.EthAddr).Bytes()
 		btcAmount, err = ExtractPaymentTo(stakingMsgTx, btcReceivingAddr)
 	} else {
-		btcAmount, mintToAddr, err = ExtractPaymentToWithOpReturnId(stakingMsgTx, btcReceivingAddr)
+		btcAmount, mintToAddr, err = ExtractPaymentToWithOpReturnIdAndDust(stakingMsgTx, btcReceivingAddr, p.TxoutDustAmount)
 	}
 	if err != nil || btcAmount == 0 {
 		return nil, types.ErrInvalidTransaction
@@ -187,7 +191,6 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 
 	coins := []sdk.Coin{
 		{
-			// FIXME: no string literal
 			Denom:  types.NativeTokenDenom,
 			Amount: toMintAmount,
 		},

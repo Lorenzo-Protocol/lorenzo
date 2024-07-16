@@ -14,8 +14,8 @@ const (
 	AttributeKeyCreatePlanName               = "name"
 	AttributeKeyCreatePlanDescUri            = "plan_desc_uri"
 	AttributeKeyCreatePlanAgentId            = "agent_id"
-	AttributeKeyCreatePlanPlanStartBlock     = "plan_start_block"
-	AttributeKeyCreatePlanPeriodBlocks       = "period_blocks"
+	AttributeKeyCreatePlanPlanStartTime      = "plan_start_time"
+	AttributeKeyCreatePlanPeriodTime         = "period_time"
 	AttributeKeyCreatePlanYatContractAddress = "yat_contract_address"
 	AttributeKeyCreatePlanContractAddress    = "contract_address"
 
@@ -70,8 +70,8 @@ func NewCreatePlanEvent(sender sdk.AccAddress, plan Plan) sdk.Event {
 		sdk.NewAttribute(AttributeKeyCreatePlanName, plan.Name),
 		sdk.NewAttribute(AttributeKeyCreatePlanDescUri, plan.PlanDescUri),
 		sdk.NewAttribute(AttributeKeyCreatePlanAgentId, fmt.Sprintf("%d", plan.AgentId)),
-		sdk.NewAttribute(AttributeKeyCreatePlanPlanStartBlock, fmt.Sprintf("%d", plan.PlanStartBlock)),
-		sdk.NewAttribute(AttributeKeyCreatePlanPeriodBlocks, fmt.Sprintf("%d", plan.PeriodBlocks)),
+		sdk.NewAttribute(AttributeKeyCreatePlanPlanStartTime, fmt.Sprintf("%d", plan.PlanStartTime)),
+		sdk.NewAttribute(AttributeKeyCreatePlanPeriodTime, fmt.Sprintf("%d", plan.PeriodTime)),
 		sdk.NewAttribute(AttributeKeyCreatePlanYatContractAddress, plan.YatContractAddress),
 		sdk.NewAttribute(AttributeKeyCreatePlanContractAddress, plan.ContractAddress),
 	)

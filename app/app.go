@@ -7,6 +7,8 @@ import (
 	"os"
 	"path/filepath"
 
+	cosmosante "github.com/Lorenzo-Protocol/lorenzo/app/ante/cosmos"
+
 	"github.com/gorilla/mux"
 	"github.com/rakyll/statik/fs"
 	"github.com/spf13/cast"
@@ -573,9 +575,10 @@ func NewLorenzoApp(
 		FeegrantKeeper:         app.FeeGrantKeeper,
 		SignModeHandler:        encodingConfig.TxConfig.SignModeHandler(),
 		MaxTxGasWanted:         maxGasWanted,
-		ExtensionOptionChecker: nil, // uses default
+		ExtensionOptionChecker: ethermint.HasDynamicFeeExtensionOption,
 		BtcConfig:              btcConfig,
 		FeeKeeper:              app.FeeKeeper,
+		TxFeeChecker:           cosmosante.NewDynamicFeeChecker(app.EvmKeeper, app.FeeKeeper),
 	})
 	if err != nil {
 		panic(err)

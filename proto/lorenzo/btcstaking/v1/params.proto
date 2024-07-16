@@ -21,4 +21,6 @@ message Params {
   uint32 btc_confirmations_depth = 2;
   // allow list to mint for receiver with eth_addr
   repeated string minter_allow_list = 3;
+  //minimum satoshi per txout
+  int64 txout_dust_amount = 4;
 }

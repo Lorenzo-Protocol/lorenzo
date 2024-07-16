@@ -39,8 +39,8 @@ func (k Keeper) AddPlan(ctx sdk.Context, plan types.Plan) (types.Plan, error) {
 		plan.PlanDescUri,
 		planIdBigint.BigInt(),
 		agentIdBigint.BigInt(),
-		big.NewInt(int64(plan.PlanStartBlock)),
-		big.NewInt(int64(plan.PeriodBlocks)),
+		big.NewInt(int64(plan.PlanStartTime)),
+		big.NewInt(int64(plan.PeriodTime)),
 		yatContractAddr,
 	)
 	if err != nil {
@@ -79,6 +79,27 @@ func (k Keeper) UpdatePlanStatus(ctx sdk.Context, planId uint64, status types.Pl
 	// update the plan status
 	plan.Enabled = status
 	k.setPlan(ctx, plan)
+	return nil
+}
+
+// Mint mints the token for the plan.
+//
+// Parameters:
+// - ctx: the SDK context.
+// - planId: the plan ID.
+//
+// Returns:
+// - error: an error if the operation fails.
+func (k Keeper) Mint(ctx sdk.Context, planId uint64, to common.Address, amount *big.Int) error {
+	plan, found := k.GetPlan(ctx, planId)
+	if !found {
+		return types.ErrPlanNotFound
+	}
+
+	planAddress := common.HexToAddress(plan.ContractAddress)
+	if err := k.MintFromStakePlan(ctx, planAddress, to, amount); err != nil {
+		return err
+	}
 	return nil
 }
 

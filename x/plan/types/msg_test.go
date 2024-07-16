@@ -2,6 +2,7 @@ package types_test
 
 import (
 	"testing"
+	"time"
 
 	"github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -126,8 +127,8 @@ func (suite *MsgsTestSuite) TestMsgCreatePlan() {
 				Name:               "lorenzo-stake-plan",
 				PlanDescUri:        "https://lorenzo-protocol.io/lorenzo-stake-plan",
 				AgentId:            uint64(1),
-				PlanStartBlock:     1000,
-				PeriodBlocks:       1000,
+				PlanStartTime:      uint64(time.Now().UTC().Unix()) + 1000,
+				PeriodTime:         1000,
 				YatContractAddress: "0xbCC0CdF7683120a1965A343245FA602314C13b9A",
 				Sender:             "invalid",
 			},
@@ -139,8 +140,8 @@ func (suite *MsgsTestSuite) TestMsgCreatePlan() {
 				Name:               "lorenzo-stake-plan",
 				PlanDescUri:        "https://lorenzo-protocol.io/lorenzo-stake-plan",
 				AgentId:            uint64(1),
-				PlanStartBlock:     1000,
-				PeriodBlocks:       1000,
+				PlanStartTime:      uint64(time.Now().UTC().Unix()) + 1000,
+				PeriodTime:         1000,
 				YatContractAddress: "0x123456",
 				Sender:             "cosmos1qperwt9wrnkg5k9e5gzfgjppzpqhyav5j24d66",
 			},
@@ -152,8 +153,8 @@ func (suite *MsgsTestSuite) TestMsgCreatePlan() {
 				Name:               "",
 				PlanDescUri:        "https://lorenzo-protocol.io/lorenzo-stake-plan",
 				AgentId:            uint64(1),
-				PlanStartBlock:     1000,
-				PeriodBlocks:       1000,
+				PlanStartTime:      uint64(time.Now().UTC().Unix()) + 1000,
+				PeriodTime:         1000,
 				YatContractAddress: "0xbCC0CdF7683120a1965A343245FA602314C13b9A",
 				Sender:             "cosmos1qperwt9wrnkg5k9e5gzfgjppzpqhyav5j24d66",
 			},
@@ -165,8 +166,34 @@ func (suite *MsgsTestSuite) TestMsgCreatePlan() {
 				Name:               "lorenzo-stake-plan",
 				PlanDescUri:        "https://lorenzo-protocol.io/lorenzo-stake-plan",
 				AgentId:            uint64(0),
-				PlanStartBlock:     1000,
-				PeriodBlocks:       1000,
+				PlanStartTime:      uint64(time.Now().UTC().Unix()) + 1000,
+				PeriodTime:         1000,
+				YatContractAddress: "0xbCC0CdF7683120a1965A343245FA602314C13b9A",
+				Sender:             "cosmos1qperwt9wrnkg5k9e5gzfgjppzpqhyav5j24d66",
+			},
+			false,
+		},
+		{
+			"fail - plan start time cannot be zero",
+			&types.MsgCreatePlan{
+				Name:               "lorenzo-stake-plan",
+				PlanDescUri:        "https://lorenzo-protocol.io/lorenzo-stake-plan",
+				AgentId:            uint64(1),
+				PlanStartTime:      0,
+				PeriodTime:         1000,
+				YatContractAddress: "0xbCC0CdF7683120a1965A343245FA602314C13b9A",
+				Sender:             "cosmos1qperwt9wrnkg5k9e5gzfgjppzpqhyav5j24d66",
+			},
+			false,
+		},
+		{
+			"fail - period time cannot be zero",
+			&types.MsgCreatePlan{
+				Name:               "lorenzo-stake-plan",
+				PlanDescUri:        "https://lorenzo-protocol.io/lorenzo-stake-plan",
+				AgentId:            uint64(1),
+				PlanStartTime:      uint64(time.Now().UTC().Unix()) + 1000,
+				PeriodTime:         0,
 				YatContractAddress: "0xbCC0CdF7683120a1965A343245FA602314C13b9A",
 				Sender:             "cosmos1qperwt9wrnkg5k9e5gzfgjppzpqhyav5j24d66",
 			},
@@ -178,8 +205,8 @@ func (suite *MsgsTestSuite) TestMsgCreatePlan() {
 				Name:               "lorenzo-stake-plan",
 				PlanDescUri:        "https://lorenzo-protocol.io/lorenzo-stake-plan",
 				AgentId:            uint64(1),
-				PlanStartBlock:     1000,
-				PeriodBlocks:       1000,
+				PlanStartTime:      uint64(time.Now().UTC().Unix()) + 1000,
+				PeriodTime:         1000,
 				YatContractAddress: "0xbCC0CdF7683120a1965A343245FA602314C13b9A",
 				Sender:             "cosmos1qperwt9wrnkg5k9e5gzfgjppzpqhyav5j24d66",
 			},

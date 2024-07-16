@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
 )
@@ -35,8 +36,8 @@ func (suite *KeeperTestSuite) TestInitGenesis() {
 						Name:               "lorenzo-stake-plan",
 						PlanDescUri:        "https://lorenzo-protocol.io/lorenzo-stake-plan",
 						AgentId:            uint64(1),
-						PlanStartBlock:     1000,
-						PeriodBlocks:       1000,
+						PlanStartTime:      uint64(time.Now().UTC().Unix()) + 1000,
+						PeriodTime:         1000,
 						YatContractAddress: "0x5dCA2483280D9727c80b5518faC4556617fb19ZZ",
 						ContractAddress:    "0xa0DD3937820aE374cEC68b131E19b54c574b6710",
 						Enabled:            types.PlanStatus_Unpause,
@@ -88,8 +89,8 @@ func (suite *KeeperTestSuite) TestExportGenesis() {
 						Name:               "lorenzo-stake-plan",
 						PlanDescUri:        "https://lorenzo-protocol.io/lorenzo-stake-plan",
 						AgentId:            uint64(1),
-						PlanStartBlock:     1000,
-						PeriodBlocks:       1000,
+						PlanStartTime:      uint64(time.Now().UTC().Unix()) + 1000,
+						PeriodTime:         1000,
 						YatContractAddress: "0x5dCA2483280D9727c80b5518faC4556617fb19ZZ",
 						ContractAddress:    "0xa0DD3937820aE374cEC68b131E19b54c574b6710",
 						Enabled:            types.PlanStatus_Unpause,
