@@ -496,6 +496,10 @@ func NewLorenzoApp(
 		app.EvmKeeper,
 	)
 
+	app.EvmKeeper.SetHooks(evmkeeper.NewMultiEvmHooks(
+		app.TokenKeeper.Hooks(),
+	))
+
 	// ibc transfer keeper wrapper
 	app.ICS20WrapperKeeper = ics20wrapperkeeper.NewKeeper(
 		appCodec,

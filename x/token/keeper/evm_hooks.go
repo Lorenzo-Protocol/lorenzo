@@ -42,6 +42,7 @@ func (k Keeper) PostTxProcessing(
 
 	erc20 := erc20.ERC20MinterBurnerDecimalsContract.ABI
 
+	// if non target log and inner data found, skip
 	for i, log := range receipt.Logs {
 		// transfer event topics length equals 3
 		if len(log.Topics) != 3 {
@@ -90,15 +91,16 @@ func (k Keeper) PostTxProcessing(
 			continue
 		}
 
-		// if pair conversion is enabled.
+		// NOTE: now that token module and hook is enabled, target event is logged,
+		// and token pair if found, we shall continue process convert logic.
 		if !pair.Enabled {
-			// continue to allow transfers for the ERC20 in case the token pair is
-			// disabled
+			// NOTE: if pair conversion is disabled, we shall return evm tx. otherwise
+			// the token is send to module account.
 			k.Logger(ctx).Debug(
 				"ERC20 token -> Cosmos coin conversion is disabled for pair",
 				"coin", pair.Denom, "contract", pair.ContractAddress,
 			)
-			continue
+			return types.ErrTokenPairDisabled
 		}
 
 		// create the corresponding sdk.Coin that is paired with ERC20
@@ -118,7 +120,7 @@ func (k Keeper) PostTxProcessing(
 				"failed to process EVM hook for ER20 -> coin conversion",
 				"coin", pair.Denom, "contract", pair.ContractAddress, "error", err.Error(),
 			)
-			continue
+			return err
 		}
 
 		// get sender address
@@ -132,7 +134,7 @@ func (k Keeper) PostTxProcessing(
 				"tx-hash", receipt.TxHash.Hex(), "log-idx", i,
 				"coin", pair.Denom, "contract", pair.ContractAddress, "error", err.Error(),
 			)
-			continue
+			return err
 		}
 	}
 
