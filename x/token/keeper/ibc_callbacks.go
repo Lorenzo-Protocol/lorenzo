@@ -2,15 +2,18 @@ package keeper
 
 import (
 	errorsmod "cosmossdk.io/errors"
-	"github.com/Lorenzo-Protocol/lorenzo/x/token/types"
+
+	"github.com/ethereum/go-ethereum/common"
+
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	errortypes "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/ibc-go/v7/modules/core/exported"
-	"github.com/ethereum/go-ethereum/common"
 
 	transfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 	channeltypes "github.com/cosmos/ibc-go/v7/modules/core/04-channel/types"
+	"github.com/cosmos/ibc-go/v7/modules/core/exported"
+
+	"github.com/Lorenzo-Protocol/lorenzo/x/token/types"
 )
 
 // OnRecvPacket is post-posting logic for the IBC transfer module
