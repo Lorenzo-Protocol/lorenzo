@@ -69,7 +69,7 @@ func ExtractPaymentTo(tx *wire.MsgTx, addr btcutil.Address) (uint64, error) {
 	return amt, nil
 }
 
-func ExtractPaymentToWithOpReturnId(tx *wire.MsgTx, addr btcutil.Address) (uint64, []byte, error) {
+func ExtractPaymentToWithOpReturnIdAndDust(tx *wire.MsgTx, addr btcutil.Address, dustAmount int64) (uint64, []byte, error) {
 	payToAddrScript, err := txscript.PayToAddrScript(addr)
 	if err != nil {
 		return 0, nil, fmt.Errorf("invalid address")
@@ -78,7 +78,7 @@ func ExtractPaymentToWithOpReturnId(tx *wire.MsgTx, addr btcutil.Address) (uint6
 	foundOpReturnId := false
 	var opReturnId []byte
 	for _, out := range tx.TxOut {
-		if bytes.Equal(out.PkScript, payToAddrScript) {
+		if bytes.Equal(out.PkScript, payToAddrScript) && out.Value >= dustAmount {
 			amt += uint64(out.Value)
 		} else {
 			pkScript := out.PkScript
@@ -189,14 +189,14 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 		mintToAddr = common.HexToAddress(agent.EthAddr).Bytes()
 		btcAmount, err = ExtractPaymentTo(stakingMsgTx, btcReceivingAddr)
 	} else {
-		var op_return_msg []byte
-		btcAmount, op_return_msg, err = ExtractPaymentToWithOpReturnId(stakingMsgTx, btcReceivingAddr)
+		var opReturnMsg []byte
+		btcAmount, opReturnMsg, err = ExtractPaymentToWithOpReturnIdAndDust(stakingMsgTx, btcReceivingAddr, p.TxoutDustAmount)
 		if err == nil {
-			if len(op_return_msg) == EthAddrBytesLen {
-				mintToAddr = op_return_msg
-			} else if len(op_return_msg) == EthAddrBytesLen+PlanIDLen {
-				mintToAddr = op_return_msg[:EthAddrBytesLen]
-				planId := binary.LittleEndian.Uint64(op_return_msg[EthAddrBytesLen:])
+			if len(opReturnMsg) == EthAddrBytesLen {
+				mintToAddr = opReturnMsg
+			} else if len(opReturnMsg) == EthAddrBytesLen+PlanIDLen {
+				mintToAddr = opReturnMsg[:EthAddrBytesLen]
+				planId := binary.LittleEndian.Uint64(opReturnMsg[EthAddrBytesLen:])
 				plan, found := ms.planKeeper.GetPlan(ctx, planId)
 				if plan.AgentId != req.AgentId {
 					mintYatResult = "AgentId not match"
