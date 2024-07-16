@@ -1,57 +1,93 @@
-version: '3'
+version: "3"
 
 services:
-  node0:
+  lorenzonode0:
     container_name: lorenzonode0
-    image: "lorenzo/node"
+    image: "lorenzo/lorenzod"
+    environment:
+      - DEBUG=1
+      - ID=0
+      - LOG=${LOG:-lorenzod.log}
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined
     ports:
       - "26656-26657:26656-26657"
+      - "1317:1317"
+      - "9090:9090"
+      - "2345:2345"
     volumes:
-      - ./build/node0/lorenzod:/lorenzo:Z
-    command: >
-      lorenzod start --home /lorenzo
+      - ./.testnets:/data:Z
     networks:
       localnet:
-        ipv4_address: 192.167.10.1
+        ipv4_address: 192.168.10.2
 
-  node1:
+  lorenzonode1:
     container_name: lorenzonode1
-    image: "lorenzo/node"
+    image: "lorenzo/lorenzod"
+    environment:
+      - DEBUG=0
+      - ID=1
+      - LOG=${LOG:-lorenzod.log}
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined
     ports:
-      - "26659-26660:26656-26657"
+      - "26666-26667:26656-26657"
+      - "1318:1317"
+      - "9091:9090"
+      - "2346:2345"
     volumes:
-      - ./build/node1/lorenzod:/lorenzo:Z
-    command: >
-      lorenzod start --home /lorenzo
+      - ./.testnets:/data:Z
     networks:
       localnet:
-        ipv4_address: 192.167.10.2
+        ipv4_address: 192.168.10.3
 
-  node2:
+  lorenzonode2:
     container_name: lorenzonode2
-    image: "lorenzo/node"
+    image: "lorenzo/lorenzod"
+    environment:
+      - DEBUG=0
+      - ID=2
+      - LOG=${LOG:-lorenzod.log}
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined
     ports:
-      - "26661-26662:26656-26657"
+      - "26676-26677:26656-26657"
+      - "1319:1317"
+      - "9092:9090"
+      - "2347:2345"
     volumes:
-      - ./build/node2/lorenzod:/lorenzo:Z
-    command: >
-      lorenzod start --home /lorenzo
+      - ./.testnets:/data:Z
     networks:
       localnet:
-        ipv4_address: 192.167.10.3
+        ipv4_address: 192.168.10.4
 
-  node3:
+  lorenzonode3:
     container_name: lorenzonode3
-    image: "lorenzo/node"
+    image: "lorenzo/lorenzod"
+    environment:
+      - DEBUG=0
+      - ID=3
+      - LOG=${LOG:-lorenzod.log}
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined
     ports:
-      - "26663-26664:26656-26657"
+      - "26686-26687:26656-26657"
+      - "1320:1317"
+      - "9093:9090"
+      - "2348:2345"
     volumes:
-      - ./build/node3/lorenzod:/lorenzo:Z
-    command: >
-      lorenzod start --home /lorenzo
+      - ./.testnets:/data:Z
     networks:
       localnet:
-        ipv4_address: 192.167.10.4
+        ipv4_address: 192.168.10.5
 
 networks:
   localnet:
@@ -59,5 +95,4 @@ networks:
     ipam:
       driver: default
       config:
-        -
-          subnet: 192.167.10.0/24
+        - subnet: 192.168.10.0/25

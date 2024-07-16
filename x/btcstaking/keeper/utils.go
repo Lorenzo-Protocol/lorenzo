@@ -14,6 +14,7 @@ func hashConcat(a []byte, b []byte) chainhash.Hash {
 	c = append(c, b...)
 	return chainhash.DoubleHashH(c)
 }
+
 func ParseMerkleBlock(proof []byte) (*wire.MsgMerkleBlock, error) {
 	var msgMerkleBlk wire.MsgMerkleBlock
 	if err := msgMerkleBlk.BtcDecode(bytes.NewReader(proof), wire.BIP0037Version, wire.WitnessEncoding); err != nil {
@@ -29,20 +30,21 @@ func getFlag(bitfield []byte, pos int) bool {
 func calcWidth(nTxes, hei uint32) uint32 {
 	return (nTxes + (1 << hei) - 1) >> hei
 }
+
 func calcHeight(nTxes int) uint32 {
 	return uint32(math.Ceil(math.Log2(float64(nTxes))))
 }
 
 func traverseMerkleBlock(msg *wire.MsgMerkleBlock, hei uint32, pos uint32, bit_used *int, hash_used *int, proof *[]byte, txIndex *uint32) ([]byte, bool) {
-	parent_of_match := getFlag(msg.Flags, *bit_used)
+	parentOfMatch := getFlag(msg.Flags, *bit_used)
 	*bit_used += 1
-	if hei == 0 || !parent_of_match {
+	if hei == 0 || !parentOfMatch {
 		hash := msg.Hashes[*hash_used]
 		*hash_used += 1
-		if hei == 0 && parent_of_match {
+		if hei == 0 && parentOfMatch {
 			*txIndex = pos
 		}
-		return hash[:], parent_of_match
+		return hash[:], parentOfMatch
 	} else {
 		left, lis := traverseMerkleBlock(msg, hei-1, pos*2, bit_used, hash_used, proof, txIndex)
 		var right []byte
@@ -52,7 +54,7 @@ func traverseMerkleBlock(msg *wire.MsgMerkleBlock, hei uint32, pos uint32, bit_u
 			right = left
 		}
 		var hash chainhash.Hash
-		if parent_of_match {
+		if parentOfMatch {
 			if lis {
 				*proof = append(*proof, right...)
 			} else {
@@ -62,7 +64,7 @@ func traverseMerkleBlock(msg *wire.MsgMerkleBlock, hei uint32, pos uint32, bit_u
 		} else {
 			hash = hashConcat(right, left)
 		}
-		return hash[:], parent_of_match
+		return hash[:], parentOfMatch
 	}
 }
 

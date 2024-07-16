@@ -1,0 +1,81 @@
+syntax = "proto3";
+package lorenzo.plan.v1;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "lorenzo/plan/v1/plan.proto";
+import "lorenzo/plan/v1/params.proto";
+
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/plan/types";
+
+// Query defines the gRPC querier service.
+service Query {
+
+  // Params queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/lorenzo/plan/v1/params";
+  }
+
+  // Plans queries all plans.
+  rpc Plans(QueryPlansRequest) returns (QueryPlansResponse) {
+    option (google.api.http).get = "/lorenzo/plan/v1/plans";
+  }
+
+  // Plan queries a plan by id.
+  rpc Plan(QueryPlanRequest) returns (QueryPlanResponse) {
+    option (google.api.http).get = "/lorenzo/plan/v1/plans/{id}";
+  }
+
+  // ClaimLeafNode queries a plan by id.
+  rpc ClaimLeafNode(QueryClaimLeafNodeRequest) returns (QueryClaimLeafNodeResponse) {
+    option (google.api.http).get = "/lorenzo/plan/v1/plans/{id}/claim-leaf-node";
+  }
+}
+
+// QueryParamsRequest is the request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is the response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [ (gogoproto.nullable) = false ];
+}
+
+
+// PlansRequest is the request type for the Query.Plans RPC method.
+message QueryPlansRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+// PlansResponse is the response type for the Query.Plans RPC method.
+message QueryPlansResponse {
+  repeated Plan plans = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// PlanRequest is the request type for the Query.Plan RPC method.
+message QueryPlanRequest {
+  // id is the unique identifier of the plan
+  uint64 id = 1;
+}
+
+// PlanResponse is the response type for the Query.Plan RPC method.
+message QueryPlanResponse {
+  Plan plan = 1 [(gogoproto.nullable) = false];
+}
+
+// ClaimLeafNodeRequest is the request type for the Query.ClaimLeafNode RPC method.
+message QueryClaimLeafNodeRequest {
+  // id is the unique identifier of the plan
+  uint64 id = 1;
+  // round_id is the unique identifier of the round
+  string round_id = 2 [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false ];
+  // leaf_node is the leaf node to claim
+  string leaf_node = 3;
+}
+
+// ClaimLeafNodeResponse is the response type for the Query.ClaimLeafNode RPC method.
+message QueryClaimLeafNodeResponse {
+  bool success = 1;
+}

@@ -13,8 +13,9 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-// NewMsgServerImpl returns an implementation of the MsgServer interface
-// for the provided Keeper.
+type Querier struct {
+	*Keeper
+}
 
 func (k Keeper) Params(c context.Context, req *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
@@ -36,7 +37,9 @@ func (k Keeper) StakingRecord(c context.Context, req *types.QueryStakingRecordRe
 	}
 
 	var txHash chainhash.Hash
-	txHash.SetBytes(req.TxHash)
+	if err := txHash.SetBytes(req.TxHash); err != nil {
+		return nil, err
+	}
 
 	// get the staking record
 	stakingRecord := k.getBTCStakingRecord(ctx, txHash)
@@ -66,9 +69,13 @@ func (k Keeper) Records(ctx context.Context, req *types.QueryRecordsRequest) (*t
 		}
 		return true, nil
 	})
-
 	if err != nil {
 		return nil, err
 	}
 	return &types.QueryRecordsResponse{Records: records, Pagination: pageRes}, nil
+}
+
+// NewQuerierImpl returns an implementation of the captains QueryServer interface.
+func NewQuerierImpl(k *Keeper) types.QueryServer {
+	return &Querier{k}
 }

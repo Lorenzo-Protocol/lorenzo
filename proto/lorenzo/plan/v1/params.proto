@@ -1,0 +1,18 @@
+syntax = "proto3";
+package lorenzo.plan.v1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/plan/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (gogoproto.equal) = true;
+
+  // beacon is beacon contract address
+  string beacon = 1;
+
+  // List of addresses that are allowed to create a plan
+  repeated string allow_list = 2;
+
+}

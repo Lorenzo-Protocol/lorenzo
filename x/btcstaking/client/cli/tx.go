@@ -35,7 +35,7 @@ func GetTxCmd() *cobra.Command {
 
 func NewCreateBTCStakingWithBTCProofCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-btcstaking-with-btc-proof [btc_tx_bytes] [proof] [receiver_name]",
+		Use:   "btcstaking [btc_tx_bytes] [proof] [receiver_name]",
 		Short: "Create a new btc staking request with proof from bitcoin-cli getrawtransaction&gettxoutproof output",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -45,18 +45,20 @@ func NewCreateBTCStakingWithBTCProofCmd() *cobra.Command {
 			}
 			txBytes, err := hex.DecodeString(args[0])
 			if err != nil {
-				return fmt.Errorf("failed to decode tx bytes: %s", err)
+				return fmt.Errorf("failed to decode tx bytes: %w", err)
 			}
 			proofRaw, err := hex.DecodeString(args[1])
 			if err != nil {
-				return fmt.Errorf("failed to decode proof bytes: %s", err)
+				return fmt.Errorf("failed to decode proof bytes: %w", err)
 			}
 			merkleBlk, err := keeper.ParseMerkleBlock(proofRaw)
 			if err != nil {
 				return err
 			}
 			txIndex, proofBytes, err := keeper.ParseBTCProof(merkleBlk)
-
+			if err != nil {
+				return fmt.Errorf("failed to parse btc proof: %w", err)
+			}
 			queryClient := types.NewQueryClient(clientCtx)
 			resp, err := queryClient.Params(cmd.Context(), &types.QueryParamsRequest{})
 			if err != nil {

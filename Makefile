@@ -76,7 +76,10 @@ ifeq (,$(findstring nostrip,$(LORENZO_STAKING_BUILD_OPTIONS)))
   BUILD_FLAGS += -trimpath
 endif
 
-all: install
+all: tools install
+
+# The below include contains the tools and runsim targets.
+include contrib/devtools/Makefile
 
 .PHONY: install
 install: go.sum
@@ -85,6 +88,12 @@ install: go.sum
 .PHONY: build
 build: go.sum
 	go build $(BUILD_FLAGS) -o build/lorenzod ./cmd/lorenzod
+
+.PHONY: clean
+clean:
+	rm -rf \
+	$(BUILDDIR)/ \
+	.testnets
 
 ###############################################################################
 ###                                E2E tests                                ###
@@ -102,6 +111,66 @@ e2e-test-ibc-timeout:
 e2e-test-all: e2e-test-ibc e2e-test-ibc-timeout
 
 .PHONY: e2e-test-ibc e2e-test-ibc-timeout e2e-test-all
+
+###############################################################################
+###                           Tests & Simulation                            ###
+###############################################################################
+
+test: test-unit
+test-all: test-unit test-race
+# For unit tests we don't want to execute the upgrade tests in tests/e2e but
+# we want to include all unit tests in the subfolders (tests/e2e/*)
+PACKAGES_UNIT=$(shell go list ./... | grep -v '/tests/e2e$$')
+TEST_PACKAGES=./...
+TEST_TARGETS := test-unit test-unit-cover test-race
+
+# Test runs-specific rules. To add a new test target, just add
+# a new rule, customise ARGS or TEST_PACKAGES ad libitum, and
+# append the new rule to the TEST_TARGETS list.
+test-unit: ARGS=-timeout=15m -race
+test-unit: TEST_PACKAGES=$(PACKAGES_UNIT)
+
+test-race: ARGS=-race
+test-race: TEST_PACKAGES=$(PACKAGES_NOSIMULATION)
+$(TEST_TARGETS): run-tests
+
+test-unit-cover: ARGS=-timeout=15m -race -coverprofile=coverage.txt -covermode=atomic
+test-unit-cover: TEST_PACKAGES=$(PACKAGES_UNIT)
+
+test-e2e:
+	@if [ -z "$(TARGET_VERSION)" ]; then \
+		echo "Building docker image from local codebase"; \
+		make build-docker; \
+	fi
+	@mkdir -p ./build
+	@rm -rf build/.tabid
+	@INITIAL_VERSION=$(INITIAL_VERSION) TARGET_VERSION=$(TARGET_VERSION) \
+	E2E_SKIP_CLEANUP=$(E2E_SKIP_CLEANUP) MOUNT_PATH=$(MOUNT_PATH) CHAIN_ID=$(CHAIN_ID) \
+	go test -v ./tests/e2e -run ^TestIntegrationTestSuite$
+
+run-tests:
+ifneq (,$(shell which tparse 2>/dev/null))
+	go test -mod=readonly -json $(ARGS) $(EXTRA_ARGS) $(TEST_PACKAGES) | tparse
+else
+	go test -mod=readonly $(ARGS)  $(EXTRA_ARGS) $(TEST_PACKAGES)
+endif
+
+test-import:
+	@go test ./tests/importer -v --vet=off --run=TestImportBlocks --datadir tmp \
+	--blockchain blockchain
+	rm -rf tests/importer/tmp
+
+test-rpc:
+	./scripts/integration-test-all.sh -t "rpc" -q 1 -z 1 -s 2 -m "rpc" -r "true"
+
+test-rpc-pending:
+	./scripts/integration-test-all.sh -t "pending" -q 1 -z 1 -s 2 -m "pending" -r "true"
+
+.PHONY: run-tests test test-all test-import test-rpc $(TEST_TARGETS)
+
+benchmark:
+	@go test -mod=readonly -bench=. $(PACKAGES_NOSIMULATION)
+.PHONY: benchmark
 
 ###############################################################################
 ###                                Protobuf                                 ###
@@ -138,3 +207,79 @@ proto-lint:
 proto-check-breaking:
 	@echo "Checking Protobuf files for breaking changes"
 	$(protoImage) buf breaking --against $(HTTPS_GIT)#branch=main
+
+###############################################################################
+###                                Localnet                                 ###
+###############################################################################
+
+localnet-build-env:
+	$(MAKE) -C contrib/images lorenzod-env
+
+localnet-build-nodes:
+	$(DOCKER) run --rm -v $(CURDIR)/.testnets:/data lorenzo/lorenzod \
+			  testnet init-files --v 4 -o /data --starting-ip-address 192.168.10.2 --keyring-backend=test
+	docker-compose up -d
+
+localnet-stop:
+	docker-compose down
+###############################################################################
+###                                Releasing                                ###
+###############################################################################
+
+PACKAGE_NAME:=github.com/Lorenzo-Protocol/lorenzo
+GOLANG_CROSS_VERSION  = v1.20
+GOPATH ?= '$(HOME)/go'
+release-dry-run:
+	docker run \
+		--rm \
+		--privileged \
+		-e CGO_ENABLED=1 \
+		-v /var/run/docker.sock:/var/run/docker.sock \
+		-v `pwd`:/go/src/$(PACKAGE_NAME) \
+		-v ${GOPATH}/pkg:/go/pkg \
+		-w /go/src/$(PACKAGE_NAME) \
+		ghcr.io/goreleaser/goreleaser-cross:${GOLANG_CROSS_VERSION} \
+		--clean --skip-validate --skip-publish --snapshot
+
+release:
+	@if [ ! -f ".release-env" ]; then \
+		echo "\033[91m.release-env is required for release\033[0m";\
+		exit 1;\
+	fi
+	docker run \
+		--rm \
+		--privileged \
+		-e CGO_ENABLED=1 \
+		--env-file .release-env \
+		-v /var/run/docker.sock:/var/run/docker.sock \
+		-v `pwd`:/go/src/$(PACKAGE_NAME) \
+		-w /go/src/$(PACKAGE_NAME) \
+		ghcr.io/goreleaser/goreleaser-cross:${GOLANG_CROSS_VERSION} \
+		release --clean --skip-validate
+
+.PHONY: release-dry-run release
+
+
+###############################################################################
+###                                Linting                                  ###
+###############################################################################
+golangci_lint_cmd=golangci-lint
+golangci_version=v1.53.3
+
+lint:
+	@echo "--> Running linter"
+	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@$(golangci_version)
+	@$(golangci_lint_cmd) run --timeout=10m
+
+lint-fix:
+	@echo "--> Running linter"
+	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@$(golangci_version)
+	@$(golangci_lint_cmd) run --fix --out-format=tab --issues-exit-code=0
+
+format:
+	@go install mvdan.cc/gofumpt@latest
+	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@$(golangci_version)
+	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/docs/statik/statik.go" -not -path "./tests/mocks/*" -not -name "*.pb.go" -not -name "*.pb.gw.go" -not -name "*.pulsar.go" -not -path "./crypto/keys/secp256k1/*" | xargs gofumpt -w -l
+	$(golangci_lint_cmd) run --fix
+
+.PHONY: lint lint-fix format

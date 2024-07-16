@@ -1,0 +1,25 @@
+syntax = "proto3";
+package lorenzo.plan.v1;
+
+import "gogoproto/gogo.proto";
+
+
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/plan/types";
+
+// Plan defines the details of a project
+message Plan {
+  uint64 id = 1;
+  string name = 2;
+  string plan_desc_uri = 3;
+  uint64 agent_id = 4;
+  uint64 plan_start_block = 5;
+  uint64 period_blocks = 6;
+  string yat_contract_address = 7;
+  string contract_address = 8;
+  PlanStatus enabled = 9;
+}
+
+enum PlanStatus {
+  Pause = 0;
+  Unpause = 1;
+}

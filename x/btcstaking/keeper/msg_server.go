@@ -20,18 +20,20 @@ import (
 
 const EthAddrLen = 42
 
-const Dep0Amount = 4e5
-const Dep1Amount = 2e6
-const Dep2Amount = 1e7
-const Dep3Amount = 5e7
+const (
+	Dep0Amount = 4e5
+	Dep1Amount = 2e6
+	Dep2Amount = 1e7
+	Dep3Amount = 5e7
+)
 
 type msgServer struct {
-	Keeper
+	*Keeper
 }
 
 // NewMsgServerImpl returns an implementation of the MsgServer interface
 // for the provided Keeper.
-func NewMsgServerImpl(keeper Keeper) types.MsgServer {
+func NewMsgServerImpl(keeper *Keeper) types.MsgServer {
 	return &msgServer{Keeper: keeper}
 }
 
@@ -120,9 +122,9 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 		return nil, types.ErrParseBTCTx.Wrap(err.Error())
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	var stakingTxHash = stakingMsgTx.TxHash()
-	staking_record := ms.getBTCStakingRecord(ctx, stakingTxHash)
-	if staking_record != nil {
+	stakingTxHash := stakingMsgTx.TxHash()
+	stakingRecord := ms.getBTCStakingRecord(ctx, stakingTxHash)
+	if stakingRecord != nil {
 		return nil, types.ErrDupBTCTx
 	}
 
@@ -143,7 +145,7 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 		return nil, types.ErrInvalidReceivingAddr.Wrapf("Receiver(%s) not exists", req.Receiver)
 	}
 
-	btc_receiving_addr, err := btcutil.DecodeAddress(receiver.Addr, btclcParams)
+	btcReceivingAddr, err := btcutil.DecodeAddress(receiver.Addr, btclcParams)
 	if err != nil {
 		return nil, types.ErrInvalidReceivingAddr.Wrap(err.Error())
 	}
@@ -155,9 +157,9 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 			return nil, types.ErrNotInAllowList
 		}
 		mintToAddr = common.HexToAddress(receiver.EthAddr).Bytes()
-		btcAmount, err = ExtractPaymentTo(stakingMsgTx, btc_receiving_addr)
+		btcAmount, err = ExtractPaymentTo(stakingMsgTx, btcReceivingAddr)
 	} else {
-		btcAmount, mintToAddr, err = ExtractPaymentToWithOpReturnId(stakingMsgTx, btc_receiving_addr)
+		btcAmount, mintToAddr, err = ExtractPaymentToWithOpReturnId(stakingMsgTx, btcReceivingAddr)
 	}
 	if err != nil || btcAmount == 0 {
 		return nil, types.ErrInvalidTransaction
@@ -185,7 +187,7 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 
 	coins := []sdk.Coin{
 		{
-			//FIXME: no string literal
+			// FIXME: no string literal
 			Denom:  types.NativeTokenDenom,
 			Amount: toMintAmount,
 		},
@@ -198,20 +200,20 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 	if err != nil {
 		return nil, types.ErrTransferToAddr.Wrap(err.Error())
 	}
-	stakingRecord := types.BTCStakingRecord{
+	bctStakingRecord := types.BTCStakingRecord{
 		TxHash:          stakingTxHash[:],
 		Amount:          btcAmount,
 		MintToAddr:      mintToAddr,
 		BtcReceiverName: receiver.Name,
 		BtcReceiverAddr: receiver.Addr,
 	}
-	err = ms.addBTCStakingRecord(ctx, &stakingRecord)
+	err = ms.addBTCStakingRecord(ctx, &bctStakingRecord)
 	if err != nil {
 		return nil, types.ErrRecordStaking.Wrap(err.Error())
 	}
-	err = ctx.EventManager().EmitTypedEvent(types.NewEventBTCStakingCreated(&stakingRecord))
+	err = ctx.EventManager().EmitTypedEvent(types.NewEventBTCStakingCreated(&bctStakingRecord))
 	if err != nil {
-		panic(fmt.Errorf("fail to emit EventBTCStakingCreated : %s", err))
+		panic(fmt.Errorf("fail to emit EventBTCStakingCreated : %w", err))
 	}
 	return &types.MsgCreateBTCStakingResponse{}, nil
 }
@@ -279,4 +281,12 @@ func (ms msgServer) UpdateParams(goCtx context.Context, req *types.MsgUpdatePara
 		return nil, err
 	}
 	return &types.MsgUpdateParamsResponse{}, nil
+}
+
+func (ms msgServer) AddReceiver(goCtx context.Context, req *types.MsgAddReceiver) (*types.MsgAddReceiverResponse, error) {
+	return nil, fmt.Errorf("deprecated, use UpdateParams instead")
+}
+
+func (ms msgServer) RemoveReceiver(goCtx context.Context, req *types.MsgRemoveReceiver) (*types.MsgRemoveReceiverResponse, error) {
+	return nil, fmt.Errorf("deprecated, use UpdateParams instead")
 }

@@ -11,7 +11,6 @@ import (
 	"github.com/Lorenzo-Protocol/lorenzo/x/fee/types"
 )
 
-
 var _ types.MsgServer = msgServer{}
 
 type msgServer struct {
@@ -41,4 +40,3 @@ func (ms msgServer) UpdateParams(ctx context.Context, req *types.MsgUpdateParams
 func NewMsgServerImpl(keeper *Keeper) types.MsgServer {
 	return &msgServer{keeper}
 }
-

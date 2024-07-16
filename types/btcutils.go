@@ -25,7 +25,6 @@ func ValidateBTCHeader(header *wire.BlockHeader, powLimit *big.Int) error {
 	// The upper limit for the power to be spent
 	// Use the one maintained by btcd
 	err := blockchain.CheckProofOfWork(block, powLimit)
-
 	if err != nil {
 		return err
 	}
@@ -69,7 +68,6 @@ func NewBTCTxFromHex(txHex string) (*wire.MsgTx, []byte, error) {
 	}
 
 	parsed, err := NewBTCTxFromBytes(txBytes)
-
 	if err != nil {
 		return nil, nil, err
 	}

@@ -33,7 +33,6 @@ func NewKeeper(
 	}
 }
 
-
 // SetParams sets the parameters for the given context.
 //
 // ctx - Context object.
@@ -63,4 +62,3 @@ func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
 	k.cdc.MustUnmarshal(bz, &params)
 	return params
 }
-
