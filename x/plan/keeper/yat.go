@@ -168,7 +168,7 @@ func (k Keeper) ClaimReward(
 	return nil
 }
 
-// Mint mints YAT tokens to an account.
+// MintFromYat mints YAT tokens to an account.
 //
 // Parameters:
 // - ctx: the SDK context.
@@ -178,7 +178,7 @@ func (k Keeper) ClaimReward(
 //
 // Returns:
 // - error: an error if the mint fails.
-func (k Keeper) Mint(
+func (k Keeper) MintFromYat(
 	ctx sdk.Context,
 	contractAddress, to common.Address,
 	amount *big.Int,
