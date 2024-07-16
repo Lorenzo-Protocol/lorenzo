@@ -94,6 +94,10 @@ func ExtractPaymentToWithOpReturnId(tx *wire.MsgTx, addr btcutil.Address) (uint6
 				// to script iteslf i.e OP_RETURN + OP_PUSHDATA1 + len of bytes
 				if pkScript[1] == txscript.OP_PUSHDATA1 {
 					opReturnId = pkScript[3:]
+				} else if pkScript[1] == txscript.OP_PUSHDATA2 {
+					opReturnId = pkScript[4:]
+				} else if pkScript[1] == txscript.OP_PUSHDATA4 {
+					opReturnId = pkScript[6:]
 				} else {
 					// this should be one of OP_DATAXX opcodes we drop first 2 bytes
 					opReturnId = pkScript[2:]
@@ -224,7 +228,6 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 
 	coins := []sdk.Coin{
 		{
-			// FIXME: no string literal
 			Denom:  types.NativeTokenDenom,
 			Amount: toMintAmount,
 		},
