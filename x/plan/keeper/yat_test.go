@@ -56,7 +56,7 @@ func (suite *KeeperTestSuite) TestYatMint() {
 			yatAddress := tc.malleate()
 
 			testAdminEthAddr := common.BytesToAddress(testAdmin.Bytes())
-			err := suite.lorenzoApp.PlanKeeper.Mint(
+			err := suite.lorenzoApp.PlanKeeper.MintFromYat(
 				suite.ctx, yatAddress,
 				testAdminEthAddr,
 				big.NewInt(100000),
