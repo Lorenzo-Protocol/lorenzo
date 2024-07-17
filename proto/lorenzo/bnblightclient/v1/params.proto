@@ -1,0 +1,18 @@
+syntax = "proto3";
+package lorenzo.bnblightclient.v1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/bnblightclient/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (gogoproto.equal) = true;
+
+  // escrow btcb contract address
+  string escrow_contract_address = 1;
+  // the maximum number of bnb block headers to retain
+  uint64 retained_blocks = 2;
+  // list of people who can upload bnb block header information
+  repeated string allow_list = 3;
+}

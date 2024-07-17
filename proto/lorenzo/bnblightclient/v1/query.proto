@@ -1,0 +1,57 @@
+syntax = "proto3";
+package lorenzo.bnblightclient.v1;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "lorenzo/bnblightclient/v1/client.proto";
+import "lorenzo/bnblightclient/v1/params.proto";
+
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/bnblightclient/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Params queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/lorenzo/bnblightclient/v1/params";
+  }
+
+  // Header returns the header in bnb chain by number
+  rpc Header(QueryHeaderRequest) returns (QueryHeaderResponse) {
+    option (google.api.http).get = "/lorenzo/bnblightclient/v1/header/{number}";
+  }
+
+  // LatestedHeader returns the latested header in bnb chain
+  rpc LatestedHeader(QueryLatestedHeaderRequest)
+      returns (QueryLatestedHeaderResponse) {
+    option (google.api.http).get = "/lorenzo/bnblightclient/v1/latested_header";
+  }
+}
+
+// QueryParamsRequest is the request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is the response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  lorenzo.bnblightclient.v1.Params params = 1 [ (gogoproto.nullable) = false ];
+}
+
+// QueryHeaderRequest is the request type for the Query/Header RPC method.
+message QueryHeaderRequest { uint64 number = 1; }
+
+// QueryParamsResponse is the response type for the Query/Header RPC method.
+message QueryHeaderResponse {
+  // params holds all the parameters of this module.
+  lorenzo.bnblightclient.v1.Header header = 1 [ (gogoproto.nullable) = true ];
+}
+
+// QueryLatestedHeaderRequest is the request type for the Query/LatestedHeader
+// RPC method.
+message QueryLatestedHeaderRequest {}
+
+// QueryLatestedHeaderResponse is the response type for the Query/LatestedHeader
+// RPC method.
+message QueryLatestedHeaderResponse {
+  // header holds the bnb light client header.
+  lorenzo.bnblightclient.v1.Header header = 1 [ (gogoproto.nullable) = false ];
+}

@@ -1,0 +1,51 @@
+syntax = "proto3";
+package lorenzo.bnblightclient.v1;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+import "cosmos/msg/v1/msg.proto";
+import "lorenzo/bnblightclient/v1/client.proto";
+import "lorenzo/bnblightclient/v1/params.proto";
+
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/bnblightclient/types";
+
+// Msg defines the Msg service.
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+
+  // UploadHeaders adds a batch of headers to the BNB light client chain
+  rpc UploadHeaders(MsgUploadHeaders) returns (MsgUploadHeadersResponse) {};
+
+  // UpdateParams defines a method for updating btc light client module
+  // parameters.
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+}
+
+// MsgUploadHeaders defines the message for multiple incoming header bytes
+message MsgUploadHeaders {
+  option (cosmos.msg.v1.signer) = "signer";
+
+  repeated lorenzo.bnblightclient.v1.Header headers = 1;
+  string signer = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
+// MsgUploadHeadersResponse defines the response for the UploadHeaders transaction
+message MsgUploadHeadersResponse {}
+
+// MsgUpdateParams defines a message for updating fee module parameters.
+message MsgUpdateParams {
+  option (cosmos.msg.v1.signer) = "authority";
+
+  // authority is the address of the governance account.
+  // just FYI: cosmos.AddressString marks that this field should use type alias
+  // for AddressString instead of string, but the functionality is not yet
+  // implemented in cosmos-proto
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // params defines the bnb light client parameters.
+  //
+  // NOTE: All parameters must be supplied.
+  lorenzo.bnblightclient.v1.Params params = 2 [ (gogoproto.nullable) = false ];
+}
+
+// MsgUpdateParamsResponse is the response to the MsgUpdateParams message.
+message MsgUpdateParamsResponse {}
