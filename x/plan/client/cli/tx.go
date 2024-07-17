@@ -100,12 +100,13 @@ func GetCmdCreatePlan() *cobra.Command {
 				return err
 			}
 
-			var msgCreatePlan *types.MsgCreatePlan
+			msgCreatePlan := &types.MsgCreatePlan{}
 			err = json.Unmarshal(contents, msgCreatePlan)
 			if err != nil {
 				return err
 			}
-
+			from := clientCtx.GetFromAddress()
+			msgCreatePlan.Sender = from.String()
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgCreatePlan)
 		},
 	}
