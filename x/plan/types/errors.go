@@ -21,4 +21,6 @@ var (
 	ErrStakePlanContractNotFound    = errorsmod.Register(ModuleName, 17, "stake plan contract not found")
 	ErrStakePlanContractNotContract = errorsmod.Register(ModuleName, 18, "stake plan contract is not a contract")
 	ErrInvalidPlanStartTime         = errorsmod.Register(ModuleName, 19, "invalid plan start time")
+	ErrPlanPaused                   = errorsmod.Register(ModuleName, 20, "plan is paused")
+	ErrMerkelRootIsInvalid          = errorsmod.Register(ModuleName, 21, "merkle root is invalid")
 )
