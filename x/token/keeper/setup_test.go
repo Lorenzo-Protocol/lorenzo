@@ -16,11 +16,11 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	ibcgotesting "github.com/cosmos/ibc-go/v7/testing"
 
 	"github.com/Lorenzo-Protocol/lorenzo/app"
 	"github.com/Lorenzo-Protocol/lorenzo/app/helpers"
 	"github.com/Lorenzo-Protocol/lorenzo/testutil"
+
 	utiltx "github.com/Lorenzo-Protocol/lorenzo/testutil/tx"
 	"github.com/Lorenzo-Protocol/lorenzo/x/token/keeper"
 	"github.com/Lorenzo-Protocol/lorenzo/x/token/types"
@@ -42,11 +42,6 @@ type KeeperTestSuite struct {
 	msgServer      types.MsgServer
 	queryClient    types.QueryClient
 	queryClientEvm evmtypes.QueryClient
-
-	// ibc-go testing
-	ibcTestingEnabled bool
-	LorenzoChain      *ibcgotesting.TestChain
-	CosmosChain       *ibcgotesting.TestChain
 }
 
 var s *KeeperTestSuite
@@ -99,11 +94,6 @@ func (suite *KeeperTestSuite) execSetupTest() {
 	evmtypes.RegisterQueryServer(queryHelper, suite.app.EvmKeeper)
 	suite.queryClient = types.NewQueryClient(queryHelper)
 	suite.queryClientEvm = evmtypes.NewQueryClient(queryHelper)
-
-	// ibc-go testing
-	if suite.ibcTestingEnabled {
-		suite.SetupIBCTest()
-	}
 }
 
 // Commit commits and starts a new block with an updated context.
