@@ -86,7 +86,3 @@ func (suite *KeeperTestSuite) utilsERC20Mint(contract, from, to common.Address, 
 		from, contract, true, "mint", to, sdk.NewInt(amount).BigInt())
 	suite.Require().NoError(err)
 }
-
-func (suite *KeeperTestSuite) SetupIBCTest() {
-	// TODO: Implement this function
-}
