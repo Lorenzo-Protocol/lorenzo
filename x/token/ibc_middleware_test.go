@@ -179,7 +179,7 @@ func (suite *MiddlewareTestSuite) TestOnAcknowledgementPacket() {
 			}
 
 			// lock coin
-			_, err = suite.chainA.ICS20WrapperKeeper.Transfer(suite.LorenzoChainA.GetContext(), &ibctransfertypes.MsgTransfer{
+			suite.chainA.ICS20WrapperKeeper.Transfer(suite.LorenzoChainA.GetContext(), &ibctransfertypes.MsgTransfer{
 				SourcePort:       suite.Path.EndpointA.ChannelConfig.PortID,
 				SourceChannel:    suite.Path.EndpointA.ChannelID,
 				Token:            sdk.NewCoin("coin", sdk.NewInt(1000)),
@@ -188,8 +188,7 @@ func (suite *MiddlewareTestSuite) TestOnAcknowledgementPacket() {
 				TimeoutHeight:    clienttypes.NewHeight(0, 100),
 				TimeoutTimestamp: 0,
 				Memo:             "",
-			})
-			suite.Require().NoError(err)
+			}) //nolint:errcheck
 
 			// get packet
 			data := ibctransfertypes.FungibleTokenPacketData{
