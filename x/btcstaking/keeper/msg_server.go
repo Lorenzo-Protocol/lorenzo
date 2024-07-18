@@ -31,6 +31,8 @@ type msgServer struct {
 	*Keeper
 }
 
+
+
 // NewMsgServerImpl returns an implementation of the MsgServer interface
 // for the provided Keeper.
 func NewMsgServerImpl(keeper *Keeper) types.MsgServer {
@@ -257,6 +259,11 @@ func (ms msgServer) Burn(goCtx context.Context, req *types.MsgBurnRequest) (*typ
 	}
 
 	return &types.MsgBurnResponse{}, nil
+}
+
+// CreateBTCStakingFromBNB implements types.MsgServer.
+func (ms msgServer) CreateBTCStakingFromBNB(context.Context, *types.MsgCreateBTCStakingFromBNB) (*types.MsgCreateBTCStakingFromBNBResponse, error) {
+	panic("unimplemented")
 }
 
 func findReceiver(receivers []*types.Receiver, name string) (int, *types.Receiver) {
