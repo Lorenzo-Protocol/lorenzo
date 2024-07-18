@@ -9,13 +9,11 @@ option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/bnblightclient/types"
 message Params {
   option (gogoproto.equal) = true;
 
-  bytes  chain_id = 1 [ (gogoproto.customtype) = "cosmossdk.io/math.Uint" ];
+  bytes chain_id = 1 [ (gogoproto.customtype) = "cosmossdk.io/math.Uint" ];
   // the stake plan hub contract address
   string stake_plan_hub_address = 2;
-  // the stake plan hub contract method id
-  string stake_plan_hub_method_id = 3;
   // the maximum number of bnb block headers to retain
-  uint64 retained_blocks = 4;
+  uint64 retained_blocks = 3;
   // list of people who can upload bnb block header information
-  repeated string allow_list = 5;
+  repeated string allow_list = 4;
 }

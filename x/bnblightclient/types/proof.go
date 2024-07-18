@@ -1,7 +1,6 @@
 package types
 
 import (
-	"bytes"
 	"encoding/base64"
 	"errors"
 
@@ -141,31 +140,4 @@ func GenReceiptProof(txIndex uint64, root common.Hash, receipts []*types.Receipt
 	}
 
 	return &res, nil
-}
-
-
-// VerifyReceiptProof verifies the proof of a receipt in a Merkle Patricia Trie (MPT).
-//
-// Parameters:
-// - receipt: a pointer to a Receipt struct representing the receipt to verify.
-// - root: a common.Hash representing the root hash of the MPT.
-// - proof: a Proof struct representing the proof to verify.
-//
-// Returns:
-// - bool: true if the proof is valid, false otherwise.
-func VerifyReceiptProof(receipt *types.Receipt, root common.Hash, proof Proof) bool {
-	db := trie.NewDatabase(rawdb.NewMemoryDatabase())
-	mpt := trie.NewEmpty(db)
-	_ = types.DeriveSha(types.Receipts{receipt}, mpt)
-
-	var indexBuf []byte
-	indexBuf = rlp.AppendUint64(indexBuf[:0], uint64(0))
-	receiptValue := mpt.Get(indexBuf)
-
-	val, err := trie.VerifyProof(root, proof.Index, &proof.Path)
-
-	if err == nil && bytes.Equal(val, proof.Value) && bytes.Equal(val, receiptValue) {
-		return true
-	}
-	return false
 }

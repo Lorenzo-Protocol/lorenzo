@@ -38,7 +38,7 @@ message MsgUploadHeadersResponse {}
 message MsgUpdateHeader {
   option (cosmos.msg.v1.signer) = "signer";
 
-  lorenzo.bnblightclient.v1.Header headers = 1;
+  lorenzo.bnblightclient.v1.Header header = 1;
   string signer = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
 // MsgUpdateHeaderResponse defines the response for the UpdateHeader

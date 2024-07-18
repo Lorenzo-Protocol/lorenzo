@@ -20,6 +20,12 @@ service Query {
     option (google.api.http).get = "/lorenzo/bnblightclient/v1/header/{number}";
   }
 
+  // HeaderByHash returns the header in bnb chain by hash
+  rpc HeaderByHash(QueryHeaderByHashRequest)
+      returns (QueryHeaderByHashResponse) {
+    option (google.api.http).get = "/lorenzo/bnblightclient/v1/header/{hash}/hash";
+  }
+
   // LatestedHeader returns the latested header in bnb chain
   rpc LatestedHeader(QueryLatestedHeaderRequest)
       returns (QueryLatestedHeaderResponse) {
@@ -41,6 +47,17 @@ message QueryHeaderRequest { uint64 number = 1; }
 
 // QueryParamsResponse is the response type for the Query/Header RPC method.
 message QueryHeaderResponse {
+  // params holds all the parameters of this module.
+  lorenzo.bnblightclient.v1.Header header = 1 [ (gogoproto.nullable) = true ];
+}
+
+// QueryHeaderByHashRequest is the request type for the Query/HeaderByHash RPC
+// method.
+message QueryHeaderByHashRequest { bytes hash = 1; }
+
+// QueryHeaderByHashResponse is the response type for the Query/HeaderByHash RPC
+// method.
+message QueryHeaderByHashResponse {
   // params holds all the parameters of this module.
   lorenzo.bnblightclient.v1.Header header = 1 [ (gogoproto.nullable) = true ];
 }

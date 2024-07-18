@@ -6,16 +6,16 @@ import "gogoproto/gogo.proto";
 option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/bnblightclient/types";
 
 message Header {
-  message Header {
-    option (gogoproto.goproto_getters) = false;
+  option (gogoproto.goproto_getters) = false;
 
-    // header defines the bnb header bytes
-    bytes raw_header = 1;
-    // hash defines the bnb header hash
-    bytes hash = 2;
-    // number defines the block number
-    uint64 number = 3;
-    // receipt_root defines the receipts merkle root hash
-    bytes receipt_root = 4;
-  }
+  // header defines the bnb header bytes
+  bytes raw_header = 1;
+  // parent_hash defines the previous bnb header hash
+  bytes parent_hash = 2;
+  // hash defines the bnb header hash
+  bytes hash = 3;
+  // number defines the block number
+  uint64 number = 4;
+  // receipt_root defines the receipts merkle root hash
+  bytes receipt_root = 5;
 }
