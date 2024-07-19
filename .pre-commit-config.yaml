@@ -9,6 +9,8 @@ repos:
         stages: [ commit ]
         always_run: true
   - repo: https://github.com/golangci/golangci-lint
-    rev: v1.59.1
+    rev: v1.53.3
     hooks:
       - id: golangci-lint
+        stages: [ push ]
+        always_run: true

@@ -1,0 +1,58 @@
+syntax = "proto3";
+package lorenzo.token.v1;
+
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "lorenzo/token/v1/token.proto";
+import "lorenzo/token/v1/genesis.proto";
+
+
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/token/types";
+
+service Query {
+  // TokenPairs retrieves registered token pairs
+  rpc TokenPairs(QueryTokenPairsRequest) returns (QueryTokenPairsResponse) {
+    option (google.api.http).get = "/lorenzo/token/v1/token_pairs";
+  }
+
+  // TokenPair retrieves a registered token pair
+  rpc TokenPair(QueryTokenPairRequest) returns (QueryTokenPairResponse) {
+    option (google.api.http).get = "/lorenzo/token/v1/token_pairs/{token}";
+  }
+
+  // Params retrieves the convert module params
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/lorenzo/token/v1/params";
+  }
+}
+
+// QueryTokenPairsRequest is the request type for the Query/TokenPairs RPC
+message QueryTokenPairsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+// QueryTokenPairsResponse is the response type for the Query/TokenPairs RPC
+message QueryTokenPairsResponse {
+  repeated TokenPair token_pairs = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryTokenPairRequest is the request type for the Query/TokenPair RPC method.
+message QueryTokenPairRequest {
+  // token can be either coin denom or erc20 contract address.
+  string token = 1;
+}
+
+// QueryTokenPairResponse is the response type for the Query/TokenPair RPC
+message QueryTokenPairResponse {
+  TokenPair token_pair = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryParamsRequest is the request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is the response type for the Query/Params RPC
+message QueryParamsResponse {
+  Params params = 1 [(gogoproto.nullable) = false];
+}
