@@ -1,6 +1,8 @@
 package types
 
 import (
+	big "math/big"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	lrz "github.com/Lorenzo-Protocol/lorenzo/types"
@@ -14,4 +16,8 @@ type BTCLightClientKeeper interface {
 	GetHeaderByHash(ctx sdk.Context, hash *lrz.BTCHeaderHashBytes) *btclctypes.BTCHeaderInfo
 	GetBTCNet() *chaincfg.Params
 	GetFeeRate(ctx sdk.Context) uint64
+}
+
+type EvmKeeper interface {
+	ChainID() *big.Int
 }
