@@ -19,8 +19,8 @@ var (
 	ParamsKey = []byte{0x01}
 	// KeyPrefixHeader defines the prefix to retrieve all headers
 	KeyPrefixHeader = []byte{0x02}
-	// KeyPrefixLatestedNumber defines the prefix to retrieve the latest header number
-	KeyPrefixLatestedNumber = []byte{0x03}
+	// KeyPrefixLatestNumber defines the prefix to retrieve the latest header number
+	KeyPrefixLatestNumber = []byte{0x03}
 
 	// KeyPrefixHeadHash defines the prefix to retrieve the head hash
 	KeyPrefixHeadHash = []byte{0x04}
@@ -39,9 +39,9 @@ func KeyHeaderHash(hash []byte) []byte {
 	return append(KeyPrefixHeadHash, hash...)
 }
 
-// KeyLatestedHeaderNumber returns the key for the latest header number
-func KeyLatestedHeaderNumber() []byte {
-	return KeyPrefixLatestedNumber
+// KeyLatestHeaderNumber returns the key for the latest header number
+func KeyLatestHeaderNumber() []byte {
+	return KeyPrefixLatestNumber
 }
 
 // KeyEventRecord returns the key for the cross chain event index

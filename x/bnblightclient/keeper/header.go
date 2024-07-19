@@ -16,7 +16,7 @@ func(k Keeper) UploadHeaders(ctx sdk.Context, headers []*types.Header) error {
 	})
 
 	vHeader := headers
-	latestedHeader, exist := k.GetLatestedHeader(ctx)
+	latestedHeader, exist := k.GetLatestHeader(ctx)
 	if exist {
 		vHeader = append([]*types.Header{latestedHeader}, headers...)
 	}
@@ -29,7 +29,7 @@ func(k Keeper) UploadHeaders(ctx sdk.Context, headers []*types.Header) error {
 	for _, header := range headers {
 		k.setHeader(ctx, header)
 	}
-	k.setLatestedNumber(ctx, headers[len(headers) - 1].Number)
+	k.setLatestNumber(ctx, headers[len(headers) - 1].Number)
 	k.prune(ctx)
 	return nil
 }
@@ -56,7 +56,7 @@ func(k Keeper) UpdateHeader(ctx sdk.Context, header *types.Header) error {
 }
 
 
-// GetLatestedHeader retrieves the latested header from the store.
+// GetLatestHeader retrieves the latested header from the store.
 //
 // Parameters:
 // - ctx: the context object
@@ -64,9 +64,9 @@ func(k Keeper) UpdateHeader(ctx sdk.Context, header *types.Header) error {
 // Returns:
 // - types.Header: the latested header
 // - bool: true if the header was found, false otherwise
-func(k Keeper) GetLatestedHeader(ctx sdk.Context) (*types.Header, bool) {
+func(k Keeper) GetLatestHeader(ctx sdk.Context) (*types.Header, bool) {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.KeyLatestedHeaderNumber())
+	bz := store.Get(types.KeyLatestHeaderNumber())
 	if bz == nil {
 		return nil, false
 	}
@@ -75,16 +75,16 @@ func(k Keeper) GetLatestedHeader(ctx sdk.Context) (*types.Header, bool) {
 	return k.GetHeader(ctx, number)
 }
 
-// GetLatestedNumber retrieves the latested number from the store.
+// GetLatestNumber retrieves the latested number from the store.
 //
 // Parameters:
 // - ctx: the context object
 //
 // Returns:
 // - uint64: the latested number
-func(k Keeper) GetLatestedNumber(ctx sdk.Context) uint64 {
+func(k Keeper) GetLatestNumber(ctx sdk.Context) uint64 {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.KeyLatestedHeaderNumber())
+	bz := store.Get(types.KeyLatestHeaderNumber())
 	if bz == nil {
 		return 0
 	}
@@ -109,6 +109,27 @@ func(k Keeper) GetHeader(ctx sdk.Context, number uint64) (*types.Header, bool) {
 	var header types.Header
 	k.cdc.MustUnmarshal(bz, &header)
 	return &header, true
+}
+
+// GetAllHeaders retrieves all headers from the store.
+//
+// Parameters:
+// - ctx: the context object
+//
+// Returns:
+// - headers: a slice of Header objects
+func(k Keeper) GetAllHeaders(ctx sdk.Context) (headers []*types.Header) {
+	store := ctx.KVStore(k.storeKey)
+
+	it := sdk.KVStorePrefixIterator(store, types.KeyPrefixHeader)
+	defer it.Close() //nolint:errcheck
+
+	for ; it.Valid(); it.Next() {
+		var header types.Header
+		k.cdc.MustUnmarshal(it.Value(), &header)
+		headers = append(headers, &header)
+	}
+	return
 }
 
 // GetHeaderByHash retrieves a header from the store based on its hash.
@@ -151,8 +172,8 @@ func(k Keeper) setHeader(ctx sdk.Context, header *types.Header) {
 	store.Set(types.KeyHeaderHash(header.Hash), numberBz)
 }
 
-func(k Keeper) setLatestedNumber(ctx sdk.Context, number uint64) {
+func(k Keeper) setLatestNumber(ctx sdk.Context, number uint64) {
 	store := ctx.KVStore(k.storeKey)
 	bz := sdk.Uint64ToBigEndian(number)
-	store.Set(types.KeyLatestedHeaderNumber(), bz)
+	store.Set(types.KeyLatestHeaderNumber(), bz)
 }

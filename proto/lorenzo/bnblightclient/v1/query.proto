@@ -26,10 +26,10 @@ service Query {
     option (google.api.http).get = "/lorenzo/bnblightclient/v1/header/{hash}/hash";
   }
 
-  // LatestedHeader returns the latested header in bnb chain
-  rpc LatestedHeader(QueryLatestedHeaderRequest)
-      returns (QueryLatestedHeaderResponse) {
-    option (google.api.http).get = "/lorenzo/bnblightclient/v1/latested_header";
+  // LatestHeader returns the latest header in bnb chain
+  rpc LatestHeader(QueryLatestHeaderRequest)
+      returns (QueryLatestHeaderResponse) {
+    option (google.api.http).get = "/lorenzo/bnblightclient/v1/latest_header";
   }
 }
 
@@ -62,13 +62,13 @@ message QueryHeaderByHashResponse {
   lorenzo.bnblightclient.v1.Header header = 1 [ (gogoproto.nullable) = true ];
 }
 
-// QueryLatestedHeaderRequest is the request type for the Query/LatestedHeader
+// QueryLatestHeaderRequest is the request type for the Query/LatestHeader
 // RPC method.
-message QueryLatestedHeaderRequest {}
+message QueryLatestHeaderRequest {}
 
-// QueryLatestedHeaderResponse is the response type for the Query/LatestedHeader
+// QueryLatestHeaderResponse is the response type for the Query/LatestHeader
 // RPC method.
-message QueryLatestedHeaderResponse {
+message QueryLatestHeaderResponse {
   // header holds the bnb light client header.
   lorenzo.bnblightclient.v1.Header header = 1 [ (gogoproto.nullable) = false ];
 }

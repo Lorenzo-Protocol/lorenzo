@@ -11,13 +11,11 @@ message Params {
 
   // the stake plan hub contract address
   string stake_plan_hub_address = 1;
-  // event_index defines index of generated the event in the contract
-  repeated string event_indices = 2;
   // event_name defines the event name
-  string event_name = 3;
+  string event_name = 2;
   // the maximum number of bnb block headers to retain
-  uint64 retained_blocks = 4;
+  uint64 retained_blocks = 3;
   // list of people who can upload bnb block header information
-  repeated string allow_list = 5;
+  repeated string allow_list = 4;
 
 }

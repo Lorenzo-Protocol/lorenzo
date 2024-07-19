@@ -87,9 +87,12 @@ func (m *GenesisState) GetRecords() []*EventRecord {
 }
 
 type EventRecord struct {
+	// block_number defines the block number
 	BlockNumber uint64 `protobuf:"varint,1,opt,name=block_number,json=blockNumber,proto3" json:"block_number,omitempty"`
-	Contract    []byte `protobuf:"bytes,2,opt,name=contract,proto3" json:"contract,omitempty"`
-	Index       uint64 `protobuf:"varint,3,opt,name=index,proto3" json:"index,omitempty"`
+	// contract defines the contract
+	Contract []byte `protobuf:"bytes,2,opt,name=contract,proto3" json:"contract,omitempty"`
+	// index defines the event index
+	Index uint64 `protobuf:"varint,3,opt,name=index,proto3" json:"index,omitempty"`
 }
 
 func (m *EventRecord) Reset()         { *m = EventRecord{} }

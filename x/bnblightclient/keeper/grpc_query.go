@@ -38,19 +38,19 @@ func (q Querier) HeaderByHash(goCtx context.Context, req *types.QueryHeaderByHas
 	return &types.QueryHeaderByHashResponse{Header: header}, nil
 }
 
-// LatestedHeader implements types.QueryServer.
-func (q Querier) LatestedHeader(goCtx context.Context, req *types.QueryLatestedHeaderRequest) (*types.QueryLatestedHeaderResponse, error) {
+// LatestHeader implements types.QueryServer.
+func (q Querier) LatestHeader(goCtx context.Context, req *types.QueryLatestHeaderRequest) (*types.QueryLatestHeaderResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	header, found := q.k.GetLatestedHeader(ctx)
+	header, found := q.k.GetLatestHeader(ctx)
 	if !found {
 		return nil, errorsmod.Wrap(types.ErrHeaderNotFound, "latested header not found")
 	}
-	return &types.QueryLatestedHeaderResponse{Header: *header}, nil
+	return &types.QueryLatestHeaderResponse{Header: *header}, nil
 }
 
 // Params implements types.QueryServer.
 func (q Querier) Params(goCtx context.Context, req *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	params := q.k.GetParams(ctx)
-	return &types.QueryParamsResponse{Params: params}, nil
+	return &types.QueryParamsResponse{Params: *params}, nil
 }

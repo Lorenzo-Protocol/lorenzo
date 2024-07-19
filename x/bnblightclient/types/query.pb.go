@@ -296,23 +296,23 @@ func (m *QueryHeaderByHashResponse) GetHeader() *Header {
 	return nil
 }
 
-// QueryLatestedHeaderRequest is the request type for the Query/LatestedHeader
+// QueryLatestHeaderRequest is the request type for the Query/LatestHeader
 // RPC method.
-type QueryLatestedHeaderRequest struct {
+type QueryLatestHeaderRequest struct {
 }
 
-func (m *QueryLatestedHeaderRequest) Reset()         { *m = QueryLatestedHeaderRequest{} }
-func (m *QueryLatestedHeaderRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryLatestedHeaderRequest) ProtoMessage()    {}
-func (*QueryLatestedHeaderRequest) Descriptor() ([]byte, []int) {
+func (m *QueryLatestHeaderRequest) Reset()         { *m = QueryLatestHeaderRequest{} }
+func (m *QueryLatestHeaderRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryLatestHeaderRequest) ProtoMessage()    {}
+func (*QueryLatestHeaderRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_f139d6422d3b3b56, []int{6}
 }
-func (m *QueryLatestedHeaderRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryLatestHeaderRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryLatestedHeaderRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryLatestHeaderRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryLatestedHeaderRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryLatestHeaderRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -322,37 +322,37 @@ func (m *QueryLatestedHeaderRequest) XXX_Marshal(b []byte, deterministic bool) (
 		return b[:n], nil
 	}
 }
-func (m *QueryLatestedHeaderRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryLatestedHeaderRequest.Merge(m, src)
+func (m *QueryLatestHeaderRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryLatestHeaderRequest.Merge(m, src)
 }
-func (m *QueryLatestedHeaderRequest) XXX_Size() int {
+func (m *QueryLatestHeaderRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryLatestedHeaderRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryLatestedHeaderRequest.DiscardUnknown(m)
+func (m *QueryLatestHeaderRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryLatestHeaderRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryLatestedHeaderRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryLatestHeaderRequest proto.InternalMessageInfo
 
-// QueryLatestedHeaderResponse is the response type for the Query/LatestedHeader
+// QueryLatestHeaderResponse is the response type for the Query/LatestHeader
 // RPC method.
-type QueryLatestedHeaderResponse struct {
+type QueryLatestHeaderResponse struct {
 	// header holds the bnb light client header.
 	Header Header `protobuf:"bytes,1,opt,name=header,proto3" json:"header"`
 }
 
-func (m *QueryLatestedHeaderResponse) Reset()         { *m = QueryLatestedHeaderResponse{} }
-func (m *QueryLatestedHeaderResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryLatestedHeaderResponse) ProtoMessage()    {}
-func (*QueryLatestedHeaderResponse) Descriptor() ([]byte, []int) {
+func (m *QueryLatestHeaderResponse) Reset()         { *m = QueryLatestHeaderResponse{} }
+func (m *QueryLatestHeaderResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryLatestHeaderResponse) ProtoMessage()    {}
+func (*QueryLatestHeaderResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_f139d6422d3b3b56, []int{7}
 }
-func (m *QueryLatestedHeaderResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryLatestHeaderResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryLatestedHeaderResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryLatestHeaderResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryLatestedHeaderResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryLatestHeaderResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -362,19 +362,19 @@ func (m *QueryLatestedHeaderResponse) XXX_Marshal(b []byte, deterministic bool) 
 		return b[:n], nil
 	}
 }
-func (m *QueryLatestedHeaderResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryLatestedHeaderResponse.Merge(m, src)
+func (m *QueryLatestHeaderResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryLatestHeaderResponse.Merge(m, src)
 }
-func (m *QueryLatestedHeaderResponse) XXX_Size() int {
+func (m *QueryLatestHeaderResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryLatestedHeaderResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryLatestedHeaderResponse.DiscardUnknown(m)
+func (m *QueryLatestHeaderResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryLatestHeaderResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryLatestedHeaderResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryLatestHeaderResponse proto.InternalMessageInfo
 
-func (m *QueryLatestedHeaderResponse) GetHeader() Header {
+func (m *QueryLatestHeaderResponse) GetHeader() Header {
 	if m != nil {
 		return m.Header
 	}
@@ -388,8 +388,8 @@ func init() {
 	proto.RegisterType((*QueryHeaderResponse)(nil), "lorenzo.bnblightclient.v1.QueryHeaderResponse")
 	proto.RegisterType((*QueryHeaderByHashRequest)(nil), "lorenzo.bnblightclient.v1.QueryHeaderByHashRequest")
 	proto.RegisterType((*QueryHeaderByHashResponse)(nil), "lorenzo.bnblightclient.v1.QueryHeaderByHashResponse")
-	proto.RegisterType((*QueryLatestedHeaderRequest)(nil), "lorenzo.bnblightclient.v1.QueryLatestedHeaderRequest")
-	proto.RegisterType((*QueryLatestedHeaderResponse)(nil), "lorenzo.bnblightclient.v1.QueryLatestedHeaderResponse")
+	proto.RegisterType((*QueryLatestHeaderRequest)(nil), "lorenzo.bnblightclient.v1.QueryLatestHeaderRequest")
+	proto.RegisterType((*QueryLatestHeaderResponse)(nil), "lorenzo.bnblightclient.v1.QueryLatestHeaderResponse")
 }
 
 func init() {
@@ -397,39 +397,39 @@ func init() {
 }
 
 var fileDescriptor_f139d6422d3b3b56 = []byte{
-	// 503 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x94, 0xc1, 0x6a, 0xd4, 0x40,
-	0x1c, 0xc6, 0x33, 0xb2, 0xcd, 0x61, 0x2c, 0x1e, 0xc6, 0x22, 0x6d, 0x2c, 0xd1, 0x8e, 0x28, 0x2a,
-	0xdd, 0x19, 0xba, 0xb5, 0x1e, 0xbc, 0x08, 0x7b, 0xea, 0xa1, 0x87, 0x1a, 0xc4, 0x83, 0x88, 0x32,
-	0xd9, 0x0e, 0x49, 0x20, 0x3b, 0x93, 0x66, 0x66, 0x8b, 0xab, 0xf4, 0xe2, 0x13, 0x88, 0x1e, 0x3d,
-	0xfa, 0x02, 0x82, 0x2f, 0xd1, 0x63, 0xc1, 0x8b, 0x27, 0x91, 0x5d, 0x1f, 0x44, 0x32, 0x33, 0x5b,
-	0x1b, 0xdd, 0x36, 0xbb, 0xd8, 0xcb, 0x92, 0x9d, 0xfc, 0xbf, 0xef, 0xfb, 0xe5, 0x9f, 0x8f, 0xc0,
-	0xdb, 0xb9, 0x2c, 0xb9, 0x78, 0x23, 0x69, 0x2c, 0xe2, 0x3c, 0x4b, 0x52, 0xdd, 0xcb, 0x33, 0x2e,
-	0x34, 0x3d, 0xd8, 0xa0, 0xfb, 0x03, 0x5e, 0x0e, 0x49, 0x51, 0x4a, 0x2d, 0xd1, 0x8a, 0x1b, 0x23,
-	0xf5, 0x31, 0x72, 0xb0, 0x11, 0x2c, 0x25, 0x32, 0x91, 0x66, 0x8a, 0x56, 0x57, 0x56, 0x10, 0xac,
-	0x26, 0x52, 0x26, 0x39, 0xa7, 0xac, 0xc8, 0x28, 0x13, 0x42, 0x6a, 0xa6, 0x33, 0x29, 0x94, 0xbb,
-	0x7b, 0xe7, 0xec, 0x54, 0x67, 0xdc, 0x38, 0x57, 0xb0, 0x92, 0xf5, 0x9d, 0x1f, 0x5e, 0x82, 0xe8,
-	0x49, 0x45, 0xbb, 0x6b, 0x0e, 0x23, 0xbe, 0x3f, 0xe0, 0x4a, 0xe3, 0x67, 0xf0, 0x6a, 0xed, 0x54,
-	0x15, 0x52, 0x28, 0x8e, 0x1e, 0x43, 0xdf, 0x8a, 0x97, 0xc1, 0x4d, 0x70, 0xf7, 0x72, 0x67, 0x8d,
-	0x9c, 0xf9, 0x70, 0xc4, 0x4a, 0xbb, 0xad, 0xa3, 0x1f, 0x37, 0xbc, 0xc8, 0xc9, 0xf0, 0xba, 0x4b,
-	0xdb, 0xe6, 0x6c, 0x8f, 0x97, 0x2e, 0x0d, 0x5d, 0x83, 0xbe, 0x18, 0xf4, 0x63, 0x5e, 0x1a, 0xdb,
-	0x56, 0xe4, 0xfe, 0x9d, 0x50, 0x4c, 0xa6, 0xff, 0x50, 0xa4, 0xe6, 0x64, 0x06, 0x0a, 0x2b, 0x35,
-	0x14, 0x20, 0x72, 0x32, 0x4c, 0xe0, 0xf2, 0x29, 0xdf, 0xee, 0x70, 0x9b, 0xa9, 0x74, 0xc2, 0x82,
-	0x60, 0x2b, 0x65, 0x2a, 0x35, 0xd6, 0x8b, 0x91, 0xb9, 0xc6, 0x2f, 0xe0, 0xca, 0x94, 0xf9, 0x8b,
-	0xa2, 0x59, 0x85, 0x81, 0x71, 0xdf, 0x61, 0x9a, 0x2b, 0xcd, 0xf7, 0x6a, 0xbb, 0xc1, 0x2f, 0xe1,
-	0xf5, 0xa9, 0x77, 0xff, 0x2f, 0xdd, 0x9b, 0xa4, 0x77, 0x3e, 0x2f, 0xc0, 0x05, 0x13, 0x80, 0x3e,
-	0x00, 0xe8, 0xdb, 0x97, 0x86, 0xda, 0xe7, 0xb8, 0xfc, 0xdb, 0x96, 0x80, 0xcc, 0x3a, 0x6e, 0xa1,
-	0xf1, 0xbd, 0x77, 0xdf, 0x7e, 0x7d, 0xbc, 0x74, 0x0b, 0xad, 0xd1, 0xa6, 0x92, 0xa2, 0x4f, 0x00,
-	0xfa, 0x96, 0xbb, 0x19, 0xaa, 0xb6, 0xb8, 0x66, 0xa8, 0xfa, 0x26, 0x71, 0xc7, 0x40, 0xad, 0xa3,
-	0xfb, 0xe7, 0x40, 0xd9, 0x9d, 0xd1, 0xb7, 0xb6, 0x9f, 0x87, 0xe8, 0x0b, 0x80, 0x8b, 0xa7, 0x4b,
-	0x81, 0x36, 0x67, 0x0b, 0xad, 0x55, 0x2e, 0x78, 0x30, 0x9f, 0xc8, 0xf1, 0x6e, 0x19, 0x5e, 0x8a,
-	0xda, 0x33, 0xf0, 0x56, 0x2d, 0x3e, 0xa4, 0xd5, 0x2f, 0xfa, 0x0a, 0xe0, 0x95, 0x7a, 0x97, 0xd0,
-	0x56, 0x53, 0xfe, 0xd4, 0x66, 0x06, 0x0f, 0xe7, 0x95, 0xcd, 0xb1, 0xe8, 0xdc, 0x49, 0x5f, 0xd9,
-	0x27, 0xe8, 0x3e, 0x3d, 0x1a, 0x85, 0xe0, 0x78, 0x14, 0x82, 0x9f, 0xa3, 0x10, 0xbc, 0x1f, 0x87,
-	0xde, 0xf1, 0x38, 0xf4, 0xbe, 0x8f, 0x43, 0xef, 0xf9, 0xa3, 0x24, 0xd3, 0xe9, 0x20, 0x26, 0x3d,
-	0xd9, 0xa7, 0x3b, 0xd6, 0xaf, 0xbd, 0x5b, 0x7d, 0xd9, 0x7a, 0x32, 0x3f, 0x09, 0x78, 0xfd, 0x77,
-	0x84, 0x1e, 0x16, 0x5c, 0xc5, 0xbe, 0xf9, 0x04, 0x6e, 0xfe, 0x0e, 0x00, 0x00, 0xff, 0xff, 0x24,
-	0xe1, 0xb4, 0xfe, 0xca, 0x05, 0x00, 0x00,
+	// 499 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x94, 0xc1, 0x6e, 0xd3, 0x30,
+	0x1c, 0xc6, 0x63, 0xd4, 0xe5, 0x60, 0x7a, 0x32, 0x13, 0xda, 0x22, 0x14, 0x98, 0x11, 0x68, 0x4c,
+	0xab, 0xcd, 0x3a, 0xb8, 0x70, 0x41, 0xea, 0x69, 0x87, 0x1d, 0x46, 0x84, 0x38, 0x20, 0x24, 0xe4,
+	0x14, 0x2b, 0x89, 0x94, 0xda, 0x59, 0xec, 0x4e, 0x14, 0xb4, 0x0b, 0x4f, 0x80, 0xe0, 0xb8, 0x47,
+	0xe0, 0xc2, 0x63, 0xec, 0x38, 0x89, 0x0b, 0x27, 0x84, 0x5a, 0x1e, 0x04, 0xc5, 0x76, 0x4b, 0x03,
+	0x5d, 0x53, 0x04, 0x97, 0x2a, 0x75, 0xfe, 0xdf, 0xf7, 0xfd, 0xfa, 0xef, 0x27, 0xc3, 0x3b, 0xb9,
+	0x2c, 0xb9, 0x78, 0x23, 0x69, 0x2c, 0xe2, 0x3c, 0x4b, 0x52, 0xdd, 0xcf, 0x33, 0x2e, 0x34, 0x3d,
+	0xd9, 0xa3, 0xc7, 0x43, 0x5e, 0x8e, 0x48, 0x51, 0x4a, 0x2d, 0xd1, 0xa6, 0x1b, 0x23, 0xf5, 0x31,
+	0x72, 0xb2, 0x17, 0xac, 0x27, 0x32, 0x91, 0x66, 0x8a, 0x56, 0x4f, 0x56, 0x10, 0xdc, 0x48, 0xa4,
+	0x4c, 0x72, 0x4e, 0x59, 0x91, 0x51, 0x26, 0x84, 0xd4, 0x4c, 0x67, 0x52, 0x28, 0xf7, 0xf6, 0xee,
+	0xe5, 0xa9, 0xce, 0xb8, 0x71, 0xae, 0x60, 0x25, 0x1b, 0x38, 0x3f, 0xbc, 0x0e, 0xd1, 0x93, 0x8a,
+	0xf6, 0xc8, 0x1c, 0x46, 0xfc, 0x78, 0xc8, 0x95, 0xc6, 0xcf, 0xe0, 0xb5, 0xda, 0xa9, 0x2a, 0xa4,
+	0x50, 0x1c, 0x3d, 0x86, 0xbe, 0x15, 0x6f, 0x80, 0x5b, 0x60, 0xfb, 0x6a, 0x77, 0x8b, 0x5c, 0xfa,
+	0xe3, 0x88, 0x95, 0xf6, 0x5a, 0xe7, 0xdf, 0x6e, 0x7a, 0x91, 0x93, 0xe1, 0x5d, 0x97, 0x76, 0xc0,
+	0xd9, 0x2b, 0x5e, 0xba, 0x34, 0x74, 0x1d, 0xfa, 0x62, 0x38, 0x88, 0x79, 0x69, 0x6c, 0x5b, 0x91,
+	0xfb, 0x36, 0xa3, 0x98, 0x4e, 0xff, 0xa2, 0x48, 0xcd, 0xc9, 0x0a, 0x14, 0x56, 0x6a, 0x28, 0x40,
+	0xe4, 0x64, 0x98, 0xc0, 0x8d, 0x39, 0xdf, 0xde, 0xe8, 0x80, 0xa9, 0x74, 0xca, 0x82, 0x60, 0x2b,
+	0x65, 0x2a, 0x35, 0xd6, 0xed, 0xc8, 0x3c, 0xe3, 0x17, 0x70, 0x73, 0xc1, 0xfc, 0xff, 0xa2, 0x09,
+	0x1c, 0xcd, 0x21, 0xd3, 0x5c, 0xe9, 0xda, 0x66, 0x66, 0xc9, 0xf5, 0x77, 0xff, 0x96, 0xec, 0x4d,
+	0x93, 0xbb, 0x67, 0x6b, 0x70, 0xcd, 0xd8, 0xa3, 0x0f, 0x00, 0xfa, 0xf6, 0x0f, 0x43, 0x9d, 0x25,
+	0x2e, 0x7f, 0x36, 0x25, 0x20, 0xab, 0x8e, 0x5b, 0x68, 0x7c, 0xef, 0xdd, 0x97, 0x1f, 0x1f, 0xaf,
+	0xdc, 0x46, 0x5b, 0xb4, 0xa9, 0xa0, 0xe8, 0x0c, 0x40, 0xdf, 0x72, 0x37, 0x43, 0xd5, 0xd6, 0xd6,
+	0x0c, 0x55, 0xdf, 0x24, 0xee, 0x1a, 0xa8, 0x5d, 0xb4, 0xb3, 0x04, 0xca, 0xee, 0x8c, 0xbe, 0xb5,
+	0xdd, 0x3c, 0x45, 0x9f, 0x01, 0x6c, 0xcf, 0x17, 0x02, 0xed, 0xaf, 0x16, 0x5a, 0xab, 0x5b, 0xf0,
+	0xe0, 0xef, 0x44, 0x8e, 0xf7, 0xa1, 0xe1, 0xa5, 0xa8, 0xb3, 0x02, 0x6f, 0xd5, 0xe0, 0x53, 0x5a,
+	0x7d, 0xa2, 0x4f, 0x00, 0xb6, 0xe7, 0x9b, 0xd4, 0x8c, 0xbc, 0xa0, 0x93, 0xcd, 0xc8, 0x8b, 0xca,
+	0x8a, 0xef, 0x1b, 0xe4, 0x1d, 0xb4, 0xbd, 0x04, 0x39, 0x37, 0xc2, 0x97, 0x96, 0xbc, 0xf7, 0xf4,
+	0x7c, 0x1c, 0x82, 0x8b, 0x71, 0x08, 0xbe, 0x8f, 0x43, 0xf0, 0x7e, 0x12, 0x7a, 0x17, 0x93, 0xd0,
+	0xfb, 0x3a, 0x09, 0xbd, 0xe7, 0x8f, 0x92, 0x4c, 0xa7, 0xc3, 0x98, 0xf4, 0xe5, 0x80, 0x1e, 0x5a,
+	0xb7, 0xce, 0x51, 0x75, 0x9b, 0xf5, 0x65, 0x3e, 0xb3, 0x7f, 0xfd, 0x7b, 0x80, 0x1e, 0x15, 0x5c,
+	0xc5, 0xbe, 0xb9, 0xf6, 0xf6, 0x7f, 0x06, 0x00, 0x00, 0xff, 0xff, 0xcd, 0x99, 0xa8, 0x80, 0xbe,
+	0x05, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -450,8 +450,8 @@ type QueryClient interface {
 	Header(ctx context.Context, in *QueryHeaderRequest, opts ...grpc.CallOption) (*QueryHeaderResponse, error)
 	// HeaderByHash returns the header in bnb chain by hash
 	HeaderByHash(ctx context.Context, in *QueryHeaderByHashRequest, opts ...grpc.CallOption) (*QueryHeaderByHashResponse, error)
-	// LatestedHeader returns the latested header in bnb chain
-	LatestedHeader(ctx context.Context, in *QueryLatestedHeaderRequest, opts ...grpc.CallOption) (*QueryLatestedHeaderResponse, error)
+	// LatestHeader returns the latest header in bnb chain
+	LatestHeader(ctx context.Context, in *QueryLatestHeaderRequest, opts ...grpc.CallOption) (*QueryLatestHeaderResponse, error)
 }
 
 type queryClient struct {
@@ -489,9 +489,9 @@ func (c *queryClient) HeaderByHash(ctx context.Context, in *QueryHeaderByHashReq
 	return out, nil
 }
 
-func (c *queryClient) LatestedHeader(ctx context.Context, in *QueryLatestedHeaderRequest, opts ...grpc.CallOption) (*QueryLatestedHeaderResponse, error) {
-	out := new(QueryLatestedHeaderResponse)
-	err := c.cc.Invoke(ctx, "/lorenzo.bnblightclient.v1.Query/LatestedHeader", in, out, opts...)
+func (c *queryClient) LatestHeader(ctx context.Context, in *QueryLatestHeaderRequest, opts ...grpc.CallOption) (*QueryLatestHeaderResponse, error) {
+	out := new(QueryLatestHeaderResponse)
+	err := c.cc.Invoke(ctx, "/lorenzo.bnblightclient.v1.Query/LatestHeader", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -506,8 +506,8 @@ type QueryServer interface {
 	Header(context.Context, *QueryHeaderRequest) (*QueryHeaderResponse, error)
 	// HeaderByHash returns the header in bnb chain by hash
 	HeaderByHash(context.Context, *QueryHeaderByHashRequest) (*QueryHeaderByHashResponse, error)
-	// LatestedHeader returns the latested header in bnb chain
-	LatestedHeader(context.Context, *QueryLatestedHeaderRequest) (*QueryLatestedHeaderResponse, error)
+	// LatestHeader returns the latest header in bnb chain
+	LatestHeader(context.Context, *QueryLatestHeaderRequest) (*QueryLatestHeaderResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -523,8 +523,8 @@ func (*UnimplementedQueryServer) Header(ctx context.Context, req *QueryHeaderReq
 func (*UnimplementedQueryServer) HeaderByHash(ctx context.Context, req *QueryHeaderByHashRequest) (*QueryHeaderByHashResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method HeaderByHash not implemented")
 }
-func (*UnimplementedQueryServer) LatestedHeader(ctx context.Context, req *QueryLatestedHeaderRequest) (*QueryLatestedHeaderResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method LatestedHeader not implemented")
+func (*UnimplementedQueryServer) LatestHeader(ctx context.Context, req *QueryLatestHeaderRequest) (*QueryLatestHeaderResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LatestHeader not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -585,20 +585,20 @@ func _Query_HeaderByHash_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_LatestedHeader_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryLatestedHeaderRequest)
+func _Query_LatestHeader_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryLatestHeaderRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).LatestedHeader(ctx, in)
+		return srv.(QueryServer).LatestHeader(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/lorenzo.bnblightclient.v1.Query/LatestedHeader",
+		FullMethod: "/lorenzo.bnblightclient.v1.Query/LatestHeader",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).LatestedHeader(ctx, req.(*QueryLatestedHeaderRequest))
+		return srv.(QueryServer).LatestHeader(ctx, req.(*QueryLatestHeaderRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -620,8 +620,8 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_HeaderByHash_Handler,
 		},
 		{
-			MethodName: "LatestedHeader",
-			Handler:    _Query_LatestedHeader_Handler,
+			MethodName: "LatestHeader",
+			Handler:    _Query_LatestHeader_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -812,7 +812,7 @@ func (m *QueryHeaderByHashResponse) MarshalToSizedBuffer(dAtA []byte) (int, erro
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryLatestedHeaderRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryLatestHeaderRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -822,12 +822,12 @@ func (m *QueryLatestedHeaderRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryLatestedHeaderRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryLatestHeaderRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryLatestedHeaderRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryLatestHeaderRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -835,7 +835,7 @@ func (m *QueryLatestedHeaderRequest) MarshalToSizedBuffer(dAtA []byte) (int, err
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryLatestedHeaderResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryLatestHeaderResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -845,12 +845,12 @@ func (m *QueryLatestedHeaderResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryLatestedHeaderResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryLatestHeaderResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryLatestedHeaderResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryLatestHeaderResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -950,7 +950,7 @@ func (m *QueryHeaderByHashResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryLatestedHeaderRequest) Size() (n int) {
+func (m *QueryLatestHeaderRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -959,7 +959,7 @@ func (m *QueryLatestedHeaderRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryLatestedHeaderResponse) Size() (n int) {
+func (m *QueryLatestHeaderResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1434,7 +1434,7 @@ func (m *QueryHeaderByHashResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryLatestedHeaderRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryLatestHeaderRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1457,10 +1457,10 @@ func (m *QueryLatestedHeaderRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryLatestedHeaderRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryLatestHeaderRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryLatestedHeaderRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryLatestHeaderRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -1484,7 +1484,7 @@ func (m *QueryLatestedHeaderRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryLatestedHeaderResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryLatestHeaderResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1507,10 +1507,10 @@ func (m *QueryLatestedHeaderResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryLatestedHeaderResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryLatestHeaderResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryLatestedHeaderResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryLatestHeaderResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:

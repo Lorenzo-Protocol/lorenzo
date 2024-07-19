@@ -135,7 +135,7 @@ func (k Keeper) parseEvents(ctx sdk.Context, receipt *evmtypes.Receipt) ([]types
 		}
 
 		eventIndex := new(big.Int).SetBytes(log.Topics[1].Bytes())
-		record := types.EventRecord{
+		record := &types.EventRecord{
 			BlockNumber: receipt.BlockNumber.Uint64(),
 			Index:  eventIndex.Uint64(),	
 			Contract: log.Address.Bytes(),
@@ -177,16 +177,16 @@ func (k Keeper) parseEvents(ctx sdk.Context, receipt *evmtypes.Receipt) ([]types
 	return events, nil
 }
 
-func (k Keeper) hasEventRecord(ctx sdk.Context, record types.EventRecord) bool {
+func (k Keeper) hasEventRecord(ctx sdk.Context, record *types.EventRecord) bool {
 	store := ctx.KVStore(k.storeKey)
 	key := record.Key()
 	return store.Has(key)
 }
 
-func (k Keeper) setEventRecord(ctx sdk.Context, record types.EventRecord) {
+func (k Keeper) setEventRecord(ctx sdk.Context, record *types.EventRecord) {
 	store := ctx.KVStore(k.storeKey)
 	key := record.Key()
 
-	bz := k.cdc.MustMarshal(&record)
+	bz := k.cdc.MustMarshal(record)
 	store.Set(key[:], bz)
 }

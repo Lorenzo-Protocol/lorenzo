@@ -17,7 +17,10 @@ message GenesisState {
 }
 
 message EventRecord {
+  // block_number defines the block number
   uint64 block_number = 1;
+  // contract defines the contract
   bytes contract = 2;
+  // index defines the event index
   uint64 index = 3;
 }

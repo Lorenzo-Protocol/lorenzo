@@ -7,7 +7,7 @@ import (
 
 func (k Keeper) prune(ctx sdk.Context) {
 	// get the latested header
-	latestedNumber := k.GetLatestedNumber(ctx)
+	latestedNumber := k.GetLatestNumber(ctx)
 	params := k.GetParams(ctx)
 	pruneEndNumber := int64(latestedNumber - params.RetainedBlocks)
 	if pruneEndNumber <= 0 {

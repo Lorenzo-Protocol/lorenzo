@@ -19,6 +19,11 @@ func (p Params) Validate() error {
 	if !common.IsHexAddress(p.StakePlanHubAddress) {
 		return fmt.Errorf("invalid stake plan hub address: %s", p.StakePlanHubAddress)
 	}
+
+	if len(p.EventName) == 0 {
+		return fmt.Errorf("event name cannot be empty")
+	}
+
 	if err := ValidateAllowList(p.AllowList); err != nil {
 		return err
 	}
