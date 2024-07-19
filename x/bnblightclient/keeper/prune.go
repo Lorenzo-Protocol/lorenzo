@@ -5,23 +5,18 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func(k Keeper) prune(ctx sdk.Context) {
+func (k Keeper) prune(ctx sdk.Context) {
 	// get the latested header
-	latestedHeader, exist := k.GetLatestedHeader(ctx)
-	if !exist {
-		return
-	}
-
+	latestedNumber := k.GetLatestedNumber(ctx)
 	params := k.GetParams(ctx)
-
-	pruneEndNumber := latestedHeader.Number - params.RetainedBlocks
+	pruneEndNumber := int64(latestedNumber - params.RetainedBlocks)
 	if pruneEndNumber <= 0 {
 		return
 	}
-	k.pruneHeaders(ctx, pruneEndNumber)
+	k.pruneHeaders(ctx, uint64(pruneEndNumber))
 }
 
-func(k Keeper) pruneHeaders(ctx sdk.Context, pruneEndNumber uint64) {
+func (k Keeper) pruneHeaders(ctx sdk.Context, pruneEndNumber uint64) {
 	store := ctx.KVStore(k.storeKey)
 	iterator := sdk.KVStoreReversePrefixIterator(store, types.KeyPrefixHeader)
 	defer iterator.Close()
@@ -30,7 +25,7 @@ func(k Keeper) pruneHeaders(ctx sdk.Context, pruneEndNumber uint64) {
 		iterKey := iterator.Key()
 		number := sdk.BigEndianToUint64(iterKey[1:])
 		if number <= pruneEndNumber {
-			header,exist := k.GetHeader(ctx, number)
+			header, exist := k.GetHeader(ctx, number)
 			if !exist {
 				continue
 			}

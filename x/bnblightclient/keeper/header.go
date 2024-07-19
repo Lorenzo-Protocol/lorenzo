@@ -29,7 +29,7 @@ func(k Keeper) UploadHeaders(ctx sdk.Context, headers []*types.Header) error {
 	for _, header := range headers {
 		k.setHeader(ctx, header)
 	}
-	k.setLatestedHeaderNumber(ctx, headers[len(headers) - 1].Number)
+	k.setLatestedNumber(ctx, headers[len(headers) - 1].Number)
 	k.prune(ctx)
 	return nil
 }
@@ -73,6 +73,22 @@ func(k Keeper) GetLatestedHeader(ctx sdk.Context) (*types.Header, bool) {
 
 	number := sdk.BigEndianToUint64(bz)
 	return k.GetHeader(ctx, number)
+}
+
+// GetLatestedNumber retrieves the latested number from the store.
+//
+// Parameters:
+// - ctx: the context object
+//
+// Returns:
+// - uint64: the latested number
+func(k Keeper) GetLatestedNumber(ctx sdk.Context) uint64 {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.KeyLatestedHeaderNumber())
+	if bz == nil {
+		return 0
+	}
+	return sdk.BigEndianToUint64(bz)
 }
 
 // GetHeader retrieves the header for a specific number from the store.
@@ -135,7 +151,7 @@ func(k Keeper) setHeader(ctx sdk.Context, header *types.Header) {
 	store.Set(types.KeyHeaderHash(header.Hash), numberBz)
 }
 
-func(k Keeper) setLatestedHeaderNumber(ctx sdk.Context, number uint64) {
+func(k Keeper) setLatestedNumber(ctx sdk.Context, number uint64) {
 	store := ctx.KVStore(k.storeKey)
 	bz := sdk.Uint64ToBigEndian(number)
 	store.Set(types.KeyLatestedHeaderNumber(), bz)
