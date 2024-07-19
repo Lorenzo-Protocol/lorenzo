@@ -2,7 +2,6 @@ package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/ethereum/go-ethereum/common"
 )
 
 const (
@@ -25,8 +24,8 @@ var (
 
 	// KeyPrefixHeadHash defines the prefix to retrieve the head hash
 	KeyPrefixHeadHash = []byte{0x04}
-	// KeyPrefixTxHash defines the prefix to retrieve the tx hash
-	KeyPrefixTxHash = []byte{0x05}
+	// KeyPrefixEventRecord defines the prefix to retrieve the cross chain event
+	KeyPrefixEventRecord = []byte{0x05}
 )
 
 // KeyHeader returns the key for a header
@@ -45,15 +44,18 @@ func KeyLatestedHeaderNumber() []byte {
 	return KeyPrefixLatestedNumber
 }
 
-// KeyTxHash returns the key for the tx hash
-func KeyTxHash(blockNumber uint64, txHash common.Hash) []byte {
-	key := make([]byte, 0)
-	copy(key, KeyPrefixTxHash)
+// KeyEventRecord returns the key for the cross chain event index
+func KeyEventRecord(blockNumber uint64, contract []byte, idx uint64) []byte {
+	key := append([]byte{}, KeyPrefixEventRecord...)  
 
 	bumberBz := sdk.Uint64ToBigEndian(blockNumber)
 	key = append(key, bumberBz...)
+	key = append(key, Delimiter...)
 
-	txHashBz := txHash.Bytes()
-	key = append(key, txHashBz...)
+	key = append(key, contract...)
+	key = append(key, Delimiter...)
+
+	idxBz := sdk.Uint64ToBigEndian(idx)
+	key = append(key, idxBz...)
 	return key
 }

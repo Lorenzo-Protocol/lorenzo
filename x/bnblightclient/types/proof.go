@@ -124,7 +124,7 @@ func GenReceiptProof(txIndex uint64, root common.Hash, receipts []*types.Receipt
 	}
 
 	var indexBuf []byte
-	indexBuf = rlp.AppendUint64(indexBuf[:0], uint64(txIndex))
+	indexBuf = rlp.AppendUint64(indexBuf[:0], txIndex)
 	valueTarget := mpt.Get(indexBuf)
 
 	proof := NewProofPath()
@@ -141,3 +141,4 @@ func GenReceiptProof(txIndex uint64, root common.Hash, receipts []*types.Receipt
 
 	return &res, nil
 }
+

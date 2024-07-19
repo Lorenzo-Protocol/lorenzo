@@ -12,6 +12,12 @@ message GenesisState {
     lorenzo.bnblightclient.v1.Params params = 1;
     // headers defines the bnb light client headers
     repeated lorenzo.bnblightclient.v1.Header headers = 2;
-    // tx_hashes defines the transactions that the bnb chain has successfully processed
-    repeated string tx_hashes = 3;
+    // records defines the bnb light client event records
+    repeated EventRecord records = 3;
+}
+
+message EventRecord {
+  uint64 block_number = 1;
+  bytes contract = 2;
+  uint64 index = 3;
 }

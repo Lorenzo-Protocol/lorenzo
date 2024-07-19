@@ -12,10 +12,6 @@ import (
 // It does not take any parameters.
 // It returns an error if the validation fails.
 func (p Params) Validate() error {
-	if p.ChainId == nil {
-		return fmt.Errorf("chain id cannot be nil")
-	}
-
 	if len(p.StakePlanHubAddress) == 0 {
 		return fmt.Errorf("stake plan hub address cannot be empty")
 	}

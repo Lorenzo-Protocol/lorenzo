@@ -14,4 +14,8 @@ var (
 	ErrUnauthorized = errorsmod.Register(ModuleName, 4, "tx unauthorized")
 	// ErrInvalidProof is returned when proof is not valid
 	ErrInvalidProof = errorsmod.Register(ModuleName, 5, "invalid proof")
+	// ErrInvalidTransaction is returned when transaction is not valid
+	ErrInvalidTransaction = errorsmod.Register(ModuleName, 6, "invalid transaction")
+	// ErrInvalidEvent is returned when event is not valid
+	ErrInvalidEvent = errorsmod.Register(ModuleName, 7, "invalid event")
 )
