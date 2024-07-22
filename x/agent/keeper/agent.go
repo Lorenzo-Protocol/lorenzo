@@ -44,6 +44,15 @@ func (k Keeper) GetNextNumber(ctx sdk.Context) uint64 {
 	return sdk.BigEndianToUint64(bz)
 }
 
+func (k Keeper) SetAdmin(ctx sdk.Context, admin sdk.AccAddress) error {
+	// check if the sender is the current admin
+	if !k.GetAdmin(ctx).Equals(admin) {
+		return types.ErrAdminExists
+	}
+	k.setAdmin(ctx, admin)
+	return nil
+}
+
 // GetAdmin retrieves the admin address from the Keeper's store.
 //
 // Parameters:
