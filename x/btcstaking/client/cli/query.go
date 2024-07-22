@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"encoding/hex"
 	"fmt"
 
 	sdkmath "cosmossdk.io/math"
@@ -9,6 +8,7 @@ import (
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/spf13/cobra"
 )
 
@@ -64,17 +64,19 @@ func CmdGetBTCStakingRecord() *cobra.Command {
 				return err
 			}
 			res, err := queryClient.StakingRecord(cmd.Context(), &types.QueryStakingRecordRequest{TxHash: txHashBytes[:]})
+			if err != nil {
+				return err
+			}
 			if res.Record == nil {
 				return fmt.Errorf("record not found")
 			}
-			resDisp := types.StakingRecordDisplay{}
-			resDisp.TxId = (chainhash.Hash)(res.Record.TxHash).String()
-			resDisp.Amount = sdkmath.NewIntFromUint64(res.Record.Amount).Mul(sdkmath.NewIntFromUint64(1e10)).String()
-			resDisp.MintToAddress = "0x" + hex.EncodeToString(res.Record.MintToAddr)
-			resDisp.BtcReceiverName = res.Record.BtcReceiverName
-			resDisp.BtcReceiverAddr = res.Record.BtcReceiverAddr
-			if err != nil {
-				return err
+			resDisp := types.StakingRecordDisplay{
+				TxId:            (chainhash.Hash)(res.Record.TxHash).String(),
+				Amount:          sdkmath.NewIntFromUint64(res.Record.Amount).Mul(sdkmath.NewIntFromUint64(1e10)).String(),
+				ReceiverAddress: common.BytesToAddress(res.Record.ReceiverAddr).String(),
+				AgentName:       res.Record.AgentName,
+				AgentBtcAddr:    res.Record.AgentBtcAddr,
+				ChainId:         res.Record.ChainId,
 			}
 			return clientCtx.PrintProto(&resDisp)
 		},

@@ -23,11 +23,12 @@ message QueryParamsResponse {
 }
 
 message StakingRecordDisplay {
-    string txId = 1;
-    string mintToAddress = 2;
+    string tx_id = 1;
+    string receiver_address = 2;
     string amount = 3;
-    string btc_receiver_name = 4;
-    string btc_receiver_addr = 5;
+    string agent_name = 4;
+    string agent_btc_addr = 5;
+    uint32 chain_id = 6;
 }
 
 message QueryStakingRecordRequest {

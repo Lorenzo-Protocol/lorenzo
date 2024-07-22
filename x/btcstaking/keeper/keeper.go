@@ -21,6 +21,8 @@ type (
 
 		btclcKeeper types.BTCLightClientKeeper
 
+		evmKeeper types.EvmKeeper
+
 		// the address capable of executing a MsgUpdateParams message. Typically, this
 		// should be the x/gov module account.
 		authority string
@@ -33,6 +35,7 @@ func NewKeeper(
 
 	btclcKeeper types.BTCLightClientKeeper,
 	bankKeeper bankkeeper.Keeper,
+	evmKeeper types.EvmKeeper,
 
 	authority string,
 ) Keeper {
@@ -42,6 +45,7 @@ func NewKeeper(
 
 		btclcKeeper: btclcKeeper,
 		bankKeeper:  bankKeeper,
+		evmKeeper:   evmKeeper,
 
 		authority: authority,
 	}
