@@ -68,7 +68,7 @@ func traverseMerkleBlock(msg *wire.MsgMerkleBlock, hei uint32, pos uint32, bit_u
 	}
 }
 
-// XXX: skip some checks
+// XXX: missing some checks, not a safe function to use on chain.
 func ParseBTCProof(msgMerkleBlk *wire.MsgMerkleBlock) (uint32, []byte, error) {
 	hei := calcHeight(int(msgMerkleBlk.Transactions))
 	bit_used, hash_used := 0, 0

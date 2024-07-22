@@ -53,6 +53,9 @@ func (params Params) Validate() error {
 	if err := ValidateAddressList(params.MinterAllowList); err != nil {
 		return fmt.Errorf("invalid minter allow list")
 	}
+	if !common.IsHexAddress(params.BridgeAddr) {
+		return fmt.Errorf("invalid cross chain mint address")
+	}
 	return nil
 }
 
