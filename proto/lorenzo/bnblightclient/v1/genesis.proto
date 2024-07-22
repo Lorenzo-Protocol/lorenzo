@@ -8,19 +8,19 @@ option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/bnblightclient/types"
 
 // GenesisState defines the bnb light client state
 message GenesisState {
-    // params defines the bnb light client parameters
-    lorenzo.bnblightclient.v1.Params params = 1;
-    // headers defines the bnb light client headers
-    repeated lorenzo.bnblightclient.v1.Header headers = 2;
-    // records defines the bnb light client event records
-    repeated EventRecord records = 3;
+  // params defines the bnb light client parameters
+  lorenzo.bnblightclient.v1.Params params = 1;
+  // headers defines the bnb light client headers
+  repeated lorenzo.bnblightclient.v1.Header headers = 2;
+  // events defines the bnb chain generated events
+  repeated EvmEvent events = 3;
 }
 
-message EventRecord {
+message EvmEvent {
   // block_number defines the block number
   uint64 block_number = 1;
   // contract defines the contract
   bytes contract = 2;
-  // index defines the event index
-  uint64 index = 3;
+  // index defines the unique identifier of the event
+  uint64 identifier = 3;
 }

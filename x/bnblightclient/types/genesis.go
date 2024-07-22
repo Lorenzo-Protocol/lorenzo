@@ -9,3 +9,12 @@ func (gs GenesisState) Validate() error {
 	}
 	return VeryHeaders(gs.Headers)
 }
+
+// DefaultGenesisState returns the default genesis state
+func DefaultGenesisState() *GenesisState {
+	return &GenesisState{
+		Params: &Params{},
+		Headers: []*Header{},
+		Events: []*EvmEvent{},
+	}
+}

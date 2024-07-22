@@ -21,11 +21,7 @@ import (
 // receipt - the EVM transaction receipt to verify
 // proof - the proof object containing the necessary data for verification
 // Returns an array of BNBCrossChainEvent and an error if the verification fails.
-func (k Keeper) VerifyReceiptProof(
-	ctx sdk.Context,
-	receipt *evmtypes.Receipt,
-	proof types.Proof,
-) ([]types.BNBCrossChainEvent, error) {
+func (k Keeper) VerifyReceiptProof(ctx sdk.Context, receipt *evmtypes.Receipt, proof types.Proof) ([]types.CrossChainEvent, error) {
 	if err := k.verifyProof(ctx, receipt, proof); err != nil {
 		return nil, err
 	}
@@ -41,18 +37,18 @@ func (k Keeper) VerifyReceiptProof(
 	return events, nil
 }
 
-// GetAllEventRecord retrieves all event records stored in the context.
+// GetAllEvmEvents retrieves all event records stored in the context.
 //
 // ctx - The context object.
-// []*types.EventRecord - A slice of event records.
-func (k Keeper) GetAllEventRecord(ctx sdk.Context) (events []*types.EventRecord) {
+// []*types.EvmEvent - A slice of event records.
+func (k Keeper) GetAllEvmEvents(ctx sdk.Context) (events []*types.EvmEvent) {
 	store := ctx.KVStore(k.storeKey)
 
 	it := sdk.KVStorePrefixIterator(store, types.KeyPrefixEventRecord)
 	defer it.Close() //nolint:errcheck
 
 	for ; it.Valid(); it.Next() {
-		var event types.EventRecord
+		var event types.EvmEvent
 		k.cdc.MustUnmarshal(it.Value(), &event)
 		events = append(events, &event)
 	}
@@ -89,7 +85,7 @@ func (k Keeper) verifyProof(ctx sdk.Context, receipt *evmtypes.Receipt, proof ty
 	return nil
 }
 
-func (k Keeper) parseEvents(ctx sdk.Context, receipt *evmtypes.Receipt) ([]types.BNBCrossChainEvent, error) {
+func (k Keeper) parseEvents(ctx sdk.Context, receipt *evmtypes.Receipt) ([]types.CrossChainEvent, error) {
 	if len(receipt.Logs) == 0 {
 		return nil, errorsmod.Wrapf(types.ErrInvalidEvent, "no event log found")
 	}
@@ -97,7 +93,7 @@ func (k Keeper) parseEvents(ctx sdk.Context, receipt *evmtypes.Receipt) ([]types
 	params := k.GetParams(ctx)
 	contractAddr := common.HexToAddress(params.StakePlanHubAddress).Bytes()
 
-	events := make([]types.BNBCrossChainEvent, 0, len(receipt.Logs))
+	events := make([]types.CrossChainEvent, 0, len(receipt.Logs))
 	for _, log := range receipt.Logs {
 		if !bytes.Equal(contractAddr, log.Address.Bytes()) {
 			continue
@@ -134,16 +130,16 @@ func (k Keeper) parseEvents(ctx sdk.Context, receipt *evmtypes.Receipt) ([]types
 			)
 		}
 
-		eventIndex := new(big.Int).SetBytes(log.Topics[1].Bytes())
-		record := &types.EventRecord{
+		identifier := new(big.Int).SetBytes(log.Topics[1].Bytes())
+		record := &types.EvmEvent{
 			BlockNumber: receipt.BlockNumber.Uint64(),
-			Index:  eventIndex.Uint64(),	
-			Contract: log.Address.Bytes(),
+			Identifier:  identifier.Uint64(),
+			Contract:    log.Address.Bytes(),
 		}
-		if k.hasEventRecord(ctx, record) {
-			return nil, errorsmod.Wrapf(types.ErrInvalidEvent, "event index %d already exists", eventIndex.Uint64())
+		if k.hasEvmEvent(ctx, record) {
+			return nil, errorsmod.Wrapf(types.ErrInvalidEvent, "event identifier %d already exists", identifier.Uint64())
 		}
-		k.setEventRecord(ctx, record)
+		k.setEvmEvent(ctx, record)
 
 		sender := common.BytesToAddress(log.Topics[2].Bytes())
 		planID := new(big.Int).SetBytes(log.Topics[3].Bytes())
@@ -164,8 +160,8 @@ func (k Keeper) parseEvents(ctx sdk.Context, receipt *evmtypes.Receipt) ([]types
 			)
 		}
 
-		bnbEvent := types.BNBCrossChainEvent{
-			EventIndex:         eventIndex.Uint64(),
+		bnbEvent := types.CrossChainEvent{
+			Identifier:         identifier.Uint64(),
 			Sender:             sender,
 			PlanID:             planID.Uint64(),
 			BTCcontractAddress: btcContractAddress,
@@ -177,13 +173,13 @@ func (k Keeper) parseEvents(ctx sdk.Context, receipt *evmtypes.Receipt) ([]types
 	return events, nil
 }
 
-func (k Keeper) hasEventRecord(ctx sdk.Context, record *types.EventRecord) bool {
+func (k Keeper) hasEvmEvent(ctx sdk.Context, record *types.EvmEvent) bool {
 	store := ctx.KVStore(k.storeKey)
 	key := record.Key()
 	return store.Has(key)
 }
 
-func (k Keeper) setEventRecord(ctx sdk.Context, record *types.EventRecord) {
+func (k Keeper) setEvmEvent(ctx sdk.Context, record *types.EvmEvent) {
 	store := ctx.KVStore(k.storeKey)
 	key := record.Key()
 

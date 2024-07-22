@@ -16,6 +16,11 @@ type Querier struct {
 	k Keeper
 }
 
+// NewQuerierImpl returns an implementation of the captains QueryServer interface.
+func NewQuerierImpl(k Keeper) types.QueryServer {
+	return &Querier{k}
+}
+
 // Header implements types.QueryServer.
 func (q Querier) Header(goCtx context.Context, req *types.QueryHeaderRequest) (*types.QueryHeaderResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)

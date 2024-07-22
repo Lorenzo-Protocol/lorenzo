@@ -27,8 +27,8 @@ func (k Keeper) InitGenesis(ctx sdk.Context, genState types.GenesisState) {
 	}
 	k.setLatestNumber(ctx, genState.Headers[len(genState.Headers) - 1].Number)
 
-	for _, record := range genState.Records {
-		k.setEventRecord(ctx, record)
+	for _, record := range genState.Events {
+		k.setEvmEvent(ctx, record)
 	}
 }
 
@@ -37,6 +37,6 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *types.GenesisState {
 	return &types.GenesisState{
 		Params:  k.GetParams(ctx),
 		Headers: k.GetAllHeaders(ctx),
-		Records: k.GetAllEventRecord(ctx),
+		Events: k.GetAllEvmEvents(ctx),
 	}
 }
