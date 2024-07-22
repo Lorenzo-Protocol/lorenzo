@@ -6,6 +6,7 @@ import (
 	agenttypes "github.com/Lorenzo-Protocol/lorenzo/x/agent/types"
 	"github.com/Lorenzo-Protocol/lorenzo/x/plan"
 	plantypes "github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
+	tokentypes "github.com/Lorenzo-Protocol/lorenzo/x/token/types"
 
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -18,7 +19,11 @@ var Upgrade = upgrades.Upgrade{
 	UpgradeName:               "v2.0",
 	UpgradeHandlerConstructor: upgradeHandlerConstructor,
 	StoreUpgrades: &storetypes.StoreUpgrades{
-		Added: []string{agenttypes.StoreKey, plantypes.StoreKey},
+		Added: []string{
+			agenttypes.StoreKey,
+			plantypes.StoreKey,
+			tokentypes.StoreKey,
+		},
 	},
 }
 
@@ -55,6 +60,10 @@ func upgradeHandlerConstructor(
 		if err := app.PlanKeeper.SetParams(ctx, planParams); err != nil {
 			return nil, err
 		}
+
+		// 3. set token params
+		tokenParams := tokentypes.DefaultParams()
+		app.TokenKeeper.SetParams(ctx, tokenParams)
 
 		return app.ModuleManager.RunMigrations(ctx, c, fromVM)
 	}

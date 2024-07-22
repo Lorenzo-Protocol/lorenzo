@@ -4,6 +4,7 @@ import (
 	agentkeeper "github.com/Lorenzo-Protocol/lorenzo/x/agent/keeper"
 	btcstakingkeeper "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/keeper"
 	plankeeper "github.com/Lorenzo-Protocol/lorenzo/x/plan/keeper"
+	tokenkeeper "github.com/Lorenzo-Protocol/lorenzo/x/token/keeper"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	store "github.com/cosmos/cosmos-sdk/store/types"
@@ -50,6 +51,7 @@ type AppKeepers struct {
 	AgentKeeper      agentkeeper.Keeper
 	PlanKeeper       *plankeeper.Keeper
 	BTCStakingKeeper btcstakingkeeper.Keeper
+	TokenKeeper      *tokenkeeper.Keeper
 
 	ReaderWriter ConsensusParamsReaderWriter
 }
