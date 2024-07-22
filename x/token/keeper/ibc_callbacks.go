@@ -3,11 +3,8 @@ package keeper
 import (
 	"github.com/ethereum/go-ethereum/common"
 
-	errorsmod "cosmossdk.io/errors"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	errortypes "github.com/cosmos/cosmos-sdk/types/errors"
-
 	transfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 	channeltypes "github.com/cosmos/ibc-go/v7/modules/core/04-channel/types"
 	"github.com/cosmos/ibc-go/v7/modules/core/exported"
@@ -22,10 +19,7 @@ func (k Keeper) OnRecvPacket(
 	ack exported.Acknowledgement,
 ) exported.Acknowledgement {
 	var data transfertypes.FungibleTokenPacketData
-	if err := transfertypes.ModuleCdc.UnmarshalJSON(packet.GetData(), &data); err != nil {
-		err = errorsmod.Wrapf(errortypes.ErrInvalidType, "cannot unmarshal ICS-20 transfer packet data")
-		return channeltypes.NewErrorAcknowledgement(err)
-	}
+	transfertypes.ModuleCdc.MustUnmarshalJSON(packet.GetData(), &data)
 
 	receiver, err := sdk.AccAddressFromBech32(data.Receiver)
 	if err != nil {

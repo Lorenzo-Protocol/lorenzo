@@ -3,12 +3,9 @@ package keeper
 import (
 	"math/big"
 
-	"github.com/armon/go-metrics"
-
 	"github.com/ethereum/go-ethereum/common"
 
 	errorsmod "cosmossdk.io/errors"
-	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	errortypes "github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -55,26 +52,6 @@ func (k Keeper) ConvertNativeCoinToVoucherERC20(
 		return nil, errorsmod.Wrapf(types.ErrBalanceInvariance,
 			"invalid token balance - expected: %v, actual: %v", balanceExpected, balanceAfter)
 	}
-
-	defer func() {
-		telemetry.IncrCounterWithLabels(
-			[]string{"tx", "msg", "convert", "coin", "total"},
-			1,
-			[]metrics.Label{
-				telemetry.NewLabel("denom", pair.Denom),
-			},
-		)
-
-		if msg.Coin.Amount.IsInt64() {
-			telemetry.IncrCounterWithLabels(
-				[]string{"tx", "msg", "convert", "coin", "amount", "total"},
-				float32(msg.Coin.Amount.Int64()),
-				[]metrics.Label{
-					telemetry.NewLabel("denom", pair.Denom),
-				},
-			)
-		}
-	}()
 
 	ctx.EventManager().EmitEvents(
 		sdk.Events{
@@ -141,26 +118,6 @@ func (k Keeper) ConvertVoucherERC20ToNativeCoin(
 			"invalid token balance - expected: %v, actual: %v", balanceTokenExpected, balanceTokenAfter,
 		)
 	}
-
-	defer func() {
-		telemetry.IncrCounterWithLabels(
-			[]string{"tx", "msg", "convert", "erc20", "total"},
-			1,
-			[]metrics.Label{
-				telemetry.NewLabel("denom", pair.Denom),
-			},
-		)
-
-		if msg.Amount.IsInt64() {
-			telemetry.IncrCounterWithLabels(
-				[]string{"tx", "msg", "convert", "erc20", "amount", "total"},
-				float32(msg.Amount.Int64()),
-				[]metrics.Label{
-					telemetry.NewLabel("denom", pair.Denom),
-				},
-			)
-		}
-	}()
 
 	ctx.EventManager().EmitEvents(
 		sdk.Events{
@@ -239,26 +196,6 @@ func (k Keeper) ConvertVoucherCoinToNativeERC20(
 	if err := k.assureNoApprovalEvent(res); err != nil {
 		return nil, err
 	}
-
-	defer func() {
-		telemetry.IncrCounterWithLabels(
-			[]string{"tx", "msg", "convert", "coin", "total"},
-			1,
-			[]metrics.Label{
-				telemetry.NewLabel("denom", pair.Denom),
-			},
-		)
-
-		if msg.Coin.Amount.IsInt64() {
-			telemetry.IncrCounterWithLabels(
-				[]string{"tx", "msg", "convert", "coin", "amount", "total"},
-				float32(msg.Coin.Amount.Int64()),
-				[]metrics.Label{
-					telemetry.NewLabel("denom", pair.Denom),
-				},
-			)
-		}
-	}()
 
 	ctx.EventManager().EmitEvents(
 		sdk.Events{
@@ -341,26 +278,6 @@ func (k Keeper) ConvertNativeERC20ToVoucherCoin(
 	if err := k.assureNoApprovalEvent(res); err != nil {
 		return nil, err
 	}
-
-	defer func() {
-		telemetry.IncrCounterWithLabels(
-			[]string{"tx", "msg", "convert", "erc20", "total"},
-			1,
-			[]metrics.Label{
-				telemetry.NewLabel("coin", pair.Denom),
-			},
-		)
-
-		if msg.Amount.IsInt64() {
-			telemetry.IncrCounterWithLabels(
-				[]string{"tx", "msg", "convert", "erc20", "amount", "total"},
-				float32(msg.Amount.Int64()),
-				[]metrics.Label{
-					telemetry.NewLabel("denom", pair.Denom),
-				},
-			)
-		}
-	}()
 
 	ctx.EventManager().EmitEvents(
 		sdk.Events{
