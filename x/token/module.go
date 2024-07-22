@@ -20,6 +20,7 @@ import (
 	"github.com/Lorenzo-Protocol/lorenzo/x/token/types"
 )
 
+// ConsensusVersion defines the current token module consensus version.
 const consensusVersion = 1
 
 var (
@@ -29,6 +30,7 @@ var (
 	_ module.HasServices         = AppModule{}
 )
 
+// AppModuleBasic defines the basic application module used by the token module.
 type AppModuleBasic struct {
 	cdc codec.Codec
 }
@@ -72,6 +74,7 @@ func (am AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, _ client.TxEncodin
 	return genesisState.Validate()
 }
 
+// AppModule defines the token module.
 type AppModule struct {
 	AppModuleBasic
 

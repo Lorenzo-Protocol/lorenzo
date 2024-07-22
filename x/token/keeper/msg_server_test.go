@@ -1,12 +1,13 @@
 package keeper_test
 
 import (
+	"github.com/ethereum/go-ethereum/common"
+	evmtypes "github.com/evmos/ethermint/x/evm/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/ethereum/go-ethereum/common"
-	evmtypes "github.com/evmos/ethermint/x/evm/types"
 
 	"github.com/Lorenzo-Protocol/lorenzo/app/helpers"
 	"github.com/Lorenzo-Protocol/lorenzo/x/token/types"
@@ -67,8 +68,8 @@ func (suite *KeeperTestSuite) TestRegisterCoin() {
 			expectPass: false,
 			malleate: func() {
 				suite.app.TokenKeeper.SetParams(suite.ctx, types.Params{
-					EnableConvert: false,
-					EnableEVMHook: true,
+					EnableConversion: false,
+					EnableEVMHook:    true,
 				})
 				suite.Commit()
 			},
@@ -181,8 +182,8 @@ func (suite *KeeperTestSuite) TestRegisterERC20() {
 			expectPass: false,
 			malleate: func(_ string) {
 				suite.app.TokenKeeper.SetParams(suite.ctx, types.Params{
-					EnableConvert: false,
-					EnableEVMHook: true,
+					EnableConversion: false,
+					EnableEVMHook:    true,
 				})
 				suite.Commit()
 			},
@@ -302,7 +303,7 @@ func (suite *KeeperTestSuite) TestToggleConversion() {
 			sender:     authority.String(),
 			malleate: func() {
 				suite.app.TokenKeeper.SetParams(suite.ctx, types.Params{
-					EnableConvert: false,
+					EnableConversion: false,
 				})
 				suite.Commit()
 			},
@@ -387,8 +388,8 @@ func (suite *KeeperTestSuite) TestUpdateParams() {
 			_, err := suite.msgServer.UpdateParams(suite.ctx, &types.MsgUpdateParams{
 				Authority: tc.sender,
 				Params: types.Params{
-					EnableConvert: false,
-					EnableEVMHook: true,
+					EnableConversion: false,
+					EnableEVMHook:    true,
 				},
 			})
 
@@ -414,7 +415,7 @@ func (suite *KeeperTestSuite) TestConvertNativeCoinToVoucherERC20() {
 			expectPass: false,
 			malleateMintEnable: func() {
 				suite.app.TokenKeeper.SetParams(suite.ctx, types.Params{
-					EnableConvert: false,
+					EnableConversion: false,
 				})
 				suite.Commit()
 			},
@@ -587,7 +588,7 @@ func (suite *KeeperTestSuite) TestConvertNativeERC20ToVoucherCoin() {
 			expectPass: false,
 			malleateMintEnable: func(pair types.TokenPair) {
 				suite.app.TokenKeeper.SetParams(suite.ctx, types.Params{
-					EnableConvert: false,
+					EnableConversion: false,
 				})
 				suite.Commit()
 			},

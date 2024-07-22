@@ -3,19 +3,18 @@ package types
 import (
 	"fmt"
 
-	"github.com/ethereum/go-ethereum/common"
-
 	"github.com/cometbft/cometbft/crypto/tmhash"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/ethereum/go-ethereum/common"
 )
 
 // NewTokenPair creates a new TokenPair
-func NewTokenPair(erc20Addr common.Address, denom string, ownership Ownership) TokenPair {
+func NewTokenPair(erc20Addr common.Address, denom string, source Source) TokenPair {
 	return TokenPair{
 		ContractAddress: erc20Addr.String(),
 		Denom:           denom,
 		Enabled:         true,
-		Ownership:       ownership,
+		Source:          source,
 	}
 }
 
@@ -29,8 +28,8 @@ func (tp *TokenPair) Validate() error {
 		return fmt.Errorf("invalid contract address: %s", tp.ContractAddress)
 	}
 
-	if tp.Ownership != OWNER_MODULE && tp.Ownership != OWNER_EXTERNAL {
-		return fmt.Errorf("invalid ownership: %s", tp.Ownership)
+	if tp.Source != OWNER_MODULE && tp.Source != OWNER_CONTRACT {
+		return fmt.Errorf("invalid token source: %s", tp.Source)
 	}
 
 	return nil
@@ -44,12 +43,12 @@ func (tp *TokenPair) GetID() []byte {
 
 // IsNativeCoin checks if the token is sdk coin originated
 func (tp *TokenPair) IsNativeCoin() bool {
-	return tp.Ownership == OWNER_MODULE
+	return tp.Source == OWNER_MODULE
 }
 
 // IsNativeERC20 checks if the token is erc20 contract originated
 func (tp *TokenPair) IsNativeERC20() bool {
-	return tp.Ownership == OWNER_EXTERNAL
+	return tp.Source == OWNER_CONTRACT
 }
 
 // GetERC20ContractAddress return the common address

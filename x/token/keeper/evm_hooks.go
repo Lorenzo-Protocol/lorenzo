@@ -36,7 +36,7 @@ func (k Keeper) PostTxProcessing(
 	receipt *ethtypes.Receipt,
 ) error {
 	params := k.GetParams(ctx)
-	if !params.EnableConvert || !params.EnableEVMHook {
+	if !params.EnableConversion || !params.EnableEVMHook {
 		return nil
 	}
 
@@ -106,10 +106,10 @@ func (k Keeper) PostTxProcessing(
 		// create the corresponding sdk.Coin that is paired with ERC20
 		coins := sdk.Coins{{Denom: pair.Denom, Amount: sdk.NewIntFromBigInt(tokens)}}
 
-		switch pair.Ownership {
+		switch pair.Source {
 		case types.OWNER_MODULE:
 			_, err = k.CallEVM(ctx, erc20, types.ModuleAddress, contractAddr, true, "burn", tokens)
-		case types.OWNER_EXTERNAL:
+		case types.OWNER_CONTRACT:
 			err = k.bankKeeper.MintCoins(ctx, types.ModuleName, coins)
 		default:
 			err = types.ErrUndefinedOwner

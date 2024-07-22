@@ -1,9 +1,10 @@
 package keeper_test
 
 import (
+	"github.com/ethereum/go-ethereum/common"
+
 	utiltx "github.com/Lorenzo-Protocol/lorenzo/testutil/tx"
 	"github.com/Lorenzo-Protocol/lorenzo/x/token/types"
-	"github.com/ethereum/go-ethereum/common"
 )
 
 func (suite *KeeperTestSuite) TestRemoveTokenPair() {

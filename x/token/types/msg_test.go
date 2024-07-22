@@ -3,9 +3,10 @@ package types_test
 import (
 	"testing"
 
+	"github.com/stretchr/testify/suite"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/stretchr/testify/suite"
 
 	"github.com/Lorenzo-Protocol/lorenzo/x/token/types"
 )
@@ -385,8 +386,8 @@ func (suite *MsgTestSuite) TestMsgUpdateParams() {
 			msg: &types.MsgUpdateParams{
 				Authority: "invalid authority",
 				Params: types.Params{
-					EnableConvert: false,
-					EnableEVMHook: false,
+					EnableConversion: false,
+					EnableEVMHook:    false,
 				},
 			},
 			expPass: false,
@@ -396,8 +397,8 @@ func (suite *MsgTestSuite) TestMsgUpdateParams() {
 			msg: &types.MsgUpdateParams{
 				Authority: "cosmos1qperwt9wrnkg5k9e5gzfgjppzpqhyav5j24d66",
 				Params: types.Params{
-					EnableConvert: false,
-					EnableEVMHook: false,
+					EnableConversion: false,
+					EnableEVMHook:    false,
 				},
 			},
 			expPass: true,

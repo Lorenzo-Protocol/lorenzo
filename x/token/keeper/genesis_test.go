@@ -18,7 +18,7 @@ func (suite *KeeperTestSuite) TestInitGenesis() {
 					{
 						ContractAddress: "0x1D1530e3A3719BE0BEe1abba5016Cf2e236f3277",
 						Denom:           coinBaseDenom,
-						Ownership:       types.OWNER_MODULE,
+						Source:          types.OWNER_MODULE,
 						Enabled:         true,
 					},
 				},
@@ -64,7 +64,7 @@ func (suite *KeeperTestSuite) TestExportGenesis() {
 					{
 						ContractAddress: "0x1D1530e3A3719BE0BEe1abba5016Cf2e236f3277",
 						Denom:           coinBaseDenom,
-						Ownership:       types.OWNER_MODULE,
+						Source:          types.OWNER_MODULE,
 						Enabled:         true,
 					},
 				},

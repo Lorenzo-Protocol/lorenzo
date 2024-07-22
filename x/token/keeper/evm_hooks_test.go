@@ -174,7 +174,7 @@ func (suite *KeeperTestSuite) TestPostTxProcessing() {
 				resPair, contractAddr := suite.utilsFundAndRegisterERC20("coin", "token", erc20Decimals, account, 1000)
 				pair = &resPair
 
-				pair.Ownership = types.OWNER_UNDEFINED
+				pair.Source = types.OWNER_UNDEFINED
 				suite.app.TokenKeeper.SetTokenPair(suite.ctx, *pair)
 
 				topics := []common.Hash{transferEvent.ID, account.Hash(), types.ModuleAddress.Hash()}

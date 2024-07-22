@@ -6,17 +6,17 @@ import "gogoproto/gogo.proto";
 
 option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/token/types";
 
-// Ownership defines the ownership of an erc20 contract, if ownership belongs to:
-// - token module: the token origin is sdk coin.
-// - external account: the token origin is erc20 contract.
-enum Ownership {
+// Source defines the source type of token asset, if source is:
+// - module: token origin is sdk module;
+// - contract: token origin is erc20 contract;
+enum Source {
   option (gogoproto.goproto_enum_prefix) = false;
-  // undefined owner
+  // undefined source
   OWNER_UNDEFINED = 0;
-  // contract owned by convert module
+  // token source is module
   OWNER_MODULE = 1;
-  // contract owned by external account
-  OWNER_EXTERNAL = 2;
+  // token source is erc20 contract
+  OWNER_CONTRACT = 2;
 }
 
 // TokenPair defines a pairing of a cosmos coin and an erc20 token
@@ -28,6 +28,6 @@ message TokenPair {
   string denom = 2;
   // allows for token conversion
   bool enabled = 3;
-  // ownership of the contract
-  Ownership ownership = 4;
+  // source of token asset
+  Source source = 4;
 }
