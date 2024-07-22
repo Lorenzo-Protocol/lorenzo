@@ -9,7 +9,7 @@ var (
 	ErrHeaderNotFound = errorsmod.Register(ModuleName, 2, "header not found")
 
 	// ErrInvalidHeader is returned when header is not valid
-	ErrInvalidHeader = errorsmod.Register(ModuleName, 3, "header not found")
+	ErrInvalidHeader = errorsmod.Register(ModuleName, 3, "invalid header")
 	// ErrUnauthorized is returned when tx is not authorized
 	ErrUnauthorized = errorsmod.Register(ModuleName, 4, "tx unauthorized")
 	// ErrInvalidProof is returned when proof is not valid

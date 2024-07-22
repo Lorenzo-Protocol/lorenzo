@@ -99,16 +99,16 @@ func (k Keeper) parseEvents(ctx sdk.Context, receipt *evmtypes.Receipt) ([]types
 			continue
 		}
 
-		if len(log.Topics) != 5 {
+		if len(log.Topics) != 4 {
 			return nil, errorsmod.Wrapf(
 				types.ErrInvalidEvent,
-				"event has wrong number of topics, expected 5, actual: %d",
+				"event has wrong number of topics, expected 4, actual: %d",
 				len(log.Topics),
 			)
 		}
 
 		eventID := log.Topics[0]
-		event, err := types.StakePlanHubContractABI.EventByID(eventID)
+		event, err := types.ABIstakePlanHub().EventByID(eventID)
 		if err != nil {
 			continue
 		}
@@ -117,7 +117,14 @@ func (k Keeper) parseEvents(ctx sdk.Context, receipt *evmtypes.Receipt) ([]types
 			continue
 		}
 
-		eventArgs, err := types.StakePlanHubContractABI.Unpack(event.Name, log.Data)
+		// stakeIndex
+		identifier := new(big.Int).SetBytes(log.Topics[1].Bytes())
+		// planId
+		planID := new(big.Int).SetBytes(log.Topics[2].Bytes())
+		// sender
+		sender := common.BytesToAddress(log.Topics[3].Bytes())
+		
+		eventArgs, err := types.ABIstakePlanHub().Unpack(event.Name, log.Data)
 		if err != nil {
 			return nil, errorsmod.Wrapf(types.ErrInvalidEvent, "failed to unpack %s event", event.Name)
 		}
@@ -129,8 +136,7 @@ func (k Keeper) parseEvents(ctx sdk.Context, receipt *evmtypes.Receipt) ([]types
 				len(eventArgs),
 			)
 		}
-
-		identifier := new(big.Int).SetBytes(log.Topics[1].Bytes())
+		
 		record := &types.EvmEvent{
 			BlockNumber: receipt.BlockNumber.Uint64(),
 			Identifier:  identifier.Uint64(),
@@ -141,10 +147,17 @@ func (k Keeper) parseEvents(ctx sdk.Context, receipt *evmtypes.Receipt) ([]types
 		}
 		k.setEvmEvent(ctx, record)
 
-		sender := common.BytesToAddress(log.Topics[2].Bytes())
-		planID := new(big.Int).SetBytes(log.Topics[3].Bytes())
-		btcContractAddress := common.BytesToAddress(log.Topics[4].Bytes())
-		stakeAmount, ok := eventArgs[0].(*big.Int)
+		// btcContractAddress
+		btcContractAddress, ok := eventArgs[0].(common.Address)
+		if !ok {
+			return nil, errorsmod.Wrap(
+				types.ErrInvalidEvent,
+				"event `btcContractAddress` parameters is invalid, expected `common.Address`",
+			)
+		}
+
+		// stakeAmount
+		stakeAmount, ok := eventArgs[1].(*big.Int)
 		if !ok {
 			return nil, errorsmod.Wrap(
 				types.ErrInvalidEvent,
@@ -152,7 +165,8 @@ func (k Keeper) parseEvents(ctx sdk.Context, receipt *evmtypes.Receipt) ([]types
 			)
 		}
 
-		stBTCAmount, ok := eventArgs[1].(*big.Int)
+		// stBTCAmount
+		stBTCAmount, ok := eventArgs[2].(*big.Int)
 		if !ok {
 			return nil, errorsmod.Wrap(
 				types.ErrInvalidEvent,
