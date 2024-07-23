@@ -6,6 +6,7 @@ import (
 	agenttypes "github.com/Lorenzo-Protocol/lorenzo/x/agent/types"
 	"github.com/Lorenzo-Protocol/lorenzo/x/plan"
 	plantypes "github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
+	"github.com/Lorenzo-Protocol/lorenzo/x/token"
 	tokentypes "github.com/Lorenzo-Protocol/lorenzo/x/token/types"
 
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
@@ -35,6 +36,7 @@ func upgradeHandlerConstructor(
 	return func(ctx sdk.Context, _ upgradetypes.Plan, fromVM module.VersionMap) (module.VersionMap, error) {
 		fromVM[agenttypes.ModuleName] = agent.AppModule{}.ConsensusVersion()
 		fromVM[plantypes.ModuleName] = plan.AppModule{}.ConsensusVersion()
+		fromVM[tokentypes.ModuleName] = token.AppModule{}.ConsensusVersion()
 
 		// agent module init
 		// 1. set admin
