@@ -1,19 +1,22 @@
-package ibctesting
+package ibc
 
 import (
 	"encoding/json"
 	"testing"
 	"time"
 
-	"cosmossdk.io/math"
-	"github.com/Lorenzo-Protocol/lorenzo/app"
-	appparams "github.com/Lorenzo-Protocol/lorenzo/app/params"
+	feemarkettypes "github.com/evmos/ethermint/x/feemarket/types"
+	"github.com/spf13/cast"
+	"github.com/stretchr/testify/require"
+
 	dbm "github.com/cometbft/cometbft-db"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cometbft/cometbft/libs/log"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	tmprotoversion "github.com/cometbft/cometbft/proto/tendermint/version"
 	tmtypes "github.com/cometbft/cometbft/types"
+
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -27,14 +30,13 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	capabilitykeeper "github.com/cosmos/cosmos-sdk/x/capability/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	evmtypes "github.com/evmos/ethermint/x/evm/types"
-	feemarkettypes "github.com/evmos/ethermint/x/feemarket/types"
-	"github.com/spf13/cast"
-	"github.com/stretchr/testify/require"
 
 	"github.com/cosmos/ibc-go/v7/modules/core/keeper"
-	"github.com/cosmos/ibc-go/v7/testing/simapp"
 	ibctestingtypes "github.com/cosmos/ibc-go/v7/testing/types"
+
+	"github.com/Lorenzo-Protocol/lorenzo/app"
+	appparams "github.com/Lorenzo-Protocol/lorenzo/app/params"
+	evmtypes "github.com/evmos/ethermint/x/evm/types"
 )
 
 var DefaultTestingAppInit = SetupTestingApp
@@ -82,12 +84,10 @@ func SetupTestingApp() (TestingApp, map[string]json.RawMessage) {
 	return lorenzoApp, app.NewDefaultGenesisState(encodingConfig.Codec)
 }
 
-// SetupWithGenesisValSet initializes a new SimApp with a validator set and genesis accounts
-// that also act as delegators. For simplicity, each validator is bonded with a delegation
-// of one consensus engine unit (10^6) in the default token of the simapp from first genesis
-// account. A Nop logger is set in SimApp.
+// SetupWithGenesisValSet initializes a new LorenzoApp with a validator set and genesis accounts
+// that also act as delegators.
 func SetupWithGenesisValSet(t *testing.T, valSet *tmtypes.ValidatorSet, genAccs []authtypes.GenesisAccount, chainID string, powerReduction math.Int, balances ...banktypes.Balance) TestingApp {
-	return SetupWithGenesisValSetAndConsensusParams(t, simapp.DefaultConsensusParams, valSet, genAccs, chainID, powerReduction, balances...)
+	return SetupWithGenesisValSetAndConsensusParams(t, app.DefaultConsensusParams, valSet, genAccs, chainID, powerReduction, balances...)
 }
 
 func SetupWithGenesisValSetAndConsensusParams(t *testing.T, consensusParams *tmproto.ConsensusParams, valSet *tmtypes.ValidatorSet, genAccs []authtypes.GenesisAccount, chainID string, powerReduction math.Int, balances ...banktypes.Balance) TestingApp {
@@ -148,13 +148,15 @@ func SetupWithGenesisValSetAndConsensusParams(t *testing.T, consensusParams *tmp
 	bankGenesis := banktypes.NewGenesisState(banktypes.DefaultGenesisState().Params, balances, sdk.NewCoins(), []banktypes.Metadata{}, []banktypes.SendEnabled{})
 	genesisState[banktypes.ModuleName] = app.AppCodec().MustMarshalJSON(bankGenesis)
 
-	// set evm genesis state
+	// NOTE: add lorenzo custom modules genesis here.
+
+	// set evm genesis: use lrz as evm denom.
 	evmParams := evmtypes.DefaultParams()
 	evmParams.EvmDenom = appparams.BaseDenom
 	evmGenesis := &evmtypes.GenesisState{Params: evmParams}
 	genesisState[evmtypes.ModuleName] = app.AppCodec().MustMarshalJSON(evmGenesis)
 
-	// set feemarket
+	// set feemarket: disable fee market
 	feemarketGenesis := feemarkettypes.NewGenesisState(feemarkettypes.DefaultParams(), 0)
 	feemarketGenesis.Params.NoBaseFee = true
 	genesisState[feemarkettypes.ModuleName] = app.AppCodec().MustMarshalJSON(feemarketGenesis)

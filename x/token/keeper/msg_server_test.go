@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"github.com/Lorenzo-Protocol/lorenzo/app"
 	"github.com/ethereum/go-ethereum/common"
 	evmtypes "github.com/evmos/ethermint/x/evm/types"
 
@@ -9,7 +10,6 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
-	"github.com/Lorenzo-Protocol/lorenzo/app/helpers"
 	"github.com/Lorenzo-Protocol/lorenzo/x/token/types"
 )
 
@@ -28,8 +28,8 @@ const (
 
 var (
 	authority = authtypes.NewModuleAddress(govtypes.ModuleName)
-	tester    = helpers.CreateTestAddrs(1)[0]
-	tester2   = helpers.CreateTestAddrs(1)[0]
+	tester    = app.CreateTestAddrs(1)[0]
+	tester2   = app.CreateTestAddrs(1)[0]
 
 	coinMetadata = banktypes.Metadata{
 		Description: "",

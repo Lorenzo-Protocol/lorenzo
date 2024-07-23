@@ -1,9 +1,11 @@
-package ibctesting
+package ibc
 
 import (
 	"fmt"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/require"
 
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cometbft/cometbft/crypto/tmhash"
@@ -11,6 +13,7 @@ import (
 	tmprotoversion "github.com/cometbft/cometbft/proto/tendermint/version"
 	tmtypes "github.com/cometbft/cometbft/types"
 	tmversion "github.com/cometbft/cometbft/version"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
@@ -23,7 +26,6 @@ import (
 	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
 	"github.com/cosmos/cosmos-sdk/x/staking/testutil"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	"github.com/stretchr/testify/require"
 
 	clienttypes "github.com/cosmos/ibc-go/v7/modules/core/02-client/types"
 	commitmenttypes "github.com/cosmos/ibc-go/v7/modules/core/23-commitment/types"
@@ -31,8 +33,9 @@ import (
 	"github.com/cosmos/ibc-go/v7/modules/core/exported"
 	"github.com/cosmos/ibc-go/v7/modules/core/types"
 	ibctm "github.com/cosmos/ibc-go/v7/modules/light-clients/07-tendermint"
-	"github.com/cosmos/ibc-go/v7/testing/mock"
-	"github.com/cosmos/ibc-go/v7/testing/simapp"
+
+	lorenzoapp "github.com/Lorenzo-Protocol/lorenzo/app"
+	"github.com/Lorenzo-Protocol/lorenzo/testutil/ibc/mock"
 )
 
 var MaxAccounts = 10
@@ -129,7 +132,7 @@ func NewTestChainWithValSet(t *testing.T, coord *Coordinator, chainID string, va
 	// create current header and call begin block
 	header := tmproto.Header{
 		Version: tmprotoversion.Consensus{
-			App: simapp.DefaultAppVersion,
+			App: lorenzoapp.DefaultAppVersion,
 		},
 		ChainID:         chainID,
 		Height:          1,
@@ -196,8 +199,8 @@ func (chain *TestChain) GetContext() sdk.Context {
 // GetSimApp returns the SimApp to allow usage ofnon-interface fields.
 // CONTRACT: This function should not be called by third parties implementing
 // their own SimApp.
-func (chain *TestChain) GetSimApp() *simapp.SimApp {
-	app, ok := chain.App.(*simapp.SimApp)
+func (chain *TestChain) GetSimApp() *lorenzoapp.LorenzoApp {
+	app, ok := chain.App.(*lorenzoapp.LorenzoApp)
 	require.True(chain.T, ok)
 
 	return app
@@ -330,7 +333,7 @@ func (chain *TestChain) SendMsgs(msgs ...sdk.Msg) (*sdk.Result, error) {
 	// ensure the chain has the latest time
 	chain.Coordinator.UpdateTimeForChain(chain)
 
-	_, r, err := simapp.SignAndDeliver(
+	_, r, err := lorenzoapp.SignAndDeliver(
 		chain.T,
 		chain.TxConfig,
 		chain.App.GetBaseApp(),
@@ -481,7 +484,7 @@ func (chain *TestChain) CreateTMClientHeader(chainID string, blockHeight int64, 
 	nextValHash := nextVals.Hash()
 
 	tmHeader := tmtypes.Header{
-		Version:            tmprotoversion.Consensus{Block: tmversion.BlockProtocol, App: simapp.DefaultAppVersion},
+		Version:            tmprotoversion.Consensus{Block: tmversion.BlockProtocol, App: lorenzoapp.DefaultAppVersion},
 		ChainID:            chainID,
 		Height:             blockHeight,
 		Time:               timestamp,

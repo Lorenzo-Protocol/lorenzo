@@ -1,4 +1,4 @@
-package ibctesting
+package ibc
 
 import (
 	"testing"

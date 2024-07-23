@@ -12,7 +12,7 @@ import (
 	channeltypes "github.com/cosmos/ibc-go/v7/modules/core/04-channel/types"
 
 	"github.com/Lorenzo-Protocol/lorenzo/app"
-	"github.com/Lorenzo-Protocol/lorenzo/ibctesting"
+	ibctesting "github.com/Lorenzo-Protocol/lorenzo/testutil/ibc"
 )
 
 type MiddlewareTestSuite struct {

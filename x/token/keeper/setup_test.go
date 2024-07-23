@@ -18,7 +18,6 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	"github.com/Lorenzo-Protocol/lorenzo/app"
-	"github.com/Lorenzo-Protocol/lorenzo/app/helpers"
 	"github.com/Lorenzo-Protocol/lorenzo/testutil"
 
 	utiltx "github.com/Lorenzo-Protocol/lorenzo/testutil/tx"
@@ -70,9 +69,9 @@ func (suite *KeeperTestSuite) execSetupTest() {
 
 	// init app
 	// TODO: setup with genesis merge fn need recheck, it's probably not errorless.
-	suite.app = helpers.SetupWithGenesisMergeFn(suite.T(), nil)
+	suite.app = app.SetupWithGenesisMergeFn(suite.T(), nil)
 	header := testutil.NewHeader(
-		suite.app.LastBlockHeight()+1, time.Now().UTC(), helpers.SimAppChainID, consAddress, nil, nil,
+		suite.app.LastBlockHeight()+1, time.Now().UTC(), app.SimAppChainID, consAddress, nil, nil,
 	)
 	suite.ctx = suite.app.GetBaseApp().NewContext(false, header)
 

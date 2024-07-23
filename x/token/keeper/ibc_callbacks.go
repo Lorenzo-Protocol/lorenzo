@@ -89,8 +89,7 @@ func (k Keeper) ConvertCoinFromPacket(
 	}
 
 	// avoid extra costs for relayers.
-	ctx = ctx.WithKVGasConfig(storetypes.GasConfig{}).
-		WithTransientKVGasConfig(storetypes.GasConfig{})
+	ctx = ctx.WithKVGasConfig(storetypes.GasConfig{}).WithTransientKVGasConfig(storetypes.GasConfig{})
 
 	// get ibc (or just original) denom
 	denom := transfertypes.ParseDenomTrace(data.Denom).IBCDenom()
