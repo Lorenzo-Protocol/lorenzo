@@ -2,15 +2,30 @@
 
 ## [Unreleased]
 
-### API Breaking
+## New Features
 
-### State Machine Breaking
+- (ante) [\#58](https://github.com/Lorenzo-Protocol/lorenzo/pull/58) Unified fee settings for Cosmos and EVM transactions.
+- (x/plan) [\#26](https://github.com/Lorenzo-Protocol/lorenzo/pull/26) Introduced the Plan module for managing staking plans.
+- (x/agent) [\#23](https://github.com/Lorenzo-Protocol/lorenzo/pull/23) Introduced the Agent module for managing staking plan's agents.
+- (x/token) [\#61](https://github.com/Lorenzo-Protocol/lorenzo/pull/61) Introduced the Token module for managing tokens between ERC20 contracts and SDK bank.
+- (x/ibctransfer) [\#61](https://github.com/Lorenzo-Protocol/lorenzo/pull/61) Wrapped the IBC transfer module to support automatic conversion for IBC assets.
+- (x/btcstaking) [\#40](https://github.com/Lorenzo-Protocol/lorenzo/pull/40) Implemented dynamic confirmation depth.
+- (x/btcstaking) [\#42](https://github.com/Lorenzo-Protocol/lorenzo/pull/42) Added allow list for receivers with ETH addresses.
+- (x/btcstaking) [\#67](https://github.com/Lorenzo-Protocol/lorenzo/pull/67) Added transaction output amount limit to filter out dust outputs.
+- (x/btcstaking) [\#74](https://github.com/Lorenzo-Protocol/lorenzo/pull/74) Enabled minting stBTC to multiple chains.
 
-### Features
+## Bug Fixes
 
-### Bug Fixes
+- (app) [\#63](https://github.com/Lorenzo-Protocol/lorenzo/pull/63) Fixed Tendermint client type registration.
+- (client) [\#47](https://github.com/Lorenzo-Protocol/lorenzo/pull/47) Fixed error handling for BTC staking query commands.
+- (x/btcstaking) [\#37](https://github.com/Lorenzo-Protocol/lorenzo/pull/37) Added BTC staking genesis validation.
 
-### Security
+## Improvements
+
+- (client) [\#17](https://github.com/Lorenzo-Protocol/lorenzo/pull/17) BTC staking query now accepts transaction ID instead of transaction hash.
+- (client) [\#53](https://github.com/Lorenzo-Protocol/lorenzo/pull/53) Renamed BTC staking query commands.
+- (x/btcstaking) [\#66](https://github.com/Lorenzo-Protocol/lorenzo/pull/66) Accepted `OP_PUSHDATA2` and `OP_PUSHDATA` in `OP_RETURN` transaction outputs.
+
 
 ## 1.0.0
 
