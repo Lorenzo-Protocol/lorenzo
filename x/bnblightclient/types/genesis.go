@@ -13,8 +13,8 @@ func (gs GenesisState) Validate() error {
 // DefaultGenesisState returns the default genesis state
 func DefaultGenesisState() *GenesisState {
 	return &GenesisState{
-		Params: &Params{},
+		Params:  &Params{},
 		Headers: []*Header{},
-		Events: []*EvmEvent{},
+		Events:  []*EvmEvent{},
 	}
 }

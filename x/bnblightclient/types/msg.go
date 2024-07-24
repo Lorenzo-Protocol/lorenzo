@@ -11,7 +11,7 @@ var (
 )
 
 // ValidateBasic implements sdk.Msg interface
-func(m *MsgUpdateHeader) ValidateBasic() error {
+func (m *MsgUpdateHeader) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.Signer); err != nil {
 		return err
 	}
@@ -19,25 +19,25 @@ func(m *MsgUpdateHeader) ValidateBasic() error {
 }
 
 // GetSigners implements sdk.Msg interface
-func(m *MsgUpdateHeader) GetSigners() []sdk.AccAddress {
+func (m *MsgUpdateHeader) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(m.Signer)}
 }
 
 // ValidateBasic implements sdk.Msg interface
-func(m *MsgUploadHeaders) ValidateBasic() error {
-    if _, err := sdk.AccAddressFromBech32(m.Signer); err != nil {
+func (m *MsgUploadHeaders) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(m.Signer); err != nil {
 		return err
 	}
 	return VeryHeaders(m.Headers)
 }
 
 // GetSigners implements sdk.Msg interface
-func(m *MsgUploadHeaders) GetSigners() []sdk.AccAddress {
+func (m *MsgUploadHeaders) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(m.Signer)}
 }
 
 // ValidateBasic implements sdk.Msg interface
-func(m *MsgUpdateParams) ValidateBasic() error {
+func (m *MsgUpdateParams) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
 		return err
 	}
@@ -45,11 +45,6 @@ func(m *MsgUpdateParams) ValidateBasic() error {
 }
 
 // GetSigners implements sdk.Msg interface
-func(m *MsgUpdateParams) GetSigners() []sdk.AccAddress {
+func (m *MsgUpdateParams) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(m.Authority)}
 }
-
-
-
-
-

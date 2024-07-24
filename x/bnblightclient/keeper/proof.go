@@ -123,7 +123,7 @@ func (k Keeper) parseEvents(ctx sdk.Context, receipt *evmtypes.Receipt) ([]types
 		planID := new(big.Int).SetBytes(log.Topics[2].Bytes())
 		// sender
 		sender := common.BytesToAddress(log.Topics[3].Bytes())
-		
+
 		eventArgs, err := types.ABIstakePlanHub().Unpack(event.Name, log.Data)
 		if err != nil {
 			return nil, errorsmod.Wrapf(types.ErrInvalidEvent, "failed to unpack %s event", event.Name)
@@ -136,7 +136,7 @@ func (k Keeper) parseEvents(ctx sdk.Context, receipt *evmtypes.Receipt) ([]types
 				len(eventArgs),
 			)
 		}
-		
+
 		record := &types.EvmEvent{
 			BlockNumber: receipt.BlockNumber.Uint64(),
 			Identifier:  identifier.Uint64(),

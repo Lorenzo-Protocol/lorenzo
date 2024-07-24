@@ -46,7 +46,7 @@ func KeyLatestHeaderNumber() []byte {
 
 // KeyEvmEvent returns the key for the cross chain event index
 func KeyEvmEvent(blockNumber uint64, contract []byte, idx uint64) []byte {
-	key := append([]byte{}, KeyPrefixEvmEvent...)  
+	key := append([]byte{}, KeyPrefixEvmEvent...)
 
 	bumberBz := sdk.Uint64ToBigEndian(blockNumber)
 	key = append(key, bumberBz...)

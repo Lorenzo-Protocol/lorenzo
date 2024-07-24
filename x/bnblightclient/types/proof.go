@@ -141,4 +141,3 @@ func GenReceiptProof(txIndex uint64, root common.Hash, receipts []*types.Receipt
 
 	return &res, nil
 }
-

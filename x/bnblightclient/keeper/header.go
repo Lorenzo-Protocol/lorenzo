@@ -10,7 +10,7 @@ import (
 )
 
 // UploadHeaders adds a batch of headers to the bnb light client chain
-func(k Keeper) UploadHeaders(ctx sdk.Context, headers []*types.Header) error {
+func (k Keeper) UploadHeaders(ctx sdk.Context, headers []*types.Header) error {
 	slices.SortFunc(headers, func(a, b *types.Header) int {
 		return int(a.Number - b.Number)
 	})
@@ -20,16 +20,16 @@ func(k Keeper) UploadHeaders(ctx sdk.Context, headers []*types.Header) error {
 	if exist {
 		vHeader = append([]*types.Header{latestedHeader}, headers...)
 	}
-	
+
 	// verify headers
-	if err := types.VeryHeaders(vHeader); err != nil { 
-		return err 
+	if err := types.VeryHeaders(vHeader); err != nil {
+		return err
 	}
 
 	for _, header := range headers {
 		k.setHeader(ctx, header)
 	}
-	k.setLatestNumber(ctx, headers[len(headers) - 1].Number)
+	k.setLatestNumber(ctx, headers[len(headers)-1].Number)
 	k.prune(ctx)
 	return nil
 }
@@ -42,7 +42,7 @@ func(k Keeper) UploadHeaders(ctx sdk.Context, headers []*types.Header) error {
 //
 // Returns:
 // - error: an error if the header update fails.
-func(k Keeper) UpdateHeader(ctx sdk.Context, header *types.Header) error {
+func (k Keeper) UpdateHeader(ctx sdk.Context, header *types.Header) error {
 	if err := types.VeryHeaders([]*types.Header{header}); err != nil {
 		return err
 	}
@@ -55,7 +55,6 @@ func(k Keeper) UpdateHeader(ctx sdk.Context, header *types.Header) error {
 	return nil
 }
 
-
 // GetLatestHeader retrieves the latest header from the store.
 //
 // Parameters:
@@ -64,7 +63,7 @@ func(k Keeper) UpdateHeader(ctx sdk.Context, header *types.Header) error {
 // Returns:
 // - types.Header: the latest header
 // - bool: true if the header was found, false otherwise
-func(k Keeper) GetLatestHeader(ctx sdk.Context) (*types.Header, bool) {
+func (k Keeper) GetLatestHeader(ctx sdk.Context) (*types.Header, bool) {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.KeyLatestHeaderNumber())
 	if bz == nil {
@@ -82,7 +81,7 @@ func(k Keeper) GetLatestHeader(ctx sdk.Context) (*types.Header, bool) {
 //
 // Returns:
 // - uint64: the latest number
-func(k Keeper) GetLatestNumber(ctx sdk.Context) uint64 {
+func (k Keeper) GetLatestNumber(ctx sdk.Context) uint64 {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.KeyLatestHeaderNumber())
 	if bz == nil {
@@ -100,7 +99,7 @@ func(k Keeper) GetLatestNumber(ctx sdk.Context) uint64 {
 // Returns:
 // - types.Header: the header object
 // - bool: true if the header was found, false otherwise
-func(k Keeper) GetHeader(ctx sdk.Context, number uint64) (*types.Header, bool) {
+func (k Keeper) GetHeader(ctx sdk.Context, number uint64) (*types.Header, bool) {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.KeyHeader(number))
 	if bz == nil {
@@ -118,7 +117,7 @@ func(k Keeper) GetHeader(ctx sdk.Context, number uint64) (*types.Header, bool) {
 //
 // Returns:
 // - headers: a slice of Header objects
-func(k Keeper) GetAllHeaders(ctx sdk.Context) (headers []*types.Header) {
+func (k Keeper) GetAllHeaders(ctx sdk.Context) (headers []*types.Header) {
 	store := ctx.KVStore(k.storeKey)
 
 	it := sdk.KVStorePrefixIterator(store, types.KeyPrefixHeader)
@@ -141,7 +140,7 @@ func(k Keeper) GetAllHeaders(ctx sdk.Context) (headers []*types.Header) {
 // Returns:
 // - *types.Header: the header object, or nil if not found
 // - bool: true if the header was found, false otherwise
-func(k Keeper) GetHeaderByHash(ctx sdk.Context, hash []byte) (*types.Header, bool) {
+func (k Keeper) GetHeaderByHash(ctx sdk.Context, hash []byte) (*types.Header, bool) {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.KeyHeaderHash(hash))
 	if bz == nil {
@@ -158,12 +157,12 @@ func(k Keeper) GetHeaderByHash(ctx sdk.Context, hash []byte) (*types.Header, boo
 // - ctx: the context object
 // - number: the number of the header to check
 // Return type: bool
-func(k Keeper) HasHeader(ctx sdk.Context, number uint64) bool {
+func (k Keeper) HasHeader(ctx sdk.Context, number uint64) bool {
 	store := ctx.KVStore(k.storeKey)
 	return store.Has(types.KeyHeader(number))
 }
 
-func(k Keeper) setHeader(ctx sdk.Context, header *types.Header) {
+func (k Keeper) setHeader(ctx sdk.Context, header *types.Header) {
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshal(header)
 	store.Set(types.KeyHeader(header.Number), bz)
@@ -172,7 +171,7 @@ func(k Keeper) setHeader(ctx sdk.Context, header *types.Header) {
 	store.Set(types.KeyHeaderHash(header.Hash), numberBz)
 }
 
-func(k Keeper) setLatestNumber(ctx sdk.Context, number uint64) {
+func (k Keeper) setLatestNumber(ctx sdk.Context, number uint64) {
 	store := ctx.KVStore(k.storeKey)
 	bz := sdk.Uint64ToBigEndian(number)
 	store.Set(types.KeyLatestHeaderNumber(), bz)

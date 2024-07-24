@@ -51,7 +51,7 @@ func CmdTxUploadHeaders() *cobra.Command {
 				return err
 			}
 
-			content,err := os.ReadFile(args[0])
+			content, err := os.ReadFile(args[0])
 			if err != nil {
 				return err
 			}
@@ -62,8 +62,8 @@ func CmdTxUploadHeaders() *cobra.Command {
 			}
 
 			msg := types.MsgUploadHeaders{
-				Signer: clientCtx.GetFromAddress().String(),
-				Headers:     headers,
+				Signer:  clientCtx.GetFromAddress().String(),
+				Headers: headers,
 			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
@@ -97,7 +97,7 @@ func CmdTxUpdateHeader() *cobra.Command {
 				return err
 			}
 
-			content,err := os.ReadFile(args[0])
+			content, err := os.ReadFile(args[0])
 			if err != nil {
 				return err
 			}
@@ -109,7 +109,7 @@ func CmdTxUpdateHeader() *cobra.Command {
 
 			msg := types.MsgUpdateHeader{
 				Signer: clientCtx.GetFromAddress().String(),
-				Header:     &header,
+				Header: &header,
 			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
