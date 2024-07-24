@@ -1,10 +1,12 @@
 package keeper
 
 import (
-	"github.com/Lorenzo-Protocol/lorenzo/x/token/types"
+	"github.com/ethereum/go-ethereum/common"
+
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/ethereum/go-ethereum/common"
+
+	"github.com/Lorenzo-Protocol/lorenzo/x/token/types"
 )
 
 // RemoveTokenPair removes a token pair and its id mappings.

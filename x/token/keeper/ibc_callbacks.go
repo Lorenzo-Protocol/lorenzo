@@ -1,14 +1,10 @@
 package keeper
 
 import (
-	errorsmod "cosmossdk.io/errors"
-
 	"github.com/ethereum/go-ethereum/common"
 
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	errortypes "github.com/cosmos/cosmos-sdk/types/errors"
-
 	transfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 	channeltypes "github.com/cosmos/ibc-go/v7/modules/core/04-channel/types"
 	"github.com/cosmos/ibc-go/v7/modules/core/exported"
@@ -23,10 +19,7 @@ func (k Keeper) OnRecvPacket(
 	ack exported.Acknowledgement,
 ) exported.Acknowledgement {
 	var data transfertypes.FungibleTokenPacketData
-	if err := transfertypes.ModuleCdc.UnmarshalJSON(packet.GetData(), &data); err != nil {
-		err = errorsmod.Wrapf(errortypes.ErrInvalidType, "cannot unmarshal ICS-20 transfer packet data")
-		return channeltypes.NewErrorAcknowledgement(err)
-	}
+	transfertypes.ModuleCdc.MustUnmarshalJSON(packet.GetData(), &data)
 
 	receiver, err := sdk.AccAddressFromBech32(data.Receiver)
 	if err != nil {
@@ -36,10 +29,16 @@ func (k Keeper) OnRecvPacket(
 	// avoid extra costs for relayers.
 	ctx = ctx.WithKVGasConfig(storetypes.GasConfig{}).WithTransientKVGasConfig(storetypes.GasConfig{})
 
-	coin := k.getReceivedCoin(
+	coin := k.GetReceivedCoin(
 		packet.SourcePort, packet.SourceChannel,
 		packet.DestinationPort, packet.DestinationChannel,
 		data.Denom, data.Amount)
+
+	id := k.GetTokenPairId(ctx, coin.Denom)
+	_, found := k.GetTokenPair(ctx, id)
+	if !found {
+		return ack
+	}
 
 	if _, err := k.ConvertCoin(sdk.WrapSDKContext(ctx), &types.MsgConvertCoin{
 		Coin: sdk.Coin{
@@ -90,12 +89,18 @@ func (k Keeper) ConvertCoinFromPacket(
 	}
 
 	// avoid extra costs for relayers.
-	ctx = ctx.WithKVGasConfig(storetypes.GasConfig{}).
-		WithTransientKVGasConfig(storetypes.GasConfig{})
+	ctx = ctx.WithKVGasConfig(storetypes.GasConfig{}).WithTransientKVGasConfig(storetypes.GasConfig{})
 
 	// get ibc (or just original) denom
 	denom := transfertypes.ParseDenomTrace(data.Denom).IBCDenom()
 	amount, _ := sdk.NewIntFromString(data.Amount)
+
+	// if denom is not registered, return
+	id := k.GetTokenPairId(ctx, data.Denom)
+	_, found := k.GetTokenPair(ctx, id)
+	if !found {
+		return nil
+	}
 
 	// ConvertCoin will help to check if the denom is registered
 	if _, err := k.ConvertCoin(sdk.WrapSDKContext(ctx), &types.MsgConvertCoin{
@@ -109,8 +114,8 @@ func (k Keeper) ConvertCoinFromPacket(
 	return nil
 }
 
-// getReceivedCoin returns the transferred coin from an ICS20 FungibleTokenPacketData
-func (k Keeper) getReceivedCoin(srcPort, srcChannel, dstPort, dstChannel, rawDenom, rawAmt string) sdk.Coin {
+// GetReceivedCoin returns the transferred coin from an ICS20 FungibleTokenPacketData
+func (k Keeper) GetReceivedCoin(srcPort, srcChannel, dstPort, dstChannel, rawDenom, rawAmt string) sdk.Coin {
 	// NOTE: Denom and amount are already validated
 	amount, _ := sdk.NewIntFromString(rawAmt)
 

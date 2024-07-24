@@ -3,13 +3,16 @@ package keeper
 import (
 	"context"
 
-	"github.com/Lorenzo-Protocol/lorenzo/x/token/types"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
+	"github.com/ethereum/go-ethereum/common"
+
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	"github.com/ethereum/go-ethereum/common"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
+
+	"github.com/Lorenzo-Protocol/lorenzo/x/token/types"
 )
 
 var _ types.QueryServer = Querier{}

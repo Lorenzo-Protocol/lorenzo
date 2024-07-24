@@ -20,7 +20,6 @@ import (
 	clienttypes "github.com/cosmos/ibc-go/v7/modules/core/02-client/types"
 
 	"github.com/Lorenzo-Protocol/lorenzo/app"
-	"github.com/Lorenzo-Protocol/lorenzo/app/helpers"
 	"github.com/Lorenzo-Protocol/lorenzo/contracts/erc20"
 	"github.com/Lorenzo-Protocol/lorenzo/testutil"
 	utiltx "github.com/Lorenzo-Protocol/lorenzo/testutil/tx"
@@ -68,9 +67,9 @@ func (suite *KeeperTestSuite) execSetupTest() {
 	consAddress := sdk.ConsAddress(privCons.PubKey().Address())
 
 	// init app
-	suite.app = helpers.SetupWithGenesisMergeFn(suite.T(), nil)
+	suite.app = app.SetupWithGenesisMergeFn(suite.T(), nil)
 	header := testutil.NewHeader(
-		suite.app.LastBlockHeight()+1, time.Now().UTC(), helpers.SimAppChainID, consAddress, nil, nil,
+		suite.app.LastBlockHeight()+1, time.Now().UTC(), app.SimAppChainID, consAddress, nil, nil,
 	)
 	suite.ctx = suite.app.GetBaseApp().NewContext(false, header)
 

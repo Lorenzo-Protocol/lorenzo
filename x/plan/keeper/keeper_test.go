@@ -21,7 +21,6 @@ import (
 
 	"github.com/Lorenzo-Protocol/lorenzo/app"
 
-	"github.com/Lorenzo-Protocol/lorenzo/app/helpers"
 	"github.com/Lorenzo-Protocol/lorenzo/x/plan/keeper"
 	"github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
 
@@ -31,7 +30,7 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-var testAdmin = helpers.CreateTestAddrs(1)[0]
+var testAdmin = app.CreateTestAddrs(1)[0]
 
 type KeeperTestSuite struct {
 	suite.Suite
@@ -73,14 +72,14 @@ func (suite *KeeperTestSuite) SetupTest() {
 		state[evmtypes.ModuleName] = cdc.MustMarshalJSON(evmGenesis)
 	}
 
-	lorenzoApp := helpers.SetupWithGenesisMergeFn(suite.T(), merge)
+	lorenzoApp := app.SetupWithGenesisMergeFn(suite.T(), merge)
 
 	// consensus key
 	privCons, err := ethsecp256k1.GenerateKey()
 	suite.Require().NoError(err)
 	consAddress := sdk.ConsAddress(privCons.PubKey().Address())
 	header := testutil.NewHeader(
-		lorenzoApp.LastBlockHeight()+1, time.Now().UTC(), helpers.SimAppChainID, consAddress, nil, nil,
+		lorenzoApp.LastBlockHeight()+1, time.Now().UTC(), app.SimAppChainID, consAddress, nil, nil,
 	)
 	ctx := lorenzoApp.GetBaseApp().NewContext(false, header)
 

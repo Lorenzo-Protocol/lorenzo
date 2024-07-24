@@ -1,17 +1,17 @@
 package types
 
 // NewParams create Params object for token module.
-func NewParams(enableConvert, enableEVMHook bool) Params {
+func NewParams(enableConversion, enableEVMHook bool) Params {
 	return Params{
-		EnableConvert: enableConvert,
-		EnableEVMHook: enableEVMHook,
+		EnableConversion: enableConversion,
+		EnableEVMHook:    enableEVMHook,
 	}
 }
 
 // DefaultParams returns default Params for token module.
 func DefaultParams() Params {
 	return Params{
-		EnableConvert: true,
-		EnableEVMHook: true,
+		EnableConversion: true,
+		EnableEVMHook:    true,
 	}
 }

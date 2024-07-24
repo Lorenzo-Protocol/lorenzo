@@ -1,26 +1,32 @@
 package token
 
 import (
-	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	errortypes "github.com/cosmos/cosmos-sdk/types/errors"
-	ibctransfer "github.com/cosmos/ibc-go/v7/modules/apps/transfer"
-	transfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 
+	transfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 	"github.com/cosmos/ibc-go/v7/modules/core/04-channel/types"
 	channeltypes "github.com/cosmos/ibc-go/v7/modules/core/04-channel/types"
 	porttypes "github.com/cosmos/ibc-go/v7/modules/core/05-port/types"
 	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
 
+	ibctransfer "github.com/Lorenzo-Protocol/lorenzo/x/ibctransfer"
 	"github.com/Lorenzo-Protocol/lorenzo/x/token/keeper"
 )
 
 var _ porttypes.IBCModule = &IBCMiddleware{}
 
-// IBCMiddleware implements the ICS26 callbacks for the ibctransfer module.
+// NewIBCMiddleware creates a new IBCMiddleware given the keeper and underlying application
+func NewIBCMiddleware(module *ibctransfer.IBCModule, k *keeper.Keeper) IBCMiddleware {
+	return IBCMiddleware{
+		IBCModule: module,
+		keeper:    k,
+	}
+}
+
+// IBCMiddleware implements the ICS26 callbacks for the ibc-transfer module.
 type IBCMiddleware struct {
 	*ibctransfer.IBCModule
-	keeper keeper.Keeper
+	keeper *keeper.Keeper
 }
 
 // OnRecvPacket implements the ICS-26 interface. If it successfully handles OnRecvPacket, a
@@ -47,21 +53,14 @@ func (im IBCMiddleware) OnAcknowledgementPacket(
 	acknowledgement []byte,
 	relayer sdk.AccAddress,
 ) error {
-	var ack channeltypes.Acknowledgement
-	if err := transfertypes.ModuleCdc.UnmarshalJSON(acknowledgement, &ack); err != nil {
-		return errorsmod.Wrapf(errortypes.ErrUnknownRequest,
-			"cannot unmarshal ICS-20 transfer packet acknowledgement: %v", err)
-	}
-
-	var data transfertypes.FungibleTokenPacketData
-	if err := transfertypes.ModuleCdc.UnmarshalJSON(packet.GetData(), &data); err != nil {
-		return errorsmod.Wrapf(errortypes.ErrUnknownRequest,
-			"cannot unmarshal ICS-20 transfer packet data: %s", err.Error())
-	}
-
 	if err := im.IBCModule.OnAcknowledgementPacket(ctx, packet, acknowledgement, relayer); err != nil {
 		return err
 	}
+
+	var ack channeltypes.Acknowledgement
+	var data transfertypes.FungibleTokenPacketData
+	transfertypes.ModuleCdc.MustUnmarshalJSON(packet.GetData(), &data)
+	transfertypes.ModuleCdc.MustUnmarshalJSON(acknowledgement, &ack)
 
 	// post-processing
 	return im.keeper.OnAcknowledgementPacket(ctx, packet, data, ack)
@@ -74,15 +73,12 @@ func (im IBCMiddleware) OnTimeoutPacket(
 	packet types.Packet,
 	relayer sdk.AccAddress,
 ) error {
-	var data transfertypes.FungibleTokenPacketData
-	if err := transfertypes.ModuleCdc.UnmarshalJSON(packet.GetData(), &data); err != nil {
-		return errorsmod.Wrapf(errortypes.ErrUnknownRequest,
-			"cannot unmarshal ICS-20 transfer packet data: %s", err.Error())
-	}
-
 	if err := im.IBCModule.OnTimeoutPacket(ctx, packet, relayer); err != nil {
 		return err
 	}
+
+	var data transfertypes.FungibleTokenPacketData
+	transfertypes.ModuleCdc.MustUnmarshalJSON(packet.GetData(), &data)
 
 	// post-processing
 	return im.keeper.OnTimeoutPacket(ctx, packet, data)

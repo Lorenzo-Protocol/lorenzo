@@ -27,7 +27,7 @@ func (k Keeper) GetParams(ctx sdk.Context) types.Params {
 
 // IsConvertEnabled returns true if the ERC20 module is enabled.
 func (k Keeper) IsConvertEnabled(ctx sdk.Context) bool {
-	return k.GetParams(ctx).EnableConvert
+	return k.GetParams(ctx).EnableConversion
 }
 
 // IsEVMHookEnabled returns true if the EVM hook is enabled.

@@ -94,7 +94,7 @@ func (suite *KeeperTestSuite) TestTransfer() {
 				suite.Commit()
 
 				params := suite.app.TokenKeeper.GetParams(suite.ctx)
-				params.EnableConvert = false
+				params.EnableConversion = false
 				suite.app.TokenKeeper.SetParams(suite.ctx, params)
 				suite.Commit()
 
@@ -121,7 +121,7 @@ func (suite *KeeperTestSuite) TestTransfer() {
 				suite.Commit()
 
 				params := suite.app.TokenKeeper.GetParams(suite.ctx)
-				params.EnableConvert = false
+				params.EnableConversion = false
 				suite.app.TokenKeeper.SetParams(suite.ctx, params)
 				suite.Commit()
 

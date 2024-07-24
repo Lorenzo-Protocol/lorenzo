@@ -64,7 +64,7 @@ func (k Keeper) RegisterERC20(ctx sdk.Context, contract common.Address) (*types.
 		)
 	}
 
-	pair := types.NewTokenPair(contract, metadata.Name, types.OWNER_EXTERNAL)
+	pair := types.NewTokenPair(contract, metadata.Name, types.OWNER_CONTRACT)
 	id := pair.GetID()
 	k.SetTokenPair(ctx, pair)
 	k.SetTokenPairIdByDenom(ctx, pair.Denom, id)

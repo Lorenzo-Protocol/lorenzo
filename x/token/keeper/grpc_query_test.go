@@ -15,7 +15,7 @@ func (suite *KeeperTestSuite) TestQueryParams() {
 
 	actual := suite.app.TokenKeeper.GetParams(suite.ctx)
 	suite.Require().Equal(resp.Params.EnableEVMHook, actual.EnableEVMHook)
-	suite.Require().Equal(resp.Params.EnableConvert, actual.EnableConvert)
+	suite.Require().Equal(resp.Params.EnableConversion, actual.EnableConversion)
 }
 
 func (suite *KeeperTestSuite) TestQueryTokenPair() {

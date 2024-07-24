@@ -14,6 +14,6 @@ message GenesisState {
 
 // Params defines the token module parameters.
 message Params {
-  bool enable_convert = 1;
+  bool enable_conversion = 1;
   bool enable_evm_hook = 2 [(gogoproto.customname) = "EnableEVMHook"];
 }

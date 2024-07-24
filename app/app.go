@@ -112,6 +112,7 @@ import (
 
 	ics20wrapper "github.com/Lorenzo-Protocol/lorenzo/x/ibctransfer"
 	ics20wrapperkeeper "github.com/Lorenzo-Protocol/lorenzo/x/ibctransfer/keeper"
+	"github.com/Lorenzo-Protocol/lorenzo/x/token"
 	tokenkeeper "github.com/Lorenzo-Protocol/lorenzo/x/token/keeper"
 	tokentypes "github.com/Lorenzo-Protocol/lorenzo/x/token/types"
 )
@@ -314,7 +315,6 @@ func NewLorenzoApp(
 	// grant capabilities for the ibc and ibc-transfer modules
 	scopedIBCKeeper := app.CapabilityKeeper.ScopeToModule(ibcexported.ModuleName)
 	scopedTransferKeeper := app.CapabilityKeeper.ScopeToModule(ibctransfertypes.ModuleName)
-	// this line is used by starport scaffolding # stargate/app/scopedKeeper
 
 	app.CapabilityKeeper.Seal()
 
@@ -516,7 +516,8 @@ func NewLorenzoApp(
 		app.TokenKeeper,
 	)
 
-	transferStack := ics20wrapper.NewIBCModule(app.ICS20WrapperKeeper)
+	ics20wrapperModule := ics20wrapper.NewIBCModule(app.ICS20WrapperKeeper)
+	transferStack := token.NewIBCMiddleware(ics20wrapperModule, app.TokenKeeper)
 
 	// Create static IBC router, add transfer route, then set and seal it
 	ibcRouter := ibcporttypes.NewRouter()
