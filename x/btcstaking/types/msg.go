@@ -13,6 +13,7 @@ import (
 // ensure that these message types implement the sdk.Msg interface
 var (
 	_ sdk.Msg = &MsgCreateBTCStaking{}
+	_ sdk.Msg = &MsgCreateBTCStakingFromBNB{}
 	_ sdk.Msg = &MsgBurnRequest{}
 	_ sdk.Msg = &MsgRemoveReceiver{}
 	_ sdk.Msg = &MsgAddReceiver{}
@@ -29,6 +30,28 @@ func (m *MsgCreateBTCStaking) ValidateBasic() error {
 	// staking tx should be correctly formatted
 	if err := m.StakingTx.ValidateBasic(); err != nil {
 		return err
+	}
+	return nil
+}
+
+// GetSigners implements types.Msg.
+func (m *MsgCreateBTCStakingFromBNB) GetSigners() []sdk.AccAddress {
+	addr, _ := sdk.AccAddressFromBech32(m.Signer)
+	return []sdk.AccAddress{addr}
+}
+
+// ValidateBasic implements types.Msg.
+func (m *MsgCreateBTCStakingFromBNB) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(m.Signer); err != nil {
+		return errorsmod.Wrap(err, "invalid signer address")
+	}
+
+	if len(m.Proof) == 0 {
+		return fmt.Errorf("proof name cannot be empty")
+	}
+
+	if len(m.Receipt) == 0 {
+		return fmt.Errorf("receipt name cannot be empty")
 	}
 	return nil
 }

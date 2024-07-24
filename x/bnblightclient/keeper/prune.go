@@ -36,7 +36,7 @@ func (k Keeper) pruneHeaders(ctx sdk.Context, pruneEndNumber uint64) {
 			store.Delete(types.KeyHeaderHash(header.Hash))
 
 			// delete event record
-			prefix := append(types.KeyPrefixEventRecord, sdk.Uint64ToBigEndian(number)...)
+			prefix := append(types.KeyPrefixEvmEvent, sdk.Uint64ToBigEndian(number)...)
 			iterator2 := sdk.KVStoreReversePrefixIterator(store, prefix)
 			defer iterator2.Close()
 

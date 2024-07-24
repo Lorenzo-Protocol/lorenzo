@@ -44,7 +44,7 @@ func (k Keeper) VerifyReceiptProof(ctx sdk.Context, receipt *evmtypes.Receipt, p
 func (k Keeper) GetAllEvmEvents(ctx sdk.Context) (events []*types.EvmEvent) {
 	store := ctx.KVStore(k.storeKey)
 
-	it := sdk.KVStorePrefixIterator(store, types.KeyPrefixEventRecord)
+	it := sdk.KVStorePrefixIterator(store, types.KeyPrefixEvmEvent)
 	defer it.Close() //nolint:errcheck
 
 	for ; it.Valid(); it.Next() {

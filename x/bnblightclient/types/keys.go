@@ -24,8 +24,8 @@ var (
 
 	// KeyPrefixHeadHash defines the prefix to retrieve the head hash
 	KeyPrefixHeadHash = []byte{0x04}
-	// KeyPrefixEventRecord defines the prefix to retrieve the cross chain event
-	KeyPrefixEventRecord = []byte{0x05}
+	// KeyPrefixEvmEvent defines the prefix to retrieve the cross chain event
+	KeyPrefixEvmEvent = []byte{0x05}
 )
 
 // KeyHeader returns the key for a header
@@ -44,9 +44,9 @@ func KeyLatestHeaderNumber() []byte {
 	return KeyPrefixLatestNumber
 }
 
-// KeyEventRecord returns the key for the cross chain event index
-func KeyEventRecord(blockNumber uint64, contract []byte, idx uint64) []byte {
-	key := append([]byte{}, KeyPrefixEventRecord...)  
+// KeyEvmEvent returns the key for the cross chain event index
+func KeyEvmEvent(blockNumber uint64, contract []byte, idx uint64) []byte {
+	key := append([]byte{}, KeyPrefixEvmEvent...)  
 
 	bumberBz := sdk.Uint64ToBigEndian(blockNumber)
 	key = append(key, bumberBz...)

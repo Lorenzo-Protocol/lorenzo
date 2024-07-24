@@ -40,5 +40,5 @@ type CrossChainEvent struct {
 
 // Key returns the unique key of the EvmEvent struct
 func(e EvmEvent) Key() []byte {
-	return KeyEventRecord(e.BlockNumber, e.Contract, e.Identifier)
+	return KeyEvmEvent(e.BlockNumber, e.Contract, e.Identifier)
 }

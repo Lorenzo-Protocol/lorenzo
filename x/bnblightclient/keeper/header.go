@@ -56,13 +56,13 @@ func(k Keeper) UpdateHeader(ctx sdk.Context, header *types.Header) error {
 }
 
 
-// GetLatestHeader retrieves the latested header from the store.
+// GetLatestHeader retrieves the latest header from the store.
 //
 // Parameters:
 // - ctx: the context object
 //
 // Returns:
-// - types.Header: the latested header
+// - types.Header: the latest header
 // - bool: true if the header was found, false otherwise
 func(k Keeper) GetLatestHeader(ctx sdk.Context) (*types.Header, bool) {
 	store := ctx.KVStore(k.storeKey)
@@ -75,13 +75,13 @@ func(k Keeper) GetLatestHeader(ctx sdk.Context) (*types.Header, bool) {
 	return k.GetHeader(ctx, number)
 }
 
-// GetLatestNumber retrieves the latested number from the store.
+// GetLatestNumber retrieves the latest number from the store.
 //
 // Parameters:
 // - ctx: the context object
 //
 // Returns:
-// - uint64: the latested number
+// - uint64: the latest number
 func(k Keeper) GetLatestNumber(ctx sdk.Context) uint64 {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.KeyLatestHeaderNumber())
