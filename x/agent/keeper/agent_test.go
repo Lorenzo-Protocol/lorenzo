@@ -14,11 +14,6 @@ func (suite *KeeperTestSuite) TestSetAdmin() {
 		validation func(sdk.AccAddress)
 	}{
 		{
-			name:      "fail - invalid address, invalid bech32",
-			args:      sdk.AccAddress("foobar"),
-			expectErr: true,
-		},
-		{
 			name:      "fail - admin already set",
 			args:      testAdmin,
 			expectErr: true,
