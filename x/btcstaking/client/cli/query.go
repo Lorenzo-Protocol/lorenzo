@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	sdkmath "cosmossdk.io/math"
-	"github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/types"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"

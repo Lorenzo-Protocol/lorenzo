@@ -54,21 +54,21 @@ import (
 	feemarkettypes "github.com/evmos/ethermint/x/feemarket/types"
 
 	/* ------------------------------ self module imports ----------------------------- */
-	appparams "github.com/Lorenzo-Protocol/lorenzo/app/params"
-	"github.com/Lorenzo-Protocol/lorenzo/x/agent"
-	agenttypes "github.com/Lorenzo-Protocol/lorenzo/x/agent/types"
-	"github.com/Lorenzo-Protocol/lorenzo/x/btclightclient"
-	btclightclienttypes "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/types"
-	"github.com/Lorenzo-Protocol/lorenzo/x/btcstaking"
-	btcstakingtypes "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types"
-	"github.com/Lorenzo-Protocol/lorenzo/x/fee"
-	feetypes "github.com/Lorenzo-Protocol/lorenzo/x/fee/types"
-	"github.com/Lorenzo-Protocol/lorenzo/x/plan"
-	plantypes "github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
+	appparams "github.com/Lorenzo-Protocol/lorenzo/v2/app/params"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/agent"
+	agenttypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/agent/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/btclightclient"
+	btclightclienttypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/btclightclient/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking"
+	btcstakingtypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/fee"
+	feetypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/fee/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/plan"
+	plantypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/plan/types"
 
-	ics20wrapper "github.com/Lorenzo-Protocol/lorenzo/x/ibctransfer"
-	"github.com/Lorenzo-Protocol/lorenzo/x/token"
-	tokentypes "github.com/Lorenzo-Protocol/lorenzo/x/token/types"
+	ics20wrapper "github.com/Lorenzo-Protocol/lorenzo/v2/x/ibctransfer"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/token"
+	tokentypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/token/types"
 )
 
 // this line is used by starport scaffolding # stargate/wasm/app/enabledProposals

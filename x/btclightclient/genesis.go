@@ -1,8 +1,8 @@
 package btclightclient
 
 import (
-	"github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/keeper"
-	"github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/btclightclient/keeper"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/btclightclient/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 

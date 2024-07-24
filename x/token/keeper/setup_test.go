@@ -17,12 +17,12 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	"github.com/Lorenzo-Protocol/lorenzo/app"
-	"github.com/Lorenzo-Protocol/lorenzo/testutil"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/app"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/testutil"
 
-	utiltx "github.com/Lorenzo-Protocol/lorenzo/testutil/tx"
-	"github.com/Lorenzo-Protocol/lorenzo/x/token/keeper"
-	"github.com/Lorenzo-Protocol/lorenzo/x/token/types"
+	utiltx "github.com/Lorenzo-Protocol/lorenzo/v2/testutil/tx"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/token/keeper"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/token/types"
 )
 
 type KeeperTestSuite struct {

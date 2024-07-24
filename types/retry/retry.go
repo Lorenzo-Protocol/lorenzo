@@ -5,7 +5,7 @@ import (
 	"math/rand"
 	"time"
 
-	btclctypes "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/types"
+	btclctypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/btclightclient/types"
 )
 
 // unrecoverableErrors is a list of errors which are unsafe and should not be retried.

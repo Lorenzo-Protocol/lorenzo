@@ -3,9 +3,9 @@ package keeper_test
 import (
 	"fmt"
 
-	contractsplan "github.com/Lorenzo-Protocol/lorenzo/contracts/plan"
-	utiltx "github.com/Lorenzo-Protocol/lorenzo/testutil/tx"
-	"github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
+	contractsplan "github.com/Lorenzo-Protocol/lorenzo/v2/contracts/plan"
+	utiltx "github.com/Lorenzo-Protocol/lorenzo/v2/testutil/tx"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/plan/types"
 	"github.com/ethereum/go-ethereum/common"
 	evmtypes "github.com/evmos/ethermint/x/evm/types"
 )

@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/Lorenzo-Protocol/lorenzo/x/agent/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/agent/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )

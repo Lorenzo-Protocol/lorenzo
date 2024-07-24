@@ -10,8 +10,8 @@ import (
 	channeltypes "github.com/cosmos/ibc-go/v7/modules/core/04-channel/types"
 	host "github.com/cosmos/ibc-go/v7/modules/core/24-host"
 
-	"github.com/Lorenzo-Protocol/lorenzo/x/ibctransfer/keeper"
-	tokentypes "github.com/Lorenzo-Protocol/lorenzo/x/token/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/ibctransfer/keeper"
+	tokentypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/token/types"
 )
 
 func (suite *KeeperTestSuite) TestTransfer() {

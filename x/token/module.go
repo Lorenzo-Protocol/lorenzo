@@ -15,9 +15,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
-	"github.com/Lorenzo-Protocol/lorenzo/x/token/client/cli"
-	"github.com/Lorenzo-Protocol/lorenzo/x/token/keeper"
-	"github.com/Lorenzo-Protocol/lorenzo/x/token/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/token/client/cli"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/token/keeper"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/token/types"
 )
 
 // ConsensusVersion defines the current token module consensus version.

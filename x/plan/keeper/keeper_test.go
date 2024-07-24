@@ -12,17 +12,17 @@ import (
 
 	"github.com/evmos/ethermint/crypto/ethsecp256k1"
 
-	appparams "github.com/Lorenzo-Protocol/lorenzo/app/params"
+	appparams "github.com/Lorenzo-Protocol/lorenzo/v2/app/params"
 	evmtypes "github.com/evmos/ethermint/x/evm/types"
 
 	feemarkettypes "github.com/evmos/ethermint/x/feemarket/types"
 
-	"github.com/Lorenzo-Protocol/lorenzo/testutil"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/testutil"
 
-	"github.com/Lorenzo-Protocol/lorenzo/app"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/app"
 
-	"github.com/Lorenzo-Protocol/lorenzo/x/plan/keeper"
-	"github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/plan/keeper"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/plan/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"

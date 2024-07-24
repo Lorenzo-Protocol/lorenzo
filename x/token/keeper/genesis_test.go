@@ -1,6 +1,6 @@
 package keeper_test
 
-import "github.com/Lorenzo-Protocol/lorenzo/x/token/types"
+import "github.com/Lorenzo-Protocol/lorenzo/v2/x/token/types"
 
 func (suite *KeeperTestSuite) TestInitGenesis() {
 	testcases := []struct {

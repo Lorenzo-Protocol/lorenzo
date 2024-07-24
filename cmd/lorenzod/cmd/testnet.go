@@ -25,7 +25,7 @@ import (
 	"os"
 	"path/filepath"
 
-	appparams "github.com/Lorenzo-Protocol/lorenzo/app/params"
+	appparams "github.com/Lorenzo-Protocol/lorenzo/v2/app/params"
 
 	"github.com/ethereum/go-ethereum/common"
 
@@ -56,8 +56,8 @@ import (
 	mintypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	btclightclienttypes "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/types"
-	btcstakingtypes "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types"
+	btclightclienttypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/btclightclient/types"
+	btcstakingtypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/types"
 	"github.com/evmos/ethermint/crypto/hd"
 	"github.com/evmos/ethermint/server/config"
 	srvflags "github.com/evmos/ethermint/server/flags"

@@ -5,8 +5,8 @@ import (
 	"encoding/hex"
 	"testing"
 
-	lrz "github.com/Lorenzo-Protocol/lorenzo/types"
-	"github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types"
+	lrz "github.com/Lorenzo-Protocol/lorenzo/v2/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/types"
 
 	"github.com/btcsuite/btcd/btcutil"
 	"github.com/btcsuite/btcd/chaincfg"

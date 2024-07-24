@@ -8,8 +8,8 @@ import (
 	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 	clienttypes "github.com/cosmos/ibc-go/v7/modules/core/02-client/types"
 
-	"github.com/Lorenzo-Protocol/lorenzo/contracts/erc20"
-	tokentypes "github.com/Lorenzo-Protocol/lorenzo/x/token/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/contracts/erc20"
+	tokentypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/token/types"
 )
 
 // TestOnRecvPacket tests the OnRecvPacket function of the middleware.

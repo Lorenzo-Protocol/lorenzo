@@ -10,8 +10,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 
-	"github.com/Lorenzo-Protocol/lorenzo/x/ibctransfer/types"
-	tokentypes "github.com/Lorenzo-Protocol/lorenzo/x/token/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/ibctransfer/types"
+	tokentypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/token/types"
 )
 
 var _ ibctransfertypes.MsgServer = Keeper{}

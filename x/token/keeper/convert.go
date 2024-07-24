@@ -9,8 +9,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	errortypes "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/Lorenzo-Protocol/lorenzo/contracts/erc20"
-	"github.com/Lorenzo-Protocol/lorenzo/x/token/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/contracts/erc20"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/token/types"
 )
 
 // ConvertNativeCoinToVoucherERC20 converts token from bank to contract. Token source is sdk.Coin.

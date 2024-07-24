@@ -1,7 +1,7 @@
 package keeper_test
 
 import (
-	"github.com/Lorenzo-Protocol/lorenzo/x/agent/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/agent/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 

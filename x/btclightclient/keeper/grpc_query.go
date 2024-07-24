@@ -3,8 +3,8 @@ package keeper
 import (
 	"context"
 
-	bbn "github.com/Lorenzo-Protocol/lorenzo/types"
-	"github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/types"
+	bbn "github.com/Lorenzo-Protocol/lorenzo/v2/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/btclightclient/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	"google.golang.org/grpc/codes"

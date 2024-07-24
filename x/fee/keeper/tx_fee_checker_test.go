@@ -8,8 +8,8 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
-	"github.com/Lorenzo-Protocol/lorenzo/x/fee/keeper"
-	"github.com/Lorenzo-Protocol/lorenzo/x/fee/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/fee/keeper"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/fee/types"
 )
 
 var (
