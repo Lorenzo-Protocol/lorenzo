@@ -40,7 +40,7 @@ func upgradeHandlerConstructor(
 
 		// agent module init
 		// 1. set admin
-		admin, err := sdk.AccAddressFromBech32("")
+		admin, err := sdk.AccAddressFromBech32("lrz1xa40j022h2rcmnte47gyjg8688grln94pp84lc")
 		if err != nil {
 			return nil, err
 		}
@@ -56,7 +56,7 @@ func upgradeHandlerConstructor(
 
 		// plan module init
 		planParams := plantypes.Params{
-			AllowList: []string{"*"},
+			AllowList: []string{"lrz1xa40j022h2rcmnte47gyjg8688grln94pp84lc"},
 		}
 
 		if err := app.PlanKeeper.SetParams(ctx, planParams); err != nil {
