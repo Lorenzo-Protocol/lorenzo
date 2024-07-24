@@ -61,7 +61,6 @@ func (h *BNBHeader) Hash() common.Hash {
 	return rlpHash(h)
 }
 
-
 // ConvertToBNBHeader decodes the input data into a BNBHeader struct and validates it against the provided Header.
 //
 // It takes a pointer to a Header struct as input and returns a pointer to a BNBHeader struct and an error.
@@ -74,25 +73,25 @@ func (h *BNBHeader) Hash() common.Hash {
 // If not, it returns an ErrInvalidHeader error with the message "receipt hash not equal".
 // If all checks pass, it returns the BNBHeader struct and a nil error.
 func ConvertToBNBHeader(header *Header) (*BNBHeader, error) {
-	bnbHeader,err := UnmarshalBNBHeader(header.RawHeader)
+	bnbHeader, err := UnmarshalBNBHeader(header.RawHeader)
 	if err != nil {
 		return nil, err
 	}
 
 	if bnbHeader.Number.Uint64() != header.Number {
-		return nil,errorsmod.Wrap(ErrInvalidHeader, "number not equal")
+		return nil, errorsmod.Wrap(ErrInvalidHeader, "number not equal")
 	}
 
 	if bnbHeader.Hash() != common.Hash(header.Hash) {
-		return nil,errorsmod.Wrap(ErrInvalidHeader, "hash not equal")
+		return nil, errorsmod.Wrap(ErrInvalidHeader, "hash not equal")
 	}
 
 	if bnbHeader.ParentHash != common.Hash(header.ParentHash) {
-		return nil,errorsmod.Wrap(ErrInvalidHeader, "parentHash not equal")
+		return nil, errorsmod.Wrap(ErrInvalidHeader, "parentHash not equal")
 	}
 
 	if bnbHeader.ReceiptHash != common.Hash(header.ReceiptRoot) {
-		return nil,errorsmod.Wrap(ErrInvalidHeader, "receipt hash not equal")
+		return nil, errorsmod.Wrap(ErrInvalidHeader, "receipt hash not equal")
 	}
 	return bnbHeader, nil
 }
@@ -122,7 +121,7 @@ func VeryHeaders(headers []*Header) error {
 	}
 
 	if len(headers) == 1 {
-		_,err := ConvertToBNBHeader(headers[0])
+		_, err := ConvertToBNBHeader(headers[0])
 		return err
 	}
 
@@ -149,10 +148,10 @@ func VeryHeaders(headers []*Header) error {
 }
 
 func rlpHash(x interface{}) (h common.Hash) {
-	sha := hasherPool.Get().(crypto.KeccakState)
+	sha, _ := hasherPool.Get().(crypto.KeccakState)
 	defer hasherPool.Put(sha)
 	sha.Reset()
-	rlp.Encode(sha, x)
-	sha.Read(h[:])
+	_ = rlp.Encode(sha, x)
+	_, _ = sha.Read(h[:])
 	return h
 }

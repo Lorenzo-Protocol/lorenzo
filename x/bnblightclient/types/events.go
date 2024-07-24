@@ -3,7 +3,6 @@ package types
 import (
 	_ "embed" //nolint: golint
 	"encoding/json"
-
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts/abi"
@@ -11,7 +10,7 @@ import (
 )
 
 //go:embed stake_plan_hub_abi.json
-var	stakePlanHubContractABIJSON []byte //nolint: golint
+var stakePlanHubContractABIJSON []byte //nolint: golint
 
 var stakePlanHubContractABI abi.ABI
 
@@ -39,6 +38,6 @@ type CrossChainEvent struct {
 }
 
 // Key returns the unique key of the EvmEvent struct
-func(e EvmEvent) Key() []byte {
+func (e EvmEvent) Key() []byte {
 	return KeyEvmEvent(e.BlockNumber, e.Contract, e.Identifier)
 }

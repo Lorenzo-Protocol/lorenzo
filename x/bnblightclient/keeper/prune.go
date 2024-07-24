@@ -19,7 +19,9 @@ func (k Keeper) prune(ctx sdk.Context) {
 func (k Keeper) pruneHeaders(ctx sdk.Context, pruneEndNumber uint64) {
 	store := ctx.KVStore(k.storeKey)
 	iterator := sdk.KVStoreReversePrefixIterator(store, types.KeyPrefixHeader)
-	defer iterator.Close()
+	defer func() {
+		_ = iterator.Close()
+	}()
 
 	for ; iterator.Valid(); iterator.Next() {
 		iterKey := iterator.Key()
@@ -38,7 +40,9 @@ func (k Keeper) pruneHeaders(ctx sdk.Context, pruneEndNumber uint64) {
 			// delete event record
 			prefix := append(types.KeyPrefixEvmEvent, sdk.Uint64ToBigEndian(number)...)
 			iterator2 := sdk.KVStoreReversePrefixIterator(store, prefix)
-			defer iterator2.Close()
+			defer func() {
+				_ = iterator2.Close()
+			}()
 
 			for ; iterator2.Valid(); iterator2.Next() {
 				iterKey2 := iterator2.Key()
