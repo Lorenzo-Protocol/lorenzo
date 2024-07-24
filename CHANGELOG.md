@@ -2,7 +2,7 @@
 
 ## [Unreleased]
 
-## New Features
+### New Features
 
 - (ante) [\#58](https://github.com/Lorenzo-Protocol/lorenzo/pull/58) Unified fee settings for Cosmos and EVM transactions.
 - (x/plan) [\#26](https://github.com/Lorenzo-Protocol/lorenzo/pull/26) Introduced the Plan module for managing staking plans.
@@ -14,13 +14,13 @@
 - (x/btcstaking) [\#67](https://github.com/Lorenzo-Protocol/lorenzo/pull/67) Added transaction output amount limit to filter out dust outputs.
 - (x/btcstaking) [\#74](https://github.com/Lorenzo-Protocol/lorenzo/pull/74) Enabled minting stBTC to multiple chains.
 
-## Bug Fixes
+### Bug Fixes
 
 - (app) [\#63](https://github.com/Lorenzo-Protocol/lorenzo/pull/63) Fixed Tendermint client type registration.
 - (client) [\#47](https://github.com/Lorenzo-Protocol/lorenzo/pull/47) Fixed error handling for BTC staking query commands.
 - (x/btcstaking) [\#37](https://github.com/Lorenzo-Protocol/lorenzo/pull/37) Added BTC staking genesis validation.
 
-## Improvements
+### Improvements
 
 - (client) [\#17](https://github.com/Lorenzo-Protocol/lorenzo/pull/17) BTC staking query now accepts transaction ID instead of transaction hash.
 - (client) [\#53](https://github.com/Lorenzo-Protocol/lorenzo/pull/53) Renamed BTC staking query commands.
