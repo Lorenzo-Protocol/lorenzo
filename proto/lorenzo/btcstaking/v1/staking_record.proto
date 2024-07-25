@@ -1,10 +1,7 @@
 syntax = "proto3";
 package lorenzo.btcstaking.v1;
 
-import "cosmos/msg/v1/msg.proto";
-import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
-// import "cosmos/staking/v1beta1/staking.proto";
 
 option go_package = "github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/types";
 
@@ -15,4 +12,21 @@ message BTCStakingRecord {
   string agent_name = 4;
   string agent_btc_addr = 5;
   uint32 chain_id = 6;
+}
+
+// BTCBStakingRecord defines the message for btcb staking record
+message BTCBStakingRecord {
+  // tx_hash defines the tx hash
+  bytes tx_hash = 1;
+  // event_idx defines the event index
+  uint64 event_idx = 2;
+  // receiver_addr defines the receiver address
+  string receiver_addr = 3;
+  // amount defines the stBTC amount
+  string amount = 4 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  // chain_id defines the chain id
+  uint32 chain_id = 5;
 }
