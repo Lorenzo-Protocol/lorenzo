@@ -43,7 +43,7 @@ func (k Keeper) PostTxProcessing(
 	erc20 := erc20.ERC20MinterBurnerDecimalsContract.ABI
 
 	// if non target log and inner data found, skip
-	for i, log := range receipt.Logs {
+	for _, log := range receipt.Logs {
 		// transfer event topics length equals 3
 		if len(log.Topics) != 3 {
 			continue
@@ -116,10 +116,6 @@ func (k Keeper) PostTxProcessing(
 		}
 
 		if err != nil {
-			k.Logger(ctx).Debug(
-				"failed to process EVM hook for ER20 -> coin conversion",
-				"coin", pair.Denom, "contract", pair.ContractAddress, "error", err.Error(),
-			)
 			return err
 		}
 
@@ -129,11 +125,6 @@ func (k Keeper) PostTxProcessing(
 
 		// transfer the tokens from ModuleAccount to sender address
 		if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, recipient, coins); err != nil {
-			k.Logger(ctx).Debug(
-				"failed to process EVM hook for ER20 -> coin conversion",
-				"tx-hash", receipt.TxHash.Hex(), "log-idx", i,
-				"coin", pair.Denom, "contract", pair.ContractAddress, "error", err.Error(),
-			)
 			return err
 		}
 	}
