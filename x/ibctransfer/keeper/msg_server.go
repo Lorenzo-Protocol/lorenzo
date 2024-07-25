@@ -3,10 +3,8 @@ package keeper
 import (
 	"context"
 
-	"github.com/armon/go-metrics"
 	"github.com/ethereum/go-ethereum/common"
 
-	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 
@@ -51,16 +49,6 @@ func (k Keeper) Transfer(goCtx context.Context, msg *ibctransfertypes.MsgTransfe
 	sender := sdk.MustAccAddressFromBech32(msg.Sender)
 	balance := k.bankKeeper.GetBalance(ctx, sender, pair.Denom)
 	if balance.Amount.GTE(msg.Token.Amount) {
-		defer func() {
-			telemetry.IncrCounterWithLabels(
-				[]string{"erc20", "ibc", "transfer", "total"},
-				1,
-				[]metrics.Label{
-					telemetry.NewLabel("denom", pair.Denom),
-				},
-			)
-		}()
-
 		return k.Keeper.Transfer(sdk.WrapSDKContext(ctx), msg)
 	}
 
@@ -75,16 +63,6 @@ func (k Keeper) Transfer(goCtx context.Context, msg *ibctransfertypes.MsgTransfe
 		}); err != nil {
 		return nil, err
 	}
-
-	defer func() {
-		telemetry.IncrCounterWithLabels(
-			[]string{"erc20", "ibc", "transfer", "total"},
-			1,
-			[]metrics.Label{
-				telemetry.NewLabel("denom", pair.Denom),
-			},
-		)
-	}()
 
 	return k.Keeper.Transfer(sdk.WrapSDKContext(ctx), msg)
 }

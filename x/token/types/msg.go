@@ -30,6 +30,7 @@ func (m *MsgRegisterCoin) ValidateBasic() error {
 	}
 
 	// TODO: enforce ibc and erc20 denom validation on metadata unit denom as well?
+	seenDenom := make(map[string]bool)
 	for _, metadata := range m.Metadata {
 		if err := metadata.Validate(); err != nil {
 			return err
@@ -45,6 +46,10 @@ func (m *MsgRegisterCoin) ValidateBasic() error {
 			return errorsmod.Wrap(errors.New("unexpected denom"), "should not be erc20 denom")
 		}
 
+		if seenDenom[metadata.Base] {
+			return errorsmod.Wrapf(errortypes.ErrInvalidCoins, "duplicate base denom %s", metadata.Base)
+		}
+		seenDenom[metadata.Base] = true
 	}
 	return nil
 }
@@ -61,11 +66,19 @@ func (m *MsgRegisterERC20) ValidateBasic() error {
 		return errorsmod.Wrap(err, "invalid authority address")
 	}
 
+	seenAddr := make(map[string]bool)
 	for _, addr := range m.ContractAddresses {
 		if !common.IsHexAddress(addr) {
 			return errorsmod.Wrapf(
 				errortypes.ErrInvalidAddress, "address %s is not a valid ethereum hex address", addr)
 		}
+
+		if seenAddr[addr] {
+			return errorsmod.Wrapf(
+				errortypes.ErrInvalidAddress, "duplicate contract address %s", addr)
+		}
+
+		seenAddr[addr] = true
 	}
 
 	return nil
