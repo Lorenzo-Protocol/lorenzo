@@ -3,7 +3,7 @@ package cli
 import (
 	flag "github.com/spf13/pflag"
 
-	"github.com/Lorenzo-Protocol/lorenzo/x/agent/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/agent/types"
 )
 
 const (

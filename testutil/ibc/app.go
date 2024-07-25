@@ -34,8 +34,8 @@ import (
 	"github.com/cosmos/ibc-go/v7/modules/core/keeper"
 	ibctestingtypes "github.com/cosmos/ibc-go/v7/testing/types"
 
-	"github.com/Lorenzo-Protocol/lorenzo/app"
-	appparams "github.com/Lorenzo-Protocol/lorenzo/app/params"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/app"
+	appparams "github.com/Lorenzo-Protocol/lorenzo/v2/app/params"
 	evmtypes "github.com/evmos/ethermint/x/evm/types"
 )
 

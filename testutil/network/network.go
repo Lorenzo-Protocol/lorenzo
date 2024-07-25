@@ -15,7 +15,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Lorenzo-Protocol/lorenzo/utils"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/utils"
 
 	dbm "github.com/cometbft/cometbft-db"
 	tmcfg "github.com/cometbft/cometbft/config"
@@ -59,8 +59,8 @@ import (
 	etherminttypes "github.com/evmos/ethermint/types"
 	evmtypes "github.com/evmos/ethermint/x/evm/types"
 
-	"github.com/Lorenzo-Protocol/lorenzo/app"
-	appparams "github.com/Lorenzo-Protocol/lorenzo/app/params"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/app"
+	appparams "github.com/Lorenzo-Protocol/lorenzo/v2/app/params"
 )
 
 // package-wide network lock to only allow one test network at a time

@@ -4,7 +4,7 @@ import (
 	ibctransfer "github.com/cosmos/ibc-go/v7/modules/apps/transfer"
 	porttypes "github.com/cosmos/ibc-go/v7/modules/core/05-port/types"
 
-	"github.com/Lorenzo-Protocol/lorenzo/x/ibctransfer/keeper"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/ibctransfer/keeper"
 )
 
 var _ porttypes.IBCModule = IBCModule{}

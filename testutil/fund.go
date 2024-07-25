@@ -6,7 +6,7 @@ import (
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 
-	"github.com/Lorenzo-Protocol/lorenzo/utils"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/utils"
 )
 
 // FundAccount is a utility function that funds an account by minting and

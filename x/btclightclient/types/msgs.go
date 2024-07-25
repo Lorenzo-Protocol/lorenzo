@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"math/big"
 
-	bbn "github.com/Lorenzo-Protocol/lorenzo/types"
+	bbn "github.com/Lorenzo-Protocol/lorenzo/v2/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 

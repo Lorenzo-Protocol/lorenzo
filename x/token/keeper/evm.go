@@ -17,8 +17,8 @@ import (
 	errortypes "github.com/cosmos/cosmos-sdk/types/errors"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
-	"github.com/Lorenzo-Protocol/lorenzo/contracts/erc20"
-	"github.com/Lorenzo-Protocol/lorenzo/x/token/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/contracts/erc20"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/token/types"
 )
 
 // DeployERC20Contract deploys an ERC20 contract for a given coin metadata.

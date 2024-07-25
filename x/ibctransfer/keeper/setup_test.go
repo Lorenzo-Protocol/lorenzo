@@ -19,11 +19,11 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	clienttypes "github.com/cosmos/ibc-go/v7/modules/core/02-client/types"
 
-	"github.com/Lorenzo-Protocol/lorenzo/app"
-	"github.com/Lorenzo-Protocol/lorenzo/contracts/erc20"
-	"github.com/Lorenzo-Protocol/lorenzo/testutil"
-	utiltx "github.com/Lorenzo-Protocol/lorenzo/testutil/tx"
-	tokentypes "github.com/Lorenzo-Protocol/lorenzo/x/token/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/app"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/contracts/erc20"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/testutil"
+	utiltx "github.com/Lorenzo-Protocol/lorenzo/v2/testutil/tx"
+	tokentypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/token/types"
 )
 
 type KeeperTestSuite struct {

@@ -31,7 +31,7 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	appparams "github.com/Lorenzo-Protocol/lorenzo/app/params"
+	appparams "github.com/Lorenzo-Protocol/lorenzo/v2/app/params"
 )
 
 // SimAppChainID hardcoded chainID for simulation

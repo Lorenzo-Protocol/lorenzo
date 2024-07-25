@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/Lorenzo-Protocol/lorenzo/app"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/app"
 	"github.com/stretchr/testify/suite"
 
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
@@ -11,8 +11,8 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/Lorenzo-Protocol/lorenzo/x/fee/keeper"
-	"github.com/Lorenzo-Protocol/lorenzo/x/fee/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/fee/keeper"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/fee/types"
 )
 
 type KeeperTestSuite struct {

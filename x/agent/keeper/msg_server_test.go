@@ -1,9 +1,9 @@
 package keeper_test
 
 import (
-	"github.com/Lorenzo-Protocol/lorenzo/app"
-	"github.com/Lorenzo-Protocol/lorenzo/x/agent/keeper"
-	"github.com/Lorenzo-Protocol/lorenzo/x/agent/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/app"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/agent/keeper"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/agent/types"
 )
 
 func (suite *KeeperTestSuite) TestMsgServer_AddAgent() {

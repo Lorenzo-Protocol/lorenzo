@@ -5,8 +5,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	lrz "github.com/Lorenzo-Protocol/lorenzo/types"
-	btclctypes "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/types"
+	lrz "github.com/Lorenzo-Protocol/lorenzo/v2/types"
+	btclctypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/btclightclient/types"
 	"github.com/btcsuite/btcd/chaincfg"
 )
 

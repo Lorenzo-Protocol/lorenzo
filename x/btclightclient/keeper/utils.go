@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/btclightclient/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 )
 
