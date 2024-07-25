@@ -215,9 +215,14 @@ proto-check-breaking:
 localnet-build-env:
 	$(MAKE) -C contrib/images lorenzod-env
 
-localnet-build-nodes:
+localnet-build-dev:
+	$(MAKE) -C contrib/images lorenzod-dev
+
+localnet-init:
 	$(DOCKER) run --rm -v $(CURDIR)/.testnets:/data lorenzo/lorenzod \
 			  testnet init-files --v 4 -o /data --starting-ip-address 192.168.10.2 --keyring-backend=test
+
+localnet-start:
 	docker-compose up -d
 
 localnet-stop:
