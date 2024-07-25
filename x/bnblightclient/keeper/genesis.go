@@ -3,7 +3,7 @@ package keeper
 import (
 	"slices"
 
-	"github.com/Lorenzo-Protocol/lorenzo/x/bnblightclient/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/bnblightclient/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )

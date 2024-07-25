@@ -6,7 +6,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/Lorenzo-Protocol/lorenzo/x/bnblightclient/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/bnblightclient/types"
 )
 
 // UploadHeaders adds a batch of headers to the bnb light client chain

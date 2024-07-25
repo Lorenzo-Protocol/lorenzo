@@ -15,9 +15,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
-	"github.com/Lorenzo-Protocol/lorenzo/x/bnblightclient/client/cli"
-	"github.com/Lorenzo-Protocol/lorenzo/x/bnblightclient/keeper"
-	"github.com/Lorenzo-Protocol/lorenzo/x/bnblightclient/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/bnblightclient/client/cli"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/bnblightclient/keeper"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/bnblightclient/types"
 )
 
 var (

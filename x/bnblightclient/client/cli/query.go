@@ -10,7 +10,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/spf13/cobra"
 
-	"github.com/Lorenzo-Protocol/lorenzo/x/bnblightclient/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/bnblightclient/types"
 )
 
 // GetQueryCmd returns the cli query commands for bnblightclient module
