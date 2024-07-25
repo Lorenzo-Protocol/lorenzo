@@ -1,15 +1,13 @@
-package helpers
+package app
 
 import (
 	"bytes"
 	"encoding/json"
+	"math/rand"
 	"strconv"
 	"testing"
 	"time"
 
-	appparams "github.com/Lorenzo-Protocol/lorenzo/app/params"
-
-	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/spf13/cast"
 	"github.com/stretchr/testify/require"
 
@@ -19,6 +17,8 @@ import (
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	tmtypes "github.com/cometbft/cometbft/types"
 
+	"github.com/cosmos/cosmos-sdk/baseapp"
+	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
@@ -31,13 +31,15 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	"github.com/Lorenzo-Protocol/lorenzo/app"
+	appparams "github.com/Lorenzo-Protocol/lorenzo/v2/app/params"
 )
 
 // SimAppChainID hardcoded chainID for simulation
 const (
 	SimAppChainID = "lorenzo_8329-1"
 )
+
+var DefaultAppVersion uint64 = 1
 
 // DefaultConsensusParams defines the default Tendermint consensus params used
 // in LorenzoApp testing.
@@ -56,6 +58,7 @@ var DefaultConsensusParams = &tmproto.ConsensusParams{
 			tmtypes.ABCIPubKeyTypeEd25519,
 		},
 	},
+	Version: &tmproto.VersionParams{App: DefaultAppVersion},
 }
 
 // PV implements PrivValidator interface
@@ -75,7 +78,7 @@ func (EmptyAppOptions) Get(_ string) interface{} { return nil }
 // - t: A testing.T instance for testing purposes.
 // Returns:
 // - *app.LorenzoApp: The initialized instance of app.LorenzoApp.
-func Setup(t *testing.T) *app.LorenzoApp {
+func Setup(t *testing.T) *LorenzoApp {
 	t.Helper()
 
 	privVal := mock.NewPV()
@@ -105,7 +108,7 @@ func Setup(t *testing.T) *app.LorenzoApp {
 // - merge: A function to merge override module genesis data with the default genesis data.
 // Returns:
 // - *app.LorenzoApp: The initialized instance of app.LorenzoApp.
-func SetupWithGenesisMergeFn(t *testing.T, merge func(cdc codec.Codec, state map[string]json.RawMessage)) *app.LorenzoApp {
+func SetupWithGenesisMergeFn(t *testing.T, merge func(cdc codec.Codec, state map[string]json.RawMessage)) *LorenzoApp {
 	t.Helper()
 
 	privVal := mock.NewPV()
@@ -162,7 +165,7 @@ func SetupWithGenesisMergeFn(t *testing.T, merge func(cdc codec.Codec, state map
 // that also act as delegators. For simplicity, each validator is bonded with a delegation
 // of one consensus engine unit in the default token of the LorenzoApp from first genesis
 // account. A Nop logger is set in LorenzoApp.
-func SetupWithGenesisValSet(t *testing.T, valSet *tmtypes.ValidatorSet, genAccs []authtypes.GenesisAccount, balances ...banktypes.Balance) *app.LorenzoApp {
+func SetupWithGenesisValSet(t *testing.T, valSet *tmtypes.ValidatorSet, genAccs []authtypes.GenesisAccount, balances ...banktypes.Balance) *LorenzoApp {
 	t.Helper()
 
 	lorenzoApp, genesisState := setup()
@@ -213,7 +216,7 @@ func CreateTestAddrs(numAddrs int) []sdk.AccAddress {
 	return addresses
 }
 
-func setup() (*app.LorenzoApp, app.GenesisState) {
+func setup() (*LorenzoApp, GenesisState) {
 	db := dbm.NewMemDB()
 	appOptions := make(simtestutil.AppOptionsMap)
 	appOptions[server.FlagInvCheckPeriod] = 5
@@ -221,27 +224,27 @@ func setup() (*app.LorenzoApp, app.GenesisState) {
 	appOptions["btc-config.network"] = "simnet"
 
 	invCheckPeriod := cast.ToUint(appOptions.Get(server.FlagInvCheckPeriod))
-	encConfig := app.MakeEncodingConfig()
-	LorenzoApp := app.NewLorenzoApp(
+	encConfig := MakeEncodingConfig()
+	LorenzoApp := NewLorenzoApp(
 		log.NewNopLogger(),
 		db,
 		nil,
 		true,
 		map[int64]bool{},
-		app.DefaultNodeHome,
+		DefaultNodeHome,
 		invCheckPeriod,
 		encConfig,
 		appOptions,
 		baseapp.SetChainID(SimAppChainID),
 	)
-	return LorenzoApp, app.NewDefaultGenesisState(encConfig.Codec)
+	return LorenzoApp, NewDefaultGenesisState(encConfig.Codec)
 }
 
 func genesisStateWithValSet(t *testing.T,
-	app *app.LorenzoApp, genesisState app.GenesisState,
+	app *LorenzoApp, genesisState GenesisState,
 	valSet *tmtypes.ValidatorSet, genAccs []authtypes.GenesisAccount,
 	balances ...banktypes.Balance,
-) app.GenesisState {
+) GenesisState {
 	t.Helper()
 	// set genesis accounts
 	authGenesis := authtypes.NewGenesisState(authtypes.DefaultParams(), genAccs)
@@ -320,4 +323,35 @@ func testAddr(addr string, bech string) sdk.AccAddress {
 	}
 
 	return res
+}
+
+func SignAndDeliver(
+	t *testing.T, txCfg client.TxConfig, app *baseapp.BaseApp, header tmproto.Header, msgs []sdk.Msg,
+	chainID string, accNums, accSeqs []uint64, expSimPass, expPass bool, priv ...cryptotypes.PrivKey,
+) (sdk.GasInfo, *sdk.Result, error) {
+	tx, err := simtestutil.GenSignedMockTx(
+		rand.New(rand.NewSource(time.Now().UnixNano())), //nolint: gosec
+		txCfg,
+		msgs,
+		sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 0)},
+		simtestutil.DefaultGenTxGas,
+		chainID,
+		accNums,
+		accSeqs,
+		priv...,
+	)
+	require.NoError(t, err)
+
+	// Simulate a sending a transaction
+	gInfo, res, err := app.SimDeliver(txCfg.TxEncoder(), tx)
+
+	if expPass {
+		require.NoError(t, err)
+		require.NotNil(t, res)
+	} else {
+		require.Error(t, err)
+		require.Nil(t, res)
+	}
+
+	return gInfo, res, err
 }

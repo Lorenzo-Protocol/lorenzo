@@ -2,7 +2,7 @@ package types
 
 import (
 	sdkmath "cosmossdk.io/math"
-	bbn "github.com/Lorenzo-Protocol/lorenzo/types"
+	bbn "github.com/Lorenzo-Protocol/lorenzo/v2/types"
 )
 
 func NewBTCHeaderInfo(header *bbn.BTCHeaderBytes, headerHash *bbn.BTCHeaderHashBytes, height uint64, work *sdkmath.Uint) *BTCHeaderInfo {

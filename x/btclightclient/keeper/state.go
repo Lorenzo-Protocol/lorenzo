@@ -4,8 +4,8 @@ import (
 	"encoding/binary"
 	"fmt"
 
-	bbn "github.com/Lorenzo-Protocol/lorenzo/types"
-	"github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/types"
+	bbn "github.com/Lorenzo-Protocol/lorenzo/v2/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/btclightclient/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"

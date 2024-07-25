@@ -3,12 +3,12 @@ package keeper
 import (
 	"fmt"
 
-	contractsplan "github.com/Lorenzo-Protocol/lorenzo/contracts/plan"
+	contractsplan "github.com/Lorenzo-Protocol/lorenzo/v2/contracts/plan"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	errorsmod "cosmossdk.io/errors"
-	"github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/plan/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"

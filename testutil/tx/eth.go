@@ -20,8 +20,8 @@ import (
 	"github.com/evmos/ethermint/server/config"
 	evmtypes "github.com/evmos/ethermint/x/evm/types"
 
-	"github.com/Lorenzo-Protocol/lorenzo/app"
-	"github.com/Lorenzo-Protocol/lorenzo/utils"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/app"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/utils"
 )
 
 // PrepareEthTx creates an ethereum tx and signs it with the provided messages and private key.

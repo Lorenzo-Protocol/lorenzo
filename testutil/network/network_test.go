@@ -13,9 +13,9 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/evmos/ethermint/server/config"
 
-	"github.com/Lorenzo-Protocol/lorenzo/testutil/network"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/testutil/network"
 
-	lorenzonetwork "github.com/Lorenzo-Protocol/lorenzo/testutil/network"
+	lorenzonetwork "github.com/Lorenzo-Protocol/lorenzo/v2/testutil/network"
 )
 
 type IntegrationTestSuite struct {

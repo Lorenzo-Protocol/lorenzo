@@ -8,15 +8,15 @@ import (
 
 	"cosmossdk.io/core/appmodule"
 
-	"github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/keeper"
-	"github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/keeper"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/types"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
-	"github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/client/cli"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/client/cli"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"

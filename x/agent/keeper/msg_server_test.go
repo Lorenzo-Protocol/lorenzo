@@ -1,9 +1,9 @@
 package keeper_test
 
 import (
-	"github.com/Lorenzo-Protocol/lorenzo/app/helpers"
-	"github.com/Lorenzo-Protocol/lorenzo/x/agent/keeper"
-	"github.com/Lorenzo-Protocol/lorenzo/x/agent/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/app"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/agent/keeper"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/agent/types"
 )
 
 func (suite *KeeperTestSuite) TestMsgServer_AddAgent() {
@@ -23,7 +23,7 @@ func (suite *KeeperTestSuite) TestMsgServer_AddAgent() {
 
 	suite.Run("not admin", func() {
 		_, err := msgServer.AddAgent(suite.ctx, &types.MsgAddAgent{
-			Sender:              helpers.CreateTestAddrs(2)[1].String(),
+			Sender:              app.CreateTestAddrs(2)[1].String(),
 			Name:                "agent1",
 			BtcReceivingAddress: "tb1ptt9gnjnvje343y47z2wd7r8w6mnuylp8z0w74qftv7p5x323vxeq9jrn6f",
 			EthAddr:             "0xBAb28FF7659481F1c8516f616A576339936AFB06",
@@ -63,7 +63,7 @@ func (suite *KeeperTestSuite) TestMsgServer_EditAgent() {
 	msgServer := keeper.NewMsgServerImpl(suite.keeper)
 	suite.Run("not admin", func() {
 		_, err := msgServer.EditAgent(suite.ctx, &types.MsgEditAgent{
-			Sender: helpers.CreateTestAddrs(2)[1].String(),
+			Sender: app.CreateTestAddrs(2)[1].String(),
 			Id:     1,
 		})
 		suite.Require().Error(err)
@@ -157,7 +157,7 @@ func (suite *KeeperTestSuite) TestMsgServer_RemoveAgent() {
 	msgServer := keeper.NewMsgServerImpl(suite.keeper)
 	suite.Run("not admin", func() {
 		_, err := msgServer.RemoveAgent(suite.ctx, &types.MsgRemoveAgent{
-			Sender: helpers.CreateTestAddrs(2)[1].String(),
+			Sender: app.CreateTestAddrs(2)[1].String(),
 			Id:     1,
 		})
 		suite.Require().Error(err)

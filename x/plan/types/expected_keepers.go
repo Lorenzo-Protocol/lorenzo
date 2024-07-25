@@ -13,7 +13,7 @@ import (
 	"github.com/evmos/ethermint/x/evm/statedb"
 	evmtypes "github.com/evmos/ethermint/x/evm/types"
 
-	agenttypes "github.com/Lorenzo-Protocol/lorenzo/x/agent/types"
+	agenttypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/agent/types"
 )
 
 // AccountKeeper defines the expected interface needed to retrieve account info.

@@ -1,7 +1,7 @@
 package types
 
 import (
-	"github.com/Lorenzo-Protocol/lorenzo/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 )
 

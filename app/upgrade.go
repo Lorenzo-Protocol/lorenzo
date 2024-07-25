@@ -1,25 +1,25 @@
 package app
 
 import (
-	upgrades "github.com/Lorenzo-Protocol/lorenzo/app/upgrades"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
+	"fmt"
+
+	"github.com/Lorenzo-Protocol/lorenzo/v2/app/upgrades"
+	v200 "github.com/Lorenzo-Protocol/lorenzo/v2/app/upgrades/v200"
+
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 )
 
-var plans = []upgrades.Upgrade{}
+var router = upgrades.NewUpgradeRouter()
+
+func init() {
+	// register v2.0 upgrade plan
+	router.Register(v200.Upgrade)
+}
 
 // RegisterUpgradePlans register a handler of upgrade plan
 func (app *LorenzoApp) RegisterUpgradePlans() {
-	for _, u := range plans {
-		app.registerUpgradeHandler(u.UpgradeName,
-			u.StoreUpgrades,
-			u.UpgradeHandlerConstructor(
-				app.mm,
-				app.configurator,
-				app.appKeepers(),
-			),
-		)
-	}
+	app.setupUpgradeStoreLoaders()
+	app.setupUpgradeHandlers()
 }
 
 func (app *LorenzoApp) appKeepers() upgrades.AppKeepers {
@@ -35,22 +35,35 @@ func (app *LorenzoApp) appKeepers() upgrades.AppKeepers {
 	}
 }
 
-// registerUpgradeHandler implements the upgrade execution logic of the upgrade module
-func (app *LorenzoApp) registerUpgradeHandler(
-	planName string,
-	upgrades *storetypes.StoreUpgrades,
-	upgradeHandler upgradetypes.UpgradeHandler,
-) {
+// configure store loader that checks if version == upgradeHeight and applies store upgrades
+func (app *LorenzoApp) setupUpgradeStoreLoaders() {
 	upgradeInfo, err := app.UpgradeKeeper.ReadUpgradeInfoFromDisk()
 	if err != nil {
-		app.Logger().Info("not found upgrade plan", "planName", planName, "err", err.Error())
+		panic(fmt.Sprintf("failed to read upgrade info from disk %s", err))
+	}
+
+	if app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height) {
 		return
 	}
 
-	if upgradeInfo.Name == planName && !app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height) {
-		// this configures a no-op upgrade handler for the planName upgrade
-		app.UpgradeKeeper.SetUpgradeHandler(planName, upgradeHandler)
-		// configure store loader that checks if version+1 == upgradeHeight and applies store upgrades
-		app.SetStoreLoader(upgradetypes.UpgradeStoreLoader(upgradeInfo.Height, upgrades))
+	app.SetStoreLoader(
+		upgradetypes.UpgradeStoreLoader(
+			upgradeInfo.Height,
+			router.UpgradeInfo(upgradeInfo.Name).StoreUpgrades,
+		),
+	)
+}
+
+func (app *LorenzoApp) setupUpgradeHandlers() {
+	for upgradeName, upgrade := range router.Routers() {
+		// SAFE: upgrade handlers are registered in the init function
+		app.UpgradeKeeper.SetUpgradeHandler(
+			upgradeName,
+			upgrade.UpgradeHandlerConstructor(
+				app.mm,
+				app.configurator,
+				app.appKeepers(),
+			),
+		)
 	}
 }

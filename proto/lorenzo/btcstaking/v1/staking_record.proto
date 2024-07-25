@@ -11,7 +11,8 @@ option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types";
 message BTCStakingRecord {
   bytes tx_hash = 1;
   uint64 amount = 2;
-  bytes mint_to_addr = 3;
-  string btc_receiver_name = 4;
-  string btc_receiver_addr = 5;
+  bytes receiver_addr = 3;
+  string agent_name = 4;
+  string agent_btc_addr = 5;
+  uint32 chain_id = 6;
 }

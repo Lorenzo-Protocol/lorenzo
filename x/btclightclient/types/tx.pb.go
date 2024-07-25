@@ -6,7 +6,7 @@ package types
 import (
 	context "context"
 	fmt "fmt"
-	github_com_Lorenzo_Protocol_lorenzo_types "github.com/Lorenzo-Protocol/lorenzo/types"
+	github_com_Lorenzo_Protocol_lorenzo_types "github.com/Lorenzo-Protocol/lorenzo/v2/types"
 	_ "github.com/cosmos/cosmos-proto"
 	_ "github.com/cosmos/cosmos-sdk/types/msgservice"
 	_ "github.com/cosmos/gogoproto/gogoproto"
@@ -34,7 +34,7 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 // MsgInsertHeaders defines the message for multiple incoming header bytes
 type MsgInsertHeaders struct {
 	Signer  string                                                     `protobuf:"bytes,1,opt,name=signer,proto3" json:"signer,omitempty"`
-	Headers []github_com_Lorenzo_Protocol_lorenzo_types.BTCHeaderBytes `protobuf:"bytes,2,rep,name=headers,proto3,customtype=github.com/Lorenzo-Protocol/lorenzo/types.BTCHeaderBytes" json:"headers,omitempty"`
+	Headers []github_com_Lorenzo_Protocol_lorenzo_types.BTCHeaderBytes `protobuf:"bytes,2,rep,name=headers,proto3,customtype=github.com/Lorenzo-Protocol/lorenzo/v2/types.BTCHeaderBytes" json:"headers,omitempty"`
 }
 
 func (m *MsgInsertHeaders) Reset()         { *m = MsgInsertHeaders{} }

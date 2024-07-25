@@ -6,7 +6,7 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 
-	"github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/types"
 	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -21,6 +21,8 @@ type (
 
 		btclcKeeper types.BTCLightClientKeeper
 
+		evmKeeper types.EvmKeeper
+
 		// the address capable of executing a MsgUpdateParams message. Typically, this
 		// should be the x/gov module account.
 		authority string
@@ -33,6 +35,7 @@ func NewKeeper(
 
 	btclcKeeper types.BTCLightClientKeeper,
 	bankKeeper bankkeeper.Keeper,
+	evmKeeper types.EvmKeeper,
 
 	authority string,
 ) Keeper {
@@ -42,6 +45,7 @@ func NewKeeper(
 
 		btclcKeeper: btclcKeeper,
 		bankKeeper:  bankKeeper,
+		evmKeeper:   evmKeeper,
 
 		authority: authority,
 	}

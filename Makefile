@@ -283,3 +283,54 @@ format:
 	$(golangci_lint_cmd) run --fix
 
 .PHONY: lint lint-fix format
+
+###############################################################################
+###                        Compile Solidity Contracts                       ###
+###############################################################################
+
+# Currently only support for compiling ERC20 contracts.
+CONTRACTS_PRJ := erc20
+CONTRACTS_DIR := contracts/$(CONTRACTS_PRJ)
+EVM_VERSION := paris
+COMPILED_DIR := $(CONTRACTS_DIR)/compiled_contracts
+TMP_DIR := $(CONTRACTS_DIR)/tmp
+TMP_COMPILED := $(TMP_DIR)/compiled.json
+TMP_JSON := $(TMP_DIR)/tmp.json
+
+contracts-compile: contracts-check-project-name contracts-install-dependencies contracts-create-json contracts-clean-up
+
+contracts-check-project-name:
+	@if [ -z "$(CONTRACTS_PRJ)" ]; then \
+		echo "CONTRACTS_PRJ is not set. Please set it to the project name of the contracts you want to compile."; \
+		exit 1; \
+	fi
+
+# Install open-zeppelin solidity contracts
+contracts-install-dependencies:
+	@echo "Importing open-zeppelin contracts..."
+	@cd $(CONTRACTS_DIR) && npm install
+	@mv $(CONTRACTS_DIR)/node_modules/@openzeppelin $(CONTRACTS_DIR)
+	@rm -rf $(CONTRACTS_DIR)/node_modules $(CONTRACTS_DIR)/package-lock.json
+
+# Compile, filter out and format contracts into the following format.
+contracts-create-json:
+	@for c in $(shell ls $(CONTRACTS_DIR) | grep '\.sol' | sed 's/.sol//g'); do \
+  		mkdir -p $(TMP_DIR) ;\
+  		mkdir -p $(COMPILED_DIR) ;\
+		echo "\nCompiling solidity contract $${c}..." ;\
+		solc --evm-version $(EVM_VERSION) --combined-json abi,bin $(CONTRACTS_DIR)/$${c}.sol > $(TMP_COMPILED);\
+		echo "Formatting JSON..." ;\
+		get_contract=$$(jq '.contracts["$(CONTRACTS_DIR)/'$$c'.sol:'$$c'"]' $(TMP_COMPILED)) ;\
+		add_contract_name=$$(echo $$get_contract | jq '. + { "contractName": "'$$c'" }') ;\
+		echo $$add_contract_name | jq > $(TMP_JSON) ;\
+		abi_string=$$(echo $$add_contract_name | jq -cr '.abi') ;\
+		echo $$add_contract_name | jq --arg newval "$$abi_string" '.abi = $$newval' > $(TMP_JSON) ;\
+        mv $(TMP_JSON) $(COMPILED_DIR)/$${c}.json ;\
+        rm -rf $(TMP_DIR) ;\
+	done
+
+# Clean tmp files
+contracts-clean-up:
+	@echo "Cleaning up..."
+	@rm -rf $(CONTRACTS_DIR)/@openzeppelin
+	@echo "Finished cleaning up."
