@@ -142,10 +142,10 @@ func (k Keeper) parseEvents(ctx sdk.Context, receipt *evmtypes.Receipt) ([]types
 			Identifier:  identifier.Uint64(),
 			Contract:    log.Address.Bytes(),
 		}
-		if k.hasEvmEvent(ctx, record) {
+		if k.hasEvmEvent(ctx, params.ChainId, record) {
 			return nil, errorsmod.Wrapf(types.ErrInvalidEvent, "event identifier %d already exists", identifier.Uint64())
 		}
-		k.setEvmEvent(ctx, record)
+		k.setEvmEvent(ctx, params.ChainId, record)
 
 		// btcContractAddress
 		btcContractAddress, ok := eventArgs[0].(common.Address)
@@ -175,27 +175,28 @@ func (k Keeper) parseEvents(ctx sdk.Context, receipt *evmtypes.Receipt) ([]types
 		}
 
 		bnbEvent := types.CrossChainEvent{
+			TxHash:             log.TxHash,
 			Identifier:         identifier.Uint64(),
 			Sender:             sender,
 			PlanID:             planID.Uint64(),
 			BTCcontractAddress: btcContractAddress,
-			StakeAmount:        stakeAmount,
-			StBTCAmount:        stBTCAmount,
+			StakeAmount:        *stakeAmount,
+			StBTCAmount:        *stBTCAmount,
 		}
 		events = append(events, bnbEvent)
 	}
 	return events, nil
 }
 
-func (k Keeper) hasEvmEvent(ctx sdk.Context, record *types.EvmEvent) bool {
+func (k Keeper) hasEvmEvent(ctx sdk.Context, chainID uint32, record *types.EvmEvent) bool {
 	store := ctx.KVStore(k.storeKey)
-	key := record.Key()
+	key := record.Key(chainID)
 	return store.Has(key)
 }
 
-func (k Keeper) setEvmEvent(ctx sdk.Context, record *types.EvmEvent) {
+func (k Keeper) setEvmEvent(ctx sdk.Context, chainID uint32, record *types.EvmEvent) {
 	store := ctx.KVStore(k.storeKey)
-	key := record.Key()
+	key := record.Key(chainID)
 
 	bz := k.cdc.MustMarshal(record)
 	store.Set(key[:], bz)
