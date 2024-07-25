@@ -7,8 +7,7 @@ import "google/api/annotations.proto";
 import "lorenzo/token/v1/token.proto";
 import "lorenzo/token/v1/genesis.proto";
 
-
-option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/token/types";
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/v2/x/token/types";
 
 service Query {
   // TokenPairs retrieves registered token pairs
@@ -34,7 +33,7 @@ message QueryTokenPairsRequest {
 
 // QueryTokenPairsResponse is the response type for the Query/TokenPairs RPC
 message QueryTokenPairsResponse {
-  repeated TokenPair token_pairs = 1 [(gogoproto.nullable) = false];
+  repeated TokenPair token_pairs = 1 [ (gogoproto.nullable) = false ];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
@@ -46,7 +45,7 @@ message QueryTokenPairRequest {
 
 // QueryTokenPairResponse is the response type for the Query/TokenPair RPC
 message QueryTokenPairResponse {
-  TokenPair token_pair = 1 [(gogoproto.nullable) = false];
+  TokenPair token_pair = 1 [ (gogoproto.nullable) = false ];
 }
 
 // QueryParamsRequest is the request type for the Query/Params RPC method.
@@ -54,5 +53,5 @@ message QueryParamsRequest {}
 
 // QueryParamsResponse is the response type for the Query/Params RPC
 message QueryParamsResponse {
-  Params params = 1 [(gogoproto.nullable) = false];
+  Params params = 1 [ (gogoproto.nullable) = false ];
 }

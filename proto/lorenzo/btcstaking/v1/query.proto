@@ -7,33 +7,28 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 
-option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types";
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/types";
 
 service Query {
-    rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-        option (google.api.http).get = "/lorenzo/btcstaking/v1/params";
-    }
-    rpc StakingRecord(QueryStakingRecordRequest) returns (QueryStakingRecordResponse) {
-        option (google.api.http).get = "/lorenzo/btcstaking/v1/stakingRecord";
-    }
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/lorenzo/btcstaking/v1/params";
+  }
+  rpc StakingRecord(QueryStakingRecordRequest)
+      returns (QueryStakingRecordResponse) {
+    option (google.api.http).get = "/lorenzo/btcstaking/v1/stakingRecord";
+  }
 }
 message QueryParamsRequest {}
-message QueryParamsResponse {
-    Params params = 1;
-}
+message QueryParamsResponse { Params params = 1; }
 
 message StakingRecordDisplay {
-    string tx_id = 1;
-    string receiver_address = 2;
-    string amount = 3;
-    string agent_name = 4;
-    string agent_btc_addr = 5;
-    uint32 chain_id = 6;
+  string tx_id = 1;
+  string receiver_address = 2;
+  string amount = 3;
+  string agent_name = 4;
+  string agent_btc_addr = 5;
+  uint32 chain_id = 6;
 }
 
-message QueryStakingRecordRequest {
-    bytes txHash = 1;
-}
-message QueryStakingRecordResponse {
-    BTCStakingRecord record = 1;
-}
+message QueryStakingRecordRequest { bytes txHash = 1; }
+message QueryStakingRecordResponse { BTCStakingRecord record = 1; }

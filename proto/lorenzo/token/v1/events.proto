@@ -1,7 +1,7 @@
 syntax = "proto3";
 package lorenzo.token.v1;
 
-option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/token/types";
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/v2/x/token/types";
 
 // EventRegisterCoin is an event emitted when a coin is registered.
 message EventRegisterPair {
@@ -11,7 +11,8 @@ message EventRegisterPair {
   string contract_address = 2;
 }
 
-// EventToggleTokenConversion is an event emitted when a coin's token conversion is toggled.
+// EventToggleTokenConversion is an event emitted when a coin's token conversion
+// is toggled.
 message EventToggleTokenConversion {
   // sdk coin denomination
   string denom = 1;
