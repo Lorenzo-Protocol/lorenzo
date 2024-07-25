@@ -42,7 +42,7 @@ github.com/
 
 # Local docker volume mappings
 localnet-setup
-.testnets
+.testnets*
 
 # Testing
 coverage.txt

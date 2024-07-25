@@ -48,10 +48,11 @@ type AppKeepers struct {
 	IBCKeeper        *ibckeeper.Keeper
 	EvmKeeper        *evmkeeper.Keeper
 	FeeMarketKeeper  feemarketkeeper.Keeper
-	AgentKeeper      agentkeeper.Keeper
-	PlanKeeper       *plankeeper.Keeper
-	BTCStakingKeeper btcstakingkeeper.Keeper
-	TokenKeeper      *tokenkeeper.Keeper
+	BTCStakingKeeper *btcstakingkeeper.Keeper
+
+	AgentKeeper *agentkeeper.Keeper
+	PlanKeeper  *plankeeper.Keeper
+	TokenKeeper *tokenkeeper.Keeper
 
 	ReaderWriter ConsensusParamsReaderWriter
 }
