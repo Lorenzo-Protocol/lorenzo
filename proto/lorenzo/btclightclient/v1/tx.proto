@@ -6,7 +6,7 @@ import "cosmos/msg/v1/msg.proto";
 import "lorenzo/btclightclient/v1/params.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/btclightclient/types";
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/v2/x/btclightclient/types";
 
 // Msg defines the Msg service.
 service Msg {
@@ -29,7 +29,7 @@ message MsgInsertHeaders {
   string signer = 1;
   repeated bytes headers = 2
       [ (gogoproto.customtype) =
-            "github.com/Lorenzo-Protocol/lorenzo/types.BTCHeaderBytes" ];
+            "github.com/Lorenzo-Protocol/lorenzo/v2/types.BTCHeaderBytes" ];
 }
 // MsgInsertHeadersResponse defines the response for the InsertHeaders
 // transaction

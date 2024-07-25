@@ -3,7 +3,7 @@ package lorenzo.plan.v1;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/plan/types";
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/v2/x/plan/types";
 
 // Params defines the parameters for the module.
 message Params {
@@ -14,5 +14,4 @@ message Params {
 
   // List of addresses that are allowed to create a plan
   repeated string allow_list = 2;
-
 }

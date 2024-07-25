@@ -8,7 +8,7 @@ import "gogoproto/gogo.proto";
 import "lorenzo/plan/v1/params.proto";
 import "lorenzo/plan/v1/plan.proto";
 
-option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/plan/types";
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/v2/x/plan/types";
 
 // Msg defines the Msg service.
 service Msg {
@@ -30,7 +30,8 @@ service Msg {
   rpc Claims(MsgClaims) returns (MsgClaimsResponse);
 
   // UpdatePlanStatus defines a method for updating the plan status.
-  rpc UpdatePlanStatus(MsgUpdatePlanStatus) returns (MsgUpdatePlanStatusResponse);
+  rpc UpdatePlanStatus(MsgUpdatePlanStatus)
+      returns (MsgUpdatePlanStatusResponse);
 
   // CreateYAT defines a method for creating a new YAT contract.
   rpc CreateYAT(MsgCreateYAT) returns (MsgCreateYATResponse);
@@ -40,7 +41,6 @@ service Msg {
 
   // RemoveMinter defines a method for removing minter of the YAT contract.
   rpc RemoveMinter(MsgRemoveMinter) returns (MsgRemoveMinterResponse);
-
 }
 
 // MsgUpdateParams is the request type for the Msg/UpdateParams RPC method.
@@ -59,9 +59,9 @@ message MsgUpdateParams {
   Params params = 2 [ (gogoproto.nullable) = false ];
 }
 
-// MsgUpdateParamsResponse is the response type for the Msg/UpdateParams RPC method.
-message MsgUpdateParamsResponse {
-}
+// MsgUpdateParamsResponse is the response type for the Msg/UpdateParams RPC
+// method.
+message MsgUpdateParamsResponse {}
 
 // MsgUpgradePlan is the request type for the Msg/UpgradePlan RPC method.
 message MsgUpgradePlan {
@@ -78,8 +78,7 @@ message MsgUpgradePlan {
 }
 
 // MsgUpgradeYATResponse is the response type for the Msg/UpgradeYAT RPC method.
-message MsgUpgradePlanResponse {
-}
+message MsgUpgradePlanResponse {}
 
 // MsgCreatePlan is the request type for the Msg/CreatePlan RPC method.
 message MsgCreatePlan {
@@ -127,9 +126,9 @@ message MsgSetMerkleRoot {
   string sender = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
 
-// MsgSetMerkleRootResponse is the response type for the Msg/SetMerkleRoot RPC method.
-message MsgSetMerkleRootResponse {
-}
+// MsgSetMerkleRootResponse is the response type for the Msg/SetMerkleRoot RPC
+// method.
+message MsgSetMerkleRootResponse {}
 
 // MsgClaims is the request type for the Msg/Claims RPC method.
 message MsgClaims {
@@ -142,10 +141,16 @@ message MsgClaims {
   string receiver = 2;
 
   // round_id is the unique identifier of the round
-  string round_id = 3 [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false ];
+  string round_id = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
 
   // amount is the amount of the claim
-  string amount = 4 [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false ];
+  string amount = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
 
   // merkle_proof is the merkle proof of the claim
   string merkle_proof = 5;
@@ -155,10 +160,10 @@ message MsgClaims {
 }
 
 // MsgClaimsResponse is the response type for the Msg/Claims RPC method.
-message MsgClaimsResponse {
-}
+message MsgClaimsResponse {}
 
-// MsgUpdatePlanStatus is the request type for the Msg/UpdatePlanStatus RPC method.
+// MsgUpdatePlanStatus is the request type for the Msg/UpdatePlanStatus RPC
+// method.
 message MsgUpdatePlanStatus {
   option (cosmos.msg.v1.signer) = "sender";
 
@@ -172,11 +177,9 @@ message MsgUpdatePlanStatus {
   string sender = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
 
-// MsgUpdatePlanStatusResponse is the response type for the Msg/UpdatePlanStatus RPC method.
-message MsgUpdatePlanStatusResponse {
-}
-
-
+// MsgUpdatePlanStatusResponse is the response type for the Msg/UpdatePlanStatus
+// RPC method.
+message MsgUpdatePlanStatusResponse {}
 
 // MsgCreateYAT is the request type for the Msg/CreateYAT RPC method.
 message MsgCreateYAT {
@@ -213,8 +216,7 @@ message MsgSetMinter {
 }
 
 // MsgSetMinterResponse is the response type for the Msg/SetMinter RPC method.
-message MsgSetMinterResponse {
-}
+message MsgSetMinterResponse {}
 
 // MsgRemoveMinter is the request type for the Msg/RemoveMinter RPC method.
 message MsgRemoveMinter {
@@ -230,6 +232,6 @@ message MsgRemoveMinter {
   string sender = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
 
-// MsgRemoveMinterResponse is the response type for the Msg/RemoveMinter RPC method.
-message MsgRemoveMinterResponse {
-}
+// MsgRemoveMinterResponse is the response type for the Msg/RemoveMinter RPC
+// method.
+message MsgRemoveMinterResponse {}
