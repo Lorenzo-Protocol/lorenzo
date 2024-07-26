@@ -161,6 +161,19 @@ func (suite *MsgsTestSuite) TestMsgCreatePlan() {
 			false,
 		},
 		{
+			"fail - plan name is empty space",
+			&types.MsgCreatePlan{
+				Name:               "  ",
+				PlanDescUri:        "https://lorenzo-protocol.io/lorenzo-stake-plan",
+				AgentId:            uint64(1),
+				PlanStartTime:      uint64(time.Now().UTC().Unix()) + 1000,
+				PeriodTime:         1000,
+				YatContractAddress: "0xbCC0CdF7683120a1965A343245FA602314C13b9A",
+				Sender:             "cosmos1qperwt9wrnkg5k9e5gzfgjppzpqhyav5j24d66",
+			},
+			false,
+		},
+		{
 			"fail - agent id cannot be zero",
 			&types.MsgCreatePlan{
 				Name:               "lorenzo-stake-plan",
@@ -305,10 +318,28 @@ func (suite *MsgsTestSuite) TestMsgCreateYAT() {
 			false,
 		},
 		{
+			"fail - yat name is empty space",
+			&types.MsgCreateYAT{
+				Name:   "  ",
+				Symbol: "LYAT",
+				Sender: "cosmos1qperwt9wrnkg5k9e5gzfgjppzpqhyav5j24d66",
+			},
+			false,
+		},
+		{
 			"fail - yat symbol cannot be empty",
 			&types.MsgCreateYAT{
 				Name:   "lorenzo-yat",
 				Symbol: "",
+				Sender: "cosmos1qperwt9wrnkg5k9e5gzfgjppzpqhyav5j24d66",
+			},
+			false,
+		},
+		{
+			"fail - yat symbol is empty space",
+			&types.MsgCreateYAT{
+				Name:   "lorenzo-yat",
+				Symbol: "  ",
 				Sender: "cosmos1qperwt9wrnkg5k9e5gzfgjppzpqhyav5j24d66",
 			},
 			false,
