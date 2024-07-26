@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+	"strings"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -60,7 +61,7 @@ func (m *MsgCreatePlan) ValidateBasic() error {
 	if !common.IsHexAddress(m.YatContractAddress) {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "invalid yat contract address")
 	}
-	if len(m.Name) == 0 {
+	if len(strings.TrimSpace(m.Name)) == 0 {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "plan name cannot be empty")
 	}
 	if m.AgentId == 0 {
@@ -107,10 +108,10 @@ func (m *MsgCreateYAT) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.Sender); err != nil {
 		return errorsmod.Wrap(err, "invalid sender address")
 	}
-	if len(m.Name) == 0 {
+	if len(strings.TrimSpace(m.Name)) == 0 {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "yat name cannot be empty")
 	}
-	if len(m.Symbol) == 0 {
+	if len(strings.TrimSpace(m.Symbol)) == 0 {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "yat symbol cannot be empty")
 	}
 	return nil
