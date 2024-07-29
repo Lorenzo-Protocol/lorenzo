@@ -3,7 +3,6 @@ package keeper
 import (
 	"context"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/contracts/erc20"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -13,6 +12,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 
+	"github.com/Lorenzo-Protocol/lorenzo/v2/contracts/erc20"
 	"github.com/Lorenzo-Protocol/lorenzo/v2/x/token/types"
 )
 
