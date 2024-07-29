@@ -3,7 +3,6 @@ package keeper
 import (
 	"bytes"
 	"context"
-	"encoding/binary"
 	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
@@ -22,6 +21,7 @@ const (
 	EthAddrLen        = 20
 	ChainIDLen        = 4
 	SatoshiToStBTCMul = 1e10
+	PlanIDLen         = 8
 )
 
 const (
@@ -167,12 +167,12 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 	if err := req.StakingTx.VerifyInclusion(stakingTxHeader.Header, btclcParams.PowLimit); err != nil {
 		return nil, types.ErrBTCTxNotIncluded.Wrap(err.Error())
 	}
-	_, receiver := findReceiver(p.Receivers, req.Receiver)
-	if receiver == nil {
-		return nil, types.ErrInvalidReceivingAddr.Wrapf("Receiver(%s) not exists", req.Receiver)
+	agent, foundAgent := ms.agentKeeper.GetAgent(ctx, req.AgentId)
+	if !foundAgent {
+		return nil, types.ErrInvalidReceivingAddr.Wrapf("Agent(%d) not exists", req.AgentId)
 	}
 
-	btcReceivingAddr, err := btcutil.DecodeAddress(receiver.Addr, btclcParams)
+	btcReceivingAddr, err := btcutil.DecodeAddress(agent.BtcReceivingAddress, btclcParams)
 	if err != nil {
 		return nil, types.ErrInvalidReceivingAddr.Wrap(err.Error())
 	}
@@ -181,33 +181,46 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 	var btcAmount uint64
 	lrzChainId := uint32(ms.evmKeeper.ChainID().Uint64())
 	var chainId uint32 = lrzChainId
-	if common.IsHexAddress(receiver.EthAddr) {
+	var mintYatResult string = ""
+	if common.IsHexAddress(agent.EthAddr) {
 		signers := req.GetSigners()
 		if len(signers) == 0 || !canPerformMint(req.GetSigners()[0], *p) {
 			return nil, types.ErrNotInAllowList
 		}
-		mintToAddr = common.HexToAddress(receiver.EthAddr).Bytes()
+		mintToAddr = common.HexToAddress(agent.EthAddr).Bytes()
 		receiverAddr = mintToAddr
 		btcAmount, err = ExtractPaymentTo(stakingMsgTx, btcReceivingAddr)
 	} else {
 		var opReturnMsg []byte
 		btcAmount, opReturnMsg, err = ExtractPaymentToWithOpReturnIdAndDust(stakingMsgTx, btcReceivingAddr, p.TxoutDustAmount)
-		if err != nil {
-			return nil, types.ErrInvalidTransaction.Wrap(err.Error())
+		if !opReturnMsgLenCheck(opReturnMsg) {
+			return nil, types.ErrMintToAddr.Wrapf("invalid opReturnMsg length: %d", len(opReturnMsg))
 		}
-		if len(opReturnMsg) == EthAddrLen {
-			mintToAddr = opReturnMsg
-			receiverAddr = mintToAddr
-		} else if len(opReturnMsg) == EthAddrLen+ChainIDLen {
-			receiverAddr = opReturnMsg[:EthAddrLen]
-			chainId = binary.BigEndian.Uint32(opReturnMsg[EthAddrLen:])
-			if chainId != lrzChainId {
-				mintToAddr = common.HexToAddress(p.BridgeAddr).Bytes()
-			} else {
-				mintToAddr = receiverAddr
-			}
+		receiverAddr := opReturnMsg[:EthAddrLen]
+		if opReturnMsgContainsChainId(opReturnMsg) {
+			chainId = opReturnMsgGetChainId(opReturnMsg)
+		}
+		if chainId != lrzChainId {
+			mintToAddr = common.HexToAddress(p.BridgeAddr).Bytes()
 		} else {
-			return nil, types.ErrMintToAddr
+			mintToAddr = receiverAddr
+		}
+		if opReturnMsgContainsPlanId(opReturnMsg) {
+			planId := opReturnMsgGetPlanId(opReturnMsg)
+			plan, found := ms.planKeeper.GetPlan(ctx, planId)
+			if !found {
+				mintYatResult = "Plan not found"
+			} else if plan.AgentId != req.AgentId {
+				mintYatResult = "AgentId not match"
+			} else {
+				yatAmount := sdkmath.NewIntFromUint64(btcAmount).Mul(sdkmath.NewIntFromUint64(SatoshiToStBTCMul))
+				yatMintErr := ms.planKeeper.Mint(ctx, planId, common.BytesToAddress(receiverAddr), yatAmount.BigInt())
+				if yatMintErr != nil {
+					mintYatResult = yatMintErr.Error()
+				} else {
+					mintYatResult = "ok"
+				}
+			}
 		}
 	}
 	if err != nil || btcAmount == 0 {
@@ -235,12 +248,13 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 		return nil, types.ErrTransferToAddr.Wrap(err.Error())
 	}
 	stakingRecord := types.BTCStakingRecord{
-		TxHash:       stakingTxHash[:],
-		Amount:       btcAmount,
-		ReceiverAddr: receiverAddr,
-		AgentName:    receiver.Name,
-		AgentBtcAddr: receiver.Addr,
-		ChainId:      chainId,
+		TxHash:        stakingTxHash[:],
+		Amount:        btcAmount,
+		ReceiverAddr:  receiverAddr,
+		AgentName:     agent.Name,
+		AgentBtcAddr:  agent.BtcReceivingAddress,
+		ChainId:       chainId,
+		MintYatResult: mintYatResult,
 	}
 	err = ms.addBTCStakingRecord(ctx, &stakingRecord)
 	if err != nil {
@@ -289,19 +303,6 @@ func (ms msgServer) Burn(goCtx context.Context, req *types.MsgBurnRequest) (*typ
 	}
 
 	return &types.MsgBurnResponse{}, nil
-}
-
-func findReceiver(receivers []*types.Receiver, name string) (int, *types.Receiver) {
-	var receiver *types.Receiver = nil
-	idx := -1
-	for i, r := range receivers {
-		if r != nil && r.Name == name {
-			idx = i
-			receiver = r
-			break
-		}
-	}
-	return idx, receiver
 }
 
 func (ms msgServer) UpdateParams(goCtx context.Context, req *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {

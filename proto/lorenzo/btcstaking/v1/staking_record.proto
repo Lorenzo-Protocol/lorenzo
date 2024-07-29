@@ -15,4 +15,5 @@ message BTCStakingRecord {
   string agent_name = 4;
   string agent_btc_addr = 5;
   uint32 chain_id = 6;
+  string mint_yat_result = 7;
 }
