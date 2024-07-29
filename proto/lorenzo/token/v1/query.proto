@@ -4,6 +4,7 @@ package lorenzo.token.v1;
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
+import "cosmos/base/v1beta1/coin.proto";
 import "lorenzo/token/v1/token.proto";
 import "lorenzo/token/v1/genesis.proto";
 
@@ -23,6 +24,11 @@ service Query {
   // Params retrieves the convert module params
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/lorenzo/token/v1/params";
+  }
+
+  // Balance queries the balances of an account under a specific token.
+  rpc Balance(QueryBalanceRequest) returns (QueryBalanceResponse) {
+    option (google.api.http).get = "/lorenzo/token/v1/balance/{account_address}/{token}";
   }
 }
 
@@ -54,4 +60,19 @@ message QueryParamsRequest {}
 // QueryParamsResponse is the response type for the Query/Params RPC
 message QueryParamsResponse {
   Params params = 1 [ (gogoproto.nullable) = false ];
+}
+
+// QueryBalancesRequest is the request type for the Query/Balances RPC
+message QueryBalanceRequest {
+  // account address can be bech32 or hex address
+  string account_address = 1;
+  // token can be either coin denom or erc20 contract address.
+  string token = 2;
+}
+
+// QueryBalancesResponse is the response type for the Query/Balances RPC
+message QueryBalanceResponse {
+  cosmos.base.v1beta1.Coin coin = 1 [ (gogoproto.nullable) = false ];
+  string erc20_address = 2;
+  string erc20_token_amount = 3;
 }

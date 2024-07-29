@@ -2,11 +2,13 @@ package cli
 
 import (
 	"context"
-
-	"github.com/spf13/cobra"
+	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/spf13/cobra"
 
 	"github.com/Lorenzo-Protocol/lorenzo/v2/x/token/types"
 )
@@ -25,6 +27,7 @@ func GetQueryCmd() *cobra.Command {
 		GetQueryTokenPairsCmd(),
 		GetQueryTokenPairCmd(),
 		GetQueryParamsCmd(),
+		GetQueryBalanceCmd(),
 	)
 	return cmd
 }
@@ -111,6 +114,44 @@ func GetQueryParamsCmd() *cobra.Command {
 			queryClient := types.NewQueryClient(clientCtx)
 
 			res, err := queryClient.Params(context.Background(), &types.QueryParamsRequest{})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}
+
+// GetQueryBalanceCmd returns the command handler for token module balance querying
+func GetQueryBalanceCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "balance [account_address] [token]",
+		Short: "Get balance of an address",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			addrString := args[0]
+			if !common.IsHexAddress(addrString) {
+				_, err := sdk.AccAddressFromBech32(addrString)
+				if err != nil {
+					return fmt.Errorf("invalid account address: %s, should be either hex addr or bech32 addr", addrString)
+				}
+			}
+
+			res, err := queryClient.Balance(context.Background(), &types.QueryBalanceRequest{
+				AccountAddress: args[0],
+				Token:          args[1],
+			})
 			if err != nil {
 				return err
 			}

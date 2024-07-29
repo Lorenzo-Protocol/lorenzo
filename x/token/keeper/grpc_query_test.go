@@ -3,7 +3,9 @@ package keeper_test
 import (
 	"strconv"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	"github.com/ethereum/go-ethereum/common"
 
 	"github.com/Lorenzo-Protocol/lorenzo/v2/x/token/types"
 )
@@ -97,4 +99,86 @@ func (suite *KeeperTestSuite) TestQueryTokenPairs() {
 	}
 
 	suite.Require().Equal(len(pairs), len(resp.TokenPairs))
+}
+
+func (suite *KeeperTestSuite) TestQueryBalance() {
+	// register a toke pair and convert some coin to erc20
+	pair := suite.utilsFundAndRegisterCoin(coinMetadata, tester, 10000)
+	_, err := suite.msgServer.ConvertCoin(suite.ctx, &types.MsgConvertCoin{
+		Coin:     sdk.NewCoin(pair.Denom, sdk.NewInt(1000)),
+		Receiver: common.BytesToAddress(tester.Bytes()).String(),
+		Sender:   tester.String(),
+	})
+	suite.Require().NoError(err)
+	suite.Commit()
+
+	testCases := []struct {
+		name       string
+		token      string
+		address    string
+		expectPass bool
+	}{
+		{
+			name:       "success: by coin & bech32 address",
+			expectPass: true,
+			token:      pair.Denom,
+			address:    tester.String(),
+		},
+		{
+			name:       "success: by coin & hex address",
+			expectPass: true,
+			token:      pair.Denom,
+			address:    common.BytesToAddress(tester.Bytes()).String(),
+		},
+		{
+			name:       "success: by erc20 address & bech32 address",
+			expectPass: true,
+			token:      pair.ContractAddress,
+			address:    tester.String(),
+		},
+		{
+			name:       "success: by erc20 address & hex account address",
+			expectPass: true,
+			token:      pair.ContractAddress,
+			address:    common.BytesToAddress(tester.Bytes()).String(),
+		},
+		{
+			name:       "fail: invalid token",
+			expectPass: false,
+			token:      "0123456",
+			address:    tester.String(),
+		},
+		{
+			name:       "fail: invalid address",
+			expectPass: false,
+			token:      pair.Denom,
+			address:    "invalid",
+		},
+		{
+			name:       "fail: denom not found",
+			expectPass: false,
+			token:      "unknown",
+			address:    tester.String(),
+		},
+	}
+
+	for _, tc := range testCases {
+		suite.Run(tc.name, func() {
+			resp, err := suite.queryClient.Balance(suite.ctx, &types.QueryBalanceRequest{
+				Token:          tc.token,
+				AccountAddress: tc.address,
+			})
+			if tc.expectPass {
+				suite.Require().NoError(err)
+				suite.Require().NotNil(resp)
+				suite.Require().Equal(pair.ContractAddress, resp.Erc20Address)
+				suite.Require().Equal("1000", resp.Erc20TokenAmount)
+				suite.Require().Equal(pair.Denom, resp.Coin.Denom)
+				suite.Require().Equal(int64(9000), resp.Coin.Amount.Int64())
+			} else {
+				suite.Require().Error(err)
+				suite.Require().Nil(resp)
+			}
+		})
+	}
 }
