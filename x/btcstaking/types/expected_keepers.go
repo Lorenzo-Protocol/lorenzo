@@ -22,8 +22,7 @@ type BTCLightClientKeeper interface {
 }
 
 type PlanKeeper interface {
-	MintFromStakePlan(ctx sdk.Context, contractAddress, to common.Address, amount *big.Int) error
-
+	Mint(ctx sdk.Context, planId uint64, to common.Address, amount *big.Int) error
 	GetPlan(ctx sdk.Context, planId uint64) (plantypes.Plan, bool)
 }
 type AgentKeeper interface {

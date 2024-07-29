@@ -181,7 +181,6 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 	var btcAmount uint64
 	lrzChainId := uint32(ms.evmKeeper.ChainID().Uint64())
 	var chainId uint32 = lrzChainId
-	var planContractAddress *common.Address = nil
 	var mintYatResult string = ""
 	if common.IsHexAddress(agent.EthAddr) {
 		signers := req.GetSigners()
@@ -213,11 +212,14 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 				mintYatResult = "Plan not found"
 			} else if plan.AgentId != req.AgentId {
 				mintYatResult = "AgentId not match"
-			} else if !common.IsHexAddress(plan.ContractAddress) {
-				mintYatResult = "invalid ContractAddress"
 			} else {
-				addr := common.HexToAddress(plan.ContractAddress)
-				planContractAddress = &addr
+				yatAmount := sdkmath.NewIntFromUint64(btcAmount).Mul(sdkmath.NewIntFromUint64(SatoshiToStBTCMul))
+				yatMintErr := ms.planKeeper.Mint(ctx, planId, common.BytesToAddress(receiverAddr), yatAmount.BigInt())
+				if yatMintErr != nil {
+					mintYatResult = yatMintErr.Error()
+				} else {
+					mintYatResult = "ok"
+				}
 			}
 		}
 	}
@@ -244,16 +246,6 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreate
 	err = ms.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, mintToAddr, coins)
 	if err != nil {
 		return nil, types.ErrTransferToAddr.Wrap(err.Error())
-	}
-	if planContractAddress != nil {
-		err = ms.planKeeper.MintFromStakePlan(ctx, *planContractAddress, common.BytesToAddress(mintToAddr), toMintAmount.BigInt())
-		if err != nil {
-			mintYatResult = err.Error()
-		} else {
-			mintYatResult = "ok"
-		}
-	} else if len(mintYatResult) == 0 {
-		mintYatResult = "Plan not found"
 	}
 	stakingRecord := types.BTCStakingRecord{
 		TxHash:        stakingTxHash[:],
