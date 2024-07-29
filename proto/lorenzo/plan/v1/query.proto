@@ -7,7 +7,7 @@ import "cosmos/base/query/v1beta1/pagination.proto";
 import "lorenzo/plan/v1/plan.proto";
 import "lorenzo/plan/v1/params.proto";
 
-option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/plan/types";
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/v2/x/plan/types";
 
 // Query defines the gRPC querier service.
 service Query {
@@ -28,8 +28,10 @@ service Query {
   }
 
   // ClaimLeafNode queries a plan by id.
-  rpc ClaimLeafNode(QueryClaimLeafNodeRequest) returns (QueryClaimLeafNodeResponse) {
-    option (google.api.http).get = "/lorenzo/plan/v1/plans/{id}/claim-leaf-node";
+  rpc ClaimLeafNode(QueryClaimLeafNodeRequest)
+      returns (QueryClaimLeafNodeResponse) {
+    option (google.api.http).get =
+        "/lorenzo/plan/v1/plans/{id}/claim-leaf-node";
   }
 }
 
@@ -42,7 +44,6 @@ message QueryParamsResponse {
   Params params = 1 [ (gogoproto.nullable) = false ];
 }
 
-
 // PlansRequest is the request type for the Query.Plans RPC method.
 message QueryPlansRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
@@ -50,7 +51,7 @@ message QueryPlansRequest {
 
 // PlansResponse is the response type for the Query.Plans RPC method.
 message QueryPlansResponse {
-  repeated Plan plans = 1 [(gogoproto.nullable) = false];
+  repeated Plan plans = 1 [ (gogoproto.nullable) = false ];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
@@ -61,21 +62,22 @@ message QueryPlanRequest {
 }
 
 // PlanResponse is the response type for the Query.Plan RPC method.
-message QueryPlanResponse {
-  Plan plan = 1 [(gogoproto.nullable) = false];
-}
+message QueryPlanResponse { Plan plan = 1 [ (gogoproto.nullable) = false ]; }
 
-// ClaimLeafNodeRequest is the request type for the Query.ClaimLeafNode RPC method.
+// ClaimLeafNodeRequest is the request type for the Query.ClaimLeafNode RPC
+// method.
 message QueryClaimLeafNodeRequest {
   // id is the unique identifier of the plan
   uint64 id = 1;
   // round_id is the unique identifier of the round
-  string round_id = 2 [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false ];
+  string round_id = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
   // leaf_node is the leaf node to claim
   string leaf_node = 3;
 }
 
-// ClaimLeafNodeResponse is the response type for the Query.ClaimLeafNode RPC method.
-message QueryClaimLeafNodeResponse {
-  bool success = 1;
-}
+// ClaimLeafNodeResponse is the response type for the Query.ClaimLeafNode RPC
+// method.
+message QueryClaimLeafNodeResponse { bool success = 1; }

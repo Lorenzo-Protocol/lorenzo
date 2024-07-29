@@ -1,0 +1,33 @@
+syntax = "proto3";
+package lorenzo.token.v1;
+
+import "cosmos/bank/v1beta1/bank.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/v2/x/token/types";
+
+// Source defines the source type of token asset, if source is:
+// - module: token origin is sdk module;
+// - contract: token origin is erc20 contract;
+enum Source {
+  option (gogoproto.goproto_enum_prefix) = false;
+  // undefined source
+  OWNER_UNDEFINED = 0;
+  // token source is module
+  OWNER_MODULE = 1;
+  // token source is erc20 contract
+  OWNER_CONTRACT = 2;
+}
+
+// TokenPair defines a pairing of a cosmos coin and an erc20 token
+message TokenPair {
+  option (gogoproto.equal) = true;
+  // erc20 contract hex format address
+  string contract_address = 1;
+  // sdk coin base denomination
+  string denom = 2;
+  // allows for token conversion
+  bool enabled = 3;
+  // source of token asset
+  Source source = 4;
+}

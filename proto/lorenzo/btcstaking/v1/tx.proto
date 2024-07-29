@@ -5,15 +5,16 @@ import "cosmos/msg/v1/msg.proto";
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
 import "lorenzo/btcstaking/v1/params.proto";
-//import "cosmos/staking/v1beta1/staking.proto";
+// import "cosmos/staking/v1beta1/staking.proto";
 
-option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types";
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/types";
 
 // Msg defines the Msg service.
 service Msg {
   option (cosmos.msg.v1.service) = true;
 
-  rpc CreateBTCStaking(MsgCreateBTCStaking) returns (MsgCreateBTCStakingResponse);
+  rpc CreateBTCStaking(MsgCreateBTCStaking)
+      returns (MsgCreateBTCStakingResponse);
 
   rpc Burn(MsgBurnRequest) returns (MsgBurnResponse);
 
@@ -28,7 +29,7 @@ message TransactionKey {
   uint32 index = 1;
   bytes hash = 2
       [ (gogoproto.customtype) =
-            "github.com/Lorenzo-Protocol/lorenzo/types.BTCHeaderHashBytes" ];
+            "github.com/Lorenzo-Protocol/lorenzo/v2/types.BTCHeaderHashBytes" ];
 }
 
 // TransactionInfo is the info of a tx on Bitcoin,
@@ -64,10 +65,13 @@ message MsgBurnRequest {
   option (cosmos.msg.v1.signer) = "signer";
   string signer = 1;
   string btc_target_address = 2;
-  string amount = 3 [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false ];
+  string amount = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
 }
 
-message MsgBurnResponse{}
+message MsgBurnResponse {}
 
 message MsgAddReceiver {
   option (cosmos.msg.v1.signer) = "authority";
@@ -83,7 +87,7 @@ message MsgRemoveReceiver {
 
   string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
-  string receiver = 2 ;
+  string receiver = 2;
 }
 message MsgRemoveReceiverResponse {}
 message MsgUpdateParams {

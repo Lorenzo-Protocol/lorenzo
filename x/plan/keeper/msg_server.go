@@ -11,7 +11,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
-	"github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/plan/types"
 )
 
 var _ types.MsgServer = msgServer{}
@@ -141,9 +141,14 @@ func (m msgServer) Claims(goCtx context.Context, msg *types.MsgClaims) (*types.M
 		return nil, err
 	}
 
-	_, found := m.k.GetPlan(ctx, msg.PlanId)
+	plan, found := m.k.GetPlan(ctx, msg.PlanId)
 	if !found {
 		return nil, errorsmod.Wrapf(types.ErrPlanNotFound, "plan not found")
+	}
+
+	// check if the plan is disabled
+	if plan.Enabled == types.PlanStatus_Pause {
+		return nil, errorsmod.Wrapf(types.ErrPlanPaused, "plan is paused")
 	}
 
 	if err := m.k.Withdraw(ctx,

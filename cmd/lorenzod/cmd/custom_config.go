@@ -3,7 +3,7 @@ package cmd
 import (
 	serverconfig "github.com/cosmos/cosmos-sdk/server/config"
 
-	bbn "github.com/Lorenzo-Protocol/lorenzo/types"
+	bbn "github.com/Lorenzo-Protocol/lorenzo/v2/types"
 )
 
 type BtcConfig struct {

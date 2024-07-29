@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"bytes"
+	"encoding/binary"
 	"math"
 
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
@@ -68,7 +69,7 @@ func traverseMerkleBlock(msg *wire.MsgMerkleBlock, hei uint32, pos uint32, bit_u
 	}
 }
 
-// XXX: skip some checks
+// XXX: missing some checks, not a safe function to use on chain.
 func ParseBTCProof(msgMerkleBlk *wire.MsgMerkleBlock) (uint32, []byte, error) {
 	hei := calcHeight(int(msgMerkleBlk.Transactions))
 	bit_used, hash_used := 0, 0
@@ -77,4 +78,26 @@ func ParseBTCProof(msgMerkleBlk *wire.MsgMerkleBlock) (uint32, []byte, error) {
 	txIndex := uint32(0)
 	traverseMerkleBlock(msgMerkleBlk, hei, 0, &bit_used, &hash_used, &proof, &txIndex)
 	return txIndex, proof, nil
+}
+
+func opReturnMsgLenCheck(opReturnMsg []byte) bool {
+	return len(opReturnMsg) == EthAddrLen || len(opReturnMsg) == EthAddrLen+ChainIDLen || len(opReturnMsg) == EthAddrLen+ChainIDLen+PlanIDLen
+}
+
+func opReturnMsgContainsChainId(opReturnMsg []byte) bool {
+	return len(opReturnMsg) >= EthAddrLen+ChainIDLen
+}
+
+func opReturnMsgGetChainId(opReturnMsg []byte) uint32 {
+	base := EthAddrLen
+	return binary.BigEndian.Uint32(opReturnMsg[base : base+ChainIDLen])
+}
+
+func opReturnMsgContainsPlanId(opReturnMsg []byte) bool {
+	return len(opReturnMsg) >= EthAddrLen+ChainIDLen+PlanIDLen
+}
+
+func opReturnMsgGetPlanId(opReturnMsg []byte) uint64 {
+	base := EthAddrLen + ChainIDLen
+	return binary.BigEndian.Uint64(opReturnMsg[base : base+PlanIDLen])
 }

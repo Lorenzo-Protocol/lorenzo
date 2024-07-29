@@ -12,18 +12,17 @@ import (
 
 	"github.com/evmos/ethermint/crypto/ethsecp256k1"
 
-	appparams "github.com/Lorenzo-Protocol/lorenzo/app/params"
+	appparams "github.com/Lorenzo-Protocol/lorenzo/v2/app/params"
 	evmtypes "github.com/evmos/ethermint/x/evm/types"
 
 	feemarkettypes "github.com/evmos/ethermint/x/feemarket/types"
 
-	"github.com/Lorenzo-Protocol/lorenzo/testutil"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/testutil"
 
-	"github.com/Lorenzo-Protocol/lorenzo/app"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/app"
 
-	"github.com/Lorenzo-Protocol/lorenzo/app/helpers"
-	"github.com/Lorenzo-Protocol/lorenzo/x/plan/keeper"
-	"github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/plan/keeper"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/plan/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -31,7 +30,7 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-var testAdmin = helpers.CreateTestAddrs(1)[0]
+var testAdmin = app.CreateTestAddrs(1)[0]
 
 type KeeperTestSuite struct {
 	suite.Suite
@@ -73,14 +72,14 @@ func (suite *KeeperTestSuite) SetupTest() {
 		state[evmtypes.ModuleName] = cdc.MustMarshalJSON(evmGenesis)
 	}
 
-	lorenzoApp := helpers.SetupWithGenesisMergeFn(suite.T(), merge)
+	lorenzoApp := app.SetupWithGenesisMergeFn(suite.T(), merge)
 
 	// consensus key
 	privCons, err := ethsecp256k1.GenerateKey()
 	suite.Require().NoError(err)
 	consAddress := sdk.ConsAddress(privCons.PubKey().Address())
 	header := testutil.NewHeader(
-		lorenzoApp.LastBlockHeight()+1, time.Now().UTC(), helpers.SimAppChainID, consAddress, nil, nil,
+		lorenzoApp.LastBlockHeight()+1, time.Now().UTC(), app.SimAppChainID, consAddress, nil, nil,
 	)
 	ctx := lorenzoApp.GetBaseApp().NewContext(false, header)
 

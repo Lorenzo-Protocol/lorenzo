@@ -4,15 +4,16 @@ package lorenzo.btcstaking.v1;
 import "cosmos/msg/v1/msg.proto";
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
-//import "cosmos/staking/v1beta1/staking.proto";
+// import "cosmos/staking/v1beta1/staking.proto";
 
-option go_package = "github.com/Lorenzo-Protocol/lorenzo/x/btcstaking/types";
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/types";
 
 message BTCStakingRecord {
   bytes tx_hash = 1;
   uint64 amount = 2;
-  bytes mint_to_addr = 3;
-  string btc_receiver_name = 4;
-  string btc_receiver_addr = 5;
-  string mint_yat_result = 6;
+  bytes receiver_addr = 3;
+  string agent_name = 4;
+  string agent_btc_addr = 5;
+  uint32 chain_id = 6;
+  string mint_yat_result = 7;
 }

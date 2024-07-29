@@ -1,0 +1,19 @@
+syntax = "proto3";
+package lorenzo.token.v1;
+
+import "gogoproto/gogo.proto";
+import "lorenzo/token/v1/token.proto";
+
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/v2/x/token/types";
+
+// GenesisState defines the token module's genesis state.
+message GenesisState {
+  Params params = 1 [ (gogoproto.nullable) = false ];
+  repeated TokenPair token_pairs = 2 [ (gogoproto.nullable) = false ];
+}
+
+// Params defines the token module parameters.
+message Params {
+  bool enable_conversion = 1;
+  bool enable_evm_hook = 2 [ (gogoproto.customname) = "EnableEVMHook" ];
+}

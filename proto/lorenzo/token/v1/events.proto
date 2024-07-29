@@ -1,0 +1,49 @@
+syntax = "proto3";
+package lorenzo.token.v1;
+
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/v2/x/token/types";
+
+// EventRegisterCoin is an event emitted when a coin is registered.
+message EventRegisterPair {
+  // sdk coin denomination
+  string denom = 1;
+  // erc20 contract address
+  string contract_address = 2;
+}
+
+// EventToggleTokenConversion is an event emitted when a coin's token conversion
+// is toggled.
+message EventToggleTokenConversion {
+  // sdk coin denomination
+  string denom = 1;
+  // erc20 contract address
+  string contract_address = 2;
+}
+
+// EventConvertCoin is an event emitted when a coin is converted.
+message EventConvertCoin {
+  // sender address
+  string sender = 1;
+  // receiver address
+  string receiver = 2;
+  // amount of coins to be converted
+  string amount = 3;
+  // coin denomination
+  string denom = 4;
+  // erc20 contract address
+  string contract_address = 5;
+}
+
+// EventConvertERC20 is an event emitted when an ERC20 is converted.
+message EventConvertERC20 {
+  // sender address
+  string sender = 1;
+  // receiver address
+  string receiver = 2;
+  // amount of tokens to be converted
+  string amount = 3;
+  // coin denomination
+  string denom = 4;
+  // erc20 contract address
+  string contract_address = 5;
+}

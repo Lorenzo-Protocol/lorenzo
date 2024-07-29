@@ -16,7 +16,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client/tx"
 
-	"github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/plan/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/spf13/cobra"
 )
@@ -100,12 +100,13 @@ func GetCmdCreatePlan() *cobra.Command {
 				return err
 			}
 
-			var msgCreatePlan *types.MsgCreatePlan
+			msgCreatePlan := &types.MsgCreatePlan{}
 			err = json.Unmarshal(contents, msgCreatePlan)
 			if err != nil {
 				return err
 			}
-
+			from := clientCtx.GetFromAddress()
+			msgCreatePlan.Sender = from.String()
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgCreatePlan)
 		},
 	}

@@ -3,7 +3,7 @@ package keeper
 import (
 	"math/big"
 
-	contractsplan "github.com/Lorenzo-Protocol/lorenzo/contracts/plan"
+	contractsplan "github.com/Lorenzo-Protocol/lorenzo/v2/contracts/plan"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -11,7 +11,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 
-	"github.com/Lorenzo-Protocol/lorenzo/x/plan/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/plan/types"
 )
 
 const (
