@@ -19,6 +19,13 @@ type Querier struct {
 	*Keeper
 }
 
+func (q Querier) Params(goCtx context.Context, _ *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	params := q.GetParams(ctx)
+
+	return &types.QueryParamsResponse{Params: params}, nil
+}
+
 // Agents retrieves all agents from the Keeper.
 //
 // The function takes a Go context and a QueryAgentsRequest as parameters.
@@ -61,19 +68,6 @@ func (q Querier) Agent(goCtx context.Context, request *types.QueryAgentRequest) 
 		return nil, status.Errorf(codes.InvalidArgument, "not found agent: %d", request.Id)
 	}
 	return &types.QueryAgentResponse{Agent: agent}, nil
-}
-
-// Admin retrieves the admin address from the Keeper's store.
-//
-// Parameters:
-// - goctx: the Go context.
-// - request: the QueryAdminRequest.
-//
-// Returns:
-// - *types.QueryAdminResponse: the QueryAdminResponse containing the admin address, or an error if it is not found in the store.
-func (q Querier) Admin(goCtx context.Context, _ *types.QueryAdminRequest) (*types.QueryAdminResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	return &types.QueryAdminResponse{Admin: q.Keeper.GetAdmin(ctx).String()}, nil
 }
 
 // NewQuerierImpl returns an implementation of the captains QueryServer interface.

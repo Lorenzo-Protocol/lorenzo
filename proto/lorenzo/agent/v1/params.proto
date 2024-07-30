@@ -1,0 +1,14 @@
+syntax = "proto3";
+package lorenzo.agent.v1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/v2/x/agent/types";
+
+// Params defines the parameters for the agent module.
+message Params {
+  option (gogoproto.equal) = true;
+
+  // List of addresses that are allowed to manage agents.
+  repeated string allow_list = 1;
+}

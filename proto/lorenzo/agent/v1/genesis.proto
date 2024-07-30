@@ -3,13 +3,15 @@ package lorenzo.agent.v1;
 
 import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
+
 import "lorenzo/agent/v1/agent.proto";
+import "lorenzo/agent/v1/params.proto";
 
 option go_package = "github.com/Lorenzo-Protocol/lorenzo/v2/x/agent/types";
 
 // GenesisState defines the agent module's genesis state.
 message GenesisState {
-  repeated Agent agents = 1 [ (gogoproto.nullable) = false ];
-  // administrator account of agent module
-  string admin = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  // params defines all the parameters of the module.
+  Params params = 1 [ (gogoproto.nullable) = false ];
+  repeated Agent agents = 2 [ (gogoproto.nullable) = false ];
 }

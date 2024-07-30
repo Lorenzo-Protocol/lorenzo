@@ -17,6 +17,9 @@ type Keeper struct {
 	cdc         codec.BinaryCodec
 	storeKey    storetypes.StoreKey
 	btcLCKeeper types.BTCLightClientKeeper
+
+	// the address capable of executing a MsgUpdateParams message. Typically, this should be the x/gov module account.
+	authority string
 }
 
 // NewKeeper initializes a new Keeper.
@@ -29,12 +32,14 @@ type Keeper struct {
 func NewKeeper(
 	cdc codec.BinaryCodec,
 	storeKey storetypes.StoreKey,
+	authority string,
 	btcLCKeeper types.BTCLightClientKeeper,
 ) Keeper {
 	return Keeper{
 		cdc:         cdc,
 		storeKey:    storeKey,
 		btcLCKeeper: btcLCKeeper,
+		authority:   authority,
 	}
 }
 

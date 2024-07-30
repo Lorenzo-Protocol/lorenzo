@@ -17,17 +17,17 @@ func (k Keeper) InitGenesis(ctx sdk.Context, genState types.GenesisState) {
 			maxNumber = agent.Id
 		}
 	}
-	if len(genState.Admin) > 0 {
-		admin := sdk.MustAccAddressFromBech32(genState.Admin)
-		k.setAdmin(ctx, admin)
+	if err := k.SetParams(ctx, genState.Params); err != nil {
+		panic(err)
 	}
+
 	k.setNextNumber(ctx, maxNumber+1)
 }
 
 // ExportGenesis returns the capability module's exported genesis.
 func (k Keeper) ExportGenesis(ctx sdk.Context) *types.GenesisState {
 	return &types.GenesisState{
-		Admin:  k.GetAdmin(ctx).String(),
-		Agents: k.getAgents(ctx),
+		Params: k.GetParams(ctx),
+		Agents: k.GetAgents(ctx),
 	}
 }

@@ -22,10 +22,33 @@ func GetQueryCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
+	cmd.AddCommand(GetCmdQueryParams())
 	cmd.AddCommand(CmdQueryAgents())
 	cmd.AddCommand(CmdQueryAgent())
-	cmd.AddCommand(CmdQueryAdmin())
 
+	return cmd
+}
+
+// GetCmdQueryParams returns a new Cobra command for showing the parameters of the agent module.
+//
+// No parameters.
+// Returns *cobra.Command.
+func GetCmdQueryParams() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "params",
+		Short: "query the parameters of the agent module",
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.Params(context.Background(), &types.QueryParamsRequest{})
+			if err != nil {
+				return err
+			}
+			return clientCtx.PrintProto(res)
+		},
+	}
+	flags.AddQueryFlagsToCmd(cmd)
 	return cmd
 }
 
@@ -72,29 +95,6 @@ func CmdQueryAgent() *cobra.Command {
 			res, err := queryClient.Agent(context.Background(), &types.QueryAgentRequest{
 				Id: id,
 			})
-			if err != nil {
-				return err
-			}
-			return clientCtx.PrintProto(res)
-		},
-	}
-
-	flags.AddQueryFlagsToCmd(cmd)
-	return cmd
-}
-
-// CmdQueryAdmin returns a cobra.Command object for retrieving the admin address.
-//
-// The function does not take any parameters and returns a pointer to a cobra.Command object.
-func CmdQueryAdmin() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "admin",
-		Short: "retrieve the admin address",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-			queryClient := types.NewQueryClient(clientCtx)
-
-			res, err := queryClient.Admin(context.Background(), &types.QueryAdminRequest{})
 			if err != nil {
 				return err
 			}

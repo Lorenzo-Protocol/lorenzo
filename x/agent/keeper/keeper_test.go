@@ -3,11 +3,15 @@ package keeper_test
 import (
 	"encoding/json"
 	"testing"
+	"time"
+
+	"github.com/Lorenzo-Protocol/lorenzo/v2/testutil"
+	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	"github.com/evmos/ethermint/crypto/ethsecp256k1"
 
 	"github.com/Lorenzo-Protocol/lorenzo/v2/app"
 	"github.com/stretchr/testify/suite"
-
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -17,25 +21,15 @@ import (
 	"github.com/Lorenzo-Protocol/lorenzo/v2/x/agent/types"
 )
 
-var (
-	testAdmin = app.CreateTestAddrs(1)[0]
-	agents    = []types.Agent{
-		{
-			Id:                  1,
-			Name:                "agent1",
-			BtcReceivingAddress: "tb1ptt9gnjnvje343y47z2wd7r8w6mnuylp8z0w74qftv7p5x323vxeq9jrn6f",
-			EthAddr:             "0xBAb28FF7659481F1c8516f616A576339936AFB06",
-			Description:         "test agent",
-			Url:                 "https://xxx.com",
-		},
-	}
-)
+var testAdmin = app.CreateTestAddrs(1)[0]
 
 type KeeperTestSuite struct {
 	suite.Suite
 
 	ctx    sdk.Context
 	keeper keeper.Keeper
+
+	lorenzoApp *app.LorenzoApp
 
 	msgServer   types.MsgServer
 	queryClient types.QueryClient
@@ -48,51 +42,55 @@ func TestKeeperTestSuite(t *testing.T) {
 func (suite *KeeperTestSuite) SetupTest() {
 	merge := func(cdc codec.Codec, state map[string]json.RawMessage) {
 		genesis := &types.GenesisState{
-			Agents: agents,
-			Admin:  testAdmin.String(),
+			Params: types.Params{
+				AllowList: []string{
+					testAdmin.String(),
+				},
+			},
 		}
 		state[types.ModuleName] = cdc.MustMarshalJSON(genesis)
 	}
 
-	app := app.SetupWithGenesisMergeFn(suite.T(), merge)
-	ctx := app.GetBaseApp().NewContext(false, tmproto.Header{})
+	lorenzoApp := app.SetupWithGenesisMergeFn(suite.T(), merge)
 
-	queryHelper := baseapp.NewQueryServerTestHelper(ctx, app.InterfaceRegistry())
-	types.RegisterQueryServer(queryHelper, keeper.NewQuerierImpl(&app.AgentKeeper))
-	queryClient := types.NewQueryClient(queryHelper)
+	// consensus key
+	privCons, err := ethsecp256k1.GenerateKey()
+	suite.Require().NoError(err)
+	consAddress := sdk.ConsAddress(privCons.PubKey().Address())
+	header := testutil.NewHeader(
+		lorenzoApp.LastBlockHeight()+1, time.Now().UTC(), app.SimAppChainID, consAddress, nil, nil,
+	)
+	ctx := lorenzoApp.GetBaseApp().NewContext(false, header)
 
 	suite.ctx = ctx
-	suite.keeper = app.AgentKeeper
+	suite.keeper = lorenzoApp.AgentKeeper
+	suite.lorenzoApp = lorenzoApp
 
-	suite.msgServer = keeper.NewMsgServerImpl(app.AgentKeeper)
+	// setup validators
+	valAddr := sdk.ValAddress(privCons.PubKey().Address().Bytes())
+	validator, err := stakingtypes.NewValidator(valAddr, privCons.PubKey(), stakingtypes.Description{})
+	suite.Require().NoError(err)
+	validator = stakingkeeper.TestingUpdateValidator(suite.lorenzoApp.StakingKeeper, suite.ctx, validator, true)
+	err = suite.lorenzoApp.StakingKeeper.Hooks().AfterValidatorCreated(suite.ctx, validator.GetOperator())
+	suite.Require().NoError(err)
+	err = suite.lorenzoApp.StakingKeeper.SetValidatorByConsAddr(suite.ctx, validator)
+	suite.Require().NoError(err)
+
+	queryHelper := baseapp.NewQueryServerTestHelper(suite.ctx, suite.lorenzoApp.InterfaceRegistry())
+	types.RegisterQueryServer(queryHelper, keeper.NewQuerierImpl(&suite.lorenzoApp.AgentKeeper))
+	queryClient := types.NewQueryClient(queryHelper)
+	suite.msgServer = keeper.NewMsgServerImpl(suite.lorenzoApp.AgentKeeper)
 	suite.queryClient = queryClient
 }
 
-func (suite *KeeperTestSuite) TestGetAgent() {
-	suite.SetupTest()
-
-	suite.Run("not found", func() {
-		_, has := suite.keeper.GetAgent(suite.ctx, 2)
-		suite.False(has)
-	})
-
-	suite.Run("found", func() {
-		agent, has := suite.keeper.GetAgent(suite.ctx, agents[0].Id)
-		suite.True(has)
-		suite.Equal(agent, agents[0])
-	})
+// Commit commits and starts a new block with an updated context.
+func (suite *KeeperTestSuite) Commit() {
+	suite.CommitAfter(time.Second * 1)
 }
 
-func (suite *KeeperTestSuite) TestGetNextNumber() {
-	suite.SetupTest()
-
-	nextNumber := suite.keeper.GetNextNumber(suite.ctx)
-	suite.Equal(nextNumber, uint64(2))
-}
-
-func (suite *KeeperTestSuite) TestGetAdmin() {
-	suite.SetupTest()
-
-	admin := suite.keeper.GetAdmin(suite.ctx)
-	suite.Equal(admin, testAdmin)
+// Commit commits a block at a given time.
+func (suite *KeeperTestSuite) CommitAfter(t time.Duration) {
+	var err error
+	suite.ctx, err = testutil.Commit(suite.ctx, suite.lorenzoApp, t, nil)
+	suite.Require().NoError(err)
 }

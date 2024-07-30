@@ -1,187 +1,271 @@
 package keeper_test
 
 import (
-	"github.com/Lorenzo-Protocol/lorenzo/v2/app"
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/agent/keeper"
+	"fmt"
+
 	"github.com/Lorenzo-Protocol/lorenzo/v2/x/agent/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 )
 
+func (suite *KeeperTestSuite) TestMsgServer_UpdateParams() {
+	suite.SetupTest()
+	testCases := []struct {
+		name      string
+		request   *types.MsgUpdateParams
+		expectErr bool
+	}{
+		{
+			name:      "fail - invalid authority",
+			request:   &types.MsgUpdateParams{Authority: "foobar"},
+			expectErr: true,
+		},
+		{
+			name: "fail - AllowList address is not valid",
+			request: &types.MsgUpdateParams{
+				Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+				Params: types.Params{
+					AllowList: []string{
+						"cosmos1qperwt9wrnkg5k9e5gzfgjppzpqqu8t3q4yjx9",
+						"lrz1tffj9qp3wpdnuds443c86wffrac4jkapkjmmcy",
+					},
+				},
+			},
+			expectErr: true,
+		},
+		{
+			name: "pass - valid Update msg",
+			request: &types.MsgUpdateParams{
+				Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+				Params: types.Params{
+					AllowList: []string{
+						"lrz1tffj9qp3wpdnuds443c86wffrac4jkapkjmmcy",
+					},
+				},
+			},
+			expectErr: false,
+		},
+	}
+	for _, tc := range testCases {
+		suite.Run(fmt.Sprintf("MsgUpdateParams - %s", tc.name), func() {
+			_, err := suite.msgServer.UpdateParams(suite.ctx, tc.request)
+			if tc.expectErr {
+				suite.Require().Error(err)
+			} else {
+				suite.Require().NoError(err)
+			}
+		})
+	}
+}
+
 func (suite *KeeperTestSuite) TestMsgServer_AddAgent() {
-	msgServer := keeper.NewMsgServerImpl(suite.keeper)
-
-	suite.Run("invalid btc address", func() {
-		_, err := msgServer.AddAgent(suite.ctx, &types.MsgAddAgent{
-			Sender:              testAdmin.String(),
-			Name:                "agent1",
-			BtcReceivingAddress: "tb1ptt9gnjnvje343y47z2wd7r8w6mnuylp8z0w74qftv7p5",
-			EthAddr:             "0xBAb28FF7659481F1c8516f616A576339936AFB06",
-			Description:         "test agent",
-			Url:                 "https://xxx.com",
+	testCases := []struct {
+		name       string
+		request    *types.MsgAddAgent
+		malleate   func(request *types.MsgAddAgent)
+		validation func(request *types.MsgAddAgent)
+		expectErr  bool
+	}{
+		{
+			name: "fail - invalid sender",
+			request: &types.MsgAddAgent{
+				Name:                "sinohope4",
+				BtcReceivingAddress: "tb1ptt9gnjnvje343y47z2wd7r8w6mnuylp8z0w74qftv7p5x323vxeq9jrn6f",
+				EthAddr:             "0xbCC0CdF7683120a1965A343245FA602314C13b9A",
+				Description:         "test",
+				Url:                 "https://sinohope.com",
+			},
+			expectErr: true,
+		},
+		{
+			name:      "fail - sender not authorized",
+			request:   &types.MsgAddAgent{Sender: "lrz1tffj9qp3wpdnuds443c86wffrac4jkapkjmmcy"},
+			expectErr: true,
+		},
+		{
+			name: "success - valid create agent",
+			request: &types.MsgAddAgent{
+				Name:                "sinohope4",
+				BtcReceivingAddress: "tb1ptt9gnjnvje343y47z2wd7r8w6mnuylp8z0w74qftv7p5x323vxeq9jrn6f",
+				EthAddr:             "0xbCC0CdF7683120a1965A343245FA602314C13b9A",
+				Description:         "test",
+				Url:                 "https://sinohope.com",
+				Sender:              testAdmin.String(),
+			},
+			malleate: func(request *types.MsgAddAgent) {
+				suite.Commit()
+			},
+			validation: func(request *types.MsgAddAgent) {
+				agent, found := suite.lorenzoApp.AgentKeeper.GetAgent(suite.ctx, uint64(1))
+				suite.Require().True(found)
+				suite.Require().Equal(request.Name, agent.Name)
+				suite.Require().Equal(request.BtcReceivingAddress, agent.BtcReceivingAddress)
+				suite.Require().Equal(request.EthAddr, agent.EthAddr)
+				suite.Require().Equal(request.Description, agent.Description)
+				suite.Require().Equal(request.Url, agent.Url)
+				suite.Require().Equal(agent.Id, uint64(1))
+			},
+			expectErr: false,
+		},
+	}
+	for _, tc := range testCases {
+		suite.Run(fmt.Sprintf("MsgAddAgent - %s", tc.name), func() {
+			suite.SetupTest()
+			if tc.malleate != nil {
+				tc.malleate(tc.request)
+			}
+			_, err := suite.msgServer.AddAgent(suite.ctx, tc.request)
+			if tc.expectErr {
+				suite.Require().Error(err)
+			} else {
+				suite.Require().NoError(err)
+			}
+			if tc.validation != nil {
+				tc.validation(tc.request)
+			}
 		})
-		suite.Require().Error(err)
-	})
-
-	suite.Run("not admin", func() {
-		_, err := msgServer.AddAgent(suite.ctx, &types.MsgAddAgent{
-			Sender:              app.CreateTestAddrs(2)[1].String(),
-			Name:                "agent1",
-			BtcReceivingAddress: "tb1ptt9gnjnvje343y47z2wd7r8w6mnuylp8z0w74qftv7p5x323vxeq9jrn6f",
-			EthAddr:             "0xBAb28FF7659481F1c8516f616A576339936AFB06",
-			Description:         "test agent",
-			Url:                 "https://xxx.com",
-		})
-		suite.Require().Error(err)
-	})
-
-	suite.Run("success", func() {
-		msg := &types.MsgAddAgent{
-			Sender:              testAdmin.String(),
-			Name:                "agent2",
-			BtcReceivingAddress: "tb1ptt9gnjnvje343y47z2wd7r8w6mnuylp8z0w74qftv7p5x323vxeq9jrn6f",
-			EthAddr:             "0xBAb28FF7659481F1c8516f616A576339936AFB06",
-			Description:         "test agent",
-			Url:                 "https://xxx.com",
-		}
-		response, err := msgServer.AddAgent(suite.ctx, msg)
-		suite.Require().NoError(err)
-		suite.Require().Equal(uint64(2), response.Id, "wrong agent id")
-
-		agent, has := suite.keeper.GetAgent(suite.ctx, response.Id)
-		suite.Require().True(has)
-		suite.Require().EqualValues(types.Agent{
-			Id:                  response.Id,
-			Name:                msg.Name,
-			BtcReceivingAddress: msg.BtcReceivingAddress,
-			EthAddr:             msg.EthAddr,
-			Description:         msg.Description,
-			Url:                 msg.Url,
-		}, agent, "not match agent")
-	})
+	}
 }
 
 func (suite *KeeperTestSuite) TestMsgServer_EditAgent() {
-	msgServer := keeper.NewMsgServerImpl(suite.keeper)
-	suite.Run("not admin", func() {
-		_, err := msgServer.EditAgent(suite.ctx, &types.MsgEditAgent{
-			Sender: app.CreateTestAddrs(2)[1].String(),
-			Id:     1,
+	testCases := []struct {
+		name       string
+		request    *types.MsgEditAgent
+		malleate   func(request *types.MsgEditAgent)
+		validation func(request *types.MsgEditAgent)
+		expectErr  bool
+	}{
+		{
+			name:      "fail - invalid sender",
+			request:   &types.MsgEditAgent{Sender: "foobar"},
+			expectErr: true,
+		},
+		{
+			name:      "fail - sender not authorized",
+			request:   &types.MsgEditAgent{Sender: "lrz1tffj9qp3wpdnuds443c86wffrac4jkapkjmmcy"},
+			expectErr: true,
+		},
+		{
+			name: "success - valid edit agent",
+			request: &types.MsgEditAgent{
+				Id:          1,
+				Name:        "lorenzo",
+				Description: "lorenzo is a protocol",
+				Url:         "https://lorenzo.com",
+				Sender:      testAdmin.String(),
+			},
+			malleate: func(request *types.MsgEditAgent) {
+				suite.Commit()
+				// create agent
+				name := "sinohope4"
+				btcReceivingAddress := "3C7VPws9fMW3kcwRJvMkSVdqMs4SAhQCqq"
+				ethAddr := "0x6508d68f4e5931f93fadc3b7afac5092e195b80f"
+				description := "lorenzo"
+				url := "https://lorenzo-protocol.io"
+				agentId := suite.lorenzoApp.AgentKeeper.AddAgent(
+					suite.ctx,
+					name, btcReceivingAddress, ethAddr, description, url)
+				suite.Require().NotEqual(agentId, 0)
+				suite.Require().Equal(agentId, uint64(1))
+			},
+			validation: func(request *types.MsgEditAgent) {
+				agent, found := suite.lorenzoApp.AgentKeeper.GetAgent(suite.ctx, uint64(1))
+				suite.Require().True(found)
+				suite.Require().Equal(request.Name, agent.Name)
+				suite.Require().Equal(request.Description, agent.Description)
+				suite.Require().Equal(request.Url, agent.Url)
+				suite.Require().Equal(agent.Id, uint64(1))
+			},
+			expectErr: false,
+		},
+	}
+	for _, tc := range testCases {
+		suite.Run(fmt.Sprintf("MsgEditAgent - %s", tc.name), func() {
+			suite.SetupTest()
+			if tc.malleate != nil {
+				tc.malleate(tc.request)
+			}
+			_, err := suite.msgServer.EditAgent(suite.ctx, tc.request)
+			if tc.expectErr {
+				suite.Require().Error(err)
+			} else {
+				suite.Require().NoError(err)
+			}
+			if tc.validation != nil {
+				tc.validation(tc.request)
+			}
 		})
-		suite.Require().Error(err)
-	})
-
-	suite.Run("agent not exist", func() {
-		_, err := msgServer.EditAgent(suite.ctx, &types.MsgEditAgent{
-			Sender: testAdmin.String(),
-			Id:     3,
-		})
-		suite.Require().Error(err)
-	})
-
-	suite.Run("edit name", func() {
-		suite.SetupTest()
-		msgServer = keeper.NewMsgServerImpl(suite.keeper)
-
-		_, err := msgServer.EditAgent(suite.ctx, &types.MsgEditAgent{
-			Sender:      testAdmin.String(),
-			Id:          1,
-			Name:        "agent1_test",
-			Description: types.DoNotModifyDesc,
-			Url:         types.DoNotModifyDesc,
-		})
-		suite.Require().NoError(err)
-
-		agent, has := suite.keeper.GetAgent(suite.ctx, 1)
-		suite.Require().True(has)
-		suite.Require().EqualValues(types.Agent{
-			Id:                  1,
-			Name:                "agent1_test",
-			BtcReceivingAddress: agents[0].BtcReceivingAddress,
-			EthAddr:             agents[0].EthAddr,
-			Description:         agents[0].Description,
-			Url:                 agents[0].Url,
-		}, agent, "not match agent")
-	})
-
-	suite.Run("edit description", func() {
-		suite.SetupTest()
-		msgServer = keeper.NewMsgServerImpl(suite.keeper)
-
-		_, err := msgServer.EditAgent(suite.ctx, &types.MsgEditAgent{
-			Sender:      testAdmin.String(),
-			Id:          1,
-			Name:        types.DoNotModifyDesc,
-			Description: "xxxx",
-			Url:         types.DoNotModifyDesc,
-		})
-		suite.Require().NoError(err)
-
-		agent, has := suite.keeper.GetAgent(suite.ctx, 1)
-		suite.Require().True(has)
-		suite.Require().EqualValues(types.Agent{
-			Id:                  1,
-			Name:                agents[0].Name,
-			BtcReceivingAddress: agents[0].BtcReceivingAddress,
-			EthAddr:             agents[0].EthAddr,
-			Description:         "xxxx",
-			Url:                 agents[0].Url,
-		}, agent, "not match agent")
-	})
-
-	suite.Run("edit url", func() {
-		suite.SetupTest()
-		msgServer = keeper.NewMsgServerImpl(suite.keeper)
-
-		_, err := msgServer.EditAgent(suite.ctx, &types.MsgEditAgent{
-			Sender:      testAdmin.String(),
-			Id:          1,
-			Name:        types.DoNotModifyDesc,
-			Description: types.DoNotModifyDesc,
-			Url:         "xxxx",
-		})
-		suite.Require().NoError(err)
-
-		agent, has := suite.keeper.GetAgent(suite.ctx, 1)
-		suite.Require().True(has)
-		suite.Require().EqualValues(types.Agent{
-			Id:                  1,
-			Name:                agents[0].Name,
-			BtcReceivingAddress: agents[0].BtcReceivingAddress,
-			EthAddr:             agents[0].EthAddr,
-			Description:         agents[0].Description,
-			Url:                 "xxxx",
-		}, agent, "not match agent")
-	})
+	}
 }
 
 func (suite *KeeperTestSuite) TestMsgServer_RemoveAgent() {
-	msgServer := keeper.NewMsgServerImpl(suite.keeper)
-	suite.Run("not admin", func() {
-		_, err := msgServer.RemoveAgent(suite.ctx, &types.MsgRemoveAgent{
-			Sender: app.CreateTestAddrs(2)[1].String(),
-			Id:     1,
+	testCases := []struct {
+		name       string
+		request    *types.MsgRemoveAgent
+		malleate   func(request *types.MsgRemoveAgent)
+		validation func(request *types.MsgRemoveAgent)
+		expectErr  bool
+	}{
+		{
+			name:      "fail - invalid sender",
+			request:   &types.MsgRemoveAgent{Sender: "foobar"},
+			expectErr: true,
+		},
+		{
+			name:      "fail - sender not authorized",
+			request:   &types.MsgRemoveAgent{Sender: "lrz1tffj9qp3wpdnuds443c86wffrac4jkapkjmmcy"},
+			expectErr: true,
+		},
+		{
+			name: "fail - agent not found",
+			request: &types.MsgRemoveAgent{
+				Id:     10,
+				Sender: testAdmin.String(),
+			},
+			expectErr: true,
+		},
+		{
+			name: "success - valid remove agent",
+			request: &types.MsgRemoveAgent{
+				Id:     1,
+				Sender: testAdmin.String(),
+			},
+			malleate: func(request *types.MsgRemoveAgent) {
+				suite.Commit()
+				// create agent
+				name := "sinohope4"
+				btcReceivingAddress := "3C7VPws9fMW3kcwRJvMkSVdqMs4SAhQCqq"
+				ethAddr := "0x6508d68f4e5931f93fadc3b7afac5092e195b80f"
+				description := "lorenzo"
+				url := "https://lorenzo-protocol.io"
+				agentId := suite.lorenzoApp.AgentKeeper.AddAgent(
+					suite.ctx,
+					name, btcReceivingAddress, ethAddr, description, url)
+				suite.Require().NotEqual(agentId, 0)
+				suite.Require().Equal(agentId, uint64(1))
+			},
+			validation: func(request *types.MsgRemoveAgent) {
+				_, found := suite.lorenzoApp.AgentKeeper.GetAgent(suite.ctx, uint64(1))
+				suite.Require().False(found)
+			},
+			expectErr: false,
+		},
+	}
+	for _, tc := range testCases {
+		suite.Run(fmt.Sprintf("MsgEditAgent - %s", tc.name), func() {
+			suite.SetupTest()
+			if tc.malleate != nil {
+				tc.malleate(tc.request)
+			}
+			_, err := suite.msgServer.RemoveAgent(suite.ctx, tc.request)
+			if tc.expectErr {
+				suite.Require().Error(err)
+			} else {
+				suite.Require().NoError(err)
+			}
+			if tc.validation != nil {
+				tc.validation(tc.request)
+			}
 		})
-		suite.Require().Error(err)
-	})
-
-	suite.Run("agent not exist", func() {
-		_, err := msgServer.RemoveAgent(suite.ctx, &types.MsgRemoveAgent{
-			Sender: testAdmin.String(),
-			Id:     2,
-		})
-		suite.Require().Error(err)
-	})
-
-	suite.Run("remove success", func() {
-		suite.SetupTest()
-		msgServer = keeper.NewMsgServerImpl(suite.keeper)
-
-		_, err := msgServer.RemoveAgent(suite.ctx, &types.MsgRemoveAgent{
-			Sender: testAdmin.String(),
-			Id:     1,
-		})
-		suite.Require().NoError(err)
-
-		_, has := suite.keeper.GetAgent(suite.ctx, 1)
-		suite.Require().False(has)
-	})
+	}
 }

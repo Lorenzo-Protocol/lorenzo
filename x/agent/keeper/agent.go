@@ -27,6 +27,28 @@ func (k Keeper) GetAgent(ctx sdk.Context, id uint64) (types.Agent, bool) {
 	return agent, true
 }
 
+// GetAgents retrieves all agents from the Keeper's store.
+//
+// Parameters:
+// - ctx: the SDK context.
+//
+// Returns:
+// - []types.Agent: the agents.
+func (k Keeper) GetAgents(ctx sdk.Context) []types.Agent {
+	store := ctx.KVStore(k.storeKey)
+
+	it := sdk.KVStorePrefixIterator(store, types.AgentKey)
+	defer it.Close() //nolint:errcheck
+
+	var agents []types.Agent
+	for ; it.Valid(); it.Next() {
+		var agent types.Agent
+		k.cdc.MustUnmarshal(it.Value(), &agent)
+		agents = append(agents, agent)
+	}
+	return agents
+}
+
 // GetNextNumber retrieves the next number from the Keeper's store.
 //
 // Parameters:
@@ -44,69 +66,10 @@ func (k Keeper) GetNextNumber(ctx sdk.Context) uint64 {
 	return sdk.BigEndianToUint64(bz)
 }
 
-// SetAdmin sets the admin address in the Keeper's store.
-//
-// Parameters:
-// - ctx: the SDK context.
-// - admin: the admin address to be set.
-//
-// Returns:
-// - error: an error if the admin address is already set.
-func (k Keeper) SetAdmin(ctx sdk.Context, admin sdk.AccAddress) error {
-	// check if the sender is the current admin
-	if k.GetAdmin(ctx).Equals(admin) {
-		return types.ErrAdminExists
-	}
-	k.setAdmin(ctx, admin)
-	return nil
-}
-
-// GetAdmin retrieves the admin address from the Keeper's store.
-//
-// Parameters:
-// - ctx: the SDK context.
-//
-// Returns:
-// - sdk.AccAddress: the admin address, or nil if it is not found in the store.
-func (k Keeper) GetAdmin(ctx sdk.Context) sdk.AccAddress {
-	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.KeyAdmin())
-	if bz == nil {
-		return nil
-	}
-	return sdk.AccAddress(bz)
-}
-
-// Allowed checks if the given address is authorized.
-//
-// Parameters:
-// - ctx: the SDK context.
-// - address: the address to check.
-//
-// Returns:
-// - bool: true if the address is authorized, false otherwise.
-func (k Keeper) Allowed(ctx sdk.Context, address sdk.AccAddress) bool {
-	return k.GetAdmin(ctx).Equals(address)
-}
-
 // GetAgentsPrefixStore returns the store for the agents
 func (k Keeper) GetAgentsPrefixStore(ctx sdk.Context) prefix.Store {
 	store := ctx.KVStore(k.storeKey)
 	return prefix.NewStore(store, types.AgentKey)
-}
-
-func (k Keeper) getAgents(ctx sdk.Context) (agents []types.Agent) {
-	store := ctx.KVStore(k.storeKey)
-
-	it := sdk.KVStorePrefixIterator(store, types.AgentKey)
-	defer it.Close() //nolint:errcheck
-
-	for ; it.Valid(); it.Next() {
-		var agent types.Agent
-		k.cdc.MustUnmarshal(it.Value(), &agent)
-		agents = append(agents, agent)
-	}
-	return agents
 }
 
 // AddAgent adds a new agent to the Keeper's store.
@@ -154,9 +117,4 @@ func (k Keeper) setAgent(ctx sdk.Context, agent types.Agent) {
 func (k Keeper) removeAgent(ctx sdk.Context, id uint64) {
 	store := ctx.KVStore(k.storeKey)
 	store.Delete(types.KeyAgent(id))
-}
-
-func (k Keeper) setAdmin(ctx sdk.Context, admin sdk.AccAddress) {
-	store := ctx.KVStore(k.storeKey)
-	store.Set(types.KeyAdmin(), admin.Bytes())
 }
