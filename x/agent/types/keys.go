@@ -15,9 +15,9 @@ const (
 )
 
 var (
-	AgentKey      = []byte{0x01}
-	NextNumberKey = []byte{0x02}
-	AdminKey      = []byte{0x03}
+	ParamsKey     = []byte{0x01}
+	AgentKey      = []byte{0x02}
+	NextNumberKey = []byte{0x03}
 )
 
 func KeyAgent(id uint64) []byte {
@@ -27,8 +27,4 @@ func KeyAgent(id uint64) []byte {
 
 func KeyNextNumber() []byte {
 	return NextNumberKey
-}
-
-func KeyAdmin() []byte {
-	return AdminKey
 }

@@ -5,12 +5,20 @@ import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "google/api/annotations.proto";
+
+import "lorenzo/agent/v1/params.proto";
 import "lorenzo/agent/v1/agent.proto";
 
 option go_package = "github.com/Lorenzo-Protocol/lorenzo/v2/x/agent/types";
 
 // Query defines the gRPC querier service.
 service Query {
+
+  // Params queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/lorenzo/plan/v1/params";
+  }
+
   // Agent queries all agents
   rpc Agents(QueryAgentsRequest) returns (QueryAgentsResponse) {
     option (google.api.http).get = "/lorenzo/agent/v1/agents";
@@ -21,10 +29,15 @@ service Query {
     option (google.api.http).get = "/lorenzo/agent/v1/agents/{id}";
   }
 
-  // Admin queries the admin of the agent module
-  rpc Admin(QueryAdminRequest) returns (QueryAdminResponse) {
-    option (google.api.http).get = "/lorenzo/agent/v1/admin";
-  }
+}
+
+// QueryParamsRequest is the request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is the response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [ (gogoproto.nullable) = false ];
 }
 
 // QueryAgentsRequest is the request type for the Query/Agents RPC method.
@@ -51,9 +64,3 @@ message QueryAgentResponse {
   Agent agent = 1 [ (gogoproto.nullable) = false ];
 }
 
-message QueryAdminRequest {}
-
-// QueryAgentResponse is the response type for the Query/Agent RPC method.
-message QueryAdminResponse {
-  string admin = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-}

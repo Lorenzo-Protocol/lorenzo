@@ -4,7 +4,6 @@ import (
 	"strings"
 
 	errorsmod "cosmossdk.io/errors"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ethereum/go-ethereum/common"
 )
 
@@ -14,6 +13,16 @@ import (
 // Returns a pointer to GenesisState.
 func DefaultGenesisState() *GenesisState {
 	return &GenesisState{}
+}
+
+// NewGenesisState returns a new GenesisState.
+//
+// It takes a Params parameter and returns a pointer to GenesisState.
+func NewGenesisState(params Params, agents []Agent) *GenesisState {
+	return &GenesisState{
+		Params: params,
+		Agents: agents,
+	}
 }
 
 // Validate checks if the given GenesisState is valid.
@@ -27,8 +36,7 @@ func DefaultGenesisState() *GenesisState {
 // Returns:
 // - error: an error if the sender address is invalid, otherwise nil.
 func (data GenesisState) Validate() error {
-	_, err := sdk.AccAddressFromBech32(data.Admin)
-	if err != nil {
+	if err := data.Params.Validate(); err != nil {
 		return err
 	}
 

@@ -40,12 +40,11 @@ func upgradeHandlerConstructor(
 
 		// agent module init
 		// 1. set admin
-		admin, err := sdk.AccAddressFromBech32("lrz1xa40j022h2rcmnte47gyjg8688grln94pp84lc")
-		if err != nil {
-			return nil, err
+		agentParams := agenttypes.Params{
+			AllowList: []string{"lrz1xa40j022h2rcmnte47gyjg8688grln94pp84lc"},
 		}
 
-		if err := app.AgentKeeper.SetAdmin(ctx, admin); err != nil {
+		if err := app.AgentKeeper.SetParams(ctx, agentParams); err != nil {
 			return nil, err
 		}
 

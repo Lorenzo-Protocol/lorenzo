@@ -3,6 +3,8 @@ package keeper
 import (
 	"context"
 
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+
 	errorsmod "cosmossdk.io/errors"
 	"github.com/btcsuite/btcd/btcutil"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -28,6 +30,25 @@ type msgServer struct {
 	k Keeper
 }
 
+func (m msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
+	if m.k.authority != msg.Authority {
+		return nil, errorsmod.Wrapf(
+			govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", m.k.authority, msg.Authority)
+	}
+
+	if err := msg.Params.Validate(); err != nil {
+		return nil, govtypes.ErrInvalidProposalMsg.Wrapf("invalid parameter: %v", err)
+	}
+
+	sdkCtx := sdk.UnwrapSDKContext(goCtx)
+
+	if err := m.k.SetParams(sdkCtx, msg.Params); err != nil {
+		return nil, err
+	}
+
+	return &types.MsgUpdateParamsResponse{}, nil
+}
+
 // AddAgent description of the Go function.
 //
 // AddAgent adds an agent to the msgServer.
@@ -36,15 +57,18 @@ type msgServer struct {
 // - msg: a pointer to the types.MsgAddAgent object representing the message to be added.
 //
 // It returns a pointer to the types.MsgAddAgentResponse object and an error.
-func (m msgServer) AddAgent(goctx context.Context, msg *types.MsgAddAgent) (*types.MsgAddAgentResponse, error) {
+func (m msgServer) AddAgent(goCtx context.Context, msg *types.MsgAddAgent) (*types.MsgAddAgentResponse, error) {
 	_, err := btcutil.DecodeAddress(msg.BtcReceivingAddress, m.k.btcLCKeeper.GetBTCNet())
 	if err != nil {
 		return nil, errorsmod.Wrapf(types.ErrInvalidBtcAddress, "invalid btc receiving address :%s", msg.BtcReceivingAddress)
 	}
 
-	ctx := sdk.UnwrapSDKContext(goctx)
-	sender := sdk.MustAccAddressFromBech32(msg.Sender)
-	if !m.k.Allowed(ctx, sender) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return nil, err
+	}
+	if !m.k.Authorized(ctx, sender) {
 		return nil, errorsmod.Wrapf(types.ErrUnAuthorized, "invalid sender :%s, not authorized", msg.Sender)
 	}
 
@@ -68,15 +92,18 @@ func (m msgServer) AddAgent(goctx context.Context, msg *types.MsgAddAgent) (*typ
 //
 // EditAgent edits an existing agent in the msgServer.
 // It takes the following parameter(s):
-// - goctx: the context.Context object representing the context of the function.
+// - goCtx: the context.Context object representing the context of the function.
 // - msg: a pointer to the types.MsgEditAgent object representing the agent to be edited.
 //
 // It returns a pointer to the types.MsgEditAgentResponse object and an error.
-func (m msgServer) EditAgent(goctx context.Context, msg *types.MsgEditAgent) (*types.MsgEditAgentResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goctx)
+func (m msgServer) EditAgent(goCtx context.Context, msg *types.MsgEditAgent) (*types.MsgEditAgentResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	sender := sdk.MustAccAddressFromBech32(msg.Sender)
-	if !m.k.Allowed(ctx, sender) {
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return nil, err
+	}
+	if !m.k.Authorized(ctx, sender) {
 		return nil, errorsmod.Wrapf(types.ErrUnAuthorized, "invalid sender :%s, not authorized", msg.Sender)
 	}
 
@@ -112,11 +139,14 @@ func (m msgServer) EditAgent(goctx context.Context, msg *types.MsgEditAgent) (*t
 // - msg: a pointer to the types.MsgRemoveAgent object representing the agent to be removed.
 //
 // It returns a pointer to the types.MsgRemoveAgentResponse object and an error.
-func (m msgServer) RemoveAgent(goctx context.Context, msg *types.MsgRemoveAgent) (*types.MsgRemoveAgentResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goctx)
+func (m msgServer) RemoveAgent(goCtx context.Context, msg *types.MsgRemoveAgent) (*types.MsgRemoveAgentResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	sender := sdk.MustAccAddressFromBech32(msg.Sender)
-	if !m.k.Allowed(ctx, sender) {
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return nil, err
+	}
+	if !m.k.Authorized(ctx, sender) {
 		return nil, errorsmod.Wrapf(types.ErrUnAuthorized, "invalid sender :%s, not authorized", msg.Sender)
 	}
 

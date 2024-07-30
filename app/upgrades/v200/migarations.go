@@ -11,6 +11,9 @@ func migrateAgentFromBTCStakingToAgent(
 	app upgrades.AppKeepers,
 ) error {
 	btcStakingParams := app.BTCStakingKeeper.GetParams(ctx)
+	if btcStakingParams == nil {
+		return nil
+	}
 	for _, receiver := range btcStakingParams.Receivers {
 		app.AgentKeeper.AddAgent(
 			ctx,
