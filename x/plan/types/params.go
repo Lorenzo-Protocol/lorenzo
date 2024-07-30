@@ -41,10 +41,15 @@ func ValidateAddressList(i interface{}) error {
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T, expected []string", i)
 	}
+	seenMap := make(map[string]bool)
 	for _, a := range allowList {
+		if seenMap[a] {
+			return fmt.Errorf("duplicate address: %s", a)
+		}
 		if _, err := sdk.AccAddressFromBech32(a); err != nil {
 			return fmt.Errorf("invalid address: %s", a)
 		}
+		seenMap[a] = true
 	}
 	return nil
 }

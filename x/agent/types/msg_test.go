@@ -35,6 +35,19 @@ func (suite *MsgsTestSuite) TestMsgUpdateParams() {
 			false,
 		},
 		{
+			"fail - duplicate address",
+			&types.MsgUpdateParams{
+				Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+				Params: types.NewParams(
+					[]string{
+						"cosmos1qperwt9wrnkg5k9e5gzfgjppzpqhyav5j24d66",
+						"cosmos1qperwt9wrnkg5k9e5gzfgjppzpqhyav5j24d66",
+					},
+				),
+			},
+			false,
+		},
+		{
 			"pass - valid msg",
 			&types.MsgUpdateParams{
 				Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
