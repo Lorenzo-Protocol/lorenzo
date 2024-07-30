@@ -2,10 +2,7 @@
 
 COMMIT := $(shell git log -1 --format='%H')
 VERSION ?= $(shell git describe --tags --always)
-
-PACKAGES_SIMTEST=$(shell go list ./... | grep '/simulation')
 LEDGER_ENABLED ?= true
-SDK_PACK := $(shell go list -m github.com/cosmos/cosmos-sdk | sed  's/ /\@/g')
 TM_VERSION := $(shell go list -m github.com/cometbft/cometbft | sed 's:.* ::')
 DOCKER := $(shell which docker)
 BUILDDIR ?= $(CURDIR)/build
@@ -13,7 +10,6 @@ BUILDDIR ?= $(CURDIR)/build
 export GO111MODULE = on
 
 # process build tags
-
 build_tags = netgo
 ifeq ($(LEDGER_ENABLED),true)
   ifeq ($(OS),Windows_NT)
@@ -81,6 +77,10 @@ all: tools install
 # The below include contains the tools and runsim targets.
 include contrib/devtools/Makefile
 
+###############################################################################
+###                                 Build                                   ###
+###############################################################################
+
 .PHONY: install
 install: go.sum
 	go install -mod=readonly $(BUILD_FLAGS) ./cmd/lorenzod
@@ -94,23 +94,6 @@ clean:
 	rm -rf \
 	$(BUILDDIR)/ \
 	.testnets
-
-###############################################################################
-###                                E2E tests                                ###
-###############################################################################
-
-# Executes IBC tests via rollup-e2e-testing
-e2e-test-ibc:
-	cd e2e && go test -timeout=25m -race -v -run TestIBCTransfer .
-
-# Executes IBC tests via rollup-e2e-testing
-e2e-test-ibc-timeout:
-	cd e2e && go test -timeout=25m -race -v -run TestIBCTransferTimeout .
-
-# Executes all tests via rollup-e2e-testing
-e2e-test-all: e2e-test-ibc e2e-test-ibc-timeout
-
-.PHONY: e2e-test-ibc e2e-test-ibc-timeout e2e-test-all
 
 ###############################################################################
 ###                           Tests & Simulation                            ###
@@ -209,31 +192,13 @@ proto-check-breaking:
 	$(protoImage) buf breaking --against $(HTTPS_GIT)#branch=main
 
 ###############################################################################
-###                                Localnet                                 ###
-###############################################################################
-
-localnet-build-env:
-	$(MAKE) -C contrib/images lorenzod-env
-
-localnet-build-dev:
-	$(MAKE) -C contrib/images lorenzod-dev
-
-localnet-init:
-	$(DOCKER) run --rm -v $(CURDIR)/.testnets:/data lorenzo/lorenzod \
-			  testnet init-files --v 4 -o /data --starting-ip-address 192.168.10.2 --keyring-backend=test
-
-localnet-start:
-	docker-compose up -d
-
-localnet-stop:
-	docker-compose down
-###############################################################################
 ###                                Releasing                                ###
 ###############################################################################
 
 PACKAGE_NAME:=github.com/Lorenzo-Protocol/lorenzo
 GOLANG_CROSS_VERSION  = v1.20
 GOPATH ?= '$(HOME)/go'
+
 release-dry-run:
 	docker run \
 		--rm \
@@ -268,26 +233,47 @@ release:
 ###############################################################################
 ###                                Linting                                  ###
 ###############################################################################
-golangci_lint_cmd=golangci-lint
-golangci_version=v1.53.3
+
+GOLANGCI_LINT_CMD=golangci-lint
+GOLANGCI_VERSION=v1.53.3
 
 lint:
 	@echo "--> Running linter"
-	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@$(golangci_version)
-	@$(golangci_lint_cmd) run --timeout=10m
+	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@$(GOLANGCI_VERSION)
+	@$(GOLANGCI_LINT_CMD) run --timeout=10m
 
 lint-fix:
 	@echo "--> Running linter"
-	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@$(golangci_version)
-	@$(golangci_lint_cmd) run --fix --out-format=tab --issues-exit-code=0
+	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@$(GOLANGCI_VERSION)
+	@$(GOLANGCI_LINT_CMD) run --fix --out-format=tab --issues-exit-code=0
 
 format:
 	@go install mvdan.cc/gofumpt@latest
-	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@$(golangci_version)
+	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@$(GOLANGCI_VERSION)
 	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/docs/statik/statik.go" -not -path "./tests/mocks/*" -not -name "*.pb.go" -not -name "*.pb.gw.go" -not -name "*.pulsar.go" -not -path "./crypto/keys/secp256k1/*" | xargs gofumpt -w -l
-	$(golangci_lint_cmd) run --fix
+	$(GOLANGCI_LINT_CMD) run --fix
 
 .PHONY: lint lint-fix format
+
+###############################################################################
+###                                Localnet                                 ###
+###############################################################################
+
+localnet-build-env:
+	$(MAKE) -C contrib/images lorenzod-env
+
+localnet-build-dlv:
+	$(MAKE) -C contrib/images lorenzod-dlv
+
+localnet-init:
+	$(DOCKER) run --rm -v $(CURDIR)/.testnets:/data lorenzo/lorenzod \
+			  testnet init-files --v 4 -o /data --starting-ip-address 192.168.10.2 --keyring-backend=test
+
+localnet-start:
+	docker-compose up -d
+
+localnet-stop:
+	docker-compose down
 
 ###############################################################################
 ###                        Compile Solidity Contracts                       ###
