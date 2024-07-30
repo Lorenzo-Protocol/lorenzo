@@ -36,10 +36,6 @@ func (m msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParam
 			govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", m.k.authority, msg.Authority)
 	}
 
-	if err := msg.Params.Validate(); err != nil {
-		return nil, govtypes.ErrInvalidProposalMsg.Wrapf("invalid parameter: %v", err)
-	}
-
 	sdkCtx := sdk.UnwrapSDKContext(goCtx)
 
 	if err := m.k.SetParams(sdkCtx, msg.Params); err != nil {
