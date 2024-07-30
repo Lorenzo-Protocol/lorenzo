@@ -281,6 +281,9 @@ localnet-start:
 localnet-stop:
 	docker-compose down
 
+localnet-submit-vote-upgrade-plan:
+	$(MAKE) -C contrib/localnet submit-and-vote
+
 ###############################################################################
 ###                        Compile Solidity Contracts                       ###
 ###############################################################################
