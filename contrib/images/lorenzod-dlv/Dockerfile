@@ -1,14 +1,14 @@
 FROM golang:1.20-alpine AS build
 
 RUN apk add build-base git linux-headers libc-dev
-RUN go install github.com/go-delve/delve/cmd/dlv@latest
+RUN go install github.com/go-delve/delve/cmd/dlv@v1.20.0
 
 WORKDIR /work
 COPY go.mod go.sum /work/
 RUN go mod download
 
 COPY ./ /work
-RUN LEDGER_ENABLED=false make clean build
+RUN LEDGER_ENABLED=false make clean LORENZO_BUILD_OPTIONS="debug,nostrip" build
 
 
 FROM alpine AS run
