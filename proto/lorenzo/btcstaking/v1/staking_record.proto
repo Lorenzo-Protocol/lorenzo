@@ -17,3 +17,20 @@ message BTCStakingRecord {
   uint32 chain_id = 6;
   string mint_yat_result = 7;
 }
+
+// BTCBStakingRecord defines the message for btcb staking record
+message BTCBStakingRecord {
+  // tx_hash defines the tx hash
+  bytes tx_hash = 1;
+  // event_idx defines the event index
+  uint64 event_idx = 2;
+  // receiver_addr defines the receiver address
+  string receiver_addr = 3;
+  // amount defines the stBTC amount
+  string amount = 4 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  // chain_id defines the chain id
+  uint32 chain_id = 5;
+}

@@ -23,7 +23,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// Params defines the parameters for the module.
+// Params defines the parameters for the agent module.
 type Params struct {
 	// List of addresses that are allowed to manage agents.
 	AllowList []string `protobuf:"bytes,1,rep,name=allow_list,json=allowList,proto3" json:"allow_list,omitempty"`

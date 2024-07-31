@@ -16,6 +16,9 @@ service Msg {
   rpc CreateBTCStaking(MsgCreateBTCStaking)
       returns (MsgCreateBTCStakingResponse);
 
+  rpc CreateBTCBStaking(MsgCreateBTCBStaking)
+      returns (MsgCreateBTCBStakingResponse);
+
   rpc Burn(MsgBurnRequest) returns (MsgBurnResponse);
 
   rpc AddReceiver(MsgAddReceiver) returns (MsgAddReceiverResponse);
@@ -60,6 +63,16 @@ message MsgCreateBTCStaking {
 }
 
 message MsgCreateBTCStakingResponse {}
+
+message MsgCreateBTCBStaking {
+  option (cosmos.msg.v1.signer) = "signer";
+
+  string signer = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  bytes receipt = 2;
+  bytes proof = 3;
+}
+
+message MsgCreateBTCBStakingResponse {}
 
 message MsgBurnRequest {
   option (cosmos.msg.v1.signer) = "signer";
