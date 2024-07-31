@@ -22,7 +22,7 @@ func (k Keeper) UploadHeaders(ctx sdk.Context, headers []*types.Header) error {
 	}
 
 	// verify headers
-	if err := types.VeryHeaders(vHeader); err != nil {
+	if err := types.VerifyHeaders(vHeader); err != nil {
 		return err
 	}
 
@@ -43,7 +43,7 @@ func (k Keeper) UploadHeaders(ctx sdk.Context, headers []*types.Header) error {
 // Returns:
 // - error: an error if the header update fails.
 func (k Keeper) UpdateHeader(ctx sdk.Context, header *types.Header) error {
-	if err := types.VeryHeaders([]*types.Header{header}); err != nil {
+	if err := types.VerifyHeaders([]*types.Header{header}); err != nil {
 		return err
 	}
 

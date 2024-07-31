@@ -15,7 +15,7 @@ func (m *MsgUpdateHeader) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.Signer); err != nil {
 		return err
 	}
-	return VeryHeaders([]*Header{m.Header})
+	return VerifyHeaders([]*Header{m.Header})
 }
 
 // GetSigners implements sdk.Msg interface
@@ -28,7 +28,7 @@ func (m *MsgUploadHeaders) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.Signer); err != nil {
 		return err
 	}
-	return VeryHeaders(m.Headers)
+	return VerifyHeaders(m.Headers)
 }
 
 // GetSigners implements sdk.Msg interface

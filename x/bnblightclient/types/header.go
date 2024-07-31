@@ -107,7 +107,7 @@ func UnmarshalBNBHeader(rawHeader []byte) (*BNBHeader, error) {
 	return bnbHeader, nil
 }
 
-// VeryHeaders checks the validity of a sequence of BNBHeaders.
+// VerifyHeaders checks the validity of a sequence of BNBHeaders.
 //
 // It takes a slice of Header pointers as input and returns an error.
 // The function iterates over the headers and checks if the current header's
@@ -115,7 +115,7 @@ func UnmarshalBNBHeader(rawHeader []byte) (*BNBHeader, error) {
 // current header's number is one less than the next header's number.
 // If any of these conditions are not met, the function returns an
 // ErrInvalidHeader error.
-func VeryHeaders(headers []*Header) error {
+func VerifyHeaders(headers []*Header) error {
 	if len(headers) == 0 {
 		return errorsmod.Wrap(ErrInvalidHeader, "empty headers")
 	}
