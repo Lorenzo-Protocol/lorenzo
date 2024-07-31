@@ -66,6 +66,10 @@ func upgradeHandlerConstructor(
 		tokenParams := tokentypes.DefaultParams()
 		app.TokenKeeper.SetParams(ctx, tokenParams)
 
+		if acc := app.AccountKeeper.GetModuleAccount(ctx, tokentypes.ModuleName); acc == nil {
+			panic("the token module account has not been set")
+		}
+
 		return app.ModuleManager.RunMigrations(ctx, c, fromVM)
 	}
 }
