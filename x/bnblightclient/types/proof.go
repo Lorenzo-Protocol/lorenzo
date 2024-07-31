@@ -2,11 +2,12 @@ package types
 
 import (
 	"encoding/base64"
+	"encoding/json"
 	"errors"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/core/types"
+	evmtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/rlp"
 	"github.com/ethereum/go-ethereum/trie"
 )
@@ -115,10 +116,10 @@ func (pm *ProofPath) valueIdx(key []byte) int {
 // Returns:
 // - *mptproof.MPTProof: a pointer to an MPTProof struct containing the index, value, and proof of the transaction.
 // - error: an error if the proof generation fails.
-func GenReceiptProof(txIndex uint64, root common.Hash, receipts []*types.Receipt) (*Proof, error) {
+func GenReceiptProof(txIndex uint64, root common.Hash, receipts []*evmtypes.Receipt) (*Proof, error) {
 	db := trie.NewDatabase(rawdb.NewMemoryDatabase())
 	mpt := trie.NewEmpty(db)
-	receiptHash := types.DeriveSha(types.Receipts(receipts), mpt)
+	receiptHash := evmtypes.DeriveSha(evmtypes.Receipts(receipts), mpt)
 	if receiptHash != root {
 		return nil, errors.New("root hash mismatch")
 	}
@@ -140,4 +141,36 @@ func GenReceiptProof(txIndex uint64, root common.Hash, receipts []*types.Receipt
 	}
 
 	return &res, nil
+}
+
+// UnmarshalProof unmarshals a byte slice into a Proof struct.
+//
+// Parameters:
+// - data: a byte slice containing the JSON representation of a Proof struct.
+//
+// Returns:
+// - *Proof: a pointer to a Proof struct if the unmarshalling is successful.
+// - error: an error if the unmarshalling fails.
+func UnmarshalProof(data []byte) (*Proof, error) {
+	var proof Proof
+	if err := json.Unmarshal(data, &proof); err != nil {
+		return nil, ErrInvalidProof
+	}
+	return &proof, nil
+}
+
+// UnmarshalReceipt unmarshals the given data into an evmtypes.Receipt object.
+//
+// Parameters:
+// - data: a byte slice containing the JSON-encoded receipt data.
+//
+// Returns:
+// - *evmtypes.Receipt: a pointer to the unmarshaled receipt object.
+// - error: an error if the unmarshaling process fails.
+func UnmarshalReceipt(data []byte) (*evmtypes.Receipt, error) {
+	receipt := &evmtypes.Receipt{}
+	if err := receipt.UnmarshalJSON(data); err != nil {
+		return nil, err
+	}
+	return receipt, nil
 }

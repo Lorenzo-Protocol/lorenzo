@@ -292,8 +292,8 @@ func (ms msgServer) Burn(goCtx context.Context, req *types.MsgBurnRequest) (*typ
 }
 
 // CreateBTCStakingFromBNB implements types.MsgServer.
-func (ms msgServer) CreateBTCStakingFromBNB(context.Context, *types.MsgCreateBTCStakingFromBNB) (*types.MsgCreateBTCStakingFromBNBResponse, error) {
-	panic("unimplemented")
+func (ms msgServer) CreateBTCStakingFromBNB(goctx context.Context, req *types.MsgCreateBTCStakingFromBNB) (*types.MsgCreateBTCStakingFromBNBResponse, error) {	
+	return &types.MsgCreateBTCStakingFromBNBResponse{}, nil
 }
 
 func findReceiver(receivers []*types.Receiver, name string) (int, *types.Receiver) {

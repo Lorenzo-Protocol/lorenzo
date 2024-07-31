@@ -20,6 +20,7 @@ type (
 		bankKeeper bankkeeper.Keeper
 
 		btclcKeeper types.BTCLightClientKeeper
+		bnbLcKeeper types.BNBLightClientKeeper
 
 		evmKeeper types.EvmKeeper
 

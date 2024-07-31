@@ -21,7 +21,7 @@ import (
 // receipt - the EVM transaction receipt to verify
 // proof - the proof object containing the necessary data for verification
 // Returns an array of BNBCrossChainEvent and an error if the verification fails.
-func (k Keeper) VerifyReceiptProof(ctx sdk.Context, receipt *evmtypes.Receipt, proof types.Proof) ([]types.CrossChainEvent, error) {
+func (k Keeper) VerifyReceiptProof(ctx sdk.Context, receipt *evmtypes.Receipt, proof *types.Proof) ([]types.CrossChainEvent, error) {
 	if err := k.verifyProof(ctx, receipt, proof); err != nil {
 		return nil, err
 	}
@@ -55,7 +55,7 @@ func (k Keeper) GetAllEvmEvents(ctx sdk.Context) (events []*types.EvmEvent) {
 	return events
 }
 
-func (k Keeper) verifyProof(ctx sdk.Context, receipt *evmtypes.Receipt, proof types.Proof) error {
+func (k Keeper) verifyProof(ctx sdk.Context, receipt *evmtypes.Receipt, proof *types.Proof) error {
 	if receipt.Status != evmtypes.ReceiptStatusSuccessful {
 		return errorsmod.Wrapf(types.ErrInvalidTransaction, "cannot verify failed transactions")
 	}
