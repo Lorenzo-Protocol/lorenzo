@@ -2,7 +2,8 @@ package keeper
 
 import (
 	"context"
-	"slices"
+
+	"golang.org/x/exp/slices"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"

@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"slices"
+	"golang.org/x/exp/slices"
 
 	"github.com/Lorenzo-Protocol/lorenzo/v2/x/bnblightclient/types"
 
@@ -19,8 +19,8 @@ func (k Keeper) InitGenesis(ctx sdk.Context, genState types.GenesisState) {
 		panic(err)
 	}
 
-	slices.SortFunc(genState.Headers, func(a, b *types.Header) int {
-		return int(a.Number - b.Number)
+	slices.SortFunc(genState.Headers, func(a, b *types.Header) bool {
+		return a.Number < b.Number
 	})
 	for _, header := range genState.Headers {
 		k.setHeader(ctx, header)

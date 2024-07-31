@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"slices"
+	"golang.org/x/exp/slices"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -11,8 +11,8 @@ import (
 
 // UploadHeaders adds a batch of headers to the bnb light client chain
 func (k Keeper) UploadHeaders(ctx sdk.Context, headers []*types.Header) error {
-	slices.SortFunc(headers, func(a, b *types.Header) int {
-		return int(a.Number - b.Number)
+	slices.SortFunc(headers, func(a, b *types.Header) bool {
+		return a.Number < b.Number
 	})
 
 	vHeader := headers
