@@ -22,9 +22,9 @@ const (
 )
 
 var (
-	Delimiter = []byte{0x00}
-	ParamsKey           = []byte{0x01} // key prefix for the BTC receiving address
-	BTCStakingRecordKey = []byte{0x02} // key prefix for the BTC staking record
+	Delimiter            = []byte{0x00}
+	ParamsKey            = []byte{0x01} // key prefix for the BTC receiving address
+	BTCStakingRecordKey  = []byte{0x02} // key prefix for the BTC staking record
 	BTCBStakingRecordKey = []byte{0x03} // key prefix for the BTCB staking record
 )
 
@@ -38,7 +38,7 @@ func KeyBTCBStakingRecord(txHash []byte, eventIdx uint64) []byte {
 	key = append(key, txHash...)
 	key = append(key, Delimiter...)
 
-	chainIDBz := sdk.Uint64ToBigEndian(uint64(eventIdx))
+	chainIDBz := sdk.Uint64ToBigEndian(eventIdx)
 	key = append(key, chainIDBz...)
 	return key
 }

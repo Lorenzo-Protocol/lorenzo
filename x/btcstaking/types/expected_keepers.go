@@ -24,7 +24,7 @@ type BTCLightClientKeeper interface {
 }
 
 type BNBLightClientKeeper interface {
-	VerifyReceiptProof(ctx sdk.Context, receipt *evmtypes.Receipt, proof *types.Proof) ([]types.CrossChainEvent, error) 
+	VerifyReceiptProof(ctx sdk.Context, receipt *evmtypes.Receipt, proof *types.Proof) ([]types.CrossChainEvent, error)
 }
 
 type PlanKeeper interface {

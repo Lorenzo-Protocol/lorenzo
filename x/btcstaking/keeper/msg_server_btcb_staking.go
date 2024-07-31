@@ -10,11 +10,11 @@ import (
 
 // CreateBTCStakingFromBNB implements types.MsgServer.
 func (ms msgServer) CreateBTCBStaking(goctx context.Context, req *types.MsgCreateBTCBStaking) (*types.MsgCreateBTCBStakingResponse, error) {
-	depositor,err := sdk.AccAddressFromBech32(req.Signer)
+	depositor, err := sdk.AccAddressFromBech32(req.Signer)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	ctx := sdk.UnwrapSDKContext(goctx)
 	if err = ms.DepositBTCB(ctx, depositor, req.Receipt, req.Proof); err != nil {
 		return nil, err
