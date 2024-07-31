@@ -175,6 +175,7 @@ func (k Keeper) parseEvents(ctx sdk.Context, receipt *evmtypes.Receipt) ([]types
 		}
 
 		bnbEvent := types.CrossChainEvent{
+			ChainID:            params.ChainId,
 			TxHash:             log.TxHash,
 			Identifier:         identifier.Uint64(),
 			Sender:             sender,

@@ -3,6 +3,7 @@ package keeper
 import (
 	"math/big"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	bnblightclienttypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/bnblightclient/types"
@@ -27,20 +28,28 @@ func (k Keeper) DepositBTCB(ctx sdk.Context, depositor sdk.AccAddress, receiptBz
 		return err
 	}
 
-	event, err := k.bnblcKeeper.VerifyReceiptProof(ctx, receipt, proof)
+	events, err := k.bnblcKeeper.VerifyReceiptProof(ctx, receipt, proof)
 	if err != nil {
 		return err
 	}
 
-	bridgeAddr := sdk.MustAccAddressFromBech32(k.GetParams(ctx).BridgeAddr)
 	totalStBTCAmt := new(big.Int)
-	for _, e := range event {
+	for i := range events {
+		event := events[i]
+		amount := new(big.Int).SetBytes(event.StBTCAmount.Bytes())
 		// mint yat to the sender
-		if err := k.planKeeper.Mint(ctx, e.PlanID, e.Sender, &e.StBTCAmount); err != nil {
+		if err := k.planKeeper.Mint(ctx, event.PlanID, event.Sender, amount); err != nil {
 			return err
 		}
 
-		totalStBTCAmt = totalStBTCAmt.Add(totalStBTCAmt, &e.StBTCAmount)
+		totalStBTCAmt = totalStBTCAmt.Add(totalStBTCAmt, amount)
+		k.addBTCBStakingRecord(ctx, &types.BTCBStakingRecord{
+			TxHash:       event.TxHash[:],
+			EventIdx:     event.Identifier,
+			ReceiverAddr: event.Sender.String(),
+			Amount:       math.NewIntFromBigInt(amount),
+			ChainId:      event.ChainID,
+		})
 	}
 
 	// mint stBTC to the bridgeAddr
@@ -49,12 +58,15 @@ func (k Keeper) DepositBTCB(ctx sdk.Context, depositor sdk.AccAddress, receiptBz
 		return err
 	}
 
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, bridgeAddr, totalStBTC)
-	if err != nil {
+	bridgeAddr := sdk.MustAccAddressFromBech32(k.GetParams(ctx).BridgeAddr)
+	if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, bridgeAddr, totalStBTC); err != nil {
 		return err
 	}
-
-	// TODO add BTCBStakingRecord
-	// TODO emit BTCBStakingRecord event
 	return nil
+}
+
+func (k Keeper) addBTCBStakingRecord(ctx sdk.Context, record *types.BTCBStakingRecord) {
+	store := ctx.KVStore(k.storeKey)
+	bz := k.cdc.MustMarshal(record)
+	store.Set(types.KeyBTCBStakingRecord(record.TxHash, record.EventIdx), bz)
 }
