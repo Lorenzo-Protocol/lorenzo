@@ -20,6 +20,7 @@ type (
 		bankKeeper bankkeeper.Keeper
 
 		btclcKeeper types.BTCLightClientKeeper
+		bnblcKeeper types.BNBLightClientKeeper
 		agentKeeper types.AgentKeeper
 
 		planKeeper types.PlanKeeper

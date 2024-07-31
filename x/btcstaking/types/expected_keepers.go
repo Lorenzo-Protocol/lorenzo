@@ -5,9 +5,11 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ethereum/go-ethereum/common"
+	evmtypes "github.com/ethereum/go-ethereum/core/types"
 
 	lrz "github.com/Lorenzo-Protocol/lorenzo/v2/types"
 	agenttypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/agent/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/bnblightclient/types"
 	btclctypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/btclightclient/types"
 	plantypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/plan/types"
 	"github.com/btcsuite/btcd/chaincfg"
@@ -19,6 +21,10 @@ type BTCLightClientKeeper interface {
 	GetHeaderByHash(ctx sdk.Context, hash *lrz.BTCHeaderHashBytes) *btclctypes.BTCHeaderInfo
 	GetBTCNet() *chaincfg.Params
 	// GetFeeRate(ctx sdk.Context) uint64
+}
+
+type BNBLightClientKeeper interface {
+	VerifyReceiptProof(ctx sdk.Context, receipt *evmtypes.Receipt, proof *types.Proof) ([]types.CrossChainEvent, error) 
 }
 
 type PlanKeeper interface {
