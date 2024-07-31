@@ -281,6 +281,9 @@ localnet-start:
 localnet-stop:
 	docker-compose down
 
+localnet-propose-upgrade:
+	$(MAKE) -C contrib/localnet propose-upgrade
+
 ###############################################################################
 ###                        Compile Solidity Contracts                       ###
 ###############################################################################
