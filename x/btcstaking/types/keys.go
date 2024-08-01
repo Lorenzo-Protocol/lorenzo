@@ -19,6 +19,11 @@ const (
 
 	// denom used by this module
 	NativeTokenDenom = "stBTC"
+
+	// MintYatSuccess defines mint yat success
+	MintYatSuccess = "success"
+	// MintYatFailed defines mint yat failed
+	MintYatFailed    = "failed"
 )
 
 var (
@@ -33,10 +38,8 @@ func KeyPrefix(p string) []byte {
 }
 
 // KeyBTCBStakingRecord returns the key for the BTCB staking record
-func KeyBTCBStakingRecord(txHash []byte, eventIdx uint64) []byte {
+func KeyBTCBStakingRecord(eventIdx uint64) []byte {
 	key := append([]byte{}, BTCBStakingRecordKey...)
-	key = append(key, txHash...)
-	key = append(key, Delimiter...)
 
 	chainIDBz := sdk.Uint64ToBigEndian(eventIdx)
 	key = append(key, chainIDBz...)

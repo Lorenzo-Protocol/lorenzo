@@ -132,7 +132,7 @@ func (k Keeper) parseEvents(ctx sdk.Context, receipt *evmtypes.Receipt) ([]types
 		if len(eventArgs) != 3 {
 			return nil, errorsmod.Wrapf(
 				types.ErrInvalidEvent,
-				"event has wrong number of parameters, expected 2, actual: %d",
+				"event has wrong number of parameters, expected 3, actual: %d",
 				len(eventArgs),
 			)
 		}
@@ -176,7 +176,6 @@ func (k Keeper) parseEvents(ctx sdk.Context, receipt *evmtypes.Receipt) ([]types
 
 		bnbEvent := types.CrossChainEvent{
 			ChainID:            params.ChainId,
-			TxHash:             log.TxHash,
 			Identifier:         identifier.Uint64(),
 			Sender:             sender,
 			PlanID:             planID.Uint64(),

@@ -37,18 +37,20 @@ func (k Keeper) DepositBTCB(ctx sdk.Context, depositor sdk.AccAddress, receiptBz
 	for i := range events {
 		event := events[i]
 		amount := new(big.Int).SetBytes(event.StBTCAmount.Bytes())
+		result := types.MintYatSuccess
+		
 		// mint yat to the sender
 		if err := k.planKeeper.Mint(ctx, event.PlanID, event.Sender, amount); err != nil {
-			return err
+			result = types.MintYatFailed
 		}
 
 		totalStBTCAmt = totalStBTCAmt.Add(totalStBTCAmt, amount)
 		k.addBTCBStakingRecord(ctx, &types.BTCBStakingRecord{
-			TxHash:       event.TxHash[:],
-			EventIdx:     event.Identifier,
-			ReceiverAddr: event.Sender.String(),
-			Amount:       math.NewIntFromBigInt(amount),
-			ChainId:      event.ChainID,
+			EventIdx:      event.Identifier,
+			ReceiverAddr:  event.Sender.String(),
+			Amount:        math.NewIntFromBigInt(amount),
+			ChainId:       event.ChainID,
+			MintYatResult: result,
 		})
 	}
 
@@ -68,5 +70,5 @@ func (k Keeper) DepositBTCB(ctx sdk.Context, depositor sdk.AccAddress, receiptBz
 func (k Keeper) addBTCBStakingRecord(ctx sdk.Context, record *types.BTCBStakingRecord) {
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshal(record)
-	store.Set(types.KeyBTCBStakingRecord(record.TxHash, record.EventIdx), bz)
+	store.Set(types.KeyBTCBStakingRecord(record.EventIdx), bz)
 }

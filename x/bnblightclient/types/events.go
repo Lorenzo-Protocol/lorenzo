@@ -29,9 +29,7 @@ func ABIstakePlanHub() *abi.ABI {
 
 // CrossChainEvent is a struct that contains the sender, plan id, BTC contract address, stake amount, and stBTC amount.
 type CrossChainEvent struct {
-	ChainID uint32 `json:"chain_id"`
-	// Note: TxHash is non-consensus data and untrustworthy
-	TxHash             common.Hash    `json:"tx_hash"`
+	ChainID            uint32         `json:"chain_id"`
 	Identifier         uint64         `json:"identifier"`
 	Sender             common.Address `json:"sender"`
 	PlanID             uint64         `json:"plan_id"`
