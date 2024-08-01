@@ -13,6 +13,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
+	consensuskeeper "github.com/cosmos/cosmos-sdk/x/consensus/keeper"
+	paramskeeper "github.com/cosmos/cosmos-sdk/x/params/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	ibckeeper "github.com/cosmos/ibc-go/v7/modules/core/keeper"
 	evmkeeper "github.com/evmos/ethermint/x/evm/keeper"
@@ -53,6 +55,9 @@ type AppKeepers struct {
 	AgentKeeper *agentkeeper.Keeper
 	PlanKeeper  *plankeeper.Keeper
 	TokenKeeper *tokenkeeper.Keeper
+
+	ConsensusParamsKeeper consensuskeeper.Keeper
+	ParamsKeeper          paramskeeper.Keeper
 
 	ReaderWriter ConsensusParamsReaderWriter
 }

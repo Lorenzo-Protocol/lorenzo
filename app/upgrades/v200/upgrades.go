@@ -8,10 +8,11 @@ import (
 	plantypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/plan/types"
 	"github.com/Lorenzo-Protocol/lorenzo/v2/x/token"
 	tokentypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/token/types"
-
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	"github.com/cosmos/cosmos-sdk/x/consensus"
+	consensustypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 )
 
@@ -37,6 +38,7 @@ func upgradeHandlerConstructor(
 		fromVM[agenttypes.ModuleName] = agent.AppModule{}.ConsensusVersion()
 		fromVM[plantypes.ModuleName] = plan.AppModule{}.ConsensusVersion()
 		fromVM[tokentypes.ModuleName] = token.AppModule{}.ConsensusVersion()
+		fromVM[consensustypes.ModuleName] = consensus.AppModule{}.ConsensusVersion()
 
 		// agent module init
 		// 1. set admin
