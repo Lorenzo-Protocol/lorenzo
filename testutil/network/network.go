@@ -15,6 +15,8 @@ import (
 	"testing"
 	"time"
 
+	lorenzoserverconfig "github.com/Lorenzo-Protocol/lorenzo/v2/server/config"
+
 	"github.com/Lorenzo-Protocol/lorenzo/v2/utils"
 
 	dbm "github.com/cometbft/cometbft-db"
@@ -172,7 +174,7 @@ type (
 	// a client can make RPC and API calls and interact with any client command
 	// or handler.
 	Validator struct {
-		AppConfig     *config.Config
+		AppConfig     *lorenzoserverconfig.Config
 		ClientCtx     client.Context
 		Ctx           *server.Context
 		Dir           string
@@ -257,7 +259,7 @@ func New(l Logger, baseDir string, cfg Config) (*Network, error) { //nolint:gocy
 
 	// generate private keys, node IDs, and initial transactions
 	for i := 0; i < cfg.NumValidators; i++ {
-		appCfg := config.DefaultConfig()
+		appCfg := lorenzoserverconfig.DefaultConfig()
 		appCfg.Pruning = cfg.PruningStrategy
 		appCfg.MinGasPrices = cfg.MinGasPrices
 		appCfg.API.Enable = true
@@ -483,7 +485,7 @@ func New(l Logger, baseDir string, cfg Config) (*Network, error) { //nolint:gocy
 			return nil, err
 		}
 
-		customAppTemplate, _ := config.AppConfig(utils.BaseDenom)
+		customAppTemplate, _ := lorenzoserverconfig.AppConfig(utils.BaseDenom)
 		srvconfig.SetConfigTemplate(customAppTemplate)
 		srvconfig.WriteConfigFile(filepath.Join(nodeDir, "config/app.toml"), appCfg)
 

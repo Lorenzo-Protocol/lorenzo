@@ -51,6 +51,8 @@ import (
 	"github.com/Lorenzo-Protocol/lorenzo/v2/utils"
 	btclightclienttypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/btclightclient/types"
 	btcstakingtypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/types"
+
+	lorenzoserverconfig "github.com/Lorenzo-Protocol/lorenzo/v2/server/config"
 )
 
 var (
@@ -243,7 +245,7 @@ func initTestnetFiles(
 	nodeIDs := make([]string, args.numValidators)
 	valPubKeys := make([]cryptotypes.PubKey, args.numValidators)
 
-	appConfig := DefaultLorenzoConfig()
+	appConfig := lorenzoserverconfig.DefaultConfig()
 	appConfig.MinGasPrices = args.minGasPrices
 	appConfig.API.Enable = true
 	appConfig.Telemetry.Enabled = true
@@ -370,7 +372,7 @@ func initTestnetFiles(
 			return err
 		}
 
-		customAppTemplate := DefaultLorenzoTemplate()
+		customAppTemplate := lorenzoserverconfig.DefaultLorenzoTemplate()
 		srvconfig.SetConfigTemplate(customAppTemplate)
 		srvconfig.WriteConfigFile(filepath.Join(nodeDir, "config/app.toml"), appConfig)
 	}
