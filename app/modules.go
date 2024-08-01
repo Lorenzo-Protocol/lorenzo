@@ -14,6 +14,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/capability"
 	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
 	"github.com/cosmos/cosmos-sdk/x/consensus"
+	consensustypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
@@ -281,6 +282,7 @@ func orderBeginBlockers() []string {
 		feegrant.ModuleName,
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
+		consensustypes.ModuleName,
 
 		// self module
 		btclightclienttypes.ModuleName,
@@ -322,6 +324,7 @@ func orderEndBlockers() []string {
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
+		consensustypes.ModuleName,
 
 		// self module
 		btclightclienttypes.ModuleName,
@@ -366,6 +369,7 @@ func orderInitBlockers() []string {
 		feemarkettypes.ModuleName,
 		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
+		consensustypes.ModuleName,
 
 		// self module
 		btclightclienttypes.ModuleName,
