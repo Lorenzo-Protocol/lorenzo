@@ -480,6 +480,7 @@ func (suite *KeeperTestSuite) TestSetMerkleRoot() {
 			request: &types.MsgSetMerkleRoot{
 				Sender:     testAdmin.String(),
 				PlanId:     1,
+				RoundId:    sdkmath.NewInt(1),
 				MerkleRoot: "0x34337eb06160f22cfc735517076cb8d69f60afae27700d20e918cfb41f9faca7",
 			},
 			malleate: func() string {
@@ -662,6 +663,7 @@ func (suite *KeeperTestSuite) TestClaims() {
 				err = suite.lorenzoApp.PlanKeeper.SetMerkleRoot(
 					suite.ctx,
 					common.HexToAddress(planResult.ContractAddress),
+					sdkmath.NewInt(1).BigInt(),
 					merkelRoot)
 				suite.Require().NoError(err)
 
@@ -720,6 +722,7 @@ func (suite *KeeperTestSuite) TestClaims() {
 				err = suite.lorenzoApp.PlanKeeper.SetMerkleRoot(
 					suite.ctx,
 					common.HexToAddress(planResult.ContractAddress),
+					sdkmath.NewInt(1).BigInt(),
 					merkelRoot)
 				suite.Require().NoError(err)
 

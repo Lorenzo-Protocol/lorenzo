@@ -117,8 +117,11 @@ message MsgSetMerkleRoot {
   // plan_id is the unique identifier of the plan
   uint64 plan_id = 1;
 
-  // round_id is the round Id of the plan
-  uint64 round_id = 2;
+  // round_id is the unique identifier of the round
+  string round_id = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
 
   // merkle_root is the merkle root of the plan
   string merkle_root = 3;
