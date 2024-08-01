@@ -8,13 +8,11 @@ import (
 	plantypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/plan/types"
 	"github.com/Lorenzo-Protocol/lorenzo/v2/x/token"
 	tokentypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/token/types"
-	"github.com/cosmos/cosmos-sdk/baseapp"
-	consensustypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
-	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
-
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	"github.com/cosmos/cosmos-sdk/x/consensus"
+	consensustypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 )
 
@@ -27,7 +25,6 @@ var Upgrade = upgrades.Upgrade{
 			agenttypes.StoreKey,
 			plantypes.StoreKey,
 			tokentypes.StoreKey,
-			consensustypes.StoreKey,
 		},
 	},
 }
@@ -41,6 +38,7 @@ func upgradeHandlerConstructor(
 		fromVM[agenttypes.ModuleName] = agent.AppModule{}.ConsensusVersion()
 		fromVM[plantypes.ModuleName] = plan.AppModule{}.ConsensusVersion()
 		fromVM[tokentypes.ModuleName] = token.AppModule{}.ConsensusVersion()
+		fromVM[consensustypes.ModuleName] = consensus.AppModule{}.ConsensusVersion()
 
 		// agent module init
 		// 1. set admin
@@ -73,12 +71,6 @@ func upgradeHandlerConstructor(
 		if acc := app.AccountKeeper.GetModuleAccount(ctx, tokentypes.ModuleName); acc == nil {
 			panic("the token module account has not been set")
 		}
-
-		// Migrate Tendermint consensus parameters from x/params module to a
-		// dedicated x/consensus module.
-		baseAppLegacySS := app.ParamsKeeper.Subspace(baseapp.Paramspace).
-			WithKeyTable(paramstypes.ConsensusParamsKeyTable())
-		baseapp.MigrateParams(ctx, baseAppLegacySS, &app.ConsensusParamsKeeper)
 
 		return app.ModuleManager.RunMigrations(ctx, c, fromVM)
 	}
