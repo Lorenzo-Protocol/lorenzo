@@ -239,6 +239,7 @@ func (k Keeper) MintFromStakePlan(
 // Parameters:
 // - ctx: the SDK context.
 // - contractAddress: the address of the StakePlan contract.
+// - roundId: the round ID to set.
 // - merkleRoot: the Merkle root to set.
 //
 // Returns:
@@ -246,6 +247,7 @@ func (k Keeper) MintFromStakePlan(
 func (k Keeper) SetMerkleRoot(
 	ctx sdk.Context,
 	contractAddress common.Address,
+	roundId *big.Int,
 	merkleRoot string,
 ) error {
 	merkleProofBytes := common.HexToHash(merkleRoot)
@@ -259,6 +261,7 @@ func (k Keeper) SetMerkleRoot(
 		true,
 		types.StakePlanMethodSetMerkleRoot,
 		// args
+		roundId,
 		merkleProofBytes,
 	)
 	if err != nil {

@@ -193,6 +193,10 @@ func (m *MsgSetMerkleRoot) ValidateBasic() error {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "plan id cannot be zero")
 	}
 
+	if m.RoundId == 0 {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "round id cannot be zero")
+	}
+
 	merkleRoot := common.HexToHash(m.MerkleRoot)
 	if merkleRoot.String() != m.MerkleRoot {
 		return fmt.Errorf("invalid merkle proof")
