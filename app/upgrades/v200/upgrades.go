@@ -8,6 +8,9 @@ import (
 	plantypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/plan/types"
 	"github.com/Lorenzo-Protocol/lorenzo/v2/x/token"
 	tokentypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/token/types"
+	"github.com/cosmos/cosmos-sdk/baseapp"
+	consensustypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
+	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -24,6 +27,7 @@ var Upgrade = upgrades.Upgrade{
 			agenttypes.StoreKey,
 			plantypes.StoreKey,
 			tokentypes.StoreKey,
+			consensustypes.StoreKey,
 		},
 	},
 }
@@ -69,6 +73,12 @@ func upgradeHandlerConstructor(
 		if acc := app.AccountKeeper.GetModuleAccount(ctx, tokentypes.ModuleName); acc == nil {
 			panic("the token module account has not been set")
 		}
+
+		// Migrate Tendermint consensus parameters from x/params module to a
+		// dedicated x/consensus module.
+		baseAppLegacySS := app.ParamsKeeper.Subspace(baseapp.Paramspace).
+			WithKeyTable(paramstypes.ConsensusParamsKeyTable())
+		baseapp.MigrateParams(ctx, baseAppLegacySS, &app.ConsensusParamsKeeper)
 
 		return app.ModuleManager.RunMigrations(ctx, c, fromVM)
 	}
