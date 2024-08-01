@@ -13,6 +13,7 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/capability"
 	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
+	"github.com/cosmos/cosmos-sdk/x/consensus"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
@@ -115,6 +116,7 @@ var (
 		upgrade.AppModuleBasic{},
 		evidence.AppModuleBasic{},
 		vesting.AppModuleBasic{},
+		consensus.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 
 		// ibc modules
@@ -226,6 +228,7 @@ func appModules(
 		upgrade.NewAppModule(app.UpgradeKeeper),
 		evidence.NewAppModule(*app.EvidenceKeeper),
 		params.NewAppModule(app.ParamsKeeper),
+		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
 
 		// ibc modules
 		ibc.NewAppModule(app.IBCKeeper),
