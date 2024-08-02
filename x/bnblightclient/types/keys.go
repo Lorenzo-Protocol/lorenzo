@@ -63,3 +63,17 @@ func KeyEvmEvent(chainID uint32, blockNumber uint64, contract []byte, idx uint64
 	key = append(key, idxBz...)
 	return key
 }
+
+// PrefixKeyEvmEvent returns the prefix for the cross chain event index
+func PrefixKeyEvmEvent(chainID uint32, blockNumber uint64) []byte {
+	key := append([]byte{}, KeyPrefixEvmEvent...)
+
+	chainIDBz := sdk.Uint64ToBigEndian(uint64(chainID))
+	key = append(key, chainIDBz...)
+	key = append(key, Delimiter...)
+
+	bumberBz := sdk.Uint64ToBigEndian(blockNumber)
+	key = append(key, bumberBz...)
+	key = append(key, Delimiter...)
+	return key
+}

@@ -13,20 +13,24 @@ func (k Keeper) prune(ctx sdk.Context) {
 	if pruneEndNumber <= 0 {
 		return
 	}
-	k.pruneHeaders(ctx, uint64(pruneEndNumber))
+	k.pruneHeaders(ctx, params.ChainId, uint64(pruneEndNumber))
 }
 
-func (k Keeper) pruneHeaders(ctx sdk.Context, pruneEndNumber uint64) {
+func (k Keeper) pruneHeaders(ctx sdk.Context, chainID uint32, pruneEndNumber uint64) {
+	logger := k.Logger(ctx)
 	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStoreReversePrefixIterator(store, types.KeyPrefixHeader)
+	iterator := sdk.KVStorePrefixIterator(store, types.KeyPrefixHeader)
 	defer func() {
-		_ = iterator.Close()
+		if err := iterator.Close(); err != nil {
+			logger.Error("close iterator error", "err", err)
+		}
 	}()
 
+	logger.Info("prune headers", "pruneEndNumber", pruneEndNumber)
 	for ; iterator.Valid(); iterator.Next() {
 		iterKey := iterator.Key()
 		number := sdk.BigEndianToUint64(iterKey[1:])
-		if number <= pruneEndNumber {
+		if number > pruneEndNumber {
 			header, exist := k.GetHeader(ctx, number)
 			if !exist {
 				continue
@@ -38,10 +42,12 @@ func (k Keeper) pruneHeaders(ctx sdk.Context, pruneEndNumber uint64) {
 			store.Delete(types.KeyHeaderHash(header.Hash))
 
 			// delete event record
-			prefix := append(types.KeyPrefixEvmEvent, sdk.Uint64ToBigEndian(number)...)
+			prefix := types.PrefixKeyEvmEvent(chainID, header.Number)
 			iterator2 := sdk.KVStoreReversePrefixIterator(store, prefix)
 			defer func() {
-				_ = iterator2.Close()
+				if err := iterator2.Close(); err != nil {
+					logger.Error("close iterator error", "err", err)
+				}
 			}()
 
 			for ; iterator2.Valid(); iterator2.Next() {

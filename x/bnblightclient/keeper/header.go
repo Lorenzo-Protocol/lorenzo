@@ -30,7 +30,6 @@ func (k Keeper) UploadHeaders(ctx sdk.Context, headers []*types.Header) error {
 		k.setHeader(ctx, header)
 	}
 	k.setLatestNumber(ctx, headers[len(headers)-1].Number)
-	k.prune(ctx)
 	return nil
 }
 
