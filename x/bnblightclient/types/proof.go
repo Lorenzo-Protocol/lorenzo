@@ -2,7 +2,6 @@ package types
 
 import (
 	"encoding/base64"
-	"encoding/json"
 	"errors"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -106,17 +105,17 @@ func (pm *ProofPath) valueIdx(key []byte) int {
 	return -1
 }
 
-// GenReceiptProof generates a Merkle Patricia Trie (MPT) proof for a specific transaction index in a list of receipts.
+// GenReceiptProof generates a Merkle Patricia Trie (MPT) proof for a specific receipt index in a list of receipts.
 //
 // Parameters:
-// - txIndex: the index of the transaction for which the proof is generated.
+// - receiptIndex: the index of the receipt for which the proof is generated.
 // - root: the root hash of the MPT.
 // - receipts: a list of receipts.
 //
 // Returns:
-// - *mptproof.MPTProof: a pointer to an MPTProof struct containing the index, value, and proof of the transaction.
+// - *mptproof.MPTProof: a pointer to an MPTProof struct containing the index, value, and proof of the receipt.
 // - error: an error if the proof generation fails.
-func GenReceiptProof(txIndex uint64, root common.Hash, receipts []*evmtypes.Receipt) (*Proof, error) {
+func GenReceiptProof(receiptIndex uint64, root common.Hash, receipts []*evmtypes.Receipt) (*Proof, error) {
 	db := trie.NewDatabase(rawdb.NewMemoryDatabase())
 	mpt := trie.NewEmpty(db)
 	receiptHash := evmtypes.DeriveSha(evmtypes.Receipts(receipts), mpt)
@@ -125,7 +124,7 @@ func GenReceiptProof(txIndex uint64, root common.Hash, receipts []*evmtypes.Rece
 	}
 
 	var indexBuf []byte
-	indexBuf = rlp.AppendUint64(indexBuf[:0], txIndex)
+	indexBuf = rlp.AppendUint64(indexBuf[:0], receiptIndex)
 	valueTarget := mpt.Get(indexBuf)
 
 	proof := NewProofPath()
@@ -141,36 +140,4 @@ func GenReceiptProof(txIndex uint64, root common.Hash, receipts []*evmtypes.Rece
 	}
 
 	return &res, nil
-}
-
-// UnmarshalProof unmarshals a byte slice into a Proof struct.
-//
-// Parameters:
-// - data: a byte slice containing the JSON representation of a Proof struct.
-//
-// Returns:
-// - *Proof: a pointer to a Proof struct if the unmarshalling is successful.
-// - error: an error if the unmarshalling fails.
-func UnmarshalProof(data []byte) (*Proof, error) {
-	var proof Proof
-	if err := json.Unmarshal(data, &proof); err != nil {
-		return nil, ErrInvalidProof
-	}
-	return &proof, nil
-}
-
-// UnmarshalReceipt unmarshals the given data into an evmtypes.Receipt object.
-//
-// Parameters:
-// - data: a byte slice containing the JSON-encoded receipt data.
-//
-// Returns:
-// - *evmtypes.Receipt: a pointer to the unmarshaled receipt object.
-// - error: an error if the unmarshaling process fails.
-func UnmarshalReceipt(data []byte) (*evmtypes.Receipt, error) {
-	receipt := &evmtypes.Receipt{}
-	if err := receipt.UnmarshalJSON(data); err != nil {
-		return nil, err
-	}
-	return receipt, nil
 }

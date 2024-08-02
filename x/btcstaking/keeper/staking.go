@@ -14,10 +14,17 @@ import (
 //
 // ctx: the context of the current blockchain.
 // depositor: the address of the depositor.
+// number: the block height of the receipt.
 // receiptBz: the byte array representation of the receipt.
 // proofBz: the byte array representation of the proof.
 // error: returns an error if there was a problem with the deposit.
-func (k Keeper) DepositBTCB(ctx sdk.Context, depositor sdk.AccAddress, receiptBz, proofBz []byte) error {
+func (k Keeper) DepositBTCB(
+	ctx sdk.Context,
+	depositor sdk.AccAddress,
+	number uint64,
+	receiptBz,
+	proofBz []byte,
+) error {
 	proof, err := bnblightclienttypes.UnmarshalProof(proofBz)
 	if err != nil {
 		return err
@@ -28,7 +35,7 @@ func (k Keeper) DepositBTCB(ctx sdk.Context, depositor sdk.AccAddress, receiptBz
 		return err
 	}
 
-	events, err := k.bnblcKeeper.VerifyReceiptProof(ctx, receipt, proof)
+	events, err := k.bnblcKeeper.VerifyReceiptProof(ctx, number, receipt, proof)
 	if err != nil {
 		return err
 	}
@@ -38,7 +45,7 @@ func (k Keeper) DepositBTCB(ctx sdk.Context, depositor sdk.AccAddress, receiptBz
 		event := events[i]
 		amount := new(big.Int).SetBytes(event.StBTCAmount.Bytes())
 		result := types.MintYatSuccess
-		
+
 		// mint yat to the sender
 		if err := k.planKeeper.Mint(ctx, event.PlanID, event.Sender, amount); err != nil {
 			result = types.MintYatFailed

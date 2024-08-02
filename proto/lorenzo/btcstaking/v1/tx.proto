@@ -68,8 +68,9 @@ message MsgCreateBTCBStaking {
   option (cosmos.msg.v1.signer) = "signer";
 
   string signer = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  bytes receipt = 2;
-  bytes proof = 3;
+  uint64 number = 2;
+  bytes receipt = 3;
+  bytes proof = 4;
 }
 
 message MsgCreateBTCBStakingResponse {}

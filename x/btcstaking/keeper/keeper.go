@@ -38,6 +38,7 @@ func NewKeeper(
 	storeKey storetypes.StoreKey,
 
 	btclcKeeper types.BTCLightClientKeeper,
+	bnblcKeeper types.BNBLightClientKeeper,
 	agentKeeper types.AgentKeeper,
 	bankKeeper bankkeeper.Keeper,
 	planKeeper types.PlanKeeper,
@@ -50,6 +51,7 @@ func NewKeeper(
 		storeKey: storeKey,
 
 		btclcKeeper: btclcKeeper,
+		bnblcKeeper: bnblcKeeper,
 		agentKeeper: agentKeeper,
 		bankKeeper:  bankKeeper,
 		planKeeper:  planKeeper,

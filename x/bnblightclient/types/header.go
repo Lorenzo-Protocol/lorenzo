@@ -96,17 +96,6 @@ func ConvertToBNBHeader(header *Header) (*BNBHeader, error) {
 	return bnbHeader, nil
 }
 
-// UnmarshalBNBHeader decodes the input data into a BNBHeader struct.
-//
-// It takes a byte slice data as input and returns a BNBHeader pointer and an error.
-func UnmarshalBNBHeader(rawHeader []byte) (*BNBHeader, error) {
-	bnbHeader := new(BNBHeader)
-	if err := rlp.DecodeBytes(rawHeader, bnbHeader); err != nil {
-		return nil, err
-	}
-	return bnbHeader, nil
-}
-
 // VerifyHeaders checks the validity of a sequence of BNBHeaders.
 //
 // It takes a slice of Header pointers as input and returns an error.

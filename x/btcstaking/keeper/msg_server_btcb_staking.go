@@ -16,7 +16,7 @@ func (ms msgServer) CreateBTCBStaking(goctx context.Context, req *types.MsgCreat
 	}
 
 	ctx := sdk.UnwrapSDKContext(goctx)
-	if err = ms.DepositBTCB(ctx, depositor, req.Receipt, req.Proof); err != nil {
+	if err = ms.DepositBTCB(ctx, depositor, req.Number, req.Receipt, req.Proof); err != nil {
 		return nil, err
 	}
 	return &types.MsgCreateBTCBStakingResponse{}, nil
