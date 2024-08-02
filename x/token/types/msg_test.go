@@ -140,6 +140,14 @@ func (suite *MsgTestSuite) TestMsgRegisterERC20() {
 			expPass: false,
 		},
 		{
+			name: "fail: empty contract address",
+			msg: &types.MsgRegisterERC20{
+				Authority:         "cosmos1qperwt9wrnkg5k9e5gzfgjppzpqhyav5j24d66",
+				ContractAddresses: []string{},
+			},
+			expPass: false,
+		},
+		{
 			name: "success",
 			msg: &types.MsgRegisterERC20{
 				Authority:         "invalid authority",

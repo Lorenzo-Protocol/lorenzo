@@ -70,6 +70,10 @@ func (m *MsgRegisterERC20) ValidateBasic() error {
 		return errorsmod.Wrap(err, "invalid authority address")
 	}
 
+	if len(m.ContractAddresses) == 0 {
+		return errorsmod.Wrap(errors.New("contract addresses cannot be empty"), "should at least have one contract address")
+	}
+
 	seenAddr := make(map[string]bool)
 	for _, addr := range m.ContractAddresses {
 		if !common.IsHexAddress(addr) {
