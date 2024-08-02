@@ -51,6 +51,11 @@ func (mpd MinGasPriceDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate 
 		return ctx, errorsmod.Wrapf(errortypes.ErrInvalidType, "invalid transaction type %T, expected sdk.FeeTx", tx)
 	}
 
+	if ctx.BlockHeight() == 0 {
+		// genesis transactions: fallback to min-gas-price logic
+		return next(ctx, tx, simulate)
+	}
+
 	minGasPrice := mpd.feeMarketKeeper.GetParams(ctx).MinGasPrice
 
 	feeCoins := feeTx.GetFee()
