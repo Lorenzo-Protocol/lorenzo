@@ -106,7 +106,7 @@ func ConvertToBNBHeader(header *Header) (*BNBHeader, error) {
 // ErrInvalidHeader error.
 func VerifyHeaders(headers []*Header) error {
 	if len(headers) == 0 {
-		return errorsmod.Wrap(ErrInvalidHeader, "empty headers")
+		return nil
 	}
 
 	if len(headers) == 1 {

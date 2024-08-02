@@ -17,6 +17,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations(
 		(*sdk.Msg)(nil),
 		&MsgCreateBTCStaking{},
+		&MsgCreateBTCBStaking{},
 		&MsgBurnRequest{},
 		&MsgRemoveReceiver{},
 		&MsgAddReceiver{},

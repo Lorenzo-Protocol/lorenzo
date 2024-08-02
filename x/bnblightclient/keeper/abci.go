@@ -8,6 +8,6 @@ import (
 //
 // It takes a context parameter of type sdk.Context, which represents the current state of the blockchain.
 // The method does not return any value.
-func (k Keeper) EndBlock(ctx sdk.Context)  {
+func (k Keeper) EndBlock(ctx sdk.Context) {
 	k.prune(ctx)
 }

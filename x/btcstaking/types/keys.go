@@ -23,7 +23,7 @@ const (
 	// MintYatSuccess defines mint yat success
 	MintYatSuccess = "success"
 	// MintYatFailed defines mint yat failed
-	MintYatFailed    = "failed"
+	MintYatFailed = "failed"
 )
 
 var (

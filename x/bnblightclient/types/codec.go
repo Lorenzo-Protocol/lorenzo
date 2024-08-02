@@ -58,7 +58,7 @@ func UnmarshalProof(data []byte) (*Proof, error) {
 // - error: an error if the unmarshaling process fails.
 func UnmarshalReceipt(data []byte) (*evmtypes.Receipt, error) {
 	receipt := new(evmtypes.Receipt)
-	if err := rlp.DecodeBytes(data,receipt); err != nil {
+	if err := rlp.DecodeBytes(data, receipt); err != nil {
 		return nil, err
 	}
 	return receipt, nil

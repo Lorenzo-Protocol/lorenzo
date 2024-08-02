@@ -25,7 +25,10 @@ func (k Keeper) InitGenesis(ctx sdk.Context, genState types.GenesisState) {
 	for _, header := range genState.Headers {
 		k.setHeader(ctx, header)
 	}
-	k.setLatestNumber(ctx, genState.Headers[len(genState.Headers)-1].Number)
+
+	if len(genState.Headers) > 0 {
+		k.setLatestNumber(ctx, genState.Headers[len(genState.Headers)-1].Number)
+	}
 
 	for _, record := range genState.Events {
 		k.setEvmEvent(ctx, genState.Params.ChainId, record)

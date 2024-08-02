@@ -13,7 +13,15 @@ func (gs GenesisState) Validate() error {
 // DefaultGenesisState returns the default genesis state
 func DefaultGenesisState() *GenesisState {
 	return &GenesisState{
-		Params:  &Params{},
+		Params:  &Params{
+			StakePlanHubAddress: "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c",
+			EventName:           "StakeBTC2JoinStakePlan",
+			RetainedBlocks:      100,
+			AllowList:           []string{
+				"lrz1v7vnrdvhwy99s2u825jnuac6tfxzpjch8m9e4n",
+			},
+			ChainId:             56,
+		},
 		Headers: []*Header{},
 		Events:  []*EvmEvent{},
 	}

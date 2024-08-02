@@ -129,6 +129,7 @@ var (
 
 		// lorenzo modules
 		btclightclient.AppModuleBasic{},
+		bnblightclient.AppModuleBasic{},
 		btcstaking.AppModuleBasic{},
 		fee.AppModuleBasic{},
 		agent.AppModuleBasic{},

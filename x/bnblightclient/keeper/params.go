@@ -26,12 +26,13 @@ func (k Keeper) SetParams(ctx sdk.Context, params *types.Params) error {
 // ctx sdk.Context - Context
 // types.Params - Parameters
 // returns p types.Params - Parameters
-func (k Keeper) GetParams(ctx sdk.Context) (params *types.Params) {
+func (k Keeper) GetParams(ctx sdk.Context) *types.Params {
+	var params types.Params
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.ParamsKey)
 	if bz == nil {
-		return params
+		return nil
 	}
-	k.cdc.MustUnmarshal(bz, params)
-	return params
+	k.cdc.MustUnmarshal(bz, &params)
+	return &params
 }
