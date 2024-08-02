@@ -101,6 +101,8 @@ import (
 	lrztypes "github.com/Lorenzo-Protocol/lorenzo/v2/types"
 	agentkeeper "github.com/Lorenzo-Protocol/lorenzo/v2/x/agent/keeper"
 	agenttypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/agent/types"
+	bnblightclientkeeper "github.com/Lorenzo-Protocol/lorenzo/v2/x/bnblightclient/keeper"
+	bnblightclienttypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/bnblightclient/types"
 	btclightclientkeeper "github.com/Lorenzo-Protocol/lorenzo/v2/x/btclightclient/keeper"
 	btclightclienttypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/btclightclient/types"
 	btcstakingkeeper "github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/keeper"
@@ -180,6 +182,7 @@ type LorenzoApp struct {
 	BTCStakingKeeper     btcstakingkeeper.Keeper
 	PlanKeeper           *plankeeper.Keeper
 	TokenKeeper          *tokenkeeper.Keeper
+	BNBLightClientKeeper bnblightclientkeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
@@ -269,6 +272,7 @@ func NewLorenzoApp(
 		// lorenzo module keys
 		plantypes.StoreKey,
 		tokentypes.StoreKey,
+		bnblightclienttypes.StoreKey,
 	)
 
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey, evmtypes.TransientKey, feemarkettypes.TransientKey)
@@ -497,6 +501,12 @@ func NewLorenzoApp(
 		app.AccountKeeper,
 		app.BankKeeper,
 		app.EvmKeeper,
+	)
+
+	app.BNBLightClientKeeper = bnblightclientkeeper.NewKeeper(
+		appCodec,
+		keys[bnblightclienttypes.StoreKey],
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
 	app.EvmKeeper.SetHooks(evmkeeper.NewMultiEvmHooks(
