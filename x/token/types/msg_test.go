@@ -87,6 +87,13 @@ func (suite *MsgTestSuite) TestMsgRegisterCoin() {
 			},
 		},
 		{
+			name:    "fail: empty metadata",
+			expPass: false,
+			msg: &types.MsgRegisterCoin{
+				Authority: "cosmos1qperwt9wrnkg5k9e5gzfgjppzpqhyav5j24d66",
+			},
+		},
+		{
 			name:    "success",
 			expPass: true,
 			msg: &types.MsgRegisterCoin{
