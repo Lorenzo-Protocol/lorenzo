@@ -9,22 +9,15 @@ import (
 )
 
 func TestUnmarshalBNBHeader(t *testing.T) {
-	hexHeader := "f90338a0dcb14c167a86bfc4d81e7e7556cd9e30729aa94087accedcea8e468d0ab08d79a01dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d493479408265da01e1a65d62b903c7b34c08cb389bf3d99a0d8b628c4f32a5905be1f36ccf4f6697f17d9722e77130d6624be4951660d8c1ca076b90b396fbb002db66f6186f1352e96213b4045144d36e1bdab88de6207968ea086e195e53c773b50f012ec7251e0273ff643eaf15772980e19eff8ae96e35bb8b90100000000000000000000020840020000000100000001000000000000000000000400001000000000000008000000000000000000000000000000000000000400000000000000000000000000080000000021100000000400000000200000000020000a002002020000000000000000080008000000000800000000201000000000400000000000000000000000000000000000040000000000800000000000002000000000000000a008000000020000000000080000000000000000000000000000200002004000004000000080080000000000004000000010104802000068000000000000020001010000840000010000008100020000004000000000080000028402833d3084042c1d8083074a43846697337db90116d88301040b846765746888676f312e32322e30856c696e7578000000631f83a6f8b381fbb860b099412d5cd1ecc7cb68acfe00ece09b1b31154b0dfd3e3cfe6001671361885abd3cca24cfb751a8d006ae9f719d8b19142b00edcbbc9495269bfd9791847630e54345139282be9e4959d4cf90d8f28fc7fc909fc0e919e564913ed34972cf02f84c8402833d2ea084ef8ff93aa6ecf2fee881c363650d5a1e037d6d6e56bc5cfc95cacd26cf1d758402833d2fa0dcb14c167a86bfc4d81e7e7556cd9e30729aa94087accedcea8e468d0ab08d7980c7a3b81c1fedbfe6fb011d26c018edd78a33581be12691680d50d9221ad5fdb56c2b38bf74b68e16bf6e984b696f655d0be9bddf075775995f74027697ceccaa00a0000000000000000000000000000000000000000000000000000000000000000088000000000000000080a056e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b4218080"
+	headers := GetTestHeaders(t)
 
-	bz, err := hex.DecodeString(hexHeader)
-	require.NoError(t, err, "hexHeader decode error")
-
-	header, err := UnmarshalBNBHeader(bz)
+	header, err := UnmarshalBNBHeader(headers[0].RawHeader)
 	require.NoError(t, err, "UnmarshalBNBHeader error")
 	require.Equal(t,
-		"0x0eb9229e5bbe6a91288fc8c1a998f6992e3bd28eeaa6a7032a4292e289c68385",
-		header.Hash().String(),
+		headers[0].Hash,
+		header.Hash().Bytes(),
 		"header hash should be equal",
 	)
-
-	bz2, err := rlp.EncodeToBytes(header)
-	require.NoError(t, err, "rlp.EncodeToBytes error")
-	require.Equal(t, bz, bz2, "header should be equal")
 }
 
 func TestUnmarshalReceipt(t *testing.T) {
@@ -35,8 +28,10 @@ func TestUnmarshalReceipt(t *testing.T) {
 
 	receipt, err := UnmarshalReceipt(bz)
 	require.NoError(t, err)
-	_ = receipt
-	// require.Equal(t, receipt.TxHash, common.HexToHash("0xb731fe61405456b6f827dfc5458ade817fc19ab5ec31de6f93296cf1bc42ccab"))
+
+	bz2, err := rlp.EncodeToBytes(receipt)
+	require.NoError(t, err, "rlp.EncodeToBytes error")
+	require.Equal(t, bz, bz2, "receipt should be equal")
 }
 
 func TestUnmarshalProof(t *testing.T) {
@@ -46,5 +41,8 @@ func TestUnmarshalProof(t *testing.T) {
 
 	proof, err := UnmarshalProof(bz)
 	require.NoError(t, err)
-	_ = proof
+
+	proofBz, err := rlp.EncodeToBytes(proof)
+	require.NoError(t, err)
+	require.Equal(t, hexProof, hex.EncodeToString(proofBz))
 }
