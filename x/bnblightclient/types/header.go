@@ -3,6 +3,7 @@ package types
 import (
 	"math/big"
 	"sync"
+	"sync/atomic"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
@@ -53,12 +54,20 @@ type BNBHeader struct {
 
 	// ParentBeaconRoot was added by EIP-4788 and is ignored in legacy headers.
 	ParentBeaconRoot *common.Hash `json:"parentBeaconBlockRoot" rlp:"optional"`
+
+	// caches
+	hash atomic.Value `rlp:"-"`
 }
 
 // Hash returns the block hash of the header, which is simply the keccak256 hash of its
 // RLP encoding.
 func (h *BNBHeader) Hash() common.Hash {
-	return rlpHash(h)
+	if hash := h.hash.Load(); hash != nil {
+		return hash.(common.Hash)
+	}
+	v := rlpHash(h)
+	h.hash.Store(v)
+	return v
 }
 
 // ConvertToBNBHeader decodes the input data into a BNBHeader struct and validates it against the provided Header.
@@ -109,18 +118,13 @@ func VerifyHeaders(headers []*Header) error {
 		return nil
 	}
 
-	if len(headers) == 1 {
-		_, err := ConvertToBNBHeader(headers[0])
+	preHeader, err := ConvertToBNBHeader(headers[0])
+	if err != nil {
 		return err
 	}
 
-	for i := 0; i < len(headers)-1; i++ {
-		preHeader, err := ConvertToBNBHeader(headers[i])
-		if err != nil {
-			return err
-		}
-
-		nextHeader, err := ConvertToBNBHeader(headers[i+1])
+	for i := 1; i < len(headers)-1; i++ {
+		nextHeader, err := ConvertToBNBHeader(headers[i])
 		if err != nil {
 			return err
 		}
@@ -132,6 +136,8 @@ func VerifyHeaders(headers []*Header) error {
 		if preHeader.Number.Uint64()+1 != nextHeader.Number.Uint64() {
 			return errorsmod.Wrap(ErrInvalidHeader, "hash not equal")
 		}
+
+		preHeader = nextHeader
 	}
 	return nil
 }
