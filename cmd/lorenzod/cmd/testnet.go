@@ -11,6 +11,8 @@ import (
 	"path/filepath"
 	"time"
 
+	feemarkettypes "github.com/evmos/ethermint/x/feemarket/types"
+
 	"github.com/spf13/cobra"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -457,6 +459,12 @@ func initGenFiles(
 
 	evmGenState.Params.EvmDenom = coinDenom
 	appGenState[evmtypes.ModuleName] = clientCtx.Codec.MustMarshalJSON(&evmGenState)
+
+	var feeMarketGenState feemarkettypes.GenesisState
+	clientCtx.Codec.MustUnmarshalJSON(appGenState[feemarkettypes.ModuleName], &feeMarketGenState)
+
+	feeMarketGenState.Params.EnableHeight = 1
+	appGenState[feemarkettypes.ModuleName] = clientCtx.Codec.MustMarshalJSON(&feeMarketGenState)
 
 	// btclightclient genesis
 	btclightclientGenState := btclightclienttypes.DefaultGenesis()
