@@ -1,6 +1,7 @@
 package types
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	"github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
@@ -27,7 +28,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 func UnmarshalBNBHeader(rawHeader []byte) (*BNBHeader, error) {
 	bnbHeader := new(BNBHeader)
 	if err := rlp.DecodeBytes(rawHeader, bnbHeader); err != nil {
-		return nil, err
+		return nil, errorsmod.Wrap(ErrInvalidHeader, "unmarshal header failed")
 	}
 	return bnbHeader, nil
 }

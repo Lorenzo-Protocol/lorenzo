@@ -7,6 +7,10 @@ func (gs GenesisState) Validate() error {
 	if err := gs.Params.Validate(); err != nil {
 		return err
 	}
+
+	if len(gs.Headers) == 0 {
+		return nil
+	}
 	return VerifyHeaders(gs.Headers)
 }
 

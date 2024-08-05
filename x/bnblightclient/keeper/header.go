@@ -11,6 +11,10 @@ import (
 
 // UploadHeaders adds a batch of headers to the bnb light client chain
 func (k Keeper) UploadHeaders(ctx sdk.Context, headers []*types.Header) error {
+	if len(headers) == 0 {
+		return errorsmod.Wrap(types.ErrInvalidHeader, "header is empty")
+	}
+
 	slices.SortFunc(headers, func(a, b *types.Header) bool {
 		return a.Number < b.Number
 	})

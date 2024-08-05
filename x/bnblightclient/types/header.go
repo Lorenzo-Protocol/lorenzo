@@ -100,7 +100,7 @@ func ConvertToBNBHeader(header *Header) (*BNBHeader, error) {
 	}
 
 	if bnbHeader.ReceiptHash != common.Hash(header.ReceiptRoot) {
-		return nil, errorsmod.Wrap(ErrInvalidHeader, "receipt hash not equal")
+		return nil, errorsmod.Wrap(ErrInvalidHeader, "receiptHash not equal")
 	}
 	return bnbHeader, nil
 }
@@ -115,7 +115,7 @@ func ConvertToBNBHeader(header *Header) (*BNBHeader, error) {
 // ErrInvalidHeader error.
 func VerifyHeaders(headers []*Header) error {
 	if len(headers) == 0 {
-		return nil
+		return errorsmod.Wrap(ErrInvalidHeader, "header is empty")
 	}
 
 	preHeader, err := ConvertToBNBHeader(headers[0])
@@ -123,7 +123,7 @@ func VerifyHeaders(headers []*Header) error {
 		return err
 	}
 
-	for i := 1; i < len(headers)-1; i++ {
+	for i := 1; i <= len(headers)-1; i++ {
 		nextHeader, err := ConvertToBNBHeader(headers[i])
 		if err != nil {
 			return err
@@ -134,7 +134,7 @@ func VerifyHeaders(headers []*Header) error {
 		}
 
 		if preHeader.Number.Uint64()+1 != nextHeader.Number.Uint64() {
-			return errorsmod.Wrap(ErrInvalidHeader, "hash not equal")
+			return errorsmod.Wrap(ErrInvalidHeader, "number not equal")
 		}
 
 		preHeader = nextHeader
