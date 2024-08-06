@@ -94,7 +94,7 @@ func startInProcess(cfg Config, val *Validator) error {
 		errCh := make(chan error)
 
 		go func() {
-			if err := apiSrv.Start(val.AppConfig.Config); err != nil {
+			if err := apiSrv.Start(val.AppConfig.Config.Config); err != nil {
 				errCh <- err
 			}
 		}()
@@ -117,7 +117,7 @@ func startInProcess(cfg Config, val *Validator) error {
 		val.grpc = grpcSrv
 
 		if val.AppConfig.GRPCWeb.Enable {
-			val.grpcWeb, err = servergrpc.StartGRPCWeb(grpcSrv, val.AppConfig.Config)
+			val.grpcWeb, err = servergrpc.StartGRPCWeb(grpcSrv, val.AppConfig.Config.Config)
 			if err != nil {
 				return err
 			}
@@ -132,7 +132,8 @@ func startInProcess(cfg Config, val *Validator) error {
 		tmEndpoint := "/websocket"
 		tmRPCAddr := fmt.Sprintf("tcp://%s", val.AppConfig.GRPC.Address)
 
-		val.jsonrpc, val.jsonrpcDone, err = server.StartJSONRPC(val.Ctx, val.ClientCtx, tmRPCAddr, tmEndpoint, val.AppConfig, nil)
+		ethermintCfg := val.AppConfig.Config
+		val.jsonrpc, val.jsonrpcDone, err = server.StartJSONRPC(val.Ctx, val.ClientCtx, tmRPCAddr, tmEndpoint, &ethermintCfg, nil)
 		if err != nil {
 			return err
 		}

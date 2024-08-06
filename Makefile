@@ -265,6 +265,8 @@ format:
 ###                                Localnet                                 ###
 ###############################################################################
 
+PROPOSAL_FILE ?= "proposal.json"
+
 localnet-build-env:
 	$(MAKE) -C contrib/images lorenzod-env
 
@@ -280,6 +282,12 @@ localnet-start:
 
 localnet-stop:
 	docker-compose down
+
+localnet-propose-upgrade:
+	$(MAKE) -C contrib/localnet propose-upgrade
+
+localnet-propose-general:
+	$(MAKE) -C contrib/localnet propose-general PROPOSAL_FILE=$$(realpath $(PROPOSAL_FILE))
 
 ###############################################################################
 ###                        Compile Solidity Contracts                       ###

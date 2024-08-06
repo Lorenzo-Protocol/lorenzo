@@ -123,7 +123,12 @@ func (m msgServer) SetMerkleRoot(goCtx context.Context, msg *types.MsgSetMerkleR
 
 	contractAddr := common.HexToAddress(plan.ContractAddress)
 
-	if err := m.k.SetMerkleRoot(ctx, contractAddr, msg.MerkleRoot); err != nil {
+	if err := m.k.SetMerkleRoot(
+		ctx,
+		contractAddr,
+		msg.RoundId.BigInt(),
+		msg.MerkleRoot,
+	); err != nil {
 		return nil, err
 	}
 
