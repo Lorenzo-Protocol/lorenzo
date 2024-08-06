@@ -72,9 +72,8 @@ func NewCreateBTCStakingWithBTCProofCmd() *cobra.Command {
 			blkHdrHashBytes.FromChainhash(&tmp)
 
 			msg := types.MsgCreateBTCStaking{
-				AgentId:  agentId,
-				Receiver: " ",
-				Signer:   clientCtx.GetFromAddress().String(),
+				AgentId: agentId,
+				Signer:  clientCtx.GetFromAddress().String(),
 				StakingTx: &types.TransactionInfo{
 					Key: &types.TransactionKey{
 						Index: txIndex,
