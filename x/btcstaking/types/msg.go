@@ -23,9 +23,6 @@ func (m *MsgCreateBTCStaking) ValidateBasic() error {
 	if m.StakingTx == nil {
 		return fmt.Errorf("empty staking tx info")
 	}
-	if len(m.Receiver) == 0 {
-		return fmt.Errorf("receiver name cannot be empty")
-	}
 	// staking tx should be correctly formatted
 	if err := m.StakingTx.ValidateBasic(); err != nil {
 		return err
