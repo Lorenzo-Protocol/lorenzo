@@ -64,21 +64,6 @@ func NewCreateBTCStakingWithBTCProofCmd() *cobra.Command {
 			if err != nil {
 				return fmt.Errorf("failed to parse btc proof: %w", err)
 			}
-			queryClient := types.NewQueryClient(clientCtx)
-			resp, err := queryClient.Params(cmd.Context(), &types.QueryParamsRequest{})
-			if err != nil {
-				return err
-			}
-
-			receiverExists := false
-			for _, r := range resp.Params.Receivers {
-				if r.Name == args[2] {
-					receiverExists = true
-				}
-			}
-			if !receiverExists {
-				return fmt.Errorf("receiver(%s) not found", args[2])
-			}
 
 			blkHdr := &merkleBlk.Header
 
