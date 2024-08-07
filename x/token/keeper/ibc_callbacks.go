@@ -35,8 +35,13 @@ func (k Keeper) OnRecvPacket(
 		data.Denom, data.Amount)
 
 	id := k.GetTokenPairId(ctx, coin.Denom)
-	_, found := k.GetTokenPair(ctx, id)
+	pair, found := k.GetTokenPair(ctx, id)
 	if !found {
+		return ack
+	}
+
+	// if module is disabled, or token pair is not enabled, return ack.
+	if !pair.Enabled || !k.IsConvertEnabled(ctx) {
 		return ack
 	}
 
