@@ -1,9 +1,12 @@
 package keeper_test
 
-import "github.com/Lorenzo-Protocol/lorenzo/v2/x/bnblightclient/types"
+import (
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/bnblightclient/testutil"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/bnblightclient/types"
+)
 
 func (suite *KeeperTestSuite) TestUploadHeaders() {
-	headers := types.GetTestHeaders(suite.T())
+	headers := testutil.GetTestHeaders(suite.T())
 	testCases := []struct {
 		name         string
 		headers      []*types.Header

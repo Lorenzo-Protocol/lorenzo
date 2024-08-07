@@ -32,7 +32,7 @@ func (k Keeper) VerifyReceiptProof(
 		return nil, err
 	}
 
-	events, err := k.parseReceipt(ctx, receipt)
+	events, err := k.ParseReceipt(ctx, receipt)
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +88,16 @@ func (k Keeper) VerifyReceipt(
 	return nil
 }
 
-func (k Keeper) parseReceipt(ctx sdk.Context, receipt *evmtypes.Receipt) ([]types.CrossChainEvent, error) {
+// ParseReceipt parses the given Ethereum receipt and extracts the cross-chain events.
+//
+// Parameters:
+// - ctx: The SDK context.
+// - receipt: The Ethereum receipt to be parsed.
+//
+// Returns:
+// - []types.CrossChainEvent: The parsed cross-chain events.
+// - error: An error if the parsing fails.
+func (k Keeper) ParseReceipt(ctx sdk.Context, receipt *evmtypes.Receipt) ([]types.CrossChainEvent, error) {
 	if len(receipt.Logs) == 0 {
 		return nil, errorsmod.Wrapf(types.ErrInvalidEvent, "no event log found")
 	}

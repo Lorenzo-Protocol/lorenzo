@@ -12,6 +12,7 @@ import (
 
 	"github.com/Lorenzo-Protocol/lorenzo/v2/app"
 	"github.com/Lorenzo-Protocol/lorenzo/v2/x/bnblightclient/keeper"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/bnblightclient/testutil"
 	"github.com/Lorenzo-Protocol/lorenzo/v2/x/bnblightclient/types"
 )
 
@@ -33,10 +34,10 @@ func TestKeeperTestSuite(t *testing.T) {
 
 func (suite *KeeperTestSuite) SetupTest() {
 	merge := func(cdc codec.Codec, state map[string]json.RawMessage) {
-		headers := types.GetTestHeaders(suite.T())
+		headers := testutil.GetTestHeaders(suite.T())
 		genesis := &types.GenesisState{
 			Params:  &types.Params{
-				StakePlanHubAddress: "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c",
+				StakePlanHubAddress: "0x9ADb675bc89d9EC5d829709e85562b7c99658D59",
 				EventName:           "StakeBTC2JoinStakePlan",
 				RetainedBlocks:      10,
 				AllowList:           []string{

@@ -1,4 +1,4 @@
-package types
+package types_test
 
 import (
 	"encoding/hex"
@@ -6,12 +6,15 @@ import (
 
 	"github.com/ethereum/go-ethereum/rlp"
 	"github.com/stretchr/testify/require"
+
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/bnblightclient/testutil"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/bnblightclient/types"
 )
 
 func TestUnmarshalBNBHeader(t *testing.T) {
-	headers := GetTestHeaders(t)
+	headers := testutil.GetTestHeaders(t)
 
-	header, err := UnmarshalBNBHeader(headers[0].RawHeader)
+	header, err := types.UnmarshalBNBHeader(headers[0].RawHeader)
 	require.NoError(t, err, "UnmarshalBNBHeader error")
 	require.Equal(t,
 		headers[0].Hash,
@@ -26,7 +29,7 @@ func TestUnmarshalReceipt(t *testing.T) {
 	bz, err := hex.DecodeString(hexReceipt)
 	require.NoError(t, err, "hexHeader decode error")
 
-	receipt, err := UnmarshalReceipt(bz)
+	receipt, err := types.UnmarshalReceipt(bz)
 	require.NoError(t, err)
 
 	bz2, err := rlp.EncodeToBytes(receipt)
@@ -39,7 +42,7 @@ func TestUnmarshalProof(t *testing.T) {
 	bz, err := hex.DecodeString(hexProof)
 	require.NoError(t, err, "hexProof decode error")
 
-	proof, err := UnmarshalProof(bz)
+	proof, err := types.UnmarshalProof(bz)
 	require.NoError(t, err)
 
 	proofBz, err := rlp.EncodeToBytes(proof)
