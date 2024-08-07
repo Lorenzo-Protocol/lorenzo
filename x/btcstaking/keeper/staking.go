@@ -101,3 +101,15 @@ func (k Keeper) hasBTCBStakingRecord(ctx sdk.Context, chainID uint32, contract [
 	key := types.KeyBTCBStakingRecord(chainID, contract, stakingIdx)
 	return store.Has(key)
 }
+
+func (k Keeper) getBTCBStakingRecord(ctx sdk.Context, chainID uint32, contract []byte, stakingIdx uint64) (*types.BTCBStakingRecord, error) {
+	store := ctx.KVStore(k.storeKey)
+	key := types.KeyBTCBStakingRecord(chainID, contract, stakingIdx)
+	bz := store.Get(key)
+	if len(bz) == 0 {
+		return nil, types.ErrStakingRecordNotFound
+	}
+	var record types.BTCBStakingRecord
+	k.cdc.MustUnmarshal(bz, &record)
+	return &record, nil
+}

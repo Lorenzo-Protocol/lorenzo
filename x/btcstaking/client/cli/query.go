@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"strconv"
 
 	sdkmath "cosmossdk.io/math"
 	"github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/types"
@@ -24,6 +25,7 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 	btcstakingQueryCmd.AddCommand(
 		CmdGetParams(),
 		CmdGetBTCStakingRecord(),
+		CmdGetBTCBStakingRecord(),
 	)
 
 	return btcstakingQueryCmd
@@ -82,6 +84,42 @@ func CmdGetBTCStakingRecord() *cobra.Command {
 				return err
 			}
 			return clientCtx.PrintProto(&resDisp)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdGetBTCBStakingRecord() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "btcb-staking-record [chain-id] [contract] [staking-idx]",
+		Short: "get the btcb staking record",
+		Args:  cobra.ExactArgs(3),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+			chainID, err := strconv.ParseInt(args[0], 10, 64)
+			if err != nil {
+				return fmt.Errorf("invalid chain id: %s", args[0])
+			}
+
+			stakingIdx, err := strconv.ParseUint(args[2], 10, 64)
+			if err != nil {
+				return fmt.Errorf("invalid staking idx: %s", args[0])
+			}
+
+			res, err := queryClient.BTCBStakingRecord(cmd.Context(),
+				&types.QueryBTCBStakingRecordRequest{
+					ChainId:    uint32(chainID),
+					Contract:   args[1],
+					StakingIdx: stakingIdx,
+				})
+			if err != nil {
+				return err
+			}
+			return clientCtx.PrintProto(res)
 		},
 	}
 
