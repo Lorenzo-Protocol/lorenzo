@@ -28,21 +28,12 @@ var _ types.MsgServer = msgServer{}
 func (ms msgServer) CreateBTCStaking(goCtx context.Context, msg *types.MsgCreateBTCStaking) (*types.MsgCreateBTCStakingResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// Check if the sender is authorized
-	sender, err := sdk.AccAddressFromBech32(msg.Signer)
-	if err != nil {
-		return nil, err
-	}
-
-	if !ms.k.Authorized(ctx, sender) {
-		return nil, errorsmod.Wrapf(types.ErrNotInAllowList, "unauthorized")
-	}
-
 	stakingMsgTx, err := NewBTCTxFromBytes(msg.StakingTx.Transaction)
 	if err != nil {
 		return nil, errorsmod.Wrapf(types.ErrParseBTCTx, "failed to parse btc tx: %v", err)
 	}
 
+	// Check if the staking transaction already exists
 	stakingTxHash := stakingMsgTx.TxHash()
 	if ms.k.getBTCStakingRecord(ctx, stakingTxHash) != nil {
 		return nil, types.ErrDupBTCTx
@@ -87,6 +78,16 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, msg *types.MsgCreate
 
 	// parse opReturnMsg
 	if common.IsHexAddress(agent.EthAddr) {
+		// Check if the sender is authorized
+		// when the agent's eth address is a valid hex address
+		sender, err := sdk.AccAddressFromBech32(msg.Signer)
+		if err != nil {
+			return nil, err
+		}
+
+		if !ms.k.Authorized(ctx, sender) {
+			return nil, errorsmod.Wrapf(types.ErrNotInAllowList, "unauthorized")
+		}
 		mintToAddr = common.HexToAddress(agent.EthAddr).Bytes()
 		receiverAddr = mintToAddr
 		btcAmount, err = ExtractPaymentTo(stakingMsgTx, btcReceivingAddr)
