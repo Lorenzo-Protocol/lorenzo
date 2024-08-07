@@ -30,7 +30,7 @@ func GetTxCmd() *cobra.Command {
 		SuggestionsMinimumDistance: 2,
 		RunE:                       client.ValidateCmd,
 	}
-	cmd.AddCommand(GetCmdUpgradeYAT())
+	cmd.AddCommand(GetCmdUpgradePlan())
 	cmd.AddCommand(GetCmdCreatePlan())
 	cmd.AddCommand(GetClaimsCmd())
 	cmd.AddCommand(GetUpdatePlanStatusCmd())
@@ -41,7 +41,7 @@ func GetTxCmd() *cobra.Command {
 	return cmd
 }
 
-func GetCmdUpgradeYAT() *cobra.Command {
+func GetCmdUpgradePlan() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "upgrade-plan [implementation]",
 		Short: "Upgrade a plan",
