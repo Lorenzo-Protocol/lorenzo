@@ -231,7 +231,7 @@ func (suite *KeeperTestSuite) TestClaimLeafNodeQuery() {
 				err = suite.lorenzoApp.PlanKeeper.SetMerkleRoot(
 					suite.ctx,
 					common.HexToAddress(planResult.ContractAddress),
-					sdkmath.NewInt(1).BigInt(),
+					sdkmath.NewInt(0).BigInt(),
 					merkelRoot)
 				suite.Require().NoError(err)
 
@@ -304,7 +304,7 @@ func (suite *KeeperTestSuite) TestClaimLeafNodeQuery() {
 				err = suite.lorenzoApp.PlanKeeper.SetMerkleRoot(
 					suite.ctx,
 					common.HexToAddress(planResult.ContractAddress),
-					sdkmath.NewInt(1).BigInt(),
+					sdkmath.NewInt(0).BigInt(),
 					merkelRoot)
 				suite.Require().NoError(err)
 
