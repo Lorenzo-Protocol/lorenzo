@@ -43,17 +43,33 @@ func (k Keeper) DepositBTCB(
 	totalStBTCAmt := new(big.Int)
 	for i := range events {
 		event := events[i]
+		if k.hasBTCBStakingRecord(ctx, event.ChainID, event.Contract.Bytes(), event.Identifier) {
+			return types.ErrDuplicateStakingEvent.Wrapf("duplicate event,planID %d,stakingIdx %d,contract %s",
+				event.PlanID,
+				event.Identifier,
+				event.Contract.String(),
+			)
+		}
 		amount := new(big.Int).SetBytes(event.StBTCAmount.Bytes())
 		result := types.MintYatSuccess
 
 		// mint yat to the sender
 		if err := k.planKeeper.Mint(ctx, event.PlanID, event.Sender, amount); err != nil {
+			k.Logger(ctx).Error("mint yat error",
+				"planID", event.PlanID,
+				"stakingIdx", event.Identifier,
+				"contract", event.Contract.String(),
+				"sender", event.Sender.String(),
+				"amount", amount.String(),
+				"error", err,
+			)
 			result = types.MintYatFailed
 		}
 
 		totalStBTCAmt = totalStBTCAmt.Add(totalStBTCAmt, amount)
 		k.addBTCBStakingRecord(ctx, &types.BTCBStakingRecord{
-			EventIdx:      event.Identifier,
+			StakingIdx:    event.Identifier,
+			Contract:      event.Contract.Bytes(),
 			ReceiverAddr:  event.Sender.String(),
 			Amount:        math.NewIntFromBigInt(amount),
 			ChainId:       event.ChainID,
@@ -77,5 +93,11 @@ func (k Keeper) DepositBTCB(
 func (k Keeper) addBTCBStakingRecord(ctx sdk.Context, record *types.BTCBStakingRecord) {
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshal(record)
-	store.Set(types.KeyBTCBStakingRecord(record.EventIdx), bz)
+	store.Set(types.KeyBTCBStakingRecord(record.ChainId, record.Contract, record.StakingIdx), bz)
+}
+
+func (k Keeper) hasBTCBStakingRecord(ctx sdk.Context, chainID uint32, contract []byte, stakingIdx uint64) bool {
+	store := ctx.KVStore(k.storeKey)
+	key := types.KeyBTCBStakingRecord(chainID, contract, stakingIdx)
+	return store.Has(key)
 }

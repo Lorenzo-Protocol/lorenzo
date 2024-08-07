@@ -12,15 +12,4 @@ message GenesisState {
   lorenzo.bnblightclient.v1.Params params = 1;
   // headers defines the bnb light client headers
   repeated lorenzo.bnblightclient.v1.Header headers = 2;
-  // events defines the bnb chain generated events
-  repeated EvmEvent events = 3;
-}
-
-message EvmEvent {
-  // block_number defines the block number
-  uint64 block_number = 1;
-  // contract defines the contract
-  bytes contract = 2;
-  // index defines the unique identifier of the event
-  uint64 identifier = 3;
 }

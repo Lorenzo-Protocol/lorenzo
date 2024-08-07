@@ -20,17 +20,19 @@ message BTCStakingRecord {
 
 // BTCBStakingRecord defines the message for btcb staking record
 message BTCBStakingRecord {
-  // event_idx defines the event index
-  uint64 event_idx = 1;
+  // staking_idx defines the staking index
+  uint64 staking_idx = 1;
+  // contract defines the contract
+  bytes contract = 2;
   // receiver_addr defines the receiver address
-  string receiver_addr = 2;
+  string receiver_addr = 3;
   // amount defines the stBTC amount
-  string amount = 3 [
+  string amount = 4 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
   // chain_id defines the chain id
-  uint32 chain_id = 4;
+  uint32 chain_id = 5;
   // mint_yat_result defines the mint yat result
-  string mint_yat_result = 5;
+  string mint_yat_result = 6;
 }

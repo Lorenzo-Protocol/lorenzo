@@ -43,24 +43,6 @@ func (k Keeper) VerifyReceiptProof(
 	return events, nil
 }
 
-// GetAllEvmEvents retrieves all event records stored in the context.
-//
-// ctx - The context object.
-// []*types.EvmEvent - A slice of event records.
-func (k Keeper) GetAllEvmEvents(ctx sdk.Context) (events []*types.EvmEvent) {
-	store := ctx.KVStore(k.storeKey)
-
-	it := sdk.KVStorePrefixIterator(store, types.KeyPrefixEvmEvent)
-	defer it.Close() //nolint:errcheck
-
-	for ; it.Valid(); it.Next() {
-		var event types.EvmEvent
-		k.cdc.MustUnmarshal(it.Value(), &event)
-		events = append(events, &event)
-	}
-	return events
-}
-
 // VerifyReceipt verifies the receipt of a transaction using the provided proof.
 //
 // Parameters:
@@ -158,16 +140,6 @@ func (k Keeper) parseReceipt(ctx sdk.Context, receipt *evmtypes.Receipt) ([]type
 			)
 		}
 
-		record := &types.EvmEvent{
-			BlockNumber: receipt.BlockNumber.Uint64(),
-			Identifier:  identifier.Uint64(),
-			Contract:    log.Address.Bytes(),
-		}
-		if k.hasEvmEvent(ctx, params.ChainId, record) {
-			return nil, errorsmod.Wrapf(types.ErrInvalidEvent, "event identifier %d already exists", identifier.Uint64())
-		}
-		k.setEvmEvent(ctx, params.ChainId, record)
-
 		// btcContractAddress
 		btcContractAddress, ok := eventArgs[0].(common.Address)
 		if !ok {
@@ -197,6 +169,7 @@ func (k Keeper) parseReceipt(ctx sdk.Context, receipt *evmtypes.Receipt) ([]type
 
 		bnbEvent := types.CrossChainEvent{
 			ChainID:            params.ChainId,
+			Contract:           log.Address,
 			Identifier:         identifier.Uint64(),
 			Sender:             sender,
 			PlanID:             planID.Uint64(),
@@ -207,18 +180,4 @@ func (k Keeper) parseReceipt(ctx sdk.Context, receipt *evmtypes.Receipt) ([]type
 		events = append(events, bnbEvent)
 	}
 	return events, nil
-}
-
-func (k Keeper) hasEvmEvent(ctx sdk.Context, chainID uint32, record *types.EvmEvent) bool {
-	store := ctx.KVStore(k.storeKey)
-	key := record.Key(chainID)
-	return store.Has(key)
-}
-
-func (k Keeper) setEvmEvent(ctx sdk.Context, chainID uint32, record *types.EvmEvent) {
-	store := ctx.KVStore(k.storeKey)
-	key := record.Key(chainID)
-
-	bz := k.cdc.MustMarshal(record)
-	store.Set(key[:], bz)
 }

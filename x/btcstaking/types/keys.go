@@ -38,10 +38,17 @@ func KeyPrefix(p string) []byte {
 }
 
 // KeyBTCBStakingRecord returns the key for the BTCB staking record
-func KeyBTCBStakingRecord(eventIdx uint64) []byte {
+func KeyBTCBStakingRecord(chainID uint32, contract []byte, stakingIdx uint64) []byte {
 	key := append([]byte{}, BTCBStakingRecordKey...)
 
-	chainIDBz := sdk.Uint64ToBigEndian(eventIdx)
+	chainIDBz := sdk.Uint64ToBigEndian(uint64(chainID))
 	key = append(key, chainIDBz...)
+	key = append(key, Delimiter...)
+
+	stakingIdxBz := sdk.Uint64ToBigEndian(stakingIdx)
+	key = append(key, stakingIdxBz...)
+	key = append(key, Delimiter...)
+
+	key = append(key, contract...)
 	return key
 }

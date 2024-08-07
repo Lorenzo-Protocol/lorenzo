@@ -13,10 +13,10 @@ func (k Keeper) prune(ctx sdk.Context) {
 	if pruneEndNumber <= 0 {
 		return
 	}
-	k.pruneHeaders(ctx, params.ChainId, uint64(pruneEndNumber))
+	k.pruneHeaders(ctx, uint64(pruneEndNumber))
 }
 
-func (k Keeper) pruneHeaders(ctx sdk.Context, chainID uint32, pruneEndNumber uint64) {
+func (k Keeper) pruneHeaders(ctx sdk.Context, pruneEndNumber uint64) {
 	logger := k.Logger(ctx)
 	store := ctx.KVStore(k.storeKey)
 	iterator := sdk.KVStorePrefixIterator(store, types.KeyPrefixHeader)
@@ -40,20 +40,6 @@ func (k Keeper) pruneHeaders(ctx sdk.Context, chainID uint32, pruneEndNumber uin
 			store.Delete(iterKey)
 			// delete header hash
 			store.Delete(types.KeyHeaderHash(header.Hash))
-
-			// delete event record
-			prefix := types.PrefixKeyEvmEvent(chainID, header.Number)
-			iterator2 := sdk.KVStoreReversePrefixIterator(store, prefix)
-			defer func() {
-				if err := iterator2.Close(); err != nil {
-					logger.Error("close iterator error", "err", err)
-				}
-			}()
-
-			for ; iterator2.Valid(); iterator2.Next() {
-				iterKey2 := iterator2.Key()
-				store.Delete(iterKey2)
-			}
 		}
 	}
 }

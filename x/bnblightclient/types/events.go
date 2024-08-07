@@ -30,15 +30,11 @@ func ABIstakePlanHub() *abi.ABI {
 // CrossChainEvent is a struct that contains the sender, plan id, BTC contract address, stake amount, and stBTC amount.
 type CrossChainEvent struct {
 	ChainID            uint32         `json:"chain_id"`
+	Contract           common.Address `json:"contract"`
 	Identifier         uint64         `json:"identifier"`
 	Sender             common.Address `json:"sender"`
 	PlanID             uint64         `json:"plan_id"`
 	BTCcontractAddress common.Address `json:"btc_contract_address"`
 	StakeAmount        big.Int        `json:"stake_amount"`
 	StBTCAmount        big.Int        `json:"st_btc_amount"`
-}
-
-// Key returns the unique key of the EvmEvent struct
-func (e EvmEvent) Key(chainID uint32) []byte {
-	return KeyEvmEvent(chainID, e.BlockNumber, e.Contract, e.Identifier)
 }

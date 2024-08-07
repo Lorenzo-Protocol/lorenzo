@@ -24,4 +24,5 @@ var (
 	ErrBurnInvalidSigner           = errorsmod.Register(ModuleName, 1116, "invalid signer")
 	ErrInvalidEthAddr              = errorsmod.Register(ModuleName, 1117, "invalid receiver eth addr")
 	ErrNotInAllowList              = errorsmod.Register(ModuleName, 1118, "not in minter allow list")
+	ErrDuplicateStakingEvent       = errorsmod.Register(ModuleName, 1119, "duplicate staking event")
 )

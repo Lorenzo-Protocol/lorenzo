@@ -27,6 +27,5 @@ func DefaultGenesisState() *GenesisState {
 			ChainId: 56,
 		},
 		Headers: []*Header{},
-		Events:  []*EvmEvent{},
 	}
 }

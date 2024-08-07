@@ -35,21 +35,23 @@ func (m *MsgCreateBTCStaking) ValidateBasic() error {
 	return nil
 }
 
+// ValidateBasic implements sdk.Msg
 func (m *MsgCreateBTCBStaking) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.Signer); err != nil {
-		return errorsmod.Wrap(err, "invalid sign address")
+		return errorsmod.Wrap(err, "invalid signer address")
 	}
 
 	if len(m.Receipt) == 0 {
-		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "receipt cannot be empty")
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "staking receipt cannot be empty")
 	}
 
 	if len(m.Proof) == 0 {
-		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "proof cannot be empty")
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "staking proof cannot be empty")
 	}
 	return nil
 }
 
+// GetSigners implements sdk.Msg
 func (m *MsgCreateBTCBStaking) GetSigners() []sdk.AccAddress {
 	addr, _ := sdk.AccAddressFromBech32(m.Signer)
 	return []sdk.AccAddress{addr}
