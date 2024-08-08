@@ -17,6 +17,11 @@ service Query {
       returns (QueryStakingRecordResponse) {
     option (google.api.http).get = "/lorenzo/btcstaking/v1/stakingRecord";
   }
+
+  rpc BTCBStakingRecord(QueryBTCBStakingRecordRequest)
+      returns (QueryBTCBStakingRecordResponse) {
+    option (google.api.http).get = "/lorenzo/btcstaking/v1/btcb-staking-record";
+  }
 }
 message QueryParamsRequest {}
 message QueryParamsResponse { Params params = 1; }
@@ -32,3 +37,10 @@ message StakingRecordDisplay {
 
 message QueryStakingRecordRequest { bytes txHash = 1; }
 message QueryStakingRecordResponse { BTCStakingRecord record = 1; }
+
+message QueryBTCBStakingRecordRequest {
+  uint32 chain_id = 1;
+  string contract = 2;
+  uint64 staking_idx = 3;
+}
+message QueryBTCBStakingRecordResponse { BTCBStakingRecord record = 1; }

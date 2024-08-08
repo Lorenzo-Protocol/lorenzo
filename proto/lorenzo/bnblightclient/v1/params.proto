@@ -1,0 +1,22 @@
+syntax = "proto3";
+package lorenzo.bnblightclient.v1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/v2/x/bnblightclient/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (gogoproto.equal) = true;
+
+  // the stake plan hub contract address
+  string stake_plan_hub_address = 1;
+  // event_name defines the event name
+  string event_name = 2;
+  // the maximum number of bnb block headers to retain
+  uint64 retained_blocks = 3;
+  // list of people who can upload bnb block header information
+  repeated string allow_list = 4;
+  // chain_id defines the bnb chain id
+  uint32 chain_id = 5;
+}
