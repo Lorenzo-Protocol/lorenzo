@@ -78,7 +78,7 @@ func CmdQueryAgents() *cobra.Command {
 	}
 
 	flags.AddQueryFlagsToCmd(cmd)
-	flags.AddPaginationFlagsToCmd(cmd,"agents")
+	flags.AddPaginationFlagsToCmd(cmd, "agents")
 	return cmd
 }
 

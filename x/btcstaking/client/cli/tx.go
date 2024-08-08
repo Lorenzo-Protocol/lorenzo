@@ -143,12 +143,12 @@ func NewCreateBTCBStaking() *cobra.Command {
 				return fmt.Errorf("failed to parse number(%s): %w", args[0], err)
 			}
 
-			receiptRLP,err := os.ReadFile(args[1])
+			receiptRLP, err := os.ReadFile(args[1])
 			if err != nil {
 				return fmt.Errorf("failed to read receipt from file: %w", err)
 			}
 
-			proofRLP,err := os.ReadFile(args[2])
+			proofRLP, err := os.ReadFile(args[2])
 			if err != nil {
 				return fmt.Errorf("failed to read proof from file: %w", err)
 			}
