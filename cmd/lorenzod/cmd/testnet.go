@@ -1,18 +1,3 @@
-// Copyright 2021 Evmos Foundation
-// This file is part of Evmos' Ethermint library.
-//
-// The Ethermint library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The Ethermint library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the Ethermint library. If not, see https://github.com/evmos/ethermint/blob/main/LICENSE
 package cmd
 
 // DONTCOVER
@@ -24,16 +9,17 @@ import (
 	"net"
 	"os"
 	"path/filepath"
+	"time"
 
-	appparams "github.com/Lorenzo-Protocol/lorenzo/v2/app/params"
+	feemarkettypes "github.com/evmos/ethermint/x/feemarket/types"
+
+	"github.com/spf13/cobra"
 
 	"github.com/ethereum/go-ethereum/common"
 
 	tmconfig "github.com/cometbft/cometbft/config"
-	tmrand "github.com/cometbft/cometbft/libs/rand"
 	"github.com/cometbft/cometbft/types"
 	tmtime "github.com/cometbft/cometbft/types/time"
-	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -56,15 +42,19 @@ import (
 	mintypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	btclightclienttypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/btclightclient/types"
-	btcstakingtypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/types"
 	"github.com/evmos/ethermint/crypto/hd"
 	"github.com/evmos/ethermint/server/config"
 	srvflags "github.com/evmos/ethermint/server/flags"
+	"github.com/evmos/ethermint/testutil/network"
 	ethermint "github.com/evmos/ethermint/types"
 	evmtypes "github.com/evmos/ethermint/x/evm/types"
 
-	"github.com/evmos/ethermint/testutil/network"
+	appparams "github.com/Lorenzo-Protocol/lorenzo/v2/app/params"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/utils"
+	btclightclienttypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/btclightclient/types"
+	btcstakingtypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/types"
+
+	lorenzoserverconfig "github.com/Lorenzo-Protocol/lorenzo/v2/server/config"
 )
 
 var (
@@ -251,13 +241,13 @@ func initTestnetFiles(
 	args initArgs,
 ) error {
 	if args.chainID == "" {
-		args.chainID = fmt.Sprintf("ethermint_%d-1", tmrand.Int63n(9999999999999)+1)
+		args.chainID = utils.TestnetChainID
 	}
 
 	nodeIDs := make([]string, args.numValidators)
 	valPubKeys := make([]cryptotypes.PubKey, args.numValidators)
 
-	appConfig := DefaultLorenzoConfig()
+	appConfig := lorenzoserverconfig.DefaultConfig()
 	appConfig.MinGasPrices = args.minGasPrices
 	appConfig.API.Enable = true
 	appConfig.Telemetry.Enabled = true
@@ -384,7 +374,7 @@ func initTestnetFiles(
 			return err
 		}
 
-		customAppTemplate := DefaultLorenzoTemplate()
+		customAppTemplate := lorenzoserverconfig.DefaultLorenzoTemplate()
 		srvconfig.SetConfigTemplate(customAppTemplate)
 		srvconfig.WriteConfigFile(filepath.Join(nodeDir, "config/app.toml"), appConfig)
 	}
@@ -447,6 +437,8 @@ func initGenFiles(
 	var govGenState govv1.GenesisState
 	clientCtx.Codec.MustUnmarshalJSON(appGenState[govtypes.ModuleName], &govGenState)
 
+	votingPeriod := time.Second * 120
+	govGenState.Params.VotingPeriod = &votingPeriod
 	govGenState.Params.MinDeposit[0].Denom = coinDenom
 	appGenState[govtypes.ModuleName] = clientCtx.Codec.MustMarshalJSON(&govGenState)
 
@@ -467,6 +459,12 @@ func initGenFiles(
 
 	evmGenState.Params.EvmDenom = coinDenom
 	appGenState[evmtypes.ModuleName] = clientCtx.Codec.MustMarshalJSON(&evmGenState)
+
+	var feeMarketGenState feemarkettypes.GenesisState
+	clientCtx.Codec.MustUnmarshalJSON(appGenState[feemarkettypes.ModuleName], &feeMarketGenState)
+
+	feeMarketGenState.Params.EnableHeight = 1
+	appGenState[feemarkettypes.ModuleName] = clientCtx.Codec.MustMarshalJSON(&feeMarketGenState)
 
 	// btclightclient genesis
 	btclightclientGenState := btclightclienttypes.DefaultGenesis()

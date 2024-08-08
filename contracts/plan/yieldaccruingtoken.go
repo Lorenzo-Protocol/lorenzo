@@ -34,7 +34,7 @@ var (
 
 func init() {
 	// contract code
-	// https://github.com/Lorenzo-Protocol/builtin-contracts/blob/main/contracts/YieldAccruingToken.sol
+	// https://github.com/Lorenzo-Protocol/builtin-contracts/blob/v0.0.2/contracts/YieldAccruingToken.sol
 	err := json.Unmarshal(YieldAccruingTokenJSON, &YieldAccruingTokenContract)
 	if err != nil {
 		panic(err)
@@ -45,7 +45,7 @@ func init() {
 	}
 
 	// contract code
-	// https://github.com/Lorenzo-Protocol/builtin-contracts/blob/main/contracts/StakePlan.sol
+	// https://github.com/Lorenzo-Protocol/builtin-contracts/blob/v0.0.2/contracts/StakePlan.sol
 	// unmarshal the compiled StakePlanContract contract
 	err = json.Unmarshal(StakePlanJSON, &StakePlanContract)
 	if err != nil {

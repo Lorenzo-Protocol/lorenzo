@@ -29,6 +29,10 @@ func (m *MsgRegisterCoin) ValidateBasic() error {
 		return errorsmod.Wrap(err, "invalid authority address")
 	}
 
+	if len(m.Metadata) == 0 {
+		return errorsmod.Wrap(errors.New("metadata cannot be empty"), "should at least have one metadata")
+	}
+
 	// TODO: enforce ibc and erc20 denom validation on metadata unit denom as well?
 	seenDenom := make(map[string]bool)
 	for _, metadata := range m.Metadata {
@@ -64,6 +68,10 @@ func (m *MsgRegisterCoin) GetSigners() []sdk.AccAddress {
 func (m *MsgRegisterERC20) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
 		return errorsmod.Wrap(err, "invalid authority address")
+	}
+
+	if len(m.ContractAddresses) == 0 {
+		return errorsmod.Wrap(errors.New("contract addresses cannot be empty"), "should at least have one contract address")
 	}
 
 	seenAddr := make(map[string]bool)

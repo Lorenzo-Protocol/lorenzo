@@ -54,12 +54,12 @@ message TransactionInfo {
 }
 
 message MsgCreateBTCStaking {
-    option (cosmos.msg.v1.signer) = "signer";
-    string signer = 1;
-    TransactionInfo staking_tx = 2;
-    // deprecated
-    string receiver = 3;
-    uint64 agent_id = 4;
+  option (cosmos.msg.v1.signer) = "signer";
+  string signer = 1;
+  TransactionInfo staking_tx = 2;
+  // deprecated
+  string receiver = 3;
+  uint64 agent_id = 4;
 }
 
 message MsgCreateBTCStakingResponse {}

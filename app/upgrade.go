@@ -33,10 +33,12 @@ func (app *LorenzoApp) appKeepers() upgrades.AppKeepers {
 		FeeMarketKeeper: app.FeeMarketKeeper,
 		ReaderWriter:    app,
 
-		BTCStakingKeeper: &app.BTCStakingKeeper,
-		AgentKeeper:      &app.AgentKeeper,
-		PlanKeeper:       app.PlanKeeper,
-		TokenKeeper:      app.TokenKeeper,
+		BTCStakingKeeper:      &app.BTCStakingKeeper,
+		AgentKeeper:           &app.AgentKeeper,
+		PlanKeeper:            app.PlanKeeper,
+		TokenKeeper:           app.TokenKeeper,
+		ConsensusParamsKeeper: app.ConsensusParamsKeeper,
+		ParamsKeeper:          app.ParamsKeeper,
 	}
 }
 

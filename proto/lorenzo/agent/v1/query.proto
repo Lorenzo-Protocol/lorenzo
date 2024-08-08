@@ -28,7 +28,6 @@ service Query {
   rpc Agent(QueryAgentRequest) returns (QueryAgentResponse) {
     option (google.api.http).get = "/lorenzo/agent/v1/agents/{id}";
   }
-
 }
 
 // QueryParamsRequest is the request type for the Query/Params RPC method.
@@ -63,4 +62,3 @@ message QueryAgentResponse {
   // Agent Contains the details of the agent.
   Agent agent = 1 [ (gogoproto.nullable) = false ];
 }
-

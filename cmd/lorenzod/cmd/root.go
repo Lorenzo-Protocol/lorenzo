@@ -5,6 +5,8 @@ import (
 	"io"
 	"os"
 
+	lorenzoserverconfig "github.com/Lorenzo-Protocol/lorenzo/v2/server/config"
+
 	"github.com/Lorenzo-Protocol/lorenzo/v2/app"
 	appparams "github.com/Lorenzo-Protocol/lorenzo/v2/app/params"
 
@@ -37,7 +39,6 @@ import (
 	"github.com/evmos/ethermint/client/debug"
 	"github.com/evmos/ethermint/crypto/hd"
 	ethermintserver "github.com/evmos/ethermint/server"
-	servercfg "github.com/evmos/ethermint/server/config"
 )
 
 // NewRootCmd creates a new root command for dymension hub
@@ -114,7 +115,8 @@ func initAppConfig() (string, interface{}) {
 		panic(err)
 	}
 
-	customAppTemplate, customAppConfig := servercfg.AppConfig(baseDenom)
+	// customAppTemplate, customAppConfig := servercfg.AppConfig(baseDenom)
+	customAppTemplate, customAppConfig := lorenzoserverconfig.AppConfig(baseDenom)
 	return customAppTemplate, customAppConfig
 }
 

@@ -30,7 +30,7 @@ func GetTxCmd() *cobra.Command {
 		SuggestionsMinimumDistance: 2,
 		RunE:                       client.ValidateCmd,
 	}
-	cmd.AddCommand(GetCmdUpgradeYAT())
+	cmd.AddCommand(GetCmdUpgradePlan())
 	cmd.AddCommand(GetCmdCreatePlan())
 	cmd.AddCommand(GetClaimsCmd())
 	cmd.AddCommand(GetUpdatePlanStatusCmd())
@@ -41,12 +41,12 @@ func GetTxCmd() *cobra.Command {
 	return cmd
 }
 
-func GetCmdUpgradeYAT() *cobra.Command {
+func GetCmdUpgradePlan() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "upgrade-plan [implementation]",
 		Short: "Upgrade a plan",
 		Example: fmt.Sprintf(
-			"$ %s tx plan upgrade-plan [implementation]"+
+			"$ %s tx plan upgrade-plan [implementation] "+
 				"--from=<key-name> "+
 				"--chain-id=<chain-id> "+
 				"--fees=<fee>",
@@ -83,7 +83,7 @@ func GetCmdCreatePlan() *cobra.Command {
 		Use:   "create-plan [path/to/plan.json]",
 		Short: "Creates a new plan",
 		Example: fmt.Sprintf(
-			"$ %s tx plan create-plan [path/to/plan.json]"+
+			"$ %s tx plan create-plan [path/to/plan.json] "+
 				"--from=<key-name> "+
 				"--chain-id=<chain-id> "+
 				"--fees=<fee>",
@@ -107,6 +107,7 @@ func GetCmdCreatePlan() *cobra.Command {
 			}
 			from := clientCtx.GetFromAddress()
 			msgCreatePlan.Sender = from.String()
+
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgCreatePlan)
 		},
 	}
@@ -119,7 +120,7 @@ func GetClaimsCmd() *cobra.Command {
 		Use:   "claims [plan-id] [round-id] [amount] [proof]",
 		Short: "Handle claims for a plan",
 		Example: fmt.Sprintf(
-			"$ %s tx plan claims [plan-id][round-id] [amount] [proof]"+
+			"$ %s tx plan claims [plan-id][round-id] [amount] [proof] "+
 				"--to=\"0x0eeb8ec40c6705b669469346ff8f9ce5cad57ed5\" "+
 				"--from=<key-name> "+
 				"--chain-id=<chain-id> "+
@@ -172,10 +173,6 @@ func GetClaimsCmd() *cobra.Command {
 				Sender:      from.String(),
 			}
 
-			if msgClaims.ValidateBasic() != nil {
-				return err
-			}
-
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgClaims)
 		},
 	}
@@ -189,7 +186,7 @@ func GetCreateYATCmd() *cobra.Command {
 		Use:   "create-yat [name] [symbol]",
 		Short: "Creates a new YAT contract",
 		Example: fmt.Sprintf(
-			"$ %s tx plan creat-yat [name] [symbol]"+
+			"$ %s tx plan creat-yat [name] [symbol] "+
 				"--from=<key-name> "+
 				"--chain-id=<chain-id> "+
 				"--fees=<fee>",
@@ -208,10 +205,6 @@ func GetCreateYATCmd() *cobra.Command {
 				Name:   args[0],
 				Symbol: args[1],
 				Sender: from.String(),
-			}
-
-			if msgCreateYAT.ValidateBasic() != nil {
-				return err
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgCreateYAT)
@@ -268,10 +261,6 @@ func GetUpdatePlanStatusCmd() *cobra.Command {
 				Sender: from.String(),
 			}
 
-			if msgUpdatePlanStatus.ValidateBasic() != nil {
-				return err
-			}
-
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgUpdatePlanStatus)
 		},
 	}
@@ -313,10 +302,6 @@ func GetSetMinterCmd() *cobra.Command {
 				ContractAddress: yatContract,
 				Minter:          minter,
 				Sender:          from.String(),
-			}
-
-			if msgSetMinter.ValidateBasic() != nil {
-				return err
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgSetMinter)
@@ -362,10 +347,6 @@ func GetRemoveMinterCmd() *cobra.Command {
 				Sender:          from.String(),
 			}
 
-			if msgRemoveMinter.ValidateBasic() != nil {
-				return err
-			}
-
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgRemoveMinter)
 		},
 	}
@@ -375,16 +356,16 @@ func GetRemoveMinterCmd() *cobra.Command {
 
 func GetSetMerkleRootCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "set-merkle-root [id] [merkle-root]",
+		Use:   "set-merkle-root [id] [round-id] [merkle-root]",
 		Short: "Set merkle root for a plan",
 		Example: fmt.Sprintf(
-			"$ %s tx plan set-merkle-root 1 [0x...] "+
+			"$ %s tx plan set-merkle-root 1 0 [0x...] "+
 				"--from=<key-name> "+
 				"--chain-id=<chain-id> "+
 				"--fees=<fee>",
 			version.AppName,
 		),
-		Args: cobra.ExactArgs(2),
+		Args: cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -396,7 +377,12 @@ func GetSetMerkleRootCmd() *cobra.Command {
 				return fmt.Errorf("invalid plan ID: %s, error: %s", args[0], err.Error())
 			}
 
-			merkleRoot := common.HexToHash(args[1])
+			roundId, ok := sdkmath.NewIntFromString(args[1])
+			if !ok {
+				return fmt.Errorf("invalid round ID: %s", args[1])
+			}
+
+			merkleRoot := common.HexToHash(args[2])
 			if len(merkleRoot.Bytes()) != 32 {
 				return fmt.Errorf("invalid merkle leaf node")
 			}
@@ -405,12 +391,9 @@ func GetSetMerkleRootCmd() *cobra.Command {
 
 			msgRemoveMinter := &types.MsgSetMerkleRoot{
 				PlanId:     planId,
-				MerkleRoot: args[1],
+				RoundId:    roundId,
+				MerkleRoot: args[2],
 				Sender:     from.String(),
-			}
-
-			if msgRemoveMinter.ValidateBasic() != nil {
-				return err
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgRemoveMinter)

@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"math/big"
 
+	"github.com/ethereum/go-ethereum/crypto"
+
 	"github.com/Lorenzo-Protocol/lorenzo/v2/x/plan/types"
 
 	errorsmod "cosmossdk.io/errors"
@@ -102,4 +104,51 @@ func (k Keeper) CallEVMWithData(
 	}
 
 	return res, nil
+}
+
+// DeployContract deploys a new Stake Plan Logic contract.
+//
+// Parameters:
+// - ctx: the SDK context.
+// - compiledContract: the compiled contract to deploy.
+// Returns:
+// - common.Address: the address of the deployed contract.
+// - error: an error if the deployment fails.
+func (k Keeper) DeployContract(
+	ctx sdk.Context,
+	compiledContract evmtypes.CompiledContract,
+) (common.Address, error) {
+	// pack proxy contract arguments
+	contractArgs, err := compiledContract.ABI.Pack(
+		"",
+	)
+	if err != nil {
+		return common.Address{}, errorsmod.Wrapf(
+			types.ErrABIPack, "contract arguments are invalid: %s", err.Error())
+	}
+	data := make([]byte, len(compiledContract.Bin)+len(contractArgs))
+	copy(data[:len(compiledContract.Bin)], compiledContract.Bin)
+	copy(data[len(compiledContract.Bin):], contractArgs)
+
+	deployer := k.getModuleEthAddress(ctx)
+	nonce, err := k.accountKeeper.GetSequence(ctx, deployer.Bytes())
+	if err != nil {
+		return common.Address{}, err
+	}
+
+	// generate contract address
+	contractAddr := crypto.CreateAddress(deployer, nonce)
+	result, err := k.CallEVMWithData(ctx, deployer, nil, data, true)
+	if err != nil {
+		return common.Address{}, errorsmod.Wrapf(
+			err,
+			"failed to deploy contract for stake plan logic contract")
+	}
+	if result.Failed() {
+		return common.Address{}, errorsmod.Wrapf(
+			types.ErrVMExecution,
+			"failed to deploy contract for stake plan logic contract, reason: %s", result.Revert())
+	}
+
+	return contractAddr, nil
 }

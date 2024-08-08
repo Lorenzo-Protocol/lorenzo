@@ -28,7 +28,8 @@ service Query {
 
   // Balance queries the balances of an account under a specific token.
   rpc Balance(QueryBalanceRequest) returns (QueryBalanceResponse) {
-    option (google.api.http).get = "/lorenzo/token/v1/balance/{account_address}/{token}";
+    option (google.api.http).get =
+        "/lorenzo/token/v1/balance/{account_address}/{token}";
   }
 }
 
