@@ -3,6 +3,7 @@ package cli
 import (
 	"encoding/hex"
 	"fmt"
+	"os"
 	"strconv"
 
 	"cosmossdk.io/math"
@@ -28,6 +29,7 @@ func GetTxCmd() *cobra.Command {
 
 	cmd.AddCommand(
 		NewCreateBTCStakingWithBTCProofCmd(),
+		NewCreateBTCBStaking(),
 		NewBurnCmd(),
 	)
 
@@ -107,6 +109,56 @@ func NewBurnCmd() *cobra.Command {
 				return fmt.Errorf("amount must be a valid integer")
 			}
 			msg := types.NewMsgBurnRequest(clientCtx.GetFromAddress().String(), args[0], amount)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+// NewCreateBTCBStaking creates a new cobra.Command for creating a new BTCB staking request with proof and receipt from the BNB chain.
+//
+// The command expects exactly 3 arguments: the BNB number, the receipt RLP file, and the proof RLP file.
+//
+// The function returns an error if there is an issue parsing the arguments or reading the files.
+//
+// The function sets up the command with the appropriate usage, short description, and arguments.
+// It also sets up the command to run a function that generates and broadcasts a transaction using the provided arguments.
+//
+// The function adds transaction flags to the command and returns the command.
+func NewCreateBTCBStaking() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "btcbstaking [bnb-number] [receipt-rlp-file] [proof-rlp-file]",
+		Short: "Create a new btcb staking request with proof and receipt from bnb chain",
+		Args:  cobra.ExactArgs(3),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			number, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return fmt.Errorf("failed to parse number(%s): %w", args[0], err)
+			}
+
+			receiptRLP,err := os.ReadFile(args[1])
+			if err != nil {
+				return fmt.Errorf("failed to read receipt from file: %w", err)
+			}
+
+			proofRLP,err := os.ReadFile(args[2])
+			if err != nil {
+				return fmt.Errorf("failed to read proof from file: %w", err)
+			}
+
+			msg := types.MsgCreateBTCBStaking{
+				Signer:  clientCtx.GetFromAddress().String(),
+				Number:  number,
+				Receipt: receiptRLP,
+				Proof:   proofRLP,
+			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}

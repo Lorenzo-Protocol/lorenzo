@@ -63,7 +63,13 @@ func CmdQueryAgents() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.Agents(context.Background(), &types.QueryAgentsRequest{})
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
+			if err != nil {
+				return err
+			}
+			res, err := queryClient.Agents(context.Background(), &types.QueryAgentsRequest{
+				Pagination: pageReq,
+			})
 			if err != nil {
 				return err
 			}
@@ -72,6 +78,7 @@ func CmdQueryAgents() *cobra.Command {
 	}
 
 	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd,"agents")
 	return cmd
 }
 
