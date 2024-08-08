@@ -14,7 +14,7 @@ const (
 	Success         = "ok"
 )
 
-func (k Keeper) Mint(
+func (k Keeper) Delegate(
 	ctx sdk.Context,
 	btcStakingRecord *types.BTCStakingRecord,
 	receiverAddr sdk.AccAddress,
@@ -62,7 +62,7 @@ func (k Keeper) Mint(
 	return nil
 }
 
-func (k Keeper) Burn(ctx sdk.Context, sender sdk.AccAddress, amount sdk.Coin) error {
+func (k Keeper) Undelegate(ctx sdk.Context, sender sdk.AccAddress, amount sdk.Coin) error {
 	balance := k.bankKeeper.GetBalance(ctx, sender, types.NativeTokenDenom)
 	if balance.IsLT(amount) {
 		return types.ErrBurnInsufficientBalance

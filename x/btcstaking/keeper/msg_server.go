@@ -146,7 +146,7 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, msg *types.MsgCreate
 	}
 
 	// mint stBTC to mintToAddr and record the staking
-	if err := ms.k.Mint(ctx,
+	if err := ms.k.Delegate(ctx,
 		stakingRecord, mintToAddr, btcAmount, planId, msg.AgentId); err != nil {
 		return nil, err
 	}
@@ -172,7 +172,7 @@ func (ms msgServer) Burn(goCtx context.Context, msg *types.MsgBurnRequest) (*typ
 
 	amount := sdk.NewCoin(types.NativeTokenDenom, msg.Amount)
 
-	if err := ms.k.Burn(ctx, sender, amount); err != nil {
+	if err := ms.k.Undelegate(ctx, sender, amount); err != nil {
 		return nil, err
 	}
 
