@@ -67,14 +67,13 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, msg *types.MsgCreate
 		return nil, errorsmod.Wrapf(types.ErrInvalidReceivingAddr, "failed to decode btc receiving address: %v", err)
 	}
 
-	var mintToAddr []byte
-	var receiverAddr []byte
-	var btcAmount uint64
-
-	lrzChainId := uint32(ms.k.evmKeeper.ChainID().Uint64())
-	chainId := lrzChainId
-
-	planId := uint64(0)
+	var (
+		mintToAddr, receiverAddr []byte
+		btcAmount                uint64
+		planId                   = uint64(0)
+		lrzChainId               = uint32(ms.k.evmKeeper.ChainID().Uint64())
+		chainId                  = lrzChainId
+	)
 
 	// parse opReturnMsg
 	if common.IsHexAddress(agent.EthAddr) {
@@ -91,20 +90,14 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, msg *types.MsgCreate
 		mintToAddr = common.HexToAddress(agent.EthAddr).Bytes()
 		receiverAddr = mintToAddr
 		btcAmount, err = ExtractPaymentTo(stakingMsgTx, btcReceivingAddr)
-		if err != nil {
+		if err != nil || btcAmount == 0 {
 			return nil, errorsmod.Wrapf(types.ErrInvalidTransaction, "failed to extract payment: %v", err)
-		}
-		if btcAmount == 0 {
-			return nil, types.ErrBTCAmount
 		}
 	} else {
 		var opReturnMsg []byte
 		btcAmount, opReturnMsg, err = ExtractPaymentToWithOpReturnIdAndDust(stakingMsgTx, btcReceivingAddr, params.TxoutDustAmount)
-		if err != nil {
+		if err != nil || btcAmount == 0 {
 			return nil, errorsmod.Wrapf(types.ErrInvalidTransaction, "failed to extract payment: %v", err)
-		}
-		if btcAmount == 0 {
-			return nil, types.ErrBTCAmount
 		}
 
 		// Check if OpReturn length is valid
