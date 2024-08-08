@@ -100,7 +100,7 @@ func CmdGetBTCBStakingRecord() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			queryClient := types.NewQueryClient(clientCtx)
-			chainID, err := strconv.ParseInt(args[0], 10, 64)
+			chainID, err := strconv.ParseUint(args[0], 10, 32)
 			if err != nil {
 				return fmt.Errorf("invalid chain id: %s", args[0])
 			}

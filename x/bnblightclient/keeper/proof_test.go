@@ -16,7 +16,7 @@ func (suite *KeeperTestSuite) TestVerifyReceipt() {
 
 func (suite *KeeperTestSuite) TestParseReceipt() {
 	data := testutil.GetTestProvedReceipts(suite.T())
-	events,err := suite.keeper.ParseReceipt(suite.ctx, data.Receipt)
+	events, err := suite.keeper.ParseReceipt(suite.ctx, data.Receipt)
 	suite.Require().NoError(err)
 
 	expectEvent := types.CrossChainEvent{

@@ -56,7 +56,7 @@ func (k Keeper) BTCBStakingRecord(c context.Context, req *types.QueryBTCBStaking
 
 	contract := common.HexToAddress(req.Contract)
 	// get the staking record
-	stakingRecord,err  := k.getBTCBStakingRecord(ctx, req.ChainId, contract[:], req.StakingIdx)
+	stakingRecord, err := k.getBTCBStakingRecord(ctx, req.ChainId, contract[:], req.StakingIdx)
 	if err != nil {
 		return nil, err
 	}

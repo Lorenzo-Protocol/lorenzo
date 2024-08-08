@@ -36,14 +36,14 @@ func (suite *KeeperTestSuite) SetupTest() {
 	merge := func(cdc codec.Codec, state map[string]json.RawMessage) {
 		headers := testutil.GetTestHeaders(suite.T())
 		genesis := &types.GenesisState{
-			Params:  &types.Params{
+			Params: &types.Params{
 				StakePlanHubAddress: "0x9ADb675bc89d9EC5d829709e85562b7c99658D59",
 				EventName:           "StakeBTC2JoinStakePlan",
 				RetainedBlocks:      10,
-				AllowList:           []string{
+				AllowList: []string{
 					testAdmin.String(),
 				},
-				ChainId:             56,
+				ChainId: 56,
 			},
 			Headers: headers[:5],
 		}

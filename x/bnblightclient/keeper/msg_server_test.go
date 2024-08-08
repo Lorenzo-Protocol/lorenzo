@@ -14,8 +14,8 @@ func (suite *KeeperTestSuite) TestUploadHeaders() {
 		expectErrMsg string
 	}{
 		{
-			name:         "empty RawHeader",
-			headers:      []*types.Header{{
+			name: "empty RawHeader",
+			headers: []*types.Header{{
 				RawHeader:   []byte{},
 				ParentHash:  headers[5].ParentHash,
 				Hash:        headers[5].Hash,
@@ -26,8 +26,8 @@ func (suite *KeeperTestSuite) TestUploadHeaders() {
 			expectErrMsg: "unmarshal header failed",
 		},
 		{
-			name:         "wrong ParentHash",
-			headers:      []*types.Header{{
+			name: "wrong ParentHash",
+			headers: []*types.Header{{
 				RawHeader:   headers[5].RawHeader,
 				ParentHash:  headers[6].ParentHash,
 				Hash:        headers[5].Hash,
@@ -38,8 +38,8 @@ func (suite *KeeperTestSuite) TestUploadHeaders() {
 			expectErrMsg: "parentHash not equal",
 		},
 		{
-			name:         "wrong Hash",
-			headers:      []*types.Header{{
+			name: "wrong Hash",
+			headers: []*types.Header{{
 				RawHeader:   headers[5].RawHeader,
 				ParentHash:  headers[5].ParentHash,
 				Hash:        headers[6].Hash,
@@ -50,8 +50,8 @@ func (suite *KeeperTestSuite) TestUploadHeaders() {
 			expectErrMsg: "hash not equal",
 		},
 		{
-			name:         "wrong Number",
-			headers:      []*types.Header{{
+			name: "wrong Number",
+			headers: []*types.Header{{
 				RawHeader:   headers[5].RawHeader,
 				ParentHash:  headers[5].ParentHash,
 				Hash:        headers[5].Hash,
@@ -62,8 +62,8 @@ func (suite *KeeperTestSuite) TestUploadHeaders() {
 			expectErrMsg: "number not equal",
 		},
 		{
-			name:         "wrong ReceiptRoot",
-			headers:      []*types.Header{{
+			name: "wrong ReceiptRoot",
+			headers: []*types.Header{{
 				RawHeader:   headers[5].RawHeader,
 				ParentHash:  headers[5].ParentHash,
 				Hash:        headers[5].Hash,
@@ -80,9 +80,9 @@ func (suite *KeeperTestSuite) TestUploadHeaders() {
 			expectErrMsg: "hash not equal",
 		},
 		{
-			name:         "succcess",
-			headers:      headers[5:],
-			expectErr:    false,
+			name:      "succcess",
+			headers:   headers[5:],
+			expectErr: false,
 		},
 	}
 	for _, tc := range testCases {
