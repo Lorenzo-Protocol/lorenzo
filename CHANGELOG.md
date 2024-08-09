@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## v2.0.0
+
 ### New Features
 
 - (ante) [\#58](https://github.com/Lorenzo-Protocol/lorenzo/pull/58) Unified fee settings for Cosmos and EVM transactions.
