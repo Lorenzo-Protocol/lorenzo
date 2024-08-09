@@ -121,6 +121,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 	privCons, err := ethsecp256k1.GenerateKey()
 	suite.Require().NoError(err)
 	consAddress := sdk.ConsAddress(privCons.PubKey().Address())
+
 	header := testutil.NewHeader(
 		lorenzoApp.LastBlockHeight()+1, time.Now().UTC(), app.SimAppChainID, consAddress, nil, nil,
 	)
@@ -129,6 +130,13 @@ func (suite *KeeperTestSuite) SetupTest() {
 	suite.ctx = ctx
 	suite.keeper = &lorenzoApp.BTCStakingKeeper
 	suite.lorenzoApp = lorenzoApp
+
+	//
+	err = testutil.FundModuleAccount(
+		suite.ctx,
+		suite.lorenzoApp.BankKeeper,
+		types.ModuleName, sdk.NewCoins(sdk.NewCoin(types.NativeTokenDenom, sdk.NewInt(100000000000000))))
+	suite.Require().NoError(err)
 
 	// setup validators
 	valAddr := sdk.ValAddress(privCons.PubKey().Address().Bytes())

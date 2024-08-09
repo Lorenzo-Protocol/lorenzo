@@ -40,7 +40,7 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, msg *types.MsgCreate
 
 	// Check if the staking transaction already exists
 	stakingTxHash := stakingMsgTx.TxHash()
-	if ms.k.getBTCStakingRecord(ctx, stakingTxHash) != nil {
+	if ms.k.GetBTCStakingRecord(ctx, stakingTxHash) != nil {
 		return nil, types.ErrDupBTCTx
 	}
 

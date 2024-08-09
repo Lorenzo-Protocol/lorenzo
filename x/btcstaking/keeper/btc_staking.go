@@ -39,10 +39,6 @@ func (k Keeper) Delegate(
 		return errorsmod.Wrapf(types.ErrTransferToAddr, "failed to send coins from module to account: %v", err)
 	}
 
-	if err := k.addBTCStakingRecord(ctx, btcStakingRecord); err != nil {
-		return errorsmod.Wrapf(types.ErrRecordStaking, "failed to record staking: %v", err)
-	}
-
 	// mint yat can is error
 	plan, found := k.planKeeper.GetPlan(ctx, planId)
 	if !found {
@@ -57,6 +53,10 @@ func (k Keeper) Delegate(
 		} else {
 			btcStakingRecord.MintYatResult = Success
 		}
+	}
+
+	if err := k.AddBTCStakingRecord(ctx, btcStakingRecord); err != nil {
+		return errorsmod.Wrapf(types.ErrRecordStaking, "failed to record staking: %v", err)
 	}
 
 	return nil
