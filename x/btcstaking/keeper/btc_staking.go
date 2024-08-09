@@ -9,9 +9,9 @@ import (
 )
 
 const (
-	PlanNotFount    = "Plan not found"
+	PlanNotFound    = "Plan not found"
 	AgentIdNotMatch = "AgentId not match"
-	Success         = "ok"
+	Success         = "Ok"
 )
 
 func (k Keeper) Delegate(
@@ -46,7 +46,7 @@ func (k Keeper) Delegate(
 	// mint yat can is error
 	plan, found := k.planKeeper.GetPlan(ctx, planId)
 	if !found {
-		btcStakingRecord.MintYatResult = PlanNotFount
+		btcStakingRecord.MintYatResult = PlanNotFound
 	} else if plan.AgentId != agentId {
 		btcStakingRecord.MintYatResult = AgentIdNotMatch
 	} else {
