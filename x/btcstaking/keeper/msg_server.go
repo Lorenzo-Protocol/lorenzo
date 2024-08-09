@@ -1,303 +1,182 @@
 package keeper
 
 import (
-	"bytes"
 	"context"
 	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
-	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	"github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/types"
 	"github.com/btcsuite/btcd/btcutil"
-	"github.com/btcsuite/btcd/txscript"
-	"github.com/btcsuite/btcd/wire"
 	"github.com/ethereum/go-ethereum/common"
 )
 
-const (
-	EthAddrLen        = 20
-	ChainIDLen        = 4
-	SatoshiToStBTCMul = 1e10
-	PlanIDLen         = 8
-)
-
-const (
-	Dep0Amount = 4e5
-	Dep1Amount = 2e6
-	Dep2Amount = 1e7
-	Dep3Amount = 5e7
-)
-
 type msgServer struct {
-	*Keeper
+	k *Keeper
 }
 
 // NewMsgServerImpl returns an implementation of the MsgServer interface
 // for the provided Keeper.
 func NewMsgServerImpl(keeper *Keeper) types.MsgServer {
-	return &msgServer{Keeper: keeper}
+	return &msgServer{k: keeper}
 }
 
 var _ types.MsgServer = msgServer{}
 
-func NewBTCTxFromBytes(txBytes []byte) (*wire.MsgTx, error) {
-	var msgTx wire.MsgTx
-	rbuf := bytes.NewReader(txBytes)
-	if err := msgTx.Deserialize(rbuf); err != nil {
+func (ms msgServer) CreateBTCStaking(goCtx context.Context, msg *types.MsgCreateBTCStaking) (*types.MsgCreateBTCStakingResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	sender, err := sdk.AccAddressFromBech32(msg.Signer)
+	if err != nil {
 		return nil, err
 	}
 
-	return &msgTx, nil
-}
-
-const maxOpReturnPkScriptSize = 83
-
-func ExtractPaymentTo(tx *wire.MsgTx, addr btcutil.Address) (uint64, error) {
-	payToAddrScript, err := txscript.PayToAddrScript(addr)
+	stakingMsgTx, err := NewBTCTxFromBytes(msg.StakingTx.Transaction)
 	if err != nil {
-		return 0, fmt.Errorf("invalid address")
+		return nil, errorsmod.Wrapf(types.ErrParseBTCTx, "failed to parse btc tx: %v", err)
 	}
-	var amt uint64 = 0
-	for _, out := range tx.TxOut {
-		if bytes.Equal(out.PkScript, payToAddrScript) {
-			amt += uint64(out.Value)
-		}
-	}
-	return amt, nil
-}
 
-func ExtractPaymentToWithOpReturnIdAndDust(tx *wire.MsgTx, addr btcutil.Address, dustAmount int64) (uint64, []byte, error) {
-	payToAddrScript, err := txscript.PayToAddrScript(addr)
-	if err != nil {
-		return 0, nil, fmt.Errorf("invalid address")
-	}
-	var amt uint64 = 0
-	foundOpReturnId := false
-	var opReturnId []byte
-	for _, out := range tx.TxOut {
-		if bytes.Equal(out.PkScript, payToAddrScript) && out.Value >= dustAmount {
-			amt += uint64(out.Value)
-		} else {
-			pkScript := out.PkScript
-			pkScriptLen := len(pkScript)
-			// valid op return script will have at least 2 bytes
-			// - fisrt byte should be OP_RETURN marker
-			// - second byte should indicate how many bytes there are in opreturn script
-			if pkScriptLen > 1 &&
-				pkScriptLen <= maxOpReturnPkScriptSize &&
-				pkScript[0] == txscript.OP_RETURN {
-
-				// if this is OP_PUSHDATA1, we need to drop first 3 bytes as those are related
-				// to script iteslf i.e OP_RETURN + OP_PUSHDATA1 + len of bytes
-				if pkScript[1] == txscript.OP_PUSHDATA1 {
-					opReturnId = pkScript[3:]
-				} else if pkScript[1] == txscript.OP_PUSHDATA2 {
-					opReturnId = pkScript[4:]
-				} else if pkScript[1] == txscript.OP_PUSHDATA4 {
-					opReturnId = pkScript[6:]
-				} else {
-					// this should be one of OP_DATAXX opcodes we drop first 2 bytes
-					opReturnId = pkScript[2:]
-				}
-				foundOpReturnId = true
-			}
-		}
-	}
-	if !foundOpReturnId {
-		return 0, nil, fmt.Errorf("expected op_return_id not found")
-	}
-	return amt, opReturnId, nil
-}
-
-func canPerformMint(signer sdk.AccAddress, p types.Params) bool {
-	if len(p.MinterAllowList) == 0 {
-		return true
-	}
-	for _, addr := range p.MinterAllowList {
-		if sdk.MustAccAddressFromBech32(addr).Equals(signer) {
-			return true
-		}
-	}
-	return false
-}
-
-func checkBTCTxDepth(stakingTxDepth uint64, btcAmount uint64) error {
-	if btcAmount < Dep0Amount { // no depth check required
-	} else if btcAmount < Dep1Amount { // at least 1 depth
-		if stakingTxDepth < 1 {
-			return types.ErrBlkHdrNotConfirmed.Wrapf("not k-deep: k=1; depth=%d", stakingTxDepth)
-		}
-	} else if btcAmount < Dep2Amount {
-		if stakingTxDepth < 2 {
-			return types.ErrBlkHdrNotConfirmed.Wrapf("not k-deep: k=2; depth=%d", stakingTxDepth)
-		}
-	} else if btcAmount < Dep3Amount {
-		if stakingTxDepth < 3 {
-			return types.ErrBlkHdrNotConfirmed.Wrapf("not k-deep: k=3; depth=%d", stakingTxDepth)
-		}
-	} else if stakingTxDepth < 4 {
-		return types.ErrBlkHdrNotConfirmed.Wrapf("not k-deep: k=4; depth=%d", stakingTxDepth)
-	}
-	return nil
-}
-
-func (ms msgServer) CreateBTCStaking(goCtx context.Context, req *types.MsgCreateBTCStaking) (*types.MsgCreateBTCStakingResponse, error) {
-	stakingMsgTx, err := NewBTCTxFromBytes(req.StakingTx.Transaction)
-	if err != nil {
-		return nil, types.ErrParseBTCTx.Wrap(err.Error())
-	}
-	ctx := sdk.UnwrapSDKContext(goCtx)
+	// Check if the staking transaction already exists
 	stakingTxHash := stakingMsgTx.TxHash()
-	if ms.getBTCStakingRecord(ctx, stakingTxHash) != nil {
+	if ms.k.GetBTCStakingRecord(ctx, stakingTxHash) != nil {
 		return nil, types.ErrDupBTCTx
 	}
 
-	stakingTxHeader := ms.btclcKeeper.GetHeaderByHash(ctx, req.StakingTx.Key.Hash)
+	stakingTxHeader := ms.k.btclcKeeper.GetHeaderByHash(ctx, msg.StakingTx.Key.Hash)
 	if stakingTxHeader == nil {
 		return nil, types.ErrBlkHdrNotFound
 	}
 
-	p := ms.GetParams(ctx)
-	btcTip := ms.btclcKeeper.GetTipInfo(ctx)
+	params := ms.k.GetParams(ctx)
+
+	btcTip := ms.k.btclcKeeper.GetTipInfo(ctx)
 	stakingTxDepth := btcTip.Height - stakingTxHeader.Height
-	btclcParams := ms.btclcKeeper.GetBTCNet()
-	if err := req.StakingTx.VerifyInclusion(stakingTxHeader.Header, btclcParams.PowLimit); err != nil {
-		return nil, types.ErrBTCTxNotIncluded.Wrap(err.Error())
-	}
-	agent, foundAgent := ms.agentKeeper.GetAgent(ctx, req.AgentId)
-	if !foundAgent {
-		return nil, types.ErrInvalidReceivingAddr.Wrapf("Agent(%d) not exists", req.AgentId)
+
+	// Verify the staking transaction
+	btcLightClientParams := ms.k.btclcKeeper.GetBTCNet()
+	if err := msg.StakingTx.VerifyInclusion(stakingTxHeader.Header, btcLightClientParams.PowLimit); err != nil {
+		return nil, errorsmod.Wrapf(types.ErrBTCTxNotIncluded, "failed to verify inclusion: %v", err)
 	}
 
-	btcReceivingAddr, err := btcutil.DecodeAddress(agent.BtcReceivingAddress, btclcParams)
-	if err != nil {
-		return nil, types.ErrInvalidReceivingAddr.Wrap(err.Error())
+	// Check if the agent exists
+	agent, foundAgent := ms.k.agentKeeper.GetAgent(ctx, msg.AgentId)
+	if !foundAgent {
+		return nil, errorsmod.Wrapf(types.ErrInvalidReceivingAddr, "agent not found, id: %d", msg.AgentId)
 	}
-	var mintToAddr []byte
-	var receiverAddr []byte
-	var btcAmount uint64
-	lrzChainId := uint32(ms.evmKeeper.ChainID().Uint64())
-	var chainId uint32 = lrzChainId
-	var mintYatResult string = ""
+
+	// Check if the receiving address is valid
+	btcReceivingAddr, err := btcutil.DecodeAddress(agent.BtcReceivingAddress, btcLightClientParams)
+	if err != nil {
+		return nil, errorsmod.Wrapf(types.ErrInvalidReceivingAddr, "failed to decode btc receiving address: %v", err)
+	}
+
+	var (
+		mintToAddr, receiverAddr []byte
+		btcAmount                uint64
+		planId                   = uint64(0)
+		lrzChainId               = uint32(ms.k.evmKeeper.ChainID().Uint64())
+		chainId                  = lrzChainId
+	)
+
+	// parse opReturnMsg
 	if common.IsHexAddress(agent.EthAddr) {
-		signers := req.GetSigners()
-		if len(signers) == 0 || !canPerformMint(req.GetSigners()[0], *p) {
-			return nil, types.ErrNotInAllowList
+		// Check if the sender is authorized
+		// when the agent's eth address is a valid hex address
+
+		if !ms.k.Authorized(ctx, sender) {
+			return nil, errorsmod.Wrapf(types.ErrNotInAllowList, "unauthorized")
 		}
 		mintToAddr = common.HexToAddress(agent.EthAddr).Bytes()
 		receiverAddr = mintToAddr
 		btcAmount, err = ExtractPaymentTo(stakingMsgTx, btcReceivingAddr)
+		if err != nil {
+			return nil, errorsmod.Wrapf(types.ErrInvalidTransaction, "failed to extract payment: %v", err)
+		}
+		if btcAmount == 0 {
+			return nil, errorsmod.Wrapf(types.ErrMintAmount, "invalid mint amount: %d", btcAmount)
+		}
 	} else {
 		var opReturnMsg []byte
-		btcAmount, opReturnMsg, err = ExtractPaymentToWithOpReturnIdAndDust(stakingMsgTx, btcReceivingAddr, p.TxoutDustAmount)
-		if !opReturnMsgLenCheck(opReturnMsg) {
-			return nil, types.ErrMintToAddr.Wrapf("invalid opReturnMsg length: %d", len(opReturnMsg))
+		btcAmount, opReturnMsg, err = ExtractPaymentToWithOpReturnIdAndDust(stakingMsgTx, btcReceivingAddr, params.TxoutDustAmount)
+		if err != nil {
+			return nil, errorsmod.Wrapf(types.ErrInvalidTransaction, "failed to extract payment: %v", err)
 		}
-		receiverAddr := opReturnMsg[:EthAddrLen]
+		if btcAmount == 0 {
+			return nil, errorsmod.Wrapf(types.ErrMintAmount, "invalid mint amount: %d", btcAmount)
+		}
+
+		// Check if OpReturn length is valid
+		if !opReturnMsgLenCheck(opReturnMsg) {
+			return nil, errorsmod.Wrapf(types.ErrOpReturnLength, "invalid opReturnMsg length: %d", len(opReturnMsg))
+		}
+
+		receiverAddr = opReturnMsgGetEthAddr(opReturnMsg)
+
+		// Check if OpReturn contains ChainID
 		if opReturnMsgContainsChainId(opReturnMsg) {
 			chainId = opReturnMsgGetChainId(opReturnMsg)
 		}
+
+		// mint to bridge address if chainId is not lrzChainId
 		if chainId != lrzChainId {
-			mintToAddr = common.HexToAddress(p.BridgeAddr).Bytes()
+			mintToAddr = common.HexToAddress(params.BridgeAddr).Bytes()
 		} else {
 			mintToAddr = receiverAddr
 		}
+
+		// Check if OpReturn contains PlanID
 		if opReturnMsgContainsPlanId(opReturnMsg) {
-			planId := opReturnMsgGetPlanId(opReturnMsg)
-			plan, found := ms.planKeeper.GetPlan(ctx, planId)
-			if !found {
-				mintYatResult = "Plan not found"
-			} else if plan.AgentId != req.AgentId {
-				mintYatResult = "AgentId not match"
-			} else {
-				yatAmount := sdkmath.NewIntFromUint64(btcAmount).Mul(sdkmath.NewIntFromUint64(SatoshiToStBTCMul))
-				yatMintErr := ms.planKeeper.Mint(ctx, planId, common.BytesToAddress(receiverAddr), yatAmount.BigInt())
-				if yatMintErr != nil {
-					mintYatResult = yatMintErr.Error()
-				} else {
-					mintYatResult = "ok"
-				}
-			}
+			planId = opReturnMsgGetPlanId(opReturnMsg)
 		}
 	}
-	if err != nil || btcAmount == 0 {
-		return nil, types.ErrInvalidTransaction
+
+	if err := CheckBTCTxDepth(stakingTxDepth, btcAmount); err != nil {
+		return nil, err
 	}
-	err = checkBTCTxDepth(stakingTxDepth, btcAmount)
+
+	stakingRecord := &types.BTCStakingRecord{
+		TxHash:       stakingTxHash[:],
+		Amount:       btcAmount,
+		ReceiverAddr: receiverAddr,
+		AgentName:    agent.Name,
+		AgentBtcAddr: agent.BtcReceivingAddress,
+		ChainId:      chainId,
+	}
+
+	// mint stBTC to mintToAddr and record the staking
+	if err := ms.k.Delegate(ctx,
+		stakingRecord, mintToAddr, btcAmount, planId, msg.AgentId); err != nil {
+		return nil, err
+	}
+
+	ctx.EventManager().EmitTypedEvent(types.NewEventBTCStakingCreated(stakingRecord)) //nolint:errcheck,gosec
+
+	return &types.MsgCreateBTCStakingResponse{}, nil
+}
+
+func (ms msgServer) Burn(goCtx context.Context, msg *types.MsgBurnRequest) (*types.MsgBurnResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	sender, err := sdk.AccAddressFromBech32(msg.Signer)
 	if err != nil {
 		return nil, err
 	}
 
-	toMintAmount := sdkmath.NewIntFromUint64(btcAmount).Mul(sdkmath.NewIntFromUint64(SatoshiToStBTCMul))
-
-	coins := []sdk.Coin{
-		{
-			Denom:  types.NativeTokenDenom,
-			Amount: toMintAmount,
-		},
-	}
-	err = ms.bankKeeper.MintCoins(ctx, types.ModuleName, coins)
+	btcNetworkParams := ms.k.btclcKeeper.GetBTCNet()
+	btcTargetAddress, err := btcutil.DecodeAddress(msg.BtcTargetAddress, btcNetworkParams)
 	if err != nil {
-		return nil, types.ErrMintToModule.Wrap(err.Error())
-	}
-	err = ms.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, mintToAddr, coins)
-	if err != nil {
-		return nil, types.ErrTransferToAddr.Wrap(err.Error())
-	}
-	stakingRecord := types.BTCStakingRecord{
-		TxHash:        stakingTxHash[:],
-		Amount:        btcAmount,
-		ReceiverAddr:  receiverAddr,
-		AgentName:     agent.Name,
-		AgentBtcAddr:  agent.BtcReceivingAddress,
-		ChainId:       chainId,
-		MintYatResult: mintYatResult,
-	}
-	err = ms.addBTCStakingRecord(ctx, &stakingRecord)
-	if err != nil {
-		return nil, types.ErrRecordStaking.Wrap(err.Error())
-	}
-	err = ctx.EventManager().EmitTypedEvent(types.NewEventBTCStakingCreated(&stakingRecord))
-	if err != nil {
-		panic(fmt.Errorf("fail to emit EventBTCStakingCreated : %w", err))
-	}
-	return &types.MsgCreateBTCStakingResponse{}, nil
-}
-
-func (ms msgServer) Burn(goCtx context.Context, req *types.MsgBurnRequest) (*types.MsgBurnResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	btcNetworkParams := ms.btclcKeeper.GetBTCNet()
-	btcTargetAddress, err := btcutil.DecodeAddress(req.BtcTargetAddress, btcNetworkParams)
-	if err != nil {
-		return nil, types.ErrInvalidBurnBtcTargetAddress.Wrap(err.Error())
+		return nil, errorsmod.Wrapf(
+			types.ErrInvalidBurnBtcTargetAddress, "failed to decode btc target address: %v", err)
 	}
 
-	amount := sdk.NewCoin(types.NativeTokenDenom, req.Amount)
+	amount := sdk.NewCoin(types.NativeTokenDenom, msg.Amount)
 
-	signers := req.GetSigners()
-	if len(signers) != 1 {
-		return nil, types.ErrBurnInvalidSigner
-	}
-	signer := signers[0]
-	balance := ms.bankKeeper.GetBalance(ctx, signer, types.NativeTokenDenom)
-	if balance.IsLT(amount) {
-		return nil, types.ErrBurnInsufficientBalance
+	if err := ms.k.Undelegate(ctx, sender, amount); err != nil {
+		return nil, err
 	}
 
-	err = ms.bankKeeper.SendCoinsFromAccountToModule(ctx, signer, types.ModuleName, []sdk.Coin{amount})
-	if err != nil {
-		return nil, types.ErrBurn.Wrap(err.Error())
-	}
-	err = ms.bankKeeper.BurnCoins(ctx, types.ModuleName, []sdk.Coin{amount})
-	if err != nil {
-		return nil, types.ErrBurn.Wrap(err.Error())
-	}
-
-	err = ctx.EventManager().EmitTypedEvent(types.NewEventBurnCreated(signer, btcTargetAddress, amount))
+	err = ctx.EventManager().EmitTypedEvent(types.NewEventBurnCreated(sender, btcTargetAddress, amount))
 	if err != nil {
 		return nil, types.ErrEmitEvent.Wrap(err.Error())
 	}
@@ -305,15 +184,16 @@ func (ms msgServer) Burn(goCtx context.Context, req *types.MsgBurnRequest) (*typ
 	return &types.MsgBurnResponse{}, nil
 }
 
-func (ms msgServer) UpdateParams(goCtx context.Context, req *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
-	if ms.authority != req.Authority {
-		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", ms.authority, req.Authority)
+func (ms msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
+	if ms.k.authority != msg.Authority {
+		return nil, errorsmod.Wrapf(
+			govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", ms.k.authority, msg.Authority)
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	if err := req.Params.Validate(); err != nil {
+	if err := msg.Params.Validate(); err != nil {
 		return nil, err
 	}
-	if err := ms.SetParams(ctx, &req.Params); err != nil {
+	if err := ms.k.SetParams(ctx, &msg.Params); err != nil {
 		return nil, err
 	}
 	return &types.MsgUpdateParamsResponse{}, nil

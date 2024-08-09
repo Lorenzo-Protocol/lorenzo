@@ -12,25 +12,23 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-type (
-	Keeper struct {
-		cdc      codec.BinaryCodec
-		storeKey storetypes.StoreKey
+type Keeper struct {
+	cdc      codec.BinaryCodec
+	storeKey storetypes.StoreKey
 
-		bankKeeper bankkeeper.Keeper
+	bankKeeper bankkeeper.Keeper
 
-		btclcKeeper types.BTCLightClientKeeper
-		agentKeeper types.AgentKeeper
+	btclcKeeper types.BTCLightClientKeeper
+	agentKeeper types.AgentKeeper
 
-		planKeeper types.PlanKeeper
+	planKeeper types.PlanKeeper
 
-		evmKeeper types.EvmKeeper
+	evmKeeper types.EvmKeeper
 
-		// the address capable of executing a MsgUpdateParams message. Typically, this
-		// should be the x/gov module account.
-		authority string
-	}
-)
+	// the address capable of executing a MsgUpdateParams message. Typically, this
+	// should be the x/gov module account.
+	authority string
+}
 
 func NewKeeper(
 	cdc codec.BinaryCodec,

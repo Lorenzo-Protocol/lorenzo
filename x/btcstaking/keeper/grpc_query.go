@@ -36,7 +36,7 @@ func (k Keeper) StakingRecord(c context.Context, req *types.QueryStakingRecordRe
 	}
 
 	// get the staking record
-	stakingRecord := k.getBTCStakingRecord(ctx, txHash)
+	stakingRecord := k.GetBTCStakingRecord(ctx, txHash)
 
 	return &types.QueryStakingRecordResponse{Record: stakingRecord}, nil
 }

@@ -30,10 +30,15 @@ func (receiver Receiver) Validate() error {
 }
 
 func ValidateAddressList(allowList []string) error {
+	seenMap := make(map[string]bool)
 	for _, a := range allowList {
-		if _, err := sdk.AccAddressFromBech32(a); err != nil {
-			return fmt.Errorf("invalid address")
+		if seenMap[a] {
+			return fmt.Errorf("duplicate address: %s", a)
 		}
+		if _, err := sdk.AccAddressFromBech32(a); err != nil {
+			return fmt.Errorf("invalid address: %s", a)
+		}
+		seenMap[a] = true
 	}
 
 	return nil
