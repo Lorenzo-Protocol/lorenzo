@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## v2.0.0
+
 ### New Features
 
 - (ante) [\#58](https://github.com/Lorenzo-Protocol/lorenzo/pull/58) Unified fee settings for Cosmos and EVM transactions.
@@ -19,12 +21,15 @@
 - (app) [\#63](https://github.com/Lorenzo-Protocol/lorenzo/pull/63) Fixed Tendermint client type registration.
 - (client) [\#47](https://github.com/Lorenzo-Protocol/lorenzo/pull/47) Fixed error handling for BTC staking query commands.
 - (x/btcstaking) [\#37](https://github.com/Lorenzo-Protocol/lorenzo/pull/37) Added BTC staking genesis validation.
+- (x/btcstaking) [\#95](https://github.com/Lorenzo-Protocol/lorenzo/pull/95) Remove out-dated check
+- (test) [\#89](https://github.com/Lorenzo-Protocol/lorenzo/pull/89) Fixed testnet cmd
 
 ### Improvements
 
 - (client) [\#17](https://github.com/Lorenzo-Protocol/lorenzo/pull/17) BTC staking query now accepts transaction ID instead of transaction hash.
 - (client) [\#53](https://github.com/Lorenzo-Protocol/lorenzo/pull/53) Renamed BTC staking query commands.
 - (x/btcstaking) [\#66](https://github.com/Lorenzo-Protocol/lorenzo/pull/66) Accepted `OP_PUSHDATA2` and `OP_PUSHDATA` in `OP_RETURN` transaction outputs.
+- (x/btcstaking) [\#98](https://github.com/Lorenzo-Protocol/lorenzo/pull/98) Refactor msg_server and fix some standard writing methods.
 
 
 ## 1.0.0

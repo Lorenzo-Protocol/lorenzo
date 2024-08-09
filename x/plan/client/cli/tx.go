@@ -239,9 +239,9 @@ func GetUpdatePlanStatusCmd() *cobra.Command {
 			planStatusUint32 := uint32(0)
 			switch args[1] {
 			case "enabled":
-				planStatusUint32 = uint32(0)
-			case "disabled":
 				planStatusUint32 = uint32(1)
+			case "disabled":
+				planStatusUint32 = uint32(0)
 			default:
 				return fmt.Errorf("status must be either enabled or disabled")
 			}
