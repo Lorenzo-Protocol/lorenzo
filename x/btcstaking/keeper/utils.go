@@ -97,7 +97,7 @@ func ExtractPaymentToWithOpReturnIdAndDust(tx *wire.MsgTx, addr btcutil.Address,
 	return amt, opReturnId, nil
 }
 
-func checkBTCTxDepth(stakingTxDepth uint64, btcAmount uint64) error {
+func CheckBTCTxDepth(stakingTxDepth uint64, btcAmount uint64) error {
 	if btcAmount < Dep0Amount { // no depth check required
 	} else if btcAmount < Dep1Amount { // at least 1 depth
 		if stakingTxDepth < 1 {

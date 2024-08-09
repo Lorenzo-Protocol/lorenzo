@@ -132,7 +132,7 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, msg *types.MsgCreate
 		}
 	}
 
-	if err := checkBTCTxDepth(stakingTxDepth, btcAmount); err != nil {
+	if err := CheckBTCTxDepth(stakingTxDepth, btcAmount); err != nil {
 		return nil, err
 	}
 
