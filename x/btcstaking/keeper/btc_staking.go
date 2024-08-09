@@ -39,7 +39,7 @@ func (k Keeper) Delegate(
 		return errorsmod.Wrapf(types.ErrTransferToAddr, "failed to send coins from module to account: %v", err)
 	}
 
-	// mint yat can is error
+	// Mint Yat can be wrong if plan not found or agentId not match
 	plan, found := k.planKeeper.GetPlan(ctx, planId)
 	if !found {
 		btcStakingRecord.MintYatResult = PlanNotFound
