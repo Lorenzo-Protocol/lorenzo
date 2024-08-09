@@ -30,7 +30,7 @@
 - (client) [\#17](https://github.com/Lorenzo-Protocol/lorenzo/pull/17) BTC staking query now accepts transaction ID instead of transaction hash.
 - (client) [\#53](https://github.com/Lorenzo-Protocol/lorenzo/pull/53) Renamed BTC staking query commands.
 - (x/btcstaking) [\#66](https://github.com/Lorenzo-Protocol/lorenzo/pull/66) Accepted `OP_PUSHDATA2` and `OP_PUSHDATA` in `OP_RETURN` transaction outputs.
-- (x/btcstaking) [\#98](https://github.com/Lorenzo-Protocol/lorenzo/pull/98) refactor(btcstaking): Refactor msg_server and fix some standard writing methods.
+- (x/btcstaking) [\#98](https://github.com/Lorenzo-Protocol/lorenzo/pull/98) Refactor msg_server and fix some standard writing methods.
 
 
 ## 1.0.0
