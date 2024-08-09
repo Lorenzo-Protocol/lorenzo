@@ -23,7 +23,6 @@
 - (x/btcstaking) [\#37](https://github.com/Lorenzo-Protocol/lorenzo/pull/37) Added BTC staking genesis validation.
 - (x/btcstaking) [\#95](https://github.com/Lorenzo-Protocol/lorenzo/pull/95) Remove out-dated check
 - (test) [\#89](https://github.com/Lorenzo-Protocol/lorenzo/pull/89) Fixed testnet cmd
-- (x/token) [\#94](https://github.com/Lorenzo-Protocol/lorenzo/pull/94) Allow IBC transfer received if module or pair is disabled.
 
 ### Improvements
 
