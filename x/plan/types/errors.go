@@ -23,4 +23,5 @@ var (
 	ErrInvalidPlanStartTime         = errorsmod.Register(ModuleName, 19, "invalid plan start time")
 	ErrPlanPaused                   = errorsmod.Register(ModuleName, 20, "plan is paused")
 	ErrMerkelRootIsInvalid          = errorsmod.Register(ModuleName, 21, "merkle root is invalid")
+	ErrMerkleProofIsInvalid         = errorsmod.Register(ModuleName, 22, "merkle proof is invalid")
 )
