@@ -198,9 +198,7 @@ func (k Keeper) deleteHeader(ctx sdk.Context, number uint64) {
 
 	store := ctx.KVStore(k.storeKey)
 	store.Delete(types.KeyHeader(number))
-
-	numberBz := sdk.Uint64ToBigEndian(header.Number)
-	store.Set(types.KeyHeaderHash(header.Hash), numberBz)
+	store.Delete(types.KeyHeaderHash(header.Hash))
 }
 
 func (k Keeper) setLatestNumber(ctx sdk.Context, number uint64) {
