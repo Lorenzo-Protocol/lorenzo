@@ -42,16 +42,32 @@ func (k Keeper) UploadHeaders(ctx sdk.Context, headers []*types.Header) error {
 // Parameters:
 // - ctx: the context object.
 // - header: the header to be updated.
+// - deleteSubsequentHeaders: whether to delete subsequent headers.
 //
 // Returns:
 // - error: an error if the header update fails.
-func (k Keeper) UpdateHeader(ctx sdk.Context, header *types.Header) error {
-	if err := types.VerifyHeaders([]*types.Header{header}); err != nil {
+func (k Keeper) UpdateHeader(ctx sdk.Context, header *types.Header, deleteSubsequentHeaders bool) error {
+	if !k.HasHeader(ctx, header.Number) {
+		return errorsmod.Wrapf(types.ErrHeaderNotFound, "header %d not found, cannot update", header.Number)
+	}
+
+	vHeader := []*types.Header{header}
+	preHeader, exist := k.GetHeader(ctx, header.Number-1)
+	if exist {
+		vHeader = []*types.Header{preHeader, header}
+	}
+
+	if err := types.VerifyHeaders(vHeader); err != nil {
 		return err
 	}
 
-	if !k.HasHeader(ctx, header.Number) {
-		return errorsmod.Wrapf(types.ErrHeaderNotFound, "header %d not found, cannot update", header.Number)
+	// delete subsequent headers if deleteSubsequentHeaders is true
+	if deleteSubsequentHeaders {
+		latestNumber := k.GetLatestNumber(ctx)
+		for i := header.Number + 1; i < latestNumber; i++ {
+			k.deleteHeader(ctx, i)
+		}
+		k.setLatestNumber(ctx, header.Number)
 	}
 
 	k.setHeader(ctx, header)
@@ -169,6 +185,19 @@ func (k Keeper) setHeader(ctx sdk.Context, header *types.Header) {
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshal(header)
 	store.Set(types.KeyHeader(header.Number), bz)
+
+	numberBz := sdk.Uint64ToBigEndian(header.Number)
+	store.Set(types.KeyHeaderHash(header.Hash), numberBz)
+}
+
+func (k Keeper) deleteHeader(ctx sdk.Context, number uint64) {
+	header, exist := k.GetHeader(ctx, number)
+	if !exist {
+		return
+	}
+
+	store := ctx.KVStore(k.storeKey)
+	store.Delete(types.KeyHeader(number))
 
 	numberBz := sdk.Uint64ToBigEndian(header.Number)
 	store.Set(types.KeyHeaderHash(header.Hash), numberBz)

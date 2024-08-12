@@ -32,7 +32,7 @@ func (m msgServer) UpdateHeader(goCtx context.Context, req *types.MsgUpdateHeade
 		return nil, errorsmod.Wrapf(types.ErrUnauthorized, "signer %s is not in allowlist", req.Signer)
 	}
 
-	if err := m.k.UpdateHeader(ctx, req.Header); err != nil {
+	if err := m.k.UpdateHeader(ctx, req.Header, req.DeleteSubsequentHeaders); err != nil {
 		return nil, err
 	}
 	return &types.MsgUpdateHeaderResponse{}, nil
