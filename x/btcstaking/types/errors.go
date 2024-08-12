@@ -26,4 +26,6 @@ var (
 	ErrNotInAllowList              = errorsmod.Register(ModuleName, 1118, "not in minter allow list")
 	ErrDuplicateStakingEvent       = errorsmod.Register(ModuleName, 1119, "duplicate staking event")
 	ErrStakingRecordNotFound       = errorsmod.Register(ModuleName, 1120, "staking record not found")
+	ErrOpReturnLength              = errorsmod.Register(ModuleName, 1121, "invalid opReturnMsg length")
+	ErrMintAmount                  = errorsmod.Register(ModuleName, 1122, "invalid mint amount")
 )

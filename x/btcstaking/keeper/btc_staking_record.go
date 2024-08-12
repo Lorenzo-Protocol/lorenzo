@@ -7,14 +7,14 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k Keeper) addBTCStakingRecord(ctx sdk.Context, btcStk *types.BTCStakingRecord) error {
+func (k Keeper) AddBTCStakingRecord(ctx sdk.Context, btcStk *types.BTCStakingRecord) error {
 	store := k.btcStakingRecordStore(ctx)
 	btcStkKey := btcStk.TxHash
 	store.Set(btcStkKey, k.cdc.MustMarshal(btcStk))
 	return nil
 }
 
-func (k Keeper) getBTCStakingRecord(ctx sdk.Context, txHash chainhash.Hash) *types.BTCStakingRecord {
+func (k Keeper) GetBTCStakingRecord(ctx sdk.Context, txHash chainhash.Hash) *types.BTCStakingRecord {
 	store := k.btcStakingRecordStore(ctx)
 	btcStakingRecordBytes := store.Get(txHash[:])
 	if len(btcStakingRecordBytes) == 0 {
