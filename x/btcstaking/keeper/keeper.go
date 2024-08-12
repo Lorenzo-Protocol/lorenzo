@@ -16,11 +16,11 @@ type Keeper struct {
 	cdc      codec.BinaryCodec
 	storeKey storetypes.StoreKey
 
-	bankKeeper bankkeeper.Keeper
+	bankKeeper  bankkeeper.Keeper
 	btclcKeeper types.BTCLightClientKeeper
 	bnblcKeeper types.BNBLightClientKeeper
 	agentKeeper types.AgentKeeper
-	planKeeper types.PlanKeeper
+	planKeeper  types.PlanKeeper
 
 	evmKeeper types.EvmKeeper
 

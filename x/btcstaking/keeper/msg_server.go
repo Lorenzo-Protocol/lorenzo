@@ -184,6 +184,20 @@ func (ms msgServer) Burn(goCtx context.Context, msg *types.MsgBurnRequest) (*typ
 	return &types.MsgBurnResponse{}, nil
 }
 
+// CreateBTCStakingFromBNB implements types.MsgServer.
+func (ms msgServer) CreateBTCBStaking(goctx context.Context, req *types.MsgCreateBTCBStaking) (*types.MsgCreateBTCBStakingResponse, error) {
+	depositor, err := sdk.AccAddressFromBech32(req.Signer)
+	if err != nil {
+		return nil, err
+	}
+
+	ctx := sdk.UnwrapSDKContext(goctx)
+	if err = ms.k.DepositBTCB(ctx, depositor, req.Number, req.Receipt, req.Proof); err != nil {
+		return nil, err
+	}
+	return &types.MsgCreateBTCBStakingResponse{}, nil
+}
+
 func (ms msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
 	if ms.k.authority != msg.Authority {
 		return nil, errorsmod.Wrapf(

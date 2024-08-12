@@ -4,8 +4,6 @@ import (
 	fmt "fmt"
 	"strings"
 
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	"github.com/btcsuite/btcd/btcutil"
