@@ -11,7 +11,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	errortypes "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/token/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/token/types"
 )
 
 type Keeper struct {

@@ -10,7 +10,7 @@ import (
 	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/app"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/app"
 
 	"github.com/evmos/ethermint/crypto/ethsecp256k1"
 )

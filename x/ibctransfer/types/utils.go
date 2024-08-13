@@ -3,7 +3,7 @@ package types
 import (
 	"strings"
 
-	tokentypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/token/types"
+	tokentypes "github.com/Lorenzo-Protocol/lorenzo/v3/x/token/types"
 )
 
 // GetTokenFromDenom returns the token arg from the denom:

@@ -5,10 +5,10 @@ import (
 	"io"
 	"os"
 
-	lorenzoserverconfig "github.com/Lorenzo-Protocol/lorenzo/v2/server/config"
+	lorenzoserverconfig "github.com/Lorenzo-Protocol/lorenzo/v3/server/config"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/app"
-	appparams "github.com/Lorenzo-Protocol/lorenzo/v2/app/params"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/app"
+	appparams "github.com/Lorenzo-Protocol/lorenzo/v3/app/params"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/config"

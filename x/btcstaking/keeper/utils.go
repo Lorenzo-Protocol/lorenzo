@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/btcstaking/types"
 	"github.com/btcsuite/btcd/btcutil"
 	"github.com/btcsuite/btcd/txscript"
 

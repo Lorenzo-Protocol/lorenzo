@@ -1,7 +1,7 @@
 package types
 
 import (
-	bbn "github.com/Lorenzo-Protocol/lorenzo/v2/types"
+	bbn "github.com/Lorenzo-Protocol/lorenzo/v3/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 

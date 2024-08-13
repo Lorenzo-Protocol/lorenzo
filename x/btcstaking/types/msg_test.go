@@ -8,7 +8,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/btcstaking/types"
 	"github.com/stretchr/testify/suite"
 )
 

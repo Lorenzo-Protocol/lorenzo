@@ -5,7 +5,7 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "lorenzo/fee/v1/params.proto";
 
-option go_package = "github.com/Lorenzo-Protocol/lorenzo/v2/x/fee/types";
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/v3/x/fee/types";
 
 // Query defines the gRPC querier service.
 service Query {

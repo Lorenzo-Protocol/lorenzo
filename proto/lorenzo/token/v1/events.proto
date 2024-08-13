@@ -1,7 +1,7 @@
 syntax = "proto3";
 package lorenzo.token.v1;
 
-option go_package = "github.com/Lorenzo-Protocol/lorenzo/v2/x/token/types";
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/v3/x/token/types";
 
 // EventRegisterCoin is an event emitted when a coin is registered.
 message EventRegisterPair {

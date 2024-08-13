@@ -9,7 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/spf13/cobra"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/agent/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/agent/types"
 )
 
 // GetTxCmd returns the transaction commands for this module

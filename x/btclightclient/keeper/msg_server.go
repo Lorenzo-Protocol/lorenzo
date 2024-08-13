@@ -4,7 +4,7 @@ import (
 	"context"
 
 	errorsmod "cosmossdk.io/errors"
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/btclightclient/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/btclightclient/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 )

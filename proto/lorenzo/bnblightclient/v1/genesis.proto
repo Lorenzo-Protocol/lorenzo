@@ -4,7 +4,7 @@ package lorenzo.bnblightclient.v1;
 import "lorenzo/bnblightclient/v1/client.proto";
 import "lorenzo/bnblightclient/v1/params.proto";
 
-option go_package = "github.com/Lorenzo-Protocol/lorenzo/v2/x/bnblightclient/types";
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/v3/x/bnblightclient/types";
 
 // GenesisState defines the bnb light client state
 message GenesisState {

@@ -8,7 +8,7 @@ import (
 	ethante "github.com/evmos/ethermint/app/ante"
 	evmtypes "github.com/evmos/ethermint/x/evm/types"
 
-	cosmosante "github.com/Lorenzo-Protocol/lorenzo/v2/app/ante/cosmos"
+	cosmosante "github.com/Lorenzo-Protocol/lorenzo/v3/app/ante/cosmos"
 )
 
 func newEthAnteHandler(options HandlerOptions) sdk.AnteHandler {

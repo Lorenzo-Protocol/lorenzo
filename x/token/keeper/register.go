@@ -8,7 +8,7 @@ import (
 	errortypes "github.com/cosmos/cosmos-sdk/types/errors"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/token/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/token/types"
 )
 
 // RegisterCoin creates a token pair for existing coin and deploy its erc20 contract.

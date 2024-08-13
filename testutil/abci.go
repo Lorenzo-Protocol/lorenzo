@@ -13,8 +13,8 @@ import (
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	tmtypes "github.com/cometbft/cometbft/types"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/app"
-	"github.com/Lorenzo-Protocol/lorenzo/v2/testutil/tx"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/app"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/testutil/tx"
 )
 
 // Commit commits a block at a given time. Reminder: At the end of each

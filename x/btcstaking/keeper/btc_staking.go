@@ -3,7 +3,7 @@ package keeper
 import (
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/btcstaking/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ethereum/go-ethereum/common"
 )

@@ -6,8 +6,8 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	bnblightclienttypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/bnblightclient/types"
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/types"
+	bnblightclienttypes "github.com/Lorenzo-Protocol/lorenzo/v3/x/bnblightclient/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/btcstaking/types"
 )
 
 // DepositBTCB deposits BTCB to the staking module.

@@ -6,7 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	ibctransferkeeper "github.com/cosmos/ibc-go/v7/modules/apps/transfer/keeper"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/ibctransfer/keeper"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/ibctransfer/keeper"
 	ibctransfer "github.com/cosmos/ibc-go/v7/modules/apps/transfer"
 	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 )

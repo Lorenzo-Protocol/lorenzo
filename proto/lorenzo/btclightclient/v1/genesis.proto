@@ -5,7 +5,7 @@ import "gogoproto/gogo.proto";
 import "lorenzo/btclightclient/v1/btclightclient.proto";
 import "lorenzo/btclightclient/v1/params.proto";
 
-option go_package = "github.com/Lorenzo-Protocol/lorenzo/v2/x/btclightclient/types";
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/v3/x/btclightclient/types";
 
 // GenesisState defines the btclightclient module's genesis state.
 message GenesisState {

@@ -1,7 +1,7 @@
 syntax = "proto3";
 package lorenzo.agent.v1;
 
-option go_package = "github.com/Lorenzo-Protocol/lorenzo/v2/x/agent/types";
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/v3/x/agent/types";
 
 // agent creation event
 message EventAddAgent {

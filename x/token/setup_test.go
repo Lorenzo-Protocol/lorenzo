@@ -11,8 +11,8 @@ import (
 	clienttypes "github.com/cosmos/ibc-go/v7/modules/core/02-client/types"
 	channeltypes "github.com/cosmos/ibc-go/v7/modules/core/04-channel/types"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/app"
-	ibctesting "github.com/Lorenzo-Protocol/lorenzo/v2/testutil/ibc"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/app"
+	ibctesting "github.com/Lorenzo-Protocol/lorenzo/v3/testutil/ibc"
 )
 
 type MiddlewareTestSuite struct {

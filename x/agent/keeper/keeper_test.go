@@ -5,20 +5,20 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/testutil"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/testutil"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/evmos/ethermint/crypto/ethsecp256k1"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/app"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/app"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/agent/keeper"
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/agent/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/agent/keeper"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/agent/types"
 )
 
 var testAdmin = app.CreateTestAddrs(1)[0]

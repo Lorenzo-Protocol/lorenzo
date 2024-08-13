@@ -6,28 +6,28 @@ import (
 	"time"
 
 	sdkmath "cosmossdk.io/math"
-	lrz "github.com/Lorenzo-Protocol/lorenzo/v2/types"
+	lrz "github.com/Lorenzo-Protocol/lorenzo/v3/types"
 
-	btclctypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/btclightclient/types"
+	btclctypes "github.com/Lorenzo-Protocol/lorenzo/v3/x/btclightclient/types"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/testutil"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/testutil"
 	"github.com/evmos/ethermint/crypto/ethsecp256k1"
 
-	plantypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/plan/types"
+	plantypes "github.com/Lorenzo-Protocol/lorenzo/v3/x/plan/types"
 
-	appparams "github.com/Lorenzo-Protocol/lorenzo/v2/app/params"
+	appparams "github.com/Lorenzo-Protocol/lorenzo/v3/app/params"
 
 	evmtypes "github.com/evmos/ethermint/x/evm/types"
 	feemarkettypes "github.com/evmos/ethermint/x/feemarket/types"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/app"
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/keeper"
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/app"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/btcstaking/keeper"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/btcstaking/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"

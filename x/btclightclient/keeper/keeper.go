@@ -3,12 +3,12 @@ package keeper
 import (
 	"fmt"
 
-	bbn "github.com/Lorenzo-Protocol/lorenzo/v2/types"
+	bbn "github.com/Lorenzo-Protocol/lorenzo/v3/types"
 	"github.com/btcsuite/btcd/chaincfg"
 	"github.com/btcsuite/btcd/wire"
 	"github.com/cometbft/cometbft/libs/log"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/btclightclient/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/btclightclient/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"

@@ -5,7 +5,7 @@ import (
 	"time"
 
 	sdkmath "cosmossdk.io/math"
-	bbn "github.com/Lorenzo-Protocol/lorenzo/v2/types"
+	bbn "github.com/Lorenzo-Protocol/lorenzo/v3/types"
 	"github.com/btcsuite/btcd/blockchain"
 	"github.com/btcsuite/btcd/chaincfg"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"

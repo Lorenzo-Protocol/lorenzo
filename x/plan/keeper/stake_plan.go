@@ -7,10 +7,10 @@ import (
 
 	"github.com/ethereum/go-ethereum/common/hexutil"
 
-	contractsplan "github.com/Lorenzo-Protocol/lorenzo/v2/contracts/plan"
+	contractsplan "github.com/Lorenzo-Protocol/lorenzo/v3/contracts/plan"
 
 	errorsmod "cosmossdk.io/errors"
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/plan/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/plan/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"

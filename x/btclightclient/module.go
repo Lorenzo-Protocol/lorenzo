@@ -11,9 +11,9 @@ import (
 
 	abci "github.com/cometbft/cometbft/abci/types"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/btclightclient/client/cli"
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/btclightclient/keeper"
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/btclightclient/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/btclightclient/client/cli"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/btclightclient/keeper"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/btclightclient/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/plan/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/plan/types"
 
 	"github.com/ethereum/go-ethereum/common"
 )

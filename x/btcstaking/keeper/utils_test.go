@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"testing"
 
-	lrz "github.com/Lorenzo-Protocol/lorenzo/v2/types"
+	lrz "github.com/Lorenzo-Protocol/lorenzo/v3/types"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/keeper"
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/btcstaking/keeper"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/btcstaking/types"
 	"github.com/btcsuite/btcd/btcutil"
 	"github.com/btcsuite/btcd/chaincfg"
 

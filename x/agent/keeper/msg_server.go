@@ -9,7 +9,7 @@ import (
 	"github.com/btcsuite/btcd/btcutil"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/agent/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/agent/types"
 )
 
 var _ types.MsgServer = msgServer{}

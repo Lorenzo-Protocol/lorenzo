@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/fee/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/fee/types"
 )
 
 // GetQueryCmd returns the cli query commands for fee module

@@ -1,10 +1,10 @@
 package upgrades
 
 import (
-	agentkeeper "github.com/Lorenzo-Protocol/lorenzo/v2/x/agent/keeper"
-	btcstakingkeeper "github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/keeper"
-	plankeeper "github.com/Lorenzo-Protocol/lorenzo/v2/x/plan/keeper"
-	tokenkeeper "github.com/Lorenzo-Protocol/lorenzo/v2/x/token/keeper"
+	agentkeeper "github.com/Lorenzo-Protocol/lorenzo/v3/x/agent/keeper"
+	btcstakingkeeper "github.com/Lorenzo-Protocol/lorenzo/v3/x/btcstaking/keeper"
+	plankeeper "github.com/Lorenzo-Protocol/lorenzo/v3/x/plan/keeper"
+	tokenkeeper "github.com/Lorenzo-Protocol/lorenzo/v3/x/token/keeper"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	store "github.com/cosmos/cosmos-sdk/store/types"

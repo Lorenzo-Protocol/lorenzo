@@ -12,9 +12,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/spf13/cobra"
 
-	lrz "github.com/Lorenzo-Protocol/lorenzo/v2/types"
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/keeper"
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/types"
+	lrz "github.com/Lorenzo-Protocol/lorenzo/v3/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/btcstaking/keeper"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/btcstaking/types"
 )
 
 // GetTxCmd returns the transaction commands for this module

@@ -10,7 +10,7 @@ import (
 
 	evmtypes "github.com/evmos/ethermint/x/evm/types"
 
-	btcstakingtypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/types"
+	btcstakingtypes "github.com/Lorenzo-Protocol/lorenzo/v3/x/btcstaking/types"
 )
 
 // RejectMessagesDecorator prevents invalid msg types from being executed

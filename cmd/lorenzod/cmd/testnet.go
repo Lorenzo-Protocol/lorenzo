@@ -49,12 +49,12 @@ import (
 	ethermint "github.com/evmos/ethermint/types"
 	evmtypes "github.com/evmos/ethermint/x/evm/types"
 
-	appparams "github.com/Lorenzo-Protocol/lorenzo/v2/app/params"
-	"github.com/Lorenzo-Protocol/lorenzo/v2/utils"
-	btclightclienttypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/btclightclient/types"
-	btcstakingtypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/types"
+	appparams "github.com/Lorenzo-Protocol/lorenzo/v3/app/params"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/utils"
+	btclightclienttypes "github.com/Lorenzo-Protocol/lorenzo/v3/x/btclightclient/types"
+	btcstakingtypes "github.com/Lorenzo-Protocol/lorenzo/v3/x/btcstaking/types"
 
-	lorenzoserverconfig "github.com/Lorenzo-Protocol/lorenzo/v2/server/config"
+	lorenzoserverconfig "github.com/Lorenzo-Protocol/lorenzo/v3/server/config"
 )
 
 var (

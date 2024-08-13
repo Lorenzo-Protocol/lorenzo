@@ -16,9 +16,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/agent/client/cli"
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/agent/keeper"
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/agent/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/agent/client/cli"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/agent/keeper"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/agent/types"
 )
 
 var (

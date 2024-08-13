@@ -3,7 +3,7 @@ package lorenzo.btclightclient.v1;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/Lorenzo-Protocol/lorenzo/v2/x/btclightclient/types";
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/v3/x/btclightclient/types";
 
 // BTCHeaderInfo is a structure that contains all relevant information about a
 // BTC header
@@ -16,10 +16,10 @@ option go_package = "github.com/Lorenzo-Protocol/lorenzo/v2/x/btclightclient/typ
 message BTCHeaderInfo {
   bytes header = 1
       [ (gogoproto.customtype) =
-            "github.com/Lorenzo-Protocol/lorenzo/v2/types.BTCHeaderBytes" ];
+            "github.com/Lorenzo-Protocol/lorenzo/v3/types.BTCHeaderBytes" ];
   bytes hash = 2
       [ (gogoproto.customtype) =
-            "github.com/Lorenzo-Protocol/lorenzo/v2/types.BTCHeaderHashBytes" ];
+            "github.com/Lorenzo-Protocol/lorenzo/v3/types.BTCHeaderHashBytes" ];
   uint64 height = 3;
   bytes work = 4 [ (gogoproto.customtype) = "cosmossdk.io/math.Uint" ];
 }

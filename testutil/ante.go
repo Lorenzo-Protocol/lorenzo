@@ -1,7 +1,7 @@
 package testutil
 
 import (
-	"github.com/Lorenzo-Protocol/lorenzo/v2/app"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/app"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 

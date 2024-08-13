@@ -3,7 +3,7 @@ package lorenzo.btcstaking.v1;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/types";
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/v3/x/btcstaking/types";
 
 message Receiver {
   // name of the receiver

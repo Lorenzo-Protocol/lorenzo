@@ -3,7 +3,7 @@ package types_test
 import (
 	"testing"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/agent/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/agent/types"
 	"github.com/stretchr/testify/suite"
 )
 

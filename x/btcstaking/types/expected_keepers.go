@@ -7,11 +7,11 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	evmtypes "github.com/ethereum/go-ethereum/core/types"
 
-	lrz "github.com/Lorenzo-Protocol/lorenzo/v2/types"
-	agenttypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/agent/types"
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/bnblightclient/types"
-	btclctypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/btclightclient/types"
-	plantypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/plan/types"
+	lrz "github.com/Lorenzo-Protocol/lorenzo/v3/types"
+	agenttypes "github.com/Lorenzo-Protocol/lorenzo/v3/x/agent/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/bnblightclient/types"
+	btclctypes "github.com/Lorenzo-Protocol/lorenzo/v3/x/btclightclient/types"
+	plantypes "github.com/Lorenzo-Protocol/lorenzo/v3/x/plan/types"
 	"github.com/btcsuite/btcd/chaincfg"
 )
 

@@ -1,13 +1,13 @@
 package v200
 
 import (
-	"github.com/Lorenzo-Protocol/lorenzo/v2/app/upgrades"
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/agent"
-	agenttypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/agent/types"
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/plan"
-	plantypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/plan/types"
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/token"
-	tokentypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/token/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/app/upgrades"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/agent"
+	agenttypes "github.com/Lorenzo-Protocol/lorenzo/v3/x/agent/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/plan"
+	plantypes "github.com/Lorenzo-Protocol/lorenzo/v3/x/plan/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/token"
+	tokentypes "github.com/Lorenzo-Protocol/lorenzo/v3/x/token/types"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"

@@ -8,9 +8,9 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/contracts/erc20"
-	utiltx "github.com/Lorenzo-Protocol/lorenzo/v2/testutil/tx"
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/token/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/contracts/erc20"
+	utiltx "github.com/Lorenzo-Protocol/lorenzo/v3/testutil/tx"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/token/types"
 )
 
 func (suite *KeeperTestSuite) TestPostTxProcessing() {
