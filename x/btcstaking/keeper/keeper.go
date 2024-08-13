@@ -16,12 +16,11 @@ type Keeper struct {
 	cdc      codec.BinaryCodec
 	storeKey storetypes.StoreKey
 
-	bankKeeper bankkeeper.Keeper
-
+	bankKeeper  bankkeeper.Keeper
 	btclcKeeper types.BTCLightClientKeeper
+	bnblcKeeper types.BNBLightClientKeeper
 	agentKeeper types.AgentKeeper
-
-	planKeeper types.PlanKeeper
+	planKeeper  types.PlanKeeper
 
 	evmKeeper types.EvmKeeper
 
@@ -35,6 +34,7 @@ func NewKeeper(
 	storeKey storetypes.StoreKey,
 
 	btclcKeeper types.BTCLightClientKeeper,
+	bnblcKeeper types.BNBLightClientKeeper,
 	agentKeeper types.AgentKeeper,
 	bankKeeper bankkeeper.Keeper,
 	planKeeper types.PlanKeeper,
@@ -47,6 +47,7 @@ func NewKeeper(
 		storeKey: storeKey,
 
 		btclcKeeper: btclcKeeper,
+		bnblcKeeper: bnblcKeeper,
 		agentKeeper: agentKeeper,
 		bankKeeper:  bankKeeper,
 		planKeeper:  planKeeper,

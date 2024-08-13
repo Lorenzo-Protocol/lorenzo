@@ -59,6 +59,8 @@ import (
 	appparams "github.com/Lorenzo-Protocol/lorenzo/v2/app/params"
 	"github.com/Lorenzo-Protocol/lorenzo/v2/x/agent"
 	agenttypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/agent/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v2/x/bnblightclient"
+	bnblightclienttypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/bnblightclient/types"
 	"github.com/Lorenzo-Protocol/lorenzo/v2/x/btclightclient"
 	btclightclienttypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/btclightclient/types"
 	"github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking"
@@ -130,6 +132,7 @@ var (
 
 		// lorenzo modules
 		btclightclient.AppModuleBasic{},
+		bnblightclient.AppModuleBasic{},
 		btcstaking.AppModuleBasic{},
 		fee.AppModuleBasic{},
 		agent.AppModuleBasic{},
@@ -246,6 +249,7 @@ func appModules(
 		agent.NewAppModule(appCodec, app.AgentKeeper),
 		plan.NewAppModule(appCodec, app.PlanKeeper),
 		token.NewAppModule(appCodec, app.TokenKeeper),
+		bnblightclient.NewAppModule(appCodec, app.BNBLightClientKeeper),
 	}
 }
 
@@ -291,6 +295,7 @@ func orderBeginBlockers() []string {
 		agenttypes.ModuleName,
 		plantypes.ModuleName,
 		tokentypes.ModuleName,
+		bnblightclienttypes.ModuleName,
 	}
 }
 
@@ -333,6 +338,7 @@ func orderEndBlockers() []string {
 		agenttypes.ModuleName,
 		plantypes.ModuleName,
 		tokentypes.ModuleName,
+		bnblightclienttypes.ModuleName,
 	}
 }
 
@@ -378,6 +384,7 @@ func orderInitBlockers() []string {
 		agenttypes.ModuleName,
 		plantypes.ModuleName,
 		tokentypes.ModuleName,
+		bnblightclienttypes.ModuleName,
 
 		// NOTE: crisis module must go at the end to check for invariants on each module
 		crisistypes.ModuleName,
