@@ -3,6 +3,7 @@ package keeper
 import (
 	"fmt"
 	"math/big"
+	"strings"
 
 	"github.com/ethereum/go-ethereum/common/hexutil"
 
@@ -161,12 +162,20 @@ func (k Keeper) ClaimYATToken(
 	amount *big.Int,
 	merkleProof string,
 ) error {
-	merkleProofBytes := common.HexToHash(merkleProof)
 	if roundId == nil {
 		return errorsmod.Wrap(types.ErrABIPack, "round ID is nil")
 	}
 
-	merkleProofArgs := []common.Hash{merkleProofBytes}
+	merkleProofs := strings.Split(merkleProof, ",")
+	if len(merkleProofs) == 0 {
+		return errorsmod.Wrap(types.ErrMerkleProofIsInvalid, "invalid merkle proof")
+	}
+	var merkleProofArgs []common.Hash
+	for _, mp := range merkleProofs {
+		merkleProofBytes := common.HexToHash(mp)
+		merkleProofArgs = append(merkleProofArgs, merkleProofBytes)
+	}
+
 	contractABI := contractsplan.StakePlanContract.ABI
 	res, err := k.CallEVM(
 		ctx,

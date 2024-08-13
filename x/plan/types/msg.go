@@ -90,10 +90,24 @@ func (m *MsgClaims) ValidateBasic() error {
 	if !common.IsHexAddress(m.Receiver) {
 		return errorsmod.Wrap(ErrReceiver, "invalid receiver address")
 	}
-	merkleProof := common.HexToHash(m.MerkleProof)
-	if merkleProof.String() != m.MerkleProof {
+
+	merkleProofs := strings.Split(m.MerkleProof, ",")
+	if len(merkleProofs) == 0 {
 		return fmt.Errorf("invalid merkle proof")
 	}
+
+	// check merkle proof is hex hash
+	for _, merkleProof := range merkleProofs {
+		merkleProof = strings.TrimSpace(merkleProof)
+		if len(merkleProof) == 0 {
+			return fmt.Errorf("invalid merkle proof")
+		}
+		merkleRoot := common.HexToHash(merkleProof)
+		if merkleRoot.String() != merkleProof {
+			return fmt.Errorf("invalid merkle proof")
+		}
+	}
+
 	return nil
 }
 
