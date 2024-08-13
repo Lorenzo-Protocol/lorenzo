@@ -10,8 +10,8 @@ import (
 	ethante "github.com/evmos/ethermint/app/ante"
 
 	errorsmod "cosmossdk.io/errors"
-	bbn "github.com/Lorenzo-Protocol/lorenzo/v2/types"
-	feekeeper "github.com/Lorenzo-Protocol/lorenzo/v2/x/fee/keeper"
+	bbn "github.com/Lorenzo-Protocol/lorenzo/v3/types"
+	feekeeper "github.com/Lorenzo-Protocol/lorenzo/v3/x/fee/keeper"
 	errortypes "github.com/cosmos/cosmos-sdk/types/errors"
 )
 

@@ -4,7 +4,7 @@ package lorenzo.token.v1;
 import "cosmos/bank/v1beta1/bank.proto";
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/Lorenzo-Protocol/lorenzo/v2/x/token/types";
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/v3/x/token/types";
 
 // Source defines the source type of token asset, if source is:
 // - module: token origin is sdk module;

@@ -3,7 +3,7 @@ package types
 import (
 	"fmt"
 
-	bbn "github.com/Lorenzo-Protocol/lorenzo/v2/types"
+	bbn "github.com/Lorenzo-Protocol/lorenzo/v3/types"
 	"github.com/btcsuite/btcd/chaincfg"
 )
 

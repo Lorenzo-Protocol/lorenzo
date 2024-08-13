@@ -3,7 +3,7 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/token/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/token/types"
 )
 
 // SetParams sets the paras for the token module.

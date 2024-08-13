@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"fmt"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/agent/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/agent/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 )

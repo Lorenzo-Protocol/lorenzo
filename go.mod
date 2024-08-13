@@ -1,4 +1,4 @@
-module github.com/Lorenzo-Protocol/lorenzo/v2
+module github.com/Lorenzo-Protocol/lorenzo/v3
 
 go 1.20
 

@@ -18,7 +18,7 @@ import (
 	cryptocodec "github.com/evmos/ethermint/crypto/codec"
 	"github.com/evmos/ethermint/types"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/app"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/app"
 
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 )

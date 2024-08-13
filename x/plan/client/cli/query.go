@@ -11,7 +11,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client/flags"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/plan/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/plan/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/spf13/cobra"
 )

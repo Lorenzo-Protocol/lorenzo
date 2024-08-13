@@ -11,8 +11,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/app"
-	"github.com/Lorenzo-Protocol/lorenzo/v2/utils"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/app"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/utils"
 )
 
 var (

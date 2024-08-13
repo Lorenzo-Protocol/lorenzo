@@ -9,7 +9,7 @@ import "google/api/annotations.proto";
 import "lorenzo/agent/v1/params.proto";
 import "lorenzo/agent/v1/agent.proto";
 
-option go_package = "github.com/Lorenzo-Protocol/lorenzo/v2/x/agent/types";
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/v3/x/agent/types";
 
 // Query defines the gRPC querier service.
 service Query {

@@ -3,8 +3,8 @@ package app
 import (
 	"fmt"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/app/upgrades"
-	v200 "github.com/Lorenzo-Protocol/lorenzo/v2/app/upgrades/v200"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/app/upgrades"
+	v200 "github.com/Lorenzo-Protocol/lorenzo/v3/app/upgrades/v200"
 
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 )

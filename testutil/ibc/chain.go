@@ -34,8 +34,8 @@ import (
 	"github.com/cosmos/ibc-go/v7/modules/core/types"
 	ibctm "github.com/cosmos/ibc-go/v7/modules/light-clients/07-tendermint"
 
-	lorenzoapp "github.com/Lorenzo-Protocol/lorenzo/v2/app"
-	"github.com/Lorenzo-Protocol/lorenzo/v2/testutil/ibc/mock"
+	lorenzoapp "github.com/Lorenzo-Protocol/lorenzo/v3/app"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/testutil/ibc/mock"
 )
 
 var MaxAccounts = 10

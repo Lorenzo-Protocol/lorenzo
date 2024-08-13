@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/bnblightclient/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/bnblightclient/types"
 	"github.com/ethereum/go-ethereum/common"
 	evmtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/stretchr/testify/require"

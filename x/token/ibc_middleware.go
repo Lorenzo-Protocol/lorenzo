@@ -9,8 +9,8 @@ import (
 	porttypes "github.com/cosmos/ibc-go/v7/modules/core/05-port/types"
 	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
 
-	ibctransfer "github.com/Lorenzo-Protocol/lorenzo/v2/x/ibctransfer"
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/token/keeper"
+	ibctransfer "github.com/Lorenzo-Protocol/lorenzo/v3/x/ibctransfer"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/token/keeper"
 )
 
 var _ porttypes.IBCModule = &IBCMiddleware{}

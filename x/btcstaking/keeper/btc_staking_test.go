@@ -7,16 +7,16 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 
-	plantypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/plan/types"
+	plantypes "github.com/Lorenzo-Protocol/lorenzo/v3/x/plan/types"
 
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 
 	sdkmath "cosmossdk.io/math"
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/keeper"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/btcstaking/keeper"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/btcstaking/types"
 )
 
 func (suite *KeeperTestSuite) TestDelegate() {

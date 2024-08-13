@@ -6,7 +6,7 @@ import "cosmos_proto/cosmos.proto";
 import "lorenzo/plan/v1/plan.proto";
 import "lorenzo/plan/v1/params.proto";
 
-option go_package = "github.com/Lorenzo-Protocol/lorenzo/v2/x/plan/types";
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/v3/x/plan/types";
 
 // GenesisState defines the agent module's genesis state.
 message GenesisState {

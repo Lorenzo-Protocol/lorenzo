@@ -10,7 +10,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/spf13/cobra"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/bnblightclient/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/bnblightclient/types"
 )
 
 // GetTxCmd returns the transaction commands for bnblightclient module

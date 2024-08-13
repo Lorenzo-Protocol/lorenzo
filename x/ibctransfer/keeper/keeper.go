@@ -10,7 +10,7 @@ import (
 	porttypes "github.com/cosmos/ibc-go/v7/modules/core/05-port/types"
 	"github.com/cosmos/ibc-go/v7/modules/core/exported"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/ibctransfer/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/ibctransfer/types"
 )
 
 // Keeper defines the modified IBC transfer keeper that embeds the original one.

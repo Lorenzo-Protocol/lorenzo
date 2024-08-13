@@ -7,8 +7,8 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/contracts/erc20"
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/token/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/contracts/erc20"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/token/types"
 )
 
 // utilsFundAndRegisterCoin funds receiver amount of coin and register a token pair for that coin.

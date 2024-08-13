@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/app"
-	testutiltx "github.com/Lorenzo-Protocol/lorenzo/v2/testutil/tx"
-	"github.com/Lorenzo-Protocol/lorenzo/v2/utils"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/app"
+	testutiltx "github.com/Lorenzo-Protocol/lorenzo/v3/testutil/tx"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/utils"
 
 	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"

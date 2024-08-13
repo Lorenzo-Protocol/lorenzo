@@ -3,7 +3,7 @@ package keeper
 import (
 	"golang.org/x/exp/slices"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/bnblightclient/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/bnblightclient/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )

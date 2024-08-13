@@ -3,8 +3,8 @@ package keeper_test
 import (
 	"math/big"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/bnblightclient/testutil"
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/bnblightclient/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/bnblightclient/testutil"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/bnblightclient/types"
 	"github.com/ethereum/go-ethereum/common"
 )
 

@@ -8,7 +8,7 @@ import "cosmos/base/v1beta1/coin.proto";
 import "lorenzo/token/v1/token.proto";
 import "lorenzo/token/v1/genesis.proto";
 
-option go_package = "github.com/Lorenzo-Protocol/lorenzo/v2/x/token/types";
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/v3/x/token/types";
 
 service Query {
   // TokenPairs retrieves registered token pairs

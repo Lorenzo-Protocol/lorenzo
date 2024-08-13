@@ -1,7 +1,7 @@
 package config
 
 import (
-	bbn "github.com/Lorenzo-Protocol/lorenzo/v2/types"
+	bbn "github.com/Lorenzo-Protocol/lorenzo/v3/types"
 	serverconfig "github.com/cosmos/cosmos-sdk/server/config"
 	"github.com/evmos/ethermint/server/config"
 )

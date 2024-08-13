@@ -3,7 +3,7 @@ package lorenzo.btclightclient.v1;
 
 import "lorenzo/btclightclient/v1/btclightclient.proto";
 
-option go_package = "github.com/Lorenzo-Protocol/lorenzo/v2/x/btclightclient/types";
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/v3/x/btclightclient/types";
 
 // The header included in the event is the block in the history
 // of the current mainchain to which we are rolling back to.

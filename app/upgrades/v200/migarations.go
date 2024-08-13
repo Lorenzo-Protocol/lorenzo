@@ -1,7 +1,7 @@
 package v200
 
 import (
-	"github.com/Lorenzo-Protocol/lorenzo/v2/app/upgrades"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/app/upgrades"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )

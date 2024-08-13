@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/plan/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/plan/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 

@@ -10,10 +10,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/app"
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/bnblightclient/keeper"
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/bnblightclient/testutil"
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/bnblightclient/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/app"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/bnblightclient/keeper"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/bnblightclient/testutil"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/bnblightclient/types"
 )
 
 var testAdmin = app.CreateTestAddrs(1)[0]

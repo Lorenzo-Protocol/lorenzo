@@ -7,7 +7,7 @@ import "gogoproto/gogo.proto";
 
 import "lorenzo/agent/v1/params.proto";
 
-option go_package = "github.com/Lorenzo-Protocol/lorenzo/v2/x/agent/types";
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/v3/x/agent/types";
 
 // Msg defines the Msg service.
 service Msg {

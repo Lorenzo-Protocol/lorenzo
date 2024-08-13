@@ -9,7 +9,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	transfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 
-	tokentypes "github.com/Lorenzo-Protocol/lorenzo/v2/x/token/types"
+	tokentypes "github.com/Lorenzo-Protocol/lorenzo/v3/x/token/types"
 )
 
 // TokenKeeper defines the expected interface needed to convert erc20 to native coin.

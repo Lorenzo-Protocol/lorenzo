@@ -4,8 +4,8 @@ import (
 	"errors"
 	"os"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/app"
-	"github.com/Lorenzo-Protocol/lorenzo/v2/cmd/lorenzod/cmd"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/app"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/cmd/lorenzod/cmd"
 	"github.com/cosmos/cosmos-sdk/server"
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 )

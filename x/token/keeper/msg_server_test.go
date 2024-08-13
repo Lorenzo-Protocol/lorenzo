@@ -1,7 +1,7 @@
 package keeper_test
 
 import (
-	"github.com/Lorenzo-Protocol/lorenzo/v2/app"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/app"
 	"github.com/ethereum/go-ethereum/common"
 	evmtypes "github.com/evmos/ethermint/x/evm/types"
 
@@ -10,7 +10,7 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/token/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/token/types"
 )
 
 const (

@@ -1,9 +1,9 @@
 package ante
 
 import (
-	bbn "github.com/Lorenzo-Protocol/lorenzo/v2/types"
-	btclightclient "github.com/Lorenzo-Protocol/lorenzo/v2/x/btclightclient/types"
-	btcstaking "github.com/Lorenzo-Protocol/lorenzo/v2/x/btcstaking/types"
+	bbn "github.com/Lorenzo-Protocol/lorenzo/v3/types"
+	btclightclient "github.com/Lorenzo-Protocol/lorenzo/v3/x/btclightclient/types"
+	btcstaking "github.com/Lorenzo-Protocol/lorenzo/v3/x/btcstaking/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 

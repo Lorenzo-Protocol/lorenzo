@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/Lorenzo-Protocol/lorenzo/v2/x/fee/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/fee/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )

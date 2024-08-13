@@ -7,7 +7,7 @@ import (
 	big "math/big"
 	"time"
 
-	lrz "github.com/Lorenzo-Protocol/lorenzo/v2/types"
+	lrz "github.com/Lorenzo-Protocol/lorenzo/v3/types"
 	"github.com/btcsuite/btcd/blockchain"
 	"github.com/btcsuite/btcd/btcutil"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
