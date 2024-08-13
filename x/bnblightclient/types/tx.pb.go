@@ -83,7 +83,8 @@ func (m *MsgUploadHeaders) GetSigner() string {
 	return ""
 }
 
-// MsgUploadHeadersResponse defines the response for the UploadHeaders transaction
+// MsgUploadHeadersResponse defines the response for the UploadHeaders
+// transaction
 type MsgUploadHeadersResponse struct {
 }
 

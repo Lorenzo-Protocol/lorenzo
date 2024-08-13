@@ -2,6 +2,7 @@ package upgrades
 
 import (
 	agentkeeper "github.com/Lorenzo-Protocol/lorenzo/v3/x/agent/keeper"
+	bnblightclientkeeper "github.com/Lorenzo-Protocol/lorenzo/v3/x/bnblightclient/keeper"
 	btcstakingkeeper "github.com/Lorenzo-Protocol/lorenzo/v3/x/btcstaking/keeper"
 	plankeeper "github.com/Lorenzo-Protocol/lorenzo/v3/x/plan/keeper"
 	tokenkeeper "github.com/Lorenzo-Protocol/lorenzo/v3/x/token/keeper"
@@ -42,19 +43,21 @@ type ConsensusParamsReaderWriter interface {
 }
 
 type AppKeepers struct {
-	AppCodec         codec.Codec
-	AccountKeeper    authkeeper.AccountKeeper
-	BankKeeper       bankkeeper.Keeper
-	GetKey           func(moduleName string) *storetypes.KVStoreKey
-	ModuleManager    *module.Manager
-	IBCKeeper        *ibckeeper.Keeper
-	EvmKeeper        *evmkeeper.Keeper
-	FeeMarketKeeper  feemarketkeeper.Keeper
-	BTCStakingKeeper *btcstakingkeeper.Keeper
+	AppCodec      codec.Codec
+	AccountKeeper authkeeper.AccountKeeper
+	BankKeeper    bankkeeper.Keeper
+	GetKey        func(moduleName string) *storetypes.KVStoreKey
+	ModuleManager *module.Manager
+	IBCKeeper     *ibckeeper.Keeper
 
-	AgentKeeper *agentkeeper.Keeper
-	PlanKeeper  *plankeeper.Keeper
-	TokenKeeper *tokenkeeper.Keeper
+	EvmKeeper       *evmkeeper.Keeper
+	FeeMarketKeeper feemarketkeeper.Keeper
+
+	BTCStakingKeeper     *btcstakingkeeper.Keeper
+	AgentKeeper          *agentkeeper.Keeper
+	PlanKeeper           *plankeeper.Keeper
+	TokenKeeper          *tokenkeeper.Keeper
+	BNBLightClientKeeper bnblightclientkeeper.Keeper
 
 	ConsensusParamsKeeper consensuskeeper.Keeper
 	ParamsKeeper          paramskeeper.Keeper
