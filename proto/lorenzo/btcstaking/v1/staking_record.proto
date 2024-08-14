@@ -16,7 +16,6 @@ message BTCStakingRecord {
   string agent_btc_addr = 5;
   uint32 chain_id = 6;
   string mint_yat_result = 7;
-  uint64 plan_id = 8;
 }
 
 // BTCBStakingRecord defines the message for btcb staking record

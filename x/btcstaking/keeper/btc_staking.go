@@ -56,7 +56,6 @@ func (k Keeper) Delegate(
 				btcStakingRecord.MintYatResult = Success
 			}
 		}
-		btcStakingRecord.PlanId = planId
 	}
 	if err := k.AddBTCStakingRecord(ctx, btcStakingRecord); err != nil {
 		return errorsmod.Wrapf(types.ErrRecordStaking, "failed to record staking: %v", err)
