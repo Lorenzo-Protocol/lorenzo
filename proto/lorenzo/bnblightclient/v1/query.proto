@@ -23,7 +23,8 @@ service Query {
   // HeaderByHash returns the header in bnb chain by hash
   rpc HeaderByHash(QueryHeaderByHashRequest)
       returns (QueryHeaderByHashResponse) {
-    option (google.api.http).get = "/lorenzo/bnblightclient/v1/header/{hash}/hash";
+    option (google.api.http).get =
+        "/lorenzo/bnblightclient/v1/header/{hash}/hash";
   }
 
   // LatestHeader returns the latest header in bnb chain
