@@ -35,6 +35,7 @@ func (k Keeper) UpdateMinter(
 	minter string,
 	updateType int,
 ) error {
+
 	// Check if the contract address is a valid address
 	if !common.IsHexAddress(contractAddress) {
 		return errorsmod.Wrap(types.ErrContractAddress, "invalid contract address")
@@ -50,6 +51,10 @@ func (k Keeper) UpdateMinter(
 		return types.ErrYatContractNotContract
 	}
 
+	planID := k.GetPlanIdByContractAddr(ctx, minter)
+	if planID == 0 {
+		return types.ErrStakePlanContractNotFound
+	}
 	// Check if the minter address is a valid address
 	if !common.IsHexAddress(minter) {
 		return errorsmod.Wrap(types.ErrEthAddress, "invalid Ethereum address")
