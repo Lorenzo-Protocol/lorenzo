@@ -300,7 +300,6 @@ func (suite *KeeperTestSuite) TestDelegate() {
 
 					}
 				}
-
 			},
 			expectErr: false,
 		},
@@ -392,7 +391,6 @@ func (suite *KeeperTestSuite) TestDelegate() {
 
 					}
 				}
-
 			},
 			expectErr: false,
 		},
