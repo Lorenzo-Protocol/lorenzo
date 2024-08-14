@@ -147,7 +147,7 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, msg *types.MsgCreate
 
 	// mint stBTC to mintToAddr and record the staking
 	if err := ms.k.Delegate(ctx,
-		stakingRecord, mintToAddr, btcAmount, planId, msg.AgentId); err != nil {
+		stakingRecord, mintToAddr, receiverAddr, btcAmount, planId, msg.AgentId); err != nil {
 		return nil, err
 	}
 

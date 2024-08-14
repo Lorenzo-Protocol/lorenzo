@@ -17,6 +17,7 @@ const (
 func (k Keeper) Delegate(
 	ctx sdk.Context,
 	btcStakingRecord *types.BTCStakingRecord,
+	mintAddr sdk.AccAddress,
 	receiverAddr sdk.AccAddress,
 	btcAmount uint64,
 	planId uint64,
@@ -35,26 +36,28 @@ func (k Keeper) Delegate(
 		return errorsmod.Wrapf(types.ErrMintToModule, "failed to mint coins: %v", err)
 	}
 
-	if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, receiverAddr, coins); err != nil {
+	if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, mintAddr, coins); err != nil {
 		return errorsmod.Wrapf(types.ErrTransferToAddr, "failed to send coins from module to account: %v", err)
 	}
 
-	// Mint Yat can be wrong if plan not found or agentId not match
-	plan, found := k.planKeeper.GetPlan(ctx, planId)
-	if !found {
-		btcStakingRecord.MintYatResult = PlanNotFound
-	} else if plan.AgentId != agentId {
-		btcStakingRecord.MintYatResult = AgentIdNotMatch
-	} else {
-		// mint yat
-		yatMintErr := k.planKeeper.Mint(ctx, planId, common.BytesToAddress(receiverAddr), toMintAmount.BigInt())
-		if yatMintErr != nil {
-			btcStakingRecord.MintYatResult = yatMintErr.Error()
+	if planId != 0 {
+		// Mint Yat can be wrong if plan not found or agentId not match
+		plan, found := k.planKeeper.GetPlan(ctx, planId)
+		if !found {
+			btcStakingRecord.MintYatResult = PlanNotFound
+		} else if plan.AgentId != agentId {
+			btcStakingRecord.MintYatResult = AgentIdNotMatch
 		} else {
-			btcStakingRecord.MintYatResult = Success
+			// mint yat
+			yatMintErr := k.planKeeper.Mint(ctx, planId, common.BytesToAddress(receiverAddr), toMintAmount.BigInt())
+			if yatMintErr != nil {
+				btcStakingRecord.MintYatResult = yatMintErr.Error()
+			} else {
+				btcStakingRecord.MintYatResult = Success
+			}
 		}
+		btcStakingRecord.PlanId = planId
 	}
-
 	if err := k.AddBTCStakingRecord(ctx, btcStakingRecord); err != nil {
 		return errorsmod.Wrapf(types.ErrRecordStaking, "failed to record staking: %v", err)
 	}
