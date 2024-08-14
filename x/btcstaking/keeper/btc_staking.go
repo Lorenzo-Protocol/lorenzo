@@ -17,7 +17,7 @@ const (
 func (k Keeper) Delegate(
 	ctx sdk.Context,
 	btcStakingRecord *types.BTCStakingRecord,
-	mintAddr sdk.AccAddress,
+	mintToAddr sdk.AccAddress,
 	receiverAddr sdk.AccAddress,
 	btcAmount uint64,
 	planId uint64,
@@ -36,7 +36,7 @@ func (k Keeper) Delegate(
 		return errorsmod.Wrapf(types.ErrMintToModule, "failed to mint coins: %v", err)
 	}
 
-	if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, mintAddr, coins); err != nil {
+	if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, mintToAddr, coins); err != nil {
 		return errorsmod.Wrapf(types.ErrTransferToAddr, "failed to send coins from module to account: %v", err)
 	}
 
@@ -56,6 +56,7 @@ func (k Keeper) Delegate(
 				btcStakingRecord.MintYatResult = Success
 			}
 		}
+		btcStakingRecord.PlanId = planId
 	}
 	if err := k.AddBTCStakingRecord(ctx, btcStakingRecord); err != nil {
 		return errorsmod.Wrapf(types.ErrRecordStaking, "failed to record staking: %v", err)
