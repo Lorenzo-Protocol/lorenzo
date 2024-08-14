@@ -57,7 +57,7 @@ type AppKeepers struct {
 	AgentKeeper          *agentkeeper.Keeper
 	PlanKeeper           *plankeeper.Keeper
 	TokenKeeper          *tokenkeeper.Keeper
-	BNBLightClientKeeper bnblightclientkeeper.Keeper
+	BNBLightClientKeeper *bnblightclientkeeper.Keeper
 
 	ConsensusParamsKeeper consensuskeeper.Keeper
 	ParamsKeeper          paramskeeper.Keeper
