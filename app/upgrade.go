@@ -36,6 +36,7 @@ func (app *LorenzoApp) appKeepers() upgrades.AppKeepers {
 		FeeMarketKeeper: app.FeeMarketKeeper,
 		ReaderWriter:    app,
 
+		BNBLightClientKeeper:  &app.BNBLightClientKeeper,
 		BTCStakingKeeper:      &app.BTCStakingKeeper,
 		AgentKeeper:           &app.AgentKeeper,
 		PlanKeeper:            app.PlanKeeper,
