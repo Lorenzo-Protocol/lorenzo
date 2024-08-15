@@ -955,6 +955,35 @@ func (suite *KeeperTestSuite) TestSetMinter() {
 			},
 		},
 		{
+			name: "fail - minter not is a contract",
+			request: &types.MsgSetMinter{
+				Sender: testAdmin.String(),
+				Minter: "0xB86aA614EDc512f4e3147779f964d420b43E44b4",
+			},
+			malleate: func(request *types.MsgSetMinter) {
+				suite.Commit()
+				// create agent
+				name := "sinohope4"
+				btcReceivingAddress := "3C7VPws9fMW3kcwRJvMkSVdqMs4SAhQCqq"
+				ethAddr := "0x6508d68f4e5931f93fadc3b7afac5092e195b80f"
+				description := "lorenzo"
+				url := "https://lorenzo-protocol.io"
+				agentId := suite.lorenzoApp.AgentKeeper.AddAgent(
+					suite.ctx,
+					name, btcReceivingAddress, ethAddr, description, url)
+				suite.Require().NotEqual(agentId, 0)
+				suite.Require().Equal(agentId, uint64(1))
+
+				// deploy yat contract
+				yatAddr, err := suite.lorenzoApp.PlanKeeper.DeployYATContract(
+					suite.ctx, "lorenzo", "ALRZ")
+				suite.Require().NoError(err)
+
+				request.ContractAddress = yatAddr.Hex()
+			},
+			expectErr: true,
+		},
+		{
 			name: "success - valid set minter",
 			request: &types.MsgSetMinter{
 				Sender: testAdmin.String(),
@@ -1084,6 +1113,35 @@ func (suite *KeeperTestSuite) TestRemoveMinter() {
 				suite.Require().NoError(err)
 				request.ContractAddress = yatAddr.Hex()
 			},
+		},
+		{
+			name: "fail - minter not is a contract",
+			request: &types.MsgRemoveMinter{
+				Sender: testAdmin.String(),
+				Minter: "0xB86aA614EDc512f4e3147779f964d420b43E44b4",
+			},
+			malleate: func(request *types.MsgRemoveMinter) {
+				suite.Commit()
+				// create agent
+				name := "sinohope4"
+				btcReceivingAddress := "3C7VPws9fMW3kcwRJvMkSVdqMs4SAhQCqq"
+				ethAddr := "0x6508d68f4e5931f93fadc3b7afac5092e195b80f"
+				description := "lorenzo"
+				url := "https://lorenzo-protocol.io"
+				agentId := suite.lorenzoApp.AgentKeeper.AddAgent(
+					suite.ctx,
+					name, btcReceivingAddress, ethAddr, description, url)
+				suite.Require().NotEqual(agentId, 0)
+				suite.Require().Equal(agentId, uint64(1))
+
+				// deploy yat contract
+				yatAddr, err := suite.lorenzoApp.PlanKeeper.DeployYATContract(
+					suite.ctx, "lorenzo", "ALRZ")
+				suite.Require().NoError(err)
+
+				request.ContractAddress = yatAddr.Hex()
+			},
+			expectErr: true,
 		},
 		{
 			name: "success - valid remove minter",
