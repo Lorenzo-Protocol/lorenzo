@@ -209,7 +209,7 @@ func (m *MsgSetMerkleRoot) ValidateBasic() error {
 
 	merkleRoot := common.HexToHash(m.MerkleRoot)
 	if merkleRoot.String() != m.MerkleRoot {
-		return fmt.Errorf("invalid merkle proof")
+		return fmt.Errorf("invalid merkle root")
 	}
 	return nil
 }
