@@ -208,7 +208,7 @@ func (suite *KeeperTestSuite) TestDelegate() {
 				suite.Require().NoError(err)
 				btcStakingRecord := suite.keeper.GetBTCStakingRecord(suite.ctx, *txHash)
 				suite.Require().NotNil(btcStakingRecord)
-				suite.Require().Contains(btcStakingRecord.MintYatResult, "execution reverted")
+				suite.Require().Contains(btcStakingRecord.MintYatResult, "contract call failed")
 			},
 			expectErr: false,
 		},
