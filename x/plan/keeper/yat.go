@@ -35,7 +35,6 @@ func (k Keeper) UpdateMinter(
 	minter string,
 	updateType int,
 ) error {
-
 	// Check if the contract address is a valid address
 	if !common.IsHexAddress(contractAddress) {
 		return errorsmod.Wrap(types.ErrContractAddress, "invalid contract address")
