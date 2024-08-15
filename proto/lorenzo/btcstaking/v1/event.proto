@@ -10,6 +10,9 @@ option go_package = "github.com/Lorenzo-Protocol/lorenzo/v3/x/btcstaking/types";
 // BTC staking creation event
 message EventBTCStakingCreated { BTCStakingRecord record = 1; }
 
+// BTCB staking creation event
+message EventBTCBStakingCreated { BTCBStakingRecord record = 1; }
+
 message EventBurnCreated {
   string signer = 1;
   string btc_target_address = 2;

@@ -67,14 +67,22 @@ func (k Keeper) DepositBTCB(
 		}
 
 		totalStBTCAmt = totalStBTCAmt.Add(totalStBTCAmt, amount)
-		k.addBTCBStakingRecord(ctx, &types.BTCBStakingRecord{
+
+		btcbStakingRecord := &types.BTCBStakingRecord{
 			StakingIdx:    event.Identifier,
 			Contract:      event.Contract.Bytes(),
 			ReceiverAddr:  event.Sender.String(),
 			Amount:        math.NewIntFromBigInt(amount),
 			ChainId:       event.ChainID,
 			MintYatResult: result,
-		})
+			PlanId:        event.PlanID,
+		}
+
+		k.addBTCBStakingRecord(ctx, btcbStakingRecord)
+
+		// emit an event
+		ctx.EventManager().EmitTypedEvent(types.NewEventBTCBStakingCreated(btcbStakingRecord)) //nolint:errcheck,gosec
+
 	}
 
 	// mint stBTC to the bridgeAddr

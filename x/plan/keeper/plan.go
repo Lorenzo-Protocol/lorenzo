@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"fmt"
 	"math/big"
 
 	"github.com/Lorenzo-Protocol/lorenzo/v3/x/plan/types"
@@ -100,6 +101,15 @@ func (k Keeper) Mint(ctx sdk.Context, planId uint64, to common.Address, amount *
 	if err := k.MintFromStakePlan(ctx, planAddress, to, amount); err != nil {
 		return err
 	}
+	// emit the mint event
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			types.EventTypeMintYAT,
+			sdk.NewAttribute(types.AttributeKeyPlanId, fmt.Sprintf("%d", planId)),
+			sdk.NewAttribute(types.AttributeKeyAccount, to.Hex()),
+			sdk.NewAttribute(types.AttributeKeyAmount, amount.String()),
+		),
+	})
 	return nil
 }
 

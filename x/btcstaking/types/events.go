@@ -11,6 +11,12 @@ func NewEventBTCStakingCreated(record *BTCStakingRecord) *EventBTCStakingCreated
 	}
 }
 
+func NewEventBTCBStakingCreated(record *BTCBStakingRecord) *EventBTCBStakingCreated {
+	return &EventBTCBStakingCreated{
+		Record: record,
+	}
+}
+
 func NewEventBurnCreated(signer sdk.AccAddress, btcTargetAddress btcutil.Address, amount sdk.Coin) *EventBurnCreated {
 	return &EventBurnCreated{
 		Signer:           signer.String(),

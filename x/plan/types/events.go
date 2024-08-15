@@ -59,6 +59,12 @@ const (
 	EventSetParams         = "set_params"
 	AttributeKeyBeaconAddr = "beacon_addr"
 	AttributeKeyLogicAddr  = "logic_addr"
+
+	EventTypeMintYAT = "mint_yat"
+
+	AttributeKeyAccount = "account"
+	AttributeKeyAmount  = "amount"
+	AttributeKeyPlanId  = "plan_id"
 )
 
 // NewCreatePlanEvent construct a new plan created sdk.Event
