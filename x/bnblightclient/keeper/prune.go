@@ -30,7 +30,7 @@ func (k Keeper) pruneHeaders(ctx sdk.Context, pruneEndNumber uint64) {
 	for ; iterator.Valid(); iterator.Next() {
 		iterKey := iterator.Key()
 		number := sdk.BigEndianToUint64(iterKey[1:])
-		if number > pruneEndNumber {
+		if number <= pruneEndNumber {
 			header, exist := k.GetHeader(ctx, number)
 			if !exist {
 				continue
