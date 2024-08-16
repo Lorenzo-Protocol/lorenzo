@@ -1,7 +1,9 @@
 package keeper
 
 import (
+	"bytes"
 	"encoding/json"
+	"errors"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/crypto"
@@ -18,6 +20,13 @@ import (
 	evmtypes "github.com/evmos/ethermint/x/evm/types"
 
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
+)
+
+var (
+	RevertSelectorInvalidParams      = crypto.Keccak256([]byte("InvalidParams()"))[:4]
+	RevertSelectorEmptyMerkleRoot    = crypto.Keccak256([]byte("EmptyMerkleRoot()"))[:4]
+	RevertSelectorAlreadyClaimed     = crypto.Keccak256([]byte("AlreadyClaimed()"))[:4]
+	RevertSelectorInvalidMerkleProof = crypto.Keccak256([]byte("InvalidMerkleProof()"))[:4]
 )
 
 // CallEVM performs a smart contract method call using given args
@@ -68,7 +77,21 @@ func (k Keeper) CallEVMWithData(
 			return nil, errorsmod.Wrapf(errortypes.ErrJSONMarshal, "failed to marshal tx args: %s", err.Error())
 		}
 
-		// k.evmKeeper.
+		// k.evmKeeper.EthCall
+		callRes, err := k.evmKeeper.EthCall(sdk.WrapSDKContext(ctx), &evmtypes.EthCallRequest{
+			Args:    args,
+			GasCap:  config.DefaultGasCap,
+			ChainId: k.evmKeeper.ChainID().Int64(),
+		})
+		if err != nil {
+			return nil, err
+		}
+		if len(callRes.VmError) != 0 {
+			revertRetErr := UnpackRevert(callRes.Ret)
+			return nil, revertRetErr
+		}
+
+		// k.evmKeeper.EstimateGas
 		gasRes, err := k.evmKeeper.EstimateGas(sdk.WrapSDKContext(ctx), &evmtypes.EthCallRequest{
 			Args:    args,
 			GasCap:  config.DefaultGasCap,
@@ -151,4 +174,22 @@ func (k Keeper) DeployContract(
 	}
 
 	return contractAddr, nil
+}
+
+func UnpackRevert(data []byte) error {
+	if len(data) < 4 {
+		return errors.New("invalid data for unpacking")
+	}
+	switch {
+	case bytes.Equal(data[:4], RevertSelectorInvalidParams):
+		return errors.New("InvalidParams")
+	case bytes.Equal(data[:4], RevertSelectorEmptyMerkleRoot):
+		return errors.New("EmptyMerkleRoot")
+	case bytes.Equal(data[:4], RevertSelectorAlreadyClaimed):
+		return errors.New("AlreadyClaimed")
+	case bytes.Equal(data[:4], RevertSelectorInvalidMerkleProof):
+		return errors.New("InvalidMerkleProof")
+	}
+
+	return evmtypes.NewExecErrorWithReason(data)
 }
