@@ -499,14 +499,14 @@ func NewLorenzoApp(
 	)
 
 	app.BTCStakingKeeper = btcstakingkeeper.NewKeeper(
-		appCodec, 
-		keys[btcstakingtypes.StoreKey], 
-		app.BTCLightClientKeeper, 
-		app.BNBLightClientKeeper, 
-		app.AgentKeeper, 
-		app.BankKeeper, 
-		app.PlanKeeper, 
-		app.EvmKeeper, 
+		appCodec,
+		keys[btcstakingtypes.StoreKey],
+		app.BTCLightClientKeeper,
+		app.BNBLightClientKeeper,
+		app.AgentKeeper,
+		app.BankKeeper,
+		app.PlanKeeper,
+		app.EvmKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
@@ -518,8 +518,6 @@ func NewLorenzoApp(
 		app.BankKeeper,
 		app.EvmKeeper,
 	)
-
-	
 
 	app.EvmKeeper.SetHooks(evmkeeper.NewMultiEvmHooks(
 		app.TokenKeeper.Hooks(),
