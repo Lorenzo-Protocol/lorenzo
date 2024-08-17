@@ -5,6 +5,7 @@ import (
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/ethereum/go-ethereum/common"
 
 	bnblightclienttypes "github.com/Lorenzo-Protocol/lorenzo/v3/x/bnblightclient/types"
 	"github.com/Lorenzo-Protocol/lorenzo/v3/x/btcstaking/types"
@@ -91,7 +92,7 @@ func (k Keeper) DepositBTCB(
 		return err
 	}
 
-	bridgeAddr := sdk.MustAccAddressFromBech32(k.GetParams(ctx).BridgeAddr)
+	bridgeAddr := sdk.AccAddress(common.HexToAddress(k.GetParams(ctx).BridgeAddr).Bytes())
 	if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, bridgeAddr, totalStBTC); err != nil {
 		return err
 	}
