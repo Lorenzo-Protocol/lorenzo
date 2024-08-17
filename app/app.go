@@ -468,6 +468,12 @@ func NewLorenzoApp(
 		btclightclienttypes.NewMultiBTCLightClientHooks(),
 	)
 
+	app.BNBLightClientKeeper = bnblightclientkeeper.NewKeeper(
+		appCodec,
+		keys[bnblightclienttypes.StoreKey],
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
 	app.FeeKeeper = feekeeper.NewKeeper(
 		appCodec,
 		keys[feetypes.StoreKey],
@@ -492,7 +498,17 @@ func NewLorenzoApp(
 		app.AgentKeeper,
 	)
 
-	app.BTCStakingKeeper = btcstakingkeeper.NewKeeper(appCodec, keys[btcstakingtypes.StoreKey], app.BTCLightClientKeeper, app.BNBLightClientKeeper, app.AgentKeeper, app.BankKeeper, app.PlanKeeper, app.EvmKeeper, authtypes.NewModuleAddress(govtypes.ModuleName).String())
+	app.BTCStakingKeeper = btcstakingkeeper.NewKeeper(
+		appCodec, 
+		keys[btcstakingtypes.StoreKey], 
+		app.BTCLightClientKeeper, 
+		app.BNBLightClientKeeper, 
+		app.AgentKeeper, 
+		app.BankKeeper, 
+		app.PlanKeeper, 
+		app.EvmKeeper, 
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
 
 	app.TokenKeeper = tokenkeeper.NewKeeper(
 		appCodec,
@@ -503,11 +519,7 @@ func NewLorenzoApp(
 		app.EvmKeeper,
 	)
 
-	app.BNBLightClientKeeper = bnblightclientkeeper.NewKeeper(
-		appCodec,
-		keys[bnblightclienttypes.StoreKey],
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	)
+	
 
 	app.EvmKeeper.SetHooks(evmkeeper.NewMultiEvmHooks(
 		app.TokenKeeper.Hooks(),
