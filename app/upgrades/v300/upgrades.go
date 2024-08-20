@@ -35,16 +35,30 @@ func upgradeHandlerConstructor(
 		// Note: StakePlanHubAddress is Binance Smart Chain testnet address. It should be updated to mainnet address for mainnet.
 		// Note:  ChainId Is Binance Smart Chain testnet chain id. It should be updated to mainnet chain id for mainnet.
 		bnbLightClientParams := &bnblightclienttypes.Params{
-			StakePlanHubAddress: "0x9ADb675bc89d9EC5d829709e85562b7c99658D59",
+			StakePlanHubAddress: "",
 			EventName:           "StakeBTC2JoinStakePlan",
-			RetainedBlocks:      10000,
+			RetainedBlocks:      1000000,
 			AllowList:           []string{"lrz1xa40j022h2rcmnte47gyjg8688grln94pp84lc"},
-			ChainId:             97,
+			ChainId:             56,
 		}
 
 		err := app.BNBLightClientKeeper.SetParams(ctx, bnbLightClientParams)
 		if err != nil {
 			panic("failed to set bnb light client params")
+		}
+
+		feeParams := app.FeeKeeper.GetParams(ctx)
+		newNonFeeMsgs := []string{
+			"/lorenzo.btcstaking.v1.MsgCreateBTCStaking",
+			"/lorenzo.btclightclient.v1.MsgInsertHeaders",
+			"/lorenzo.plan.v1.MsgSetMerkleRoot",
+			"/lorenzo.bnblightclient.v1.MsgUploadHeaders",
+			"/lorenzo.bnblightclient.v1.MsgUpdateHeader",
+			"/lorenzo.btcstaking.v1.MsgCreateBTCBStaking",
+		}
+		feeParams.NonFeeMsgs = newNonFeeMsgs
+		if err := app.FeeKeeper.SetParams(ctx, feeParams); err != nil {
+			panic("failed to set fee params")
 		}
 
 		return app.ModuleManager.RunMigrations(ctx, c, fromVM)
