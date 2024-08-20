@@ -2,13 +2,15 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
 )
 
-var _ sdk.Msg = (*MsgUpdateParams)(nil)
-var _ legacytx.LegacyMsg = (*MsgUpdateParams)(nil)
+var (
+	_ sdk.Msg            = (*MsgUpdateParams)(nil)
+	_ legacytx.LegacyMsg = (*MsgUpdateParams)(nil)
+)
 
 // ValidateBasic executes sanity validation on the provided data
 func (m *MsgUpdateParams) ValidateBasic() error {
