@@ -55,6 +55,8 @@ message TransactionInfo {
 
 message MsgCreateBTCStaking {
   option (cosmos.msg.v1.signer) = "signer";
+  option (amino.name) = "lorenzo/btcstaking/MsgCreateBTCStaking";
+
   string signer = 1;
   TransactionInfo staking_tx = 2;
   // deprecated

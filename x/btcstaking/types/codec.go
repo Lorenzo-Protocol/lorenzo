@@ -17,8 +17,12 @@ func init() {
 }
 
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgCreateBTCStaking{}, "btcstaking/MsgCreateBTCStaking", nil)
-	cdc.RegisterConcrete(&MsgBurnRequest{}, "btcstaking/MsgBurnRequest", nil)
+	cdc.RegisterConcrete(&MsgCreateBTCStaking{}, "lorenzo/btcstaking/MsgCreateBTCStaking", nil)
+	cdc.RegisterConcrete(&MsgCreateBTCBStaking{}, "lorenzo/btcstaking/MsgCreateBTCBStaking", nil)
+	cdc.RegisterConcrete(&MsgBurnRequest{}, "lorenzo/btcstaking/MsgBurnRequest", nil)
+	cdc.RegisterConcrete(&MsgRemoveReceiver{}, "lorenzo/btcstaking/MsgAddReceiver", nil)
+	cdc.RegisterConcrete(&MsgAddReceiver{}, "lorenzo/btcstaking/MsgRemoveReceiver", nil)
+	cdc.RegisterConcrete(&MsgUpdateParams{}, "lorenzo/btcstaking/MsgUpdateParams", nil)
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {

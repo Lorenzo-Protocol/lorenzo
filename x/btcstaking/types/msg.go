@@ -24,7 +24,12 @@ var (
 )
 
 var (
+	_ legacytx.LegacyMsg = &MsgCreateBTCStaking{}
+	_ legacytx.LegacyMsg = &MsgCreateBTCBStaking{}
 	_ legacytx.LegacyMsg = &MsgBurnRequest{}
+	_ legacytx.LegacyMsg = &MsgRemoveReceiver{}
+	_ legacytx.LegacyMsg = &MsgAddReceiver{}
+	_ legacytx.LegacyMsg = &MsgUpdateParams{}
 )
 
 func (m *MsgCreateBTCStaking) ValidateBasic() error {
@@ -53,6 +58,18 @@ func (m *MsgCreateBTCStaking) GetSigners() []sdk.AccAddress {
 	}
 
 	return []sdk.AccAddress{signer}
+}
+
+func (m *MsgCreateBTCStaking) GetSignBytes() []byte {
+	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(m))
+}
+
+func (m *MsgCreateBTCStaking) Route() string {
+	return ""
+}
+
+func (m *MsgCreateBTCStaking) Type() string {
+	return "lorenzo/btcstaking/MsgCreateBTCStaking"
 }
 
 func (m *MsgBurnRequest) ValidateBasic() error {
@@ -88,15 +105,17 @@ func (m *MsgBurnRequest) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{signer}
 }
 
-// GetSignBytes implements LegacyMsg.
-// Should be deprecated but to be in favour of EIP712 we need to keep it for now.
 func (m *MsgBurnRequest) GetSignBytes() []byte {
 	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(m))
 }
 
-func (m *MsgBurnRequest) Route() string { return "" }
+func (m *MsgBurnRequest) Route() string {
+	return ""
+}
 
-func (m *MsgBurnRequest) Type() string { return "btcstaking/MsgBurnRequest" }
+func (m *MsgBurnRequest) Type() string {
+	return "lorenzo/btcstaking/MsgBurnRequest"
+}
 
 func NewMsgBurnRequest(signer, btcTargetAddress string, amount math.Int) MsgBurnRequest {
 	return MsgBurnRequest{
@@ -121,6 +140,18 @@ func (m *MsgUpdateParams) ValidateBasic() error {
 	return nil
 }
 
+func (m *MsgUpdateParams) GetSignBytes() []byte {
+	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(m))
+}
+
+func (m *MsgUpdateParams) Route() string {
+	return ""
+}
+
+func (m *MsgUpdateParams) Type() string {
+	return "lorenzo/btcstaking/MsgUpdateParams"
+}
+
 // ValidateBasic implements sdk.Msg
 func (m *MsgCreateBTCBStaking) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.Signer); err != nil {
@@ -143,6 +174,18 @@ func (m *MsgCreateBTCBStaking) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{addr}
 }
 
+func (m *MsgCreateBTCBStaking) GetSignBytes() []byte {
+	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(m))
+}
+
+func (m *MsgCreateBTCBStaking) Route() string {
+	return ""
+}
+
+func (m *MsgCreateBTCBStaking) Type() string {
+	return "lorenzo/btcstaking/MsgCreateBTCBStaking"
+}
+
 func (m *MsgAddReceiver) GetSigners() []sdk.AccAddress {
 	addr, _ := sdk.AccAddressFromBech32(m.Authority)
 	return []sdk.AccAddress{addr}
@@ -158,6 +201,18 @@ func (m *MsgAddReceiver) ValidateBasic() error {
 	return nil
 }
 
+func (m *MsgAddReceiver) GetSignBytes() []byte {
+	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(m))
+}
+
+func (m *MsgAddReceiver) Route() string {
+	return ""
+}
+
+func (m *MsgAddReceiver) Type() string {
+	return "lorenzo/btcstaking/MsgAddReceiver"
+}
+
 func (m *MsgRemoveReceiver) GetSigners() []sdk.AccAddress {
 	addr, _ := sdk.AccAddressFromBech32(m.Authority)
 	return []sdk.AccAddress{addr}
@@ -171,4 +226,16 @@ func (m *MsgRemoveReceiver) ValidateBasic() error {
 		return fmt.Errorf("receiver name cannot be empty")
 	}
 	return nil
+}
+
+func (m *MsgRemoveReceiver) GetSignBytes() []byte {
+	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(m))
+}
+
+func (m *MsgRemoveReceiver) Route() string {
+	return ""
+}
+
+func (m *MsgRemoveReceiver) Type() string {
+	return "lorenzo/btcstaking/MsgRemoveReceiver"
 }
