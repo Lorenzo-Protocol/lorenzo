@@ -4,6 +4,7 @@ package lorenzo.btclightclient.v1;
 import "gogoproto/gogo.proto";
 import "cosmos/msg/v1/msg.proto";
 import "lorenzo/btclightclient/v1/params.proto";
+import "amino/amino.proto";
 import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/Lorenzo-Protocol/lorenzo/v3/x/btclightclient/types";
@@ -25,6 +26,7 @@ service Msg {
 // MsgInsertHeaders defines the message for multiple incoming header bytes
 message MsgInsertHeaders {
   option (cosmos.msg.v1.signer) = "signer";
+  option (amino.name) = "lorenzo/btclightclient/MsgInsertHeaders";
 
   string signer = 1;
   repeated bytes headers = 2
@@ -39,6 +41,7 @@ message MsgInsertHeadersResponse {}
 // parameters.
 message MsgUpdateParams {
   option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "lorenzo/btclightclient/MsgUpdateParams";
 
   // authority is the address of the governance account.
   // just FYI: cosmos.AddressString marks that this field should use type alias
@@ -57,6 +60,7 @@ message MsgUpdateParamsResponse {}
 
 message MsgUpdateFeeRate {
   option (cosmos.msg.v1.signer) = "signer";
+  option (amino.name) = "lorenzo/btclightclient/MsgUpdateFeeRate";
 
   string signer = 1;
   // sat/vbyte * 1000
