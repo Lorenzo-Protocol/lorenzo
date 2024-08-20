@@ -2,12 +2,28 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
 	evmtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/rlp"
 )
+
+var (
+	amino    = codec.NewLegacyAmino()
+	AminoCdc = codec.NewAminoCodec(amino)
+)
+
+func init() {
+	RegisterLegacyAminoCodec(amino)
+}
+
+func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
+	cdc.RegisterConcrete(&MsgUpdateHeader{}, "lorenzo/bnblightclient/MsgUploadHeaders", nil)
+	cdc.RegisterConcrete(&MsgUploadHeaders{}, "lorenzo/bnblightclient/MsgUpdateHeader", nil)
+	cdc.RegisterConcrete(&MsgUpdateParams{}, "lorenzo/bnblightclient/MsgUpdateParams", nil)
+}
 
 // RegisterInterfaces registers implementations for sdk.Msg and MsgUpdateParams in the given InterfaceRegistry.
 //
