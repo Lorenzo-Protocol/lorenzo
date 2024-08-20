@@ -7,12 +7,19 @@ import (
 
 	bbn "github.com/Lorenzo-Protocol/lorenzo/v3/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
 )
 
 var (
 	_ sdk.Msg = (*MsgInsertHeaders)(nil)
 	_ sdk.Msg = (*MsgUpdateParams)(nil)
 	_ sdk.Msg = (*MsgUpdateFeeRate)(nil)
+)
+
+var (
+	_ legacytx.LegacyMsg = (*MsgInsertHeaders)(nil)
+	_ legacytx.LegacyMsg = (*MsgUpdateParams)(nil)
+	_ legacytx.LegacyMsg = (*MsgUpdateFeeRate)(nil)
 )
 
 func NewMsgInsertHeaders(signer sdk.AccAddress, headersHex string) (*MsgInsertHeaders, error) {
@@ -96,6 +103,14 @@ func (msg *MsgInsertHeaders) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{signer}
 }
 
+func (msg *MsgInsertHeaders) GetSignBytes() []byte {
+	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(msg))
+}
+
+func (msg *MsgInsertHeaders) Route() string { return "" }
+
+func (msg *MsgInsertHeaders) Type() string { return "lorenzo/btclightclient/MsgInsertHeaders" }
+
 func (msg *MsgUpdateFeeRate) ValidateBasic() error {
 	// This function validates stateless message elements
 	// msg.Header is validated in ante-handler
@@ -117,6 +132,14 @@ func (msg *MsgUpdateFeeRate) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{signer}
 }
 
+func (msg *MsgUpdateFeeRate) GetSignBytes() []byte {
+	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(msg))
+}
+
+func (msg *MsgUpdateFeeRate) Route() string { return "" }
+
+func (msg *MsgUpdateFeeRate) Type() string { return "lorenzo/btclightclient/MsgUpdateFeeRate" }
+
 func (msg *MsgUpdateParams) ValidateBasic() error {
 	return nil
 }
@@ -131,6 +154,14 @@ func (msg *MsgUpdateParams) GetSigners() []sdk.AccAddress {
 
 	return []sdk.AccAddress{signer}
 }
+
+func (msg *MsgUpdateParams) GetSignBytes() []byte {
+	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(msg))
+}
+
+func (msg *MsgUpdateParams) Route() string { return "" }
+
+func (msg *MsgUpdateParams) Type() string { return "lorenzo/btclightclient/MsgUpdateParams" }
 
 func (msg *MsgUpdateFeeRate) ReporterAddress() sdk.AccAddress {
 	sender, err := sdk.AccAddressFromBech32(msg.Signer)
