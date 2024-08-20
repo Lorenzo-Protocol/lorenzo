@@ -4,9 +4,11 @@ import (
 	errorsmod "cosmossdk.io/errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
 )
 
 var _ sdk.Msg = (*MsgUpdateParams)(nil)
+var _ legacytx.LegacyMsg = (*MsgUpdateParams)(nil)
 
 // ValidateBasic executes sanity validation on the provided data
 func (m *MsgUpdateParams) ValidateBasic() error {
@@ -20,6 +22,18 @@ func (m *MsgUpdateParams) ValidateBasic() error {
 func (m *MsgUpdateParams) GetSigners() []sdk.AccAddress {
 	addr, _ := sdk.AccAddressFromBech32(m.Authority)
 	return []sdk.AccAddress{addr}
+}
+
+func (m *MsgUpdateParams) GetSignBytes() []byte {
+	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(m))
+}
+
+func (m *MsgUpdateParams) Route() string {
+	return ""
+}
+
+func (m *MsgUpdateParams) Type() string {
+	return "lorenzo/fee/MsgUpdateParams"
 }
 
 // Validate validates the Params struct.
