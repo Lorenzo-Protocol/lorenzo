@@ -1,7 +1,7 @@
 package types
 
 import (
-	fmt "fmt"
+	"fmt"
 	"strings"
 
 	errorsmod "cosmossdk.io/errors"
@@ -10,6 +10,7 @@ import (
 	"github.com/btcsuite/btcd/chaincfg"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
 )
 
 // ensure that these message types implement the sdk.Msg interface
@@ -20,6 +21,10 @@ var (
 	_ sdk.Msg = &MsgAddReceiver{}
 	_ sdk.Msg = &MsgUpdateParams{}
 	_ sdk.Msg = &MsgCreateBTCBStaking{}
+)
+
+var (
+	_ legacytx.LegacyMsg = &MsgBurnRequest{}
 )
 
 func (m *MsgCreateBTCStaking) ValidateBasic() error {
@@ -82,6 +87,16 @@ func (m *MsgBurnRequest) GetSigners() []sdk.AccAddress {
 
 	return []sdk.AccAddress{signer}
 }
+
+// GetSignBytes implements LegacyMsg.
+// Should be deprecated but to be in favour of EIP712 we need to keep it for now.
+func (m *MsgBurnRequest) GetSignBytes() []byte {
+	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(m))
+}
+
+func (m *MsgBurnRequest) Route() string { return "" }
+
+func (m *MsgBurnRequest) Type() string { return "btcstaking/MsgBurnRequest" }
 
 func NewMsgBurnRequest(signer, btcTargetAddress string, amount math.Int) MsgBurnRequest {
 	return MsgBurnRequest{

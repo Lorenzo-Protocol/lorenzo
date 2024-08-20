@@ -7,7 +7,16 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
 )
 
-func RegisterCodec(cdc *codec.LegacyAmino) {
+var (
+	amino    = codec.NewLegacyAmino()
+	AminoCdc = codec.NewAminoCodec(amino)
+)
+
+func init() {
+	RegisterLegacyAminoCodec(amino)
+}
+
+func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgCreateBTCStaking{}, "btcstaking/MsgCreateBTCStaking", nil)
 	cdc.RegisterConcrete(&MsgBurnRequest{}, "btcstaking/MsgBurnRequest", nil)
 }
