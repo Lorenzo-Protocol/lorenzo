@@ -229,9 +229,6 @@ require (
 replace (
 	// use cosmos fork of keyring
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.2.0
-
-	// use lorenzo-protocol fork of go-ethereum
-	github.com/ethereum/go-ethereum => github.com/Lorenzo-Protocol/go-ethereum v1.10.26-lorenzo-rc1
 	// use lorenzo forks ethermint
 	github.com/evmos/ethermint => github.com/Lorenzo-Protocol/ethermint v0.22.0-lorenzo-4
 
