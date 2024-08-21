@@ -2,6 +2,23 @@
 
 ## [Unreleased]
 
+## v3.0.0
+
+### New Features
+
+- (x/btcblightclient) [\#86](https://github.com/Lorenzo-Protocol/lorenzo/pull/86) Implement btcblightclient module.
+- (x/btcstaking) [\#116](https://github.com/Lorenzo-Protocol/lorenzo/pull/116) Disabled minting YAT directly on lorenzo.
+- (eip712) [\#113](https://github.com/Lorenzo-Protocol/lorenzo/pull/113) Implement legacy msg interface to support eip712 signing.
+
+### Bug Fixes
+
+- (x/plan) [\#109](https://github.com/Lorenzo-Protocol/lorenzo/pull/109) Event attribute sequence error.
+- (x/plan) [\#106](https://github.com/Lorenzo-Protocol/lorenzo/pull/106) Revert update minter if plan id not found.
+
+### State Breaking
+
+- (x/btcstaking) [\#105](https://github.com/Lorenzo-Protocol/lorenzo/pull/105) Add field plan-id to btc&btcb staking record.
+
 ## v2.0.0
 
 ### New Features
