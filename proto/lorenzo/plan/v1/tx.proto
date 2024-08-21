@@ -4,7 +4,7 @@ package lorenzo.plan.v1;
 import "cosmos_proto/cosmos.proto";
 import "cosmos/msg/v1/msg.proto";
 import "gogoproto/gogo.proto";
-
+import "amino/amino.proto";
 import "lorenzo/plan/v1/params.proto";
 import "lorenzo/plan/v1/plan.proto";
 
@@ -46,7 +46,7 @@ service Msg {
 // MsgUpdateParams is the request type for the Msg/UpdateParams RPC method.
 message MsgUpdateParams {
   option (cosmos.msg.v1.signer) = "authority";
-
+  option (amino.name) = "lorenzo/plan/MsgUpdateParams";
   // authority is the address of the governance account.
   // just FYI: cosmos.AddressString marks that this field should use type alias
   // for AddressString instead of string, but the functionality is not yet
@@ -64,7 +64,7 @@ message MsgUpdateParamsResponse {}
 // MsgUpgradePlan is the request type for the Msg/UpgradePlan RPC method.
 message MsgUpgradePlan {
   option (cosmos.msg.v1.signer) = "authority";
-
+  option (amino.name) = "lorenzo/plan/MsgUpgradePlan";
   // implementation is the new yat logic contract address
   string implementation = 1;
 
@@ -81,6 +81,7 @@ message MsgUpgradePlanResponse {}
 // MsgCreatePlan is the request type for the Msg/CreatePlan RPC method.
 message MsgCreatePlan {
   option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "lorenzo/plan/MsgCreatePlan";
 
   // name is the name of the plan
   string name = 1;
@@ -113,6 +114,7 @@ message MsgCreatePlanResponse {
 // MsgSetMerkleRoot is the request type for the Msg/SetMerkleRoot RPC method.
 message MsgSetMerkleRoot {
   option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "lorenzo/plan/MsgSetMerkleRoot";
 
   // plan_id is the unique identifier of the plan
   uint64 plan_id = 1;
@@ -137,6 +139,7 @@ message MsgSetMerkleRootResponse {}
 // MsgClaims is the request type for the Msg/Claims RPC method.
 message MsgClaims {
   option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "lorenzo/plan/MsgClaims";
 
   // plan_id is the unique identifier of the plan
   uint64 plan_id = 1;
@@ -170,6 +173,7 @@ message MsgClaimsResponse {}
 // method.
 message MsgUpdatePlanStatus {
   option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "lorenzo/plan/MsgUpdatePlanStatus";
 
   // plan_id is the unique identifier of the plan
   uint64 plan_id = 1;
@@ -188,6 +192,7 @@ message MsgUpdatePlanStatusResponse {}
 // MsgCreateYAT is the request type for the Msg/CreateYAT RPC method.
 message MsgCreateYAT {
   option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "lorenzo/plan/MsgCreateYAT";
 
   // name is the name of the yat contract
   string name = 1;
@@ -208,6 +213,7 @@ message MsgCreateYATResponse {
 // MsgSetMinter is the request type for the Msg/SetMinter RPC method.
 message MsgSetMinter {
   option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "lorenzo/plan/MsgSetMinter";
 
   // minter is the address of the minter
   string minter = 1;
@@ -225,6 +231,7 @@ message MsgSetMinterResponse {}
 // MsgRemoveMinter is the request type for the Msg/RemoveMinter RPC method.
 message MsgRemoveMinter {
   option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "lorenzo/plan/MsgRemoveMinter";
 
   // minter is the address of the minter
   string minter = 1;

@@ -4,7 +4,7 @@ package lorenzo.agent.v1;
 import "cosmos_proto/cosmos.proto";
 import "cosmos/msg/v1/msg.proto";
 import "gogoproto/gogo.proto";
-
+import "amino/amino.proto";
 import "lorenzo/agent/v1/params.proto";
 
 option go_package = "github.com/Lorenzo-Protocol/lorenzo/v3/x/agent/types";
@@ -28,6 +28,7 @@ service Msg {
 
 message MsgUpdateParams {
   option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "lorenzo/agent/MsgUpdateParams";
 
   // authority is the address of the governance account.
   // just FYI: cosmos.AddressString marks that this field should use type alias
@@ -45,6 +46,7 @@ message MsgUpdateParamsResponse {}
 // MsgUpdateParams defines a message for add a agent.
 message MsgAddAgent {
   option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "lorenzo/agent/MsgAddAgent";
 
   // agent name,required
   string name = 1;
@@ -69,6 +71,7 @@ message MsgAddAgentResponse {
 // MsgEditAgent defines a message for editting the agent.
 message MsgEditAgent {
   option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "lorenzo/agent/MsgEditAgent";
 
   // id is the unique identifier of the agent
   uint64 id = 1;
@@ -88,6 +91,7 @@ message MsgEditAgentResponse {}
 // MsgRemoveAgent defines a message for removing the agent.
 message MsgRemoveAgent {
   option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "lorenzo/agent/MsgRemoveAgent";
 
   // id is the unique identifier of the agent
   uint64 id = 1;

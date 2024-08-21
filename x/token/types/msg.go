@@ -64,6 +64,18 @@ func (m *MsgRegisterCoin) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{addr}
 }
 
+func (m *MsgRegisterCoin) GetSignBytes() []byte {
+	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(m))
+}
+
+func (m *MsgRegisterCoin) Route() string {
+	return ""
+}
+
+func (m *MsgRegisterCoin) Type() string {
+	return "lorenzo/token/MsgRegisterCoin"
+}
+
 // ValidateBasic implements sdk.Msg
 func (m *MsgRegisterERC20) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
@@ -98,6 +110,18 @@ func (m *MsgRegisterERC20) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{addr}
 }
 
+func (m *MsgRegisterERC20) GetSignBytes() []byte {
+	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(m))
+}
+
+func (m *MsgRegisterERC20) Route() string {
+	return ""
+}
+
+func (m *MsgRegisterERC20) Type() string {
+	return "lorenzo/token/MsgRegisterERC20"
+}
+
 // ValidateBasic implements sdk.Msg
 func (m *MsgToggleConversion) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
@@ -117,6 +141,18 @@ func (m *MsgToggleConversion) ValidateBasic() error {
 func (m *MsgToggleConversion) GetSigners() []sdk.AccAddress {
 	addr, _ := sdk.AccAddressFromBech32(m.Authority)
 	return []sdk.AccAddress{addr}
+}
+
+func (m *MsgToggleConversion) GetSignBytes() []byte {
+	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(m))
+}
+
+func (m *MsgToggleConversion) Route() string {
+	return ""
+}
+
+func (m *MsgToggleConversion) Type() string {
+	return "lorenzo/token/MsgToggleConversion"
 }
 
 // ValidateBasic implements sdk.Msg
@@ -150,6 +186,18 @@ func (m *MsgConvertCoin) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{addr}
 }
 
+func (m *MsgConvertCoin) GetSignBytes() []byte {
+	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(m))
+}
+
+func (m *MsgConvertCoin) Route() string {
+	return ""
+}
+
+func (m *MsgConvertCoin) Type() string {
+	return "lorenzo/token/MsgConvertCoin"
+}
+
 // ValidateBasic implements sdk.Msg
 func (m *MsgConvertERC20) ValidateBasic() error {
 	if !common.IsHexAddress(m.ContractAddress) {
@@ -178,6 +226,18 @@ func (m *MsgConvertERC20) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{addr.Bytes()}
 }
 
+func (m *MsgConvertERC20) GetSignBytes() []byte {
+	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(m))
+}
+
+func (m *MsgConvertERC20) Route() string {
+	return ""
+}
+
+func (m *MsgConvertERC20) Type() string {
+	return "lorenzo/token/MsgConvertERC20"
+}
+
 // ValidateBasic implements sdk.Msg
 func (m *MsgUpdateParams) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
@@ -190,4 +250,16 @@ func (m *MsgUpdateParams) ValidateBasic() error {
 func (m *MsgUpdateParams) GetSigners() []sdk.AccAddress {
 	addr, _ := sdk.AccAddressFromBech32(m.Authority)
 	return []sdk.AccAddress{addr}
+}
+
+func (m *MsgUpdateParams) GetSignBytes() []byte {
+	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(m))
+}
+
+func (m *MsgUpdateParams) Route() string {
+	return ""
+}
+
+func (m *MsgUpdateParams) Type() string {
+	return "lorenzo/token/MsgUpdateParams"
 }

@@ -4,8 +4,8 @@ package lorenzo.btcstaking.v1;
 import "cosmos/msg/v1/msg.proto";
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
+import "amino/amino.proto";
 import "lorenzo/btcstaking/v1/params.proto";
-// import "cosmos/staking/v1beta1/staking.proto";
 
 option go_package = "github.com/Lorenzo-Protocol/lorenzo/v3/x/btcstaking/types";
 
@@ -55,6 +55,8 @@ message TransactionInfo {
 
 message MsgCreateBTCStaking {
   option (cosmos.msg.v1.signer) = "signer";
+  option (amino.name) = "lorenzo/btcstaking/MsgCreateBTCStaking";
+
   string signer = 1;
   TransactionInfo staking_tx = 2;
   // deprecated
@@ -66,6 +68,7 @@ message MsgCreateBTCStakingResponse {}
 
 message MsgCreateBTCBStaking {
   option (cosmos.msg.v1.signer) = "signer";
+  option (amino.name) = "lorenzo/btcstaking/MsgCreateBTCBStaking";
 
   string signer = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   uint64 number = 2;
@@ -77,6 +80,8 @@ message MsgCreateBTCBStakingResponse {}
 
 message MsgBurnRequest {
   option (cosmos.msg.v1.signer) = "signer";
+  option (amino.name) = "lorenzo/btcstaking/MsgBurnRequest";
+
   string signer = 1;
   string btc_target_address = 2;
   string amount = 3 [
@@ -89,6 +94,7 @@ message MsgBurnResponse {}
 
 message MsgAddReceiver {
   option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "lorenzo/btcstaking/MsgAddReceiver";
 
   string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
@@ -98,6 +104,7 @@ message MsgAddReceiver {
 message MsgAddReceiverResponse {}
 message MsgRemoveReceiver {
   option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "lorenzo/btcstaking/MsgRemoveReceiver";
 
   string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
@@ -106,6 +113,7 @@ message MsgRemoveReceiver {
 message MsgRemoveReceiverResponse {}
 message MsgUpdateParams {
   option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "lorenzo/btcstaking/MsgUpdateParams";
 
   string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
