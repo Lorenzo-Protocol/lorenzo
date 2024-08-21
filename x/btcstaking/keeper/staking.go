@@ -52,20 +52,23 @@ func (k Keeper) DepositBTCB(
 			)
 		}
 		amount := new(big.Int).SetBytes(event.StBTCAmount.Bytes())
-		result := types.MintYatSuccess
+		result := ""
 
-		// mint yat to the sender
-		if err := k.planKeeper.Mint(ctx, event.PlanID, event.Sender, amount); err != nil {
-			k.Logger(ctx).Error("mint yat error",
-				"planID", event.PlanID,
-				"stakingIdx", event.Identifier,
-				"contract", event.Contract.String(),
-				"sender", event.Sender.String(),
-				"amount", amount.String(),
-				"error", err,
-			)
-			result = types.MintYatFailed
-		}
+		// TODO: Mint YAT yet to be implemented
+		// result := types.MintYatSuccess
+
+		//// mint yat to the sender
+		//if err := k.planKeeper.Mint(ctx, event.PlanID, event.Sender, amount); err != nil {
+		//	k.Logger(ctx).Error("mint yat error",
+		//		"planID", event.PlanID,
+		//		"stakingIdx", event.Identifier,
+		//		"contract", event.Contract.String(),
+		//		"sender", event.Sender.String(),
+		//		"amount", amount.String(),
+		//		"error", err,
+		//	)
+		//	result = types.MintYatFailed
+		//}
 
 		totalStBTCAmt = totalStBTCAmt.Add(totalStBTCAmt, amount)
 

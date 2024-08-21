@@ -5,7 +5,6 @@ import (
 	sdkmath "cosmossdk.io/math"
 	"github.com/Lorenzo-Protocol/lorenzo/v3/x/btcstaking/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/ethereum/go-ethereum/common"
 )
 
 const (
@@ -41,21 +40,23 @@ func (k Keeper) Delegate(
 	}
 
 	if planId != 0 {
-		// Mint Yat can be wrong if plan not found or agentId not match
-		plan, found := k.planKeeper.GetPlan(ctx, planId)
-		if !found {
-			btcStakingRecord.MintYatResult = PlanNotFound
-		} else if plan.AgentId != agentId {
-			btcStakingRecord.MintYatResult = AgentIdNotMatch
-		} else {
-			// mint yat
-			yatMintErr := k.planKeeper.Mint(ctx, planId, common.BytesToAddress(receiverAddr), toMintAmount.BigInt())
-			if yatMintErr != nil {
-				btcStakingRecord.MintYatResult = yatMintErr.Error()
-			} else {
-				btcStakingRecord.MintYatResult = Success
-			}
-		}
+		// TODO: Mint YAT yet to be implemented
+		//// Mint Yat can be wrong if plan not found or agentId not match
+		//plan, found := k.planKeeper.GetPlan(ctx, planId)
+		//if !found {
+		//	btcStakingRecord.MintYatResult = PlanNotFound
+		//} else if plan.AgentId != agentId {
+		//	btcStakingRecord.MintYatResult = AgentIdNotMatch
+		//} else {
+		//	// mint yat
+		//	yatMintErr := k.planKeeper.Mint(ctx, planId, common.BytesToAddress(receiverAddr), toMintAmount.BigInt())
+		//	if yatMintErr != nil {
+		//		btcStakingRecord.MintYatResult = yatMintErr.Error()
+		//	} else {
+		//		btcStakingRecord.MintYatResult = Success
+		//	}
+		//}
+		// Only record planId
 		btcStakingRecord.PlanId = planId
 	}
 	if err := k.AddBTCStakingRecord(ctx, btcStakingRecord); err != nil {
