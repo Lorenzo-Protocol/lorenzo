@@ -31,14 +31,11 @@ func upgradeHandlerConstructor(
 
 		// bnb light client module init
 		// 1. set params
-		// TODO: StakePlanHubAddress, EventName, RetainedBlocks, AllowList, ChainId should be updated according to the mainnet.
-		// Note: StakePlanHubAddress is Binance Smart Chain testnet address. It should be updated to mainnet address for mainnet.
-		// Note:  ChainId Is Binance Smart Chain testnet chain id. It should be updated to mainnet chain id for mainnet.
 		bnbLightClientParams := &bnblightclienttypes.Params{
-			StakePlanHubAddress: "",
+			StakePlanHubAddress: "0x8BCd1CCDA853677Ac865C882B60FBaF5030EeF50",
 			EventName:           "StakeBTC2JoinStakePlan",
 			RetainedBlocks:      1000000,
-			AllowList:           []string{"lrz1xa40j022h2rcmnte47gyjg8688grln94pp84lc"},
+			AllowList:           []string{"lrz1lh79r9v0gtzljm6wa4ya6dfrz2jappy406wflw"},
 			ChainId:             56,
 		}
 
