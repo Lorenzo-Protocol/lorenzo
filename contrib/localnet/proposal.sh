@@ -50,7 +50,9 @@ func_upgrade_proposal() {
      '.messages[0].plan.name = $name | .messages[0].plan.height = $height' \
      "$TESTNESTS_DIR/$PROPOSAL_FILE" > "$TESTNESTS_DIR/${PROPOSAL_FILE}.tmp"
 
-  mv "$TESTNESTS_DIR/${PROPOSAL_FILE}.tmp" "$TESTNESTS_DIR/$PROPOSAL_FILE"
+  #NOTE: it's really wired here that diff a and b show no difference.
+  jq '.' "$TESTNESTS_DIR/${PROPOSAL_FILE}.tmp" > "$TESTNESTS_DIR/$PROPOSAL_FILE"
+  rm "$TESTNESTS_DIR/${PROPOSAL_FILE}.tmp"
 
   echo "Proposal prepared with name: $UPGRADE_NAME and height: $upgrade_height"
 }
