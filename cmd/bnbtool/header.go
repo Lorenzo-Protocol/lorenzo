@@ -5,10 +5,12 @@ import (
 	"encoding/json"
 	"math/big"
 	"os"
+	"sync"
 
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/rlp"
+	"golang.org/x/sync/errgroup"
 )
 
 type client struct {
@@ -36,17 +38,34 @@ func (c client) writeHeaders(ctx context.Context, headers []*Header, file string
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(file, headersBz, 0644)
+	return os.WriteFile(file, headersBz, 0o644)
 }
 
 func (c client) getHeaderBetween(ctx context.Context, from, to int64) ([]*Header, error) {
 	headers := []*Header{}
+	mu := sync.Mutex{} // Mutex to protect concurrent access to headers
+
+	eg, ctx := errgroup.WithContext(ctx)
+	// set limit for the number of goroutines
+	eg.SetLimit(10)
+	
 	for i := from; i <= to; i++ {
-		header, err := c.getLCHeader(ctx, i)
-		if err != nil {
-			return nil, err
-		}
-		headers = append(headers, header)
+		number := i
+		eg.Go(func() error {
+			header, err := c.getLCHeader(ctx, number)
+			if err != nil {
+				return err
+			}
+			mu.Lock()
+			headers = append(headers, header)
+			mu.Unlock()
+			return nil
+		})
+
+	}
+	// Wait for all goroutines to finish and return the error (if any)
+	if err := eg.Wait(); err != nil {
+		return nil, err
 	}
 	return headers, nil
 }
@@ -88,5 +107,3 @@ type Header struct {
 	// receipt_root defines the receipts merkle root hash
 	ReceiptRoot []byte `protobuf:"bytes,5,opt,name=receipt_root,json=receiptRoot,proto3" json:"receipt_root,omitempty"`
 }
-
-

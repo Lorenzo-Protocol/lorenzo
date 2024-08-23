@@ -35,7 +35,6 @@ func (c client) genReceiptProof(ctx context.Context, height int64, txHash string
 		},
 	)
 
-	// 将交易回执写入文件
 	bz, err := rlp.EncodeToBytes(receipts[txIndex])
 	if err != nil {
 		return err
@@ -49,7 +48,6 @@ func (c client) genReceiptProof(ctx context.Context, height int64, txHash string
 		return err
 	}
 
-	// 将证明写入文件
 	bz, err = rlp.EncodeToBytes(proof)
 	if err != nil {
 		return err
