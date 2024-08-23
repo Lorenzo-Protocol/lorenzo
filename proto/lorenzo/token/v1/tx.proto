@@ -7,6 +7,7 @@ import "cosmos/base/v1beta1/coin.proto";
 import "cosmos/msg/v1/msg.proto";
 import "cosmos_proto/cosmos.proto";
 import "cosmos/bank/v1beta1/bank.proto";
+import "amino/amino.proto";
 import "lorenzo/token/v1/genesis.proto";
 
 option go_package = "github.com/Lorenzo-Protocol/lorenzo/v3/x/token/types";
@@ -31,6 +32,8 @@ service Msg {
 // NOTE: this is a governance message.
 message MsgRegisterCoin {
   option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "lorenzo/token/MsgRegisterCoin";
+
   // authority is the address that can update the parameters
   string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   // metadata slice of coins
@@ -44,6 +47,8 @@ message MsgRegisterCoinResponse {}
 // NOTE: this is a governance message.
 message MsgRegisterERC20 {
   option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "lorenzo/token/MsgRegisterERC20";
+
   // authority is the address that can update the parameters
   string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   // metadata slice of erc20 token contract addresses
@@ -56,6 +61,8 @@ message MsgRegisterERC20Response {}
 // NOTE: this is a governance message.
 message MsgToggleConversion {
   option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "lorenzo/token/MsgToggleConversion";
+
   // authority is the address that can update the parameters
   string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   // token is in format of either coin base denom or erc20 contract address
@@ -66,6 +73,8 @@ message MsgToggleConversionResponse {}
 
 // MsgConvertCoin converts a coin to an ERC20 token
 message MsgConvertCoin {
+  option (amino.name) = "lorenzo/token/MsgConvertCoin";
+
   // coin to be converted
   cosmos.base.v1beta1.Coin coin = 1 [ (gogoproto.nullable) = false ];
   // receiver of the erc20 token, evm hex format address.
@@ -78,6 +87,8 @@ message MsgConvertCoinResponse {}
 
 // MsgConvertERC20 converts an ERC20 token to a coin
 message MsgConvertERC20 {
+  option (amino.name) = "lorenzo/token/MsgConvertERC20";
+
   // contract address of the ERC20 token
   string contract_address = 1;
   // amount of tokens to be converted
@@ -96,6 +107,8 @@ message MsgConvertERC20Response {}
 // MsgUpdateParams updates the convert module parameters
 message MsgUpdateParams {
   option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "lorenzo/token/MsgUpdateParams";
+
   // authority is the address that can update the parameters
   string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   // params are the new parameters

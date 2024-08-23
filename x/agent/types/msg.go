@@ -7,6 +7,8 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
 )
 
 var (
@@ -14,6 +16,13 @@ var (
 	_ sdk.Msg = (*MsgAddAgent)(nil)
 	_ sdk.Msg = (*MsgRemoveAgent)(nil)
 	_ sdk.Msg = (*MsgEditAgent)(nil)
+)
+
+var (
+	_ legacytx.LegacyMsg = &MsgUpdateParams{}
+	_ legacytx.LegacyMsg = &MsgAddAgent{}
+	_ legacytx.LegacyMsg = &MsgEditAgent{}
+	_ legacytx.LegacyMsg = &MsgRemoveAgent{}
 )
 
 // ValidateBasic executes sanity validation on the provided data
@@ -29,6 +38,14 @@ func (m *MsgUpdateParams) GetSigners() []sdk.AccAddress {
 	addr, _ := sdk.AccAddressFromBech32(m.Authority)
 	return []sdk.AccAddress{addr}
 }
+
+func (m *MsgUpdateParams) GetSignBytes() []byte {
+	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(m))
+}
+
+func (m *MsgUpdateParams) Route() string { return "" }
+
+func (m *MsgUpdateParams) Type() string { return "lorenzo/agent/MsgUpdateParams" }
 
 // ValidateBasic executes sanity validation on the provided data
 func (m *MsgAddAgent) ValidateBasic() error {
@@ -57,6 +74,14 @@ func (m *MsgAddAgent) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{addr}
 }
 
+func (m *MsgAddAgent) GetSignBytes() []byte {
+	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(m))
+}
+
+func (m *MsgAddAgent) Route() string { return "" }
+
+func (m *MsgAddAgent) Type() string { return "lorenzo/agent/MsgAddAgent" }
+
 // ValidateBasic executes sanity validation on the provided data
 func (m *MsgEditAgent) ValidateBasic() error {
 	if m.Id <= 0 {
@@ -76,6 +101,14 @@ func (m *MsgEditAgent) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{addr}
 }
 
+func (m *MsgEditAgent) GetSignBytes() []byte {
+	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(m))
+}
+
+func (m *MsgEditAgent) Route() string { return "" }
+
+func (m *MsgEditAgent) Type() string { return "lorenzo/agent/MsgEditAgent" }
+
 // ValidateBasic executes sanity validation on the provided data
 func (m *MsgRemoveAgent) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(m.Sender)
@@ -93,3 +126,11 @@ func (m *MsgRemoveAgent) GetSigners() []sdk.AccAddress {
 	addr, _ := sdk.AccAddressFromBech32(m.Sender)
 	return []sdk.AccAddress{addr}
 }
+
+func (m *MsgRemoveAgent) GetSignBytes() []byte {
+	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(m))
+}
+
+func (m *MsgRemoveAgent) Route() string { return "" }
+
+func (m *MsgRemoveAgent) Type() string { return "lorenzo/agent/MsgRemoveAgent" }

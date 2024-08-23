@@ -115,7 +115,7 @@ func CmdQueryLatestHeader() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "latest-header",
 		Short: "query the latest header of the bnblightclient module",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			queryClient := types.NewQueryClient(clientCtx)

@@ -245,7 +245,7 @@ func (m msgServer) SetMinter(goCtx context.Context, msg *types.MsgSetMinter) (*t
 	}
 
 	ctx.EventManager().EmitEvent(
-		types.NewSetMinterEvent(sender, msg.ContractAddress, msg.Minter),
+		types.NewSetMinterEvent(sender, msg.Minter, msg.ContractAddress),
 	)
 
 	return &types.MsgSetMinterResponse{}, nil
@@ -266,7 +266,7 @@ func (m msgServer) RemoveMinter(goCtx context.Context, msg *types.MsgRemoveMinte
 	}
 
 	ctx.EventManager().EmitEvent(
-		types.NewRemoveMinterEvent(sender, msg.ContractAddress, msg.Minter),
+		types.NewRemoveMinterEvent(sender, msg.Minter, msg.ContractAddress),
 	)
 
 	return &types.MsgRemoveMinterResponse{}, nil
