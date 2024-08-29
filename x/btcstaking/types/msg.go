@@ -13,6 +13,15 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
 )
 
+const (
+	TypeMsgCreateBTCStaking  = "create_btc_staking"
+	TypeMsgCreateBTCBStaking = "create_btc_b_staking"
+	TypeMsgBurnRequest       = "burn_request"
+	TypeMsgRemoveReceiver    = "remove_receiver"
+	TypeMsgAddReceiver       = "add_receiver"
+	TypeMsgUpdateParams      = "update_params"
+)
+
 // ensure that these message types implement the sdk.Msg interface
 var (
 	_ sdk.Msg = &MsgCreateBTCStaking{}
@@ -65,11 +74,11 @@ func (m *MsgCreateBTCStaking) GetSignBytes() []byte {
 }
 
 func (m *MsgCreateBTCStaking) Route() string {
-	return ""
+	return RouterKey
 }
 
 func (m *MsgCreateBTCStaking) Type() string {
-	return "lorenzo/btcstaking/MsgCreateBTCStaking"
+	return TypeMsgCreateBTCStaking
 }
 
 func (m *MsgBurnRequest) ValidateBasic() error {
@@ -110,11 +119,11 @@ func (m *MsgBurnRequest) GetSignBytes() []byte {
 }
 
 func (m *MsgBurnRequest) Route() string {
-	return ""
+	return RouterKey
 }
 
 func (m *MsgBurnRequest) Type() string {
-	return "lorenzo/btcstaking/MsgBurnRequest"
+	return TypeMsgBurnRequest
 }
 
 func NewMsgBurnRequest(signer, btcTargetAddress string, amount math.Int) MsgBurnRequest {
@@ -145,11 +154,11 @@ func (m *MsgUpdateParams) GetSignBytes() []byte {
 }
 
 func (m *MsgUpdateParams) Route() string {
-	return ""
+	return RouterKey
 }
 
 func (m *MsgUpdateParams) Type() string {
-	return "lorenzo/btcstaking/MsgUpdateParams"
+	return TypeMsgUpdateParams
 }
 
 // ValidateBasic implements sdk.Msg
@@ -179,11 +188,11 @@ func (m *MsgCreateBTCBStaking) GetSignBytes() []byte {
 }
 
 func (m *MsgCreateBTCBStaking) Route() string {
-	return ""
+	return RouterKey
 }
 
 func (m *MsgCreateBTCBStaking) Type() string {
-	return "lorenzo/btcstaking/MsgCreateBTCBStaking"
+	return TypeMsgCreateBTCBStaking
 }
 
 func (m *MsgAddReceiver) GetSigners() []sdk.AccAddress {
@@ -206,11 +215,11 @@ func (m *MsgAddReceiver) GetSignBytes() []byte {
 }
 
 func (m *MsgAddReceiver) Route() string {
-	return ""
+	return RouterKey
 }
 
 func (m *MsgAddReceiver) Type() string {
-	return "lorenzo/btcstaking/MsgAddReceiver"
+	return TypeMsgAddReceiver
 }
 
 func (m *MsgRemoveReceiver) GetSigners() []sdk.AccAddress {
@@ -233,9 +242,9 @@ func (m *MsgRemoveReceiver) GetSignBytes() []byte {
 }
 
 func (m *MsgRemoveReceiver) Route() string {
-	return ""
+	return RouterKey
 }
 
 func (m *MsgRemoveReceiver) Type() string {
-	return "lorenzo/btcstaking/MsgRemoveReceiver"
+	return TypeMsgRemoveReceiver
 }

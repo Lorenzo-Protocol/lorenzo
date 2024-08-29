@@ -11,6 +11,18 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 )
 
+const (
+	TypeMsgUpdateParams     = "update_params"
+	TypeMsgUpgradePlan      = "upgrade_plan"
+	TypeMsgCreatePlan       = "create_plan"
+	TypeMsgClaims           = "claims"
+	TypeMsgCreateYAT        = "create_yat"
+	TypeMsgUpdatePlanStatus = "update_plan_status"
+	TypeMsgSetMinter        = "set_minter"
+	TypeMsgRemoveMinter     = "remove_minter"
+	TypeMsgSetMerkleRoot    = "set_merkle_root"
+)
+
 var (
 	_ sdk.Msg = (*MsgUpdateParams)(nil)
 	_ sdk.Msg = (*MsgUpgradePlan)(nil)
@@ -54,11 +66,11 @@ func (m *MsgUpdateParams) GetSignBytes() []byte {
 }
 
 func (m *MsgUpdateParams) Route() string {
-	return ""
+	return RouterKey
 }
 
 func (m *MsgUpdateParams) Type() string {
-	return "lorenzo/plan/MsgUpdateParams"
+	return TypeMsgUpdateParams
 }
 
 // ValidateBasic executes sanity validation on the provided data
@@ -83,11 +95,11 @@ func (m *MsgUpgradePlan) GetSignBytes() []byte {
 }
 
 func (m *MsgUpgradePlan) Route() string {
-	return ""
+	return RouterKey
 }
 
 func (m *MsgUpgradePlan) Type() string {
-	return "lorenzo/plan/MsgUpgradePlan"
+	return TypeMsgUpgradePlan
 }
 
 // ValidateBasic executes sanity validation on the provided data
@@ -124,11 +136,11 @@ func (m *MsgCreatePlan) GetSignBytes() []byte {
 }
 
 func (m *MsgCreatePlan) Route() string {
-	return ""
+	return RouterKey
 }
 
 func (m *MsgCreatePlan) Type() string {
-	return "lorenzo/plan/MsgCreatePlan"
+	return TypeMsgCreatePlan
 }
 
 // ValidateBasic executes sanity validation on the provided data
@@ -171,11 +183,11 @@ func (m *MsgClaims) GetSignBytes() []byte {
 }
 
 func (m *MsgClaims) Route() string {
-	return ""
+	return RouterKey
 }
 
 func (m *MsgClaims) Type() string {
-	return "lorenzo/plan/MsgClaims"
+	return TypeMsgClaims
 }
 
 // ValidateBasic executes sanity validation on the provided data
@@ -203,11 +215,11 @@ func (m *MsgCreateYAT) GetSignBytes() []byte {
 }
 
 func (m *MsgCreateYAT) Route() string {
-	return ""
+	return RouterKey
 }
 
 func (m *MsgCreateYAT) Type() string {
-	return "lorenzo/plan/MsgCreateYAT"
+	return TypeMsgCreateYAT
 }
 
 // ValidateBasic executes sanity validation on the provided data
@@ -235,11 +247,11 @@ func (m *MsgUpdatePlanStatus) GetSignBytes() []byte {
 }
 
 func (m *MsgUpdatePlanStatus) Route() string {
-	return ""
+	return RouterKey
 }
 
 func (m *MsgUpdatePlanStatus) Type() string {
-	return "lorenzo/plan/MsgUpdatePlanStatus"
+	return TypeMsgUpdatePlanStatus
 }
 
 // ValidateBasic executes sanity validation on the provided data
@@ -267,11 +279,11 @@ func (m *MsgSetMinter) GetSignBytes() []byte {
 }
 
 func (m *MsgSetMinter) Route() string {
-	return ""
+	return RouterKey
 }
 
 func (m *MsgSetMinter) Type() string {
-	return "lorenzo/plan/MsgSetMinter"
+	return TypeMsgSetMinter
 }
 
 // ValidateBasic executes sanity validation on the provided data
@@ -299,11 +311,11 @@ func (m *MsgRemoveMinter) GetSignBytes() []byte {
 }
 
 func (m *MsgRemoveMinter) Route() string {
-	return ""
+	return RouterKey
 }
 
 func (m *MsgRemoveMinter) Type() string {
-	return "lorenzo/plan/MsgRemoveMinter"
+	return TypeMsgRemoveMinter
 }
 
 // ValidateBasic executes sanity validation on the provided data
@@ -334,9 +346,9 @@ func (m *MsgSetMerkleRoot) GetSignBytes() []byte {
 }
 
 func (m *MsgSetMerkleRoot) Route() string {
-	return ""
+	return RouterKey
 }
 
 func (m *MsgSetMerkleRoot) Type() string {
-	return "lorenzo/plan/MsgSetMerkleRoot"
+	return TypeMsgSetMerkleRoot
 }

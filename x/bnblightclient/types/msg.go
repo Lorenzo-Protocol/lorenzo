@@ -5,6 +5,12 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
 )
 
+const (
+	TypeMsgUpdateHeader  = "update_header"
+	TypeMsgUploadHeaders = "upload_headers"
+	TypeMsgUpdateParams  = "update_params"
+)
+
 var (
 	_ sdk.Msg = (*MsgUpdateHeader)(nil)
 	_ sdk.Msg = (*MsgUploadHeaders)(nil)
@@ -35,11 +41,11 @@ func (m *MsgUpdateHeader) GetSignBytes() []byte {
 }
 
 func (m *MsgUpdateHeader) Route() string {
-	return ""
+	return RouterKey
 }
 
 func (m *MsgUpdateHeader) Type() string {
-	return "lorenzo/bnblightclient/MsgUploadHeaders"
+	return TypeMsgUpdateHeader
 }
 
 // ValidateBasic implements sdk.Msg interface
@@ -60,11 +66,11 @@ func (m *MsgUploadHeaders) GetSignBytes() []byte {
 }
 
 func (m *MsgUploadHeaders) Route() string {
-	return ""
+	return RouterKey
 }
 
 func (m *MsgUploadHeaders) Type() string {
-	return "lorenzo/bnblightclient/MsgUpdateHeader"
+	return TypeMsgUploadHeaders
 }
 
 // ValidateBasic implements sdk.Msg interface
@@ -85,9 +91,9 @@ func (m *MsgUpdateParams) GetSignBytes() []byte {
 }
 
 func (m *MsgUpdateParams) Route() string {
-	return ""
+	return RouterKey
 }
 
 func (m *MsgUpdateParams) Type() string {
-	return "lorenzo/bnblightclient/MsgUpdateParams"
+	return TypeMsgUpdateParams
 }

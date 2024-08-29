@@ -7,6 +7,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+const TypeMsgUpdateParams = "update_params"
+
 var (
 	_ sdk.Msg            = (*MsgUpdateParams)(nil)
 	_ legacytx.LegacyMsg = (*MsgUpdateParams)(nil)
@@ -31,11 +33,11 @@ func (m *MsgUpdateParams) GetSignBytes() []byte {
 }
 
 func (m *MsgUpdateParams) Route() string {
-	return ""
+	return RouterKey
 }
 
 func (m *MsgUpdateParams) Type() string {
-	return "lorenzo/fee/MsgUpdateParams"
+	return TypeMsgUpdateParams
 }
 
 // Validate validates the Params struct.

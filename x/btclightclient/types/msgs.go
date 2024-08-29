@@ -10,6 +10,12 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
 )
 
+const (
+	TypeMsgInsertHeaders = "insert_headers"
+	TypeMsgUpdateParams  = "update_params"
+	TypeMsgUpdateFeeRate = "update_fee_rate"
+)
+
 var (
 	_ sdk.Msg = (*MsgInsertHeaders)(nil)
 	_ sdk.Msg = (*MsgUpdateParams)(nil)
@@ -107,9 +113,9 @@ func (msg *MsgInsertHeaders) GetSignBytes() []byte {
 	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(msg))
 }
 
-func (msg *MsgInsertHeaders) Route() string { return "" }
+func (msg *MsgInsertHeaders) Route() string { return RouterKey }
 
-func (msg *MsgInsertHeaders) Type() string { return "lorenzo/btclightclient/MsgInsertHeaders" }
+func (msg *MsgInsertHeaders) Type() string { return TypeMsgInsertHeaders }
 
 func (msg *MsgUpdateFeeRate) ValidateBasic() error {
 	// This function validates stateless message elements
@@ -136,9 +142,9 @@ func (msg *MsgUpdateFeeRate) GetSignBytes() []byte {
 	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(msg))
 }
 
-func (msg *MsgUpdateFeeRate) Route() string { return "" }
+func (msg *MsgUpdateFeeRate) Route() string { return RouterKey }
 
-func (msg *MsgUpdateFeeRate) Type() string { return "lorenzo/btclightclient/MsgUpdateFeeRate" }
+func (msg *MsgUpdateFeeRate) Type() string { return TypeMsgUpdateFeeRate }
 
 func (msg *MsgUpdateParams) ValidateBasic() error {
 	return nil
@@ -159,9 +165,9 @@ func (msg *MsgUpdateParams) GetSignBytes() []byte {
 	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(msg))
 }
 
-func (msg *MsgUpdateParams) Route() string { return "" }
+func (msg *MsgUpdateParams) Route() string { return RouterKey }
 
-func (msg *MsgUpdateParams) Type() string { return "lorenzo/btclightclient/MsgUpdateParams" }
+func (msg *MsgUpdateParams) Type() string { return TypeMsgUpdateParams }
 
 func (msg *MsgUpdateFeeRate) ReporterAddress() sdk.AccAddress {
 	sender, err := sdk.AccAddressFromBech32(msg.Signer)

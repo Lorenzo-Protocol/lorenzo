@@ -3,12 +3,22 @@ package types
 import (
 	"errors"
 
+	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
 	"github.com/ethereum/go-ethereum/common"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	errortypes "github.com/cosmos/cosmos-sdk/types/errors"
 	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
+)
+
+const (
+	TypeMsgRegisterCoin     = "register_coin"
+	TypeMsgRegisterERC20    = "register_erc20"
+	TypeMsgToggleConversion = "toggle_conversion"
+	TypeMsgConvertCoin      = "convert_coin"
+	TypeMsgConvertERC20     = "convert_erc20"
+	TypeMsgUpdateParams     = "update_params"
 )
 
 var (
@@ -18,6 +28,15 @@ var (
 	_ sdk.Msg = &MsgConvertCoin{}
 	_ sdk.Msg = &MsgConvertERC20{}
 	_ sdk.Msg = &MsgUpdateParams{}
+)
+
+var (
+	_ legacytx.LegacyMsg = &MsgRegisterCoin{}
+	_ legacytx.LegacyMsg = &MsgRegisterERC20{}
+	_ legacytx.LegacyMsg = &MsgToggleConversion{}
+	_ legacytx.LegacyMsg = &MsgConvertCoin{}
+	_ legacytx.LegacyMsg = &MsgConvertERC20{}
+	_ legacytx.LegacyMsg = &MsgUpdateParams{}
 )
 
 // ValidateBasic implements sdk.Msg. It checks:
@@ -69,11 +88,11 @@ func (m *MsgRegisterCoin) GetSignBytes() []byte {
 }
 
 func (m *MsgRegisterCoin) Route() string {
-	return ""
+	return RouterKey
 }
 
 func (m *MsgRegisterCoin) Type() string {
-	return "lorenzo/token/MsgRegisterCoin"
+	return TypeMsgRegisterCoin
 }
 
 // ValidateBasic implements sdk.Msg
@@ -115,11 +134,11 @@ func (m *MsgRegisterERC20) GetSignBytes() []byte {
 }
 
 func (m *MsgRegisterERC20) Route() string {
-	return ""
+	return RouterKey
 }
 
 func (m *MsgRegisterERC20) Type() string {
-	return "lorenzo/token/MsgRegisterERC20"
+	return TypeMsgRegisterERC20
 }
 
 // ValidateBasic implements sdk.Msg
@@ -148,11 +167,11 @@ func (m *MsgToggleConversion) GetSignBytes() []byte {
 }
 
 func (m *MsgToggleConversion) Route() string {
-	return ""
+	return RouterKey
 }
 
 func (m *MsgToggleConversion) Type() string {
-	return "lorenzo/token/MsgToggleConversion"
+	return TypeMsgToggleConversion
 }
 
 // ValidateBasic implements sdk.Msg
@@ -191,11 +210,11 @@ func (m *MsgConvertCoin) GetSignBytes() []byte {
 }
 
 func (m *MsgConvertCoin) Route() string {
-	return ""
+	return RouterKey
 }
 
 func (m *MsgConvertCoin) Type() string {
-	return "lorenzo/token/MsgConvertCoin"
+	return TypeMsgConvertCoin
 }
 
 // ValidateBasic implements sdk.Msg
@@ -231,11 +250,11 @@ func (m *MsgConvertERC20) GetSignBytes() []byte {
 }
 
 func (m *MsgConvertERC20) Route() string {
-	return ""
+	return RouterKey
 }
 
 func (m *MsgConvertERC20) Type() string {
-	return "lorenzo/token/MsgConvertERC20"
+	return TypeMsgConvertERC20
 }
 
 // ValidateBasic implements sdk.Msg
@@ -257,9 +276,9 @@ func (m *MsgUpdateParams) GetSignBytes() []byte {
 }
 
 func (m *MsgUpdateParams) Route() string {
-	return ""
+	return RouterKey
 }
 
 func (m *MsgUpdateParams) Type() string {
-	return "lorenzo/token/MsgUpdateParams"
+	return TypeMsgUpdateParams
 }
