@@ -35,7 +35,7 @@ func upgradeHandlerConstructor(
 		// Note: StakePlanHubAddress is Binance Smart Chain testnet address. It should be updated to mainnet address for mainnet.
 		// Note:  ChainId Is Binance Smart Chain testnet chain id. It should be updated to mainnet chain id for mainnet.
 		bnbLightClientParams := &bnblightclienttypes.Params{
-			StakePlanHubAddress: "0x8BCd1CCDA853677Ac865C882B60FBaF5030EeF50",
+			StakePlanHubAddress: "",
 			EventName:           "StakeBTC2JoinStakePlan",
 			RetainedBlocks:      1000000,
 			AllowList:           []string{"lrz1xa40j022h2rcmnte47gyjg8688grln94pp84lc"},
