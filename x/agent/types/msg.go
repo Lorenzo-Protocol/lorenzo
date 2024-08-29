@@ -11,6 +11,13 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
 )
 
+const (
+	TypeMsgUpdateParams = "update_params"
+	TypeMsgAddAgent     = "add_agent"
+	TypeMsgEditAgent    = "edit_agent"
+	TypeMsgRemoveAgent  = "remove_agent"
+)
+
 var (
 	_ sdk.Msg = (*MsgUpdateParams)(nil)
 	_ sdk.Msg = (*MsgAddAgent)(nil)
@@ -43,9 +50,9 @@ func (m *MsgUpdateParams) GetSignBytes() []byte {
 	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(m))
 }
 
-func (m *MsgUpdateParams) Route() string { return "" }
+func (m *MsgUpdateParams) Route() string { return RouterKey }
 
-func (m *MsgUpdateParams) Type() string { return "lorenzo/agent/MsgUpdateParams" }
+func (m *MsgUpdateParams) Type() string { return TypeMsgUpdateParams }
 
 // ValidateBasic executes sanity validation on the provided data
 func (m *MsgAddAgent) ValidateBasic() error {
@@ -78,9 +85,9 @@ func (m *MsgAddAgent) GetSignBytes() []byte {
 	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(m))
 }
 
-func (m *MsgAddAgent) Route() string { return "" }
+func (m *MsgAddAgent) Route() string { return RouterKey }
 
-func (m *MsgAddAgent) Type() string { return "lorenzo/agent/MsgAddAgent" }
+func (m *MsgAddAgent) Type() string { return TypeMsgAddAgent }
 
 // ValidateBasic executes sanity validation on the provided data
 func (m *MsgEditAgent) ValidateBasic() error {
@@ -105,9 +112,9 @@ func (m *MsgEditAgent) GetSignBytes() []byte {
 	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(m))
 }
 
-func (m *MsgEditAgent) Route() string { return "" }
+func (m *MsgEditAgent) Route() string { return RouterKey }
 
-func (m *MsgEditAgent) Type() string { return "lorenzo/agent/MsgEditAgent" }
+func (m *MsgEditAgent) Type() string { return TypeMsgEditAgent }
 
 // ValidateBasic executes sanity validation on the provided data
 func (m *MsgRemoveAgent) ValidateBasic() error {
@@ -131,6 +138,6 @@ func (m *MsgRemoveAgent) GetSignBytes() []byte {
 	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(m))
 }
 
-func (m *MsgRemoveAgent) Route() string { return "" }
+func (m *MsgRemoveAgent) Route() string { return RouterKey }
 
-func (m *MsgRemoveAgent) Type() string { return "lorenzo/agent/MsgRemoveAgent" }
+func (m *MsgRemoveAgent) Type() string { return TypeMsgRemoveAgent }

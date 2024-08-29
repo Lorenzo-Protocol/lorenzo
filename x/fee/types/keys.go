@@ -6,6 +6,8 @@ const (
 
 	// StoreKey defines the primary module store key
 	StoreKey = ModuleName
+
+	RouterKey = ModuleName
 )
 
 // ParamsKey defines the key to store the Params object

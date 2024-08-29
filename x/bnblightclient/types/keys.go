@@ -10,6 +10,8 @@ const (
 
 	// StoreKey is the string store representation
 	StoreKey = ModuleName
+
+	RouterKey = ModuleName
 )
 
 var (
