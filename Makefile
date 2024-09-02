@@ -101,6 +101,11 @@ clean:
 	$(BUILDDIR)/ \
 	.testnets
 
+bnbtool:
+	@cd cmd/bnbtool && go mod tidy
+	@cd cmd/bnbtool && go build -o ../../build/bnbtool ./
+
+
 ###############################################################################
 ###                           Tests & Simulation                            ###
 ###############################################################################
