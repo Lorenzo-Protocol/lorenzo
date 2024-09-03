@@ -1,6 +1,7 @@
 package types
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"github.com/btcsuite/btcd/btcutil"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -22,5 +23,13 @@ func NewEventBurnCreated(signer sdk.AccAddress, btcTargetAddress btcutil.Address
 		Signer:           signer.String(),
 		BtcTargetAddress: btcTargetAddress.String(),
 		Amount:           amount,
+	}
+}
+
+func NewEventMintStBTC(cosmosAddr, ethAddr string, amount sdkmath.Int) *EventMintStBTC {
+	return &EventMintStBTC{
+		CosmosAddress: cosmosAddr,
+		EthAddress:    ethAddr,
+		Amount:        amount,
 	}
 }

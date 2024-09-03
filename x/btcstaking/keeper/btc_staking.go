@@ -13,7 +13,7 @@ const (
 	Success         = "Ok"
 )
 
-func (k Keeper) Delegate(
+func (k Keeper) DepositBTC(
 	ctx sdk.Context,
 	btcStakingRecord *types.BTCStakingRecord,
 	mintToAddr sdk.AccAddress,
@@ -23,20 +23,9 @@ func (k Keeper) Delegate(
 	agentId uint64,
 ) error {
 	toMintAmount := sdkmath.NewIntFromUint64(btcAmount).Mul(sdkmath.NewIntFromUint64(SatoshiToStBTCMul))
-	coins := []sdk.Coin{
-		{
-			Denom:  types.NativeTokenDenom,
-			Amount: toMintAmount,
-		},
-	}
 
-	// mint stBTC to module account
-	if err := k.bankKeeper.MintCoins(ctx, types.ModuleName, coins); err != nil {
-		return errorsmod.Wrapf(types.ErrMintToModule, "failed to mint coins: %v", err)
-	}
-
-	if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, mintToAddr, coins); err != nil {
-		return errorsmod.Wrapf(types.ErrTransferToAddr, "failed to send coins from module to account: %v", err)
+	if err := k.MintStBTC(ctx, mintToAddr, toMintAmount); err != nil {
+		return errorsmod.Wrapf(types.ErrMintStBTC, "failed to mint stBTC: %v", err)
 	}
 
 	if planId != 0 {
@@ -66,7 +55,7 @@ func (k Keeper) Delegate(
 	return nil
 }
 
-func (k Keeper) Undelegate(ctx sdk.Context, sender sdk.AccAddress, amount sdk.Coin) error {
+func (k Keeper) Withdraw(ctx sdk.Context, sender sdk.AccAddress, amount sdk.Coin) error {
 	balance := k.bankKeeper.GetBalance(ctx, sender, types.NativeTokenDenom)
 	if balance.IsLT(amount) {
 		return types.ErrBurnInsufficientBalance

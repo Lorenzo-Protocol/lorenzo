@@ -21,3 +21,12 @@ message EventBurnCreated {
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
 }
+
+message EventMintStBTC {
+  string cosmos_address = 1;
+  string eth_address = 2;
+  string amount = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
