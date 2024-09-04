@@ -20,6 +20,7 @@ const (
 	TypeMsgRemoveReceiver    = "remove_receiver"
 	TypeMsgAddReceiver       = "add_receiver"
 	TypeMsgUpdateParams      = "update_params"
+	TypeMsgRepairStaking     = "repair_staking"
 )
 
 // ensure that these message types implement the sdk.Msg interface
@@ -260,18 +261,14 @@ func (m *MsgRepairStaking) ValidateBasic() error {
 		return errorsmod.Wrap(err, "invalid authority address")
 	}
 
-	seenMap := make(map[string]bool)
 	for _, a := range m.ReceiverInfos {
-		if seenMap[a.Address] {
-			return fmt.Errorf("duplicate address: %s", a)
-		}
 		if _, err := sdk.AccAddressFromBech32(a.Address); err != nil {
 			return fmt.Errorf("invalid address: %s", a)
 		}
 		if a.Amount.IsZero() {
 			return fmt.Errorf("amount cannot be zero")
 		}
-		seenMap[a.Address] = true
+
 	}
 
 	return nil
@@ -282,9 +279,9 @@ func (m *MsgRepairStaking) GetSignBytes() []byte {
 }
 
 func (m *MsgRepairStaking) Route() string {
-	return ""
+	return RouterKey
 }
 
 func (m *MsgRepairStaking) Type() string {
-	return "lorenzo/btcstaking/MsgRepairStaking"
+	return TypeMsgRepairStaking
 }

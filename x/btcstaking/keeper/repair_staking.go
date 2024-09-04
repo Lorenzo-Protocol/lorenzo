@@ -13,16 +13,8 @@ func (k Keeper) Compensate(ctx sdk.Context, receiverInfos []*types.ReceiverInfo)
 			return err
 		}
 
-		coins := sdk.NewCoins(sdk.NewCoin(types.NativeTokenDenom, receiverInfo.Amount))
-
-		// mint stBTC to module account
-		if err := k.bankKeeper.MintCoins(ctx, types.ModuleName, coins); err != nil {
-			return errorsmod.Wrapf(types.ErrMintToModule, "failed to mint coins: %v", err)
-		}
-
-		// send coins to receiver
-		if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, receiver, coins); err != nil {
-			return errorsmod.Wrapf(types.ErrTransferToAddr, "failed to send coins from module to account: %v", err)
+		if err := k.MintStBTC(ctx, receiver, receiverInfo.Amount); err != nil {
+			return errorsmod.Wrapf(types.ErrMintStBTC, "failed to mint stBTC: %v", err)
 		}
 	}
 	return nil

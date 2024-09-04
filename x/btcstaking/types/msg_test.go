@@ -220,3 +220,74 @@ func (suite *MsgsTestSuite) TestMsgBurnRequest() {
 		})
 	}
 }
+
+func (suite *MsgsTestSuite) TestMsgRepairStaking() {
+	testCases := []struct {
+		name    string
+		msg     *types.MsgRepairStaking
+		expPass bool
+	}{
+		{
+			"fail - invalid authority address",
+			&types.MsgRepairStaking{
+				Authority: "foobar",
+				ReceiverInfos: []*types.ReceiverInfo{
+					{
+						Address: "cosmos1qperwt9wrnkg5k9e5gzfgjppzpqhyav5j24d66",
+						Amount:  sdkmath.NewInt(100000000000),
+					},
+				},
+			},
+			false,
+		},
+		{
+			"fail - zero amount",
+			&types.MsgRepairStaking{
+				Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+				ReceiverInfos: []*types.ReceiverInfo{
+					{
+						Address: "cosmos1qperwt9wrnkg5k9e5gzfgjppzpqhyav5j24d66",
+						Amount:  sdkmath.NewInt(0),
+					},
+				},
+			},
+			false,
+		},
+		{
+			"fail - invalid authority address",
+			&types.MsgRepairStaking{
+				Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+				ReceiverInfos: []*types.ReceiverInfo{
+					{
+						Address: "0x5dCA2483280D9727c80b5518faC4556617fb19ZZ",
+						Amount:  sdkmath.NewInt(100000000000),
+					},
+				},
+			},
+			false,
+		},
+		{
+			"pass - valid msg",
+			&types.MsgRepairStaking{
+				Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+				ReceiverInfos: []*types.ReceiverInfo{
+					{
+						Address: "cosmos1qperwt9wrnkg5k9e5gzfgjppzpqhyav5j24d66",
+						Amount:  sdkmath.NewInt(100000000000),
+					},
+				},
+			},
+			true,
+		},
+	}
+	for _, tc := range testCases {
+		suite.Run(tc.name, func() {
+			err := tc.msg.ValidateBasic()
+			if tc.expPass {
+				suite.NoError(err)
+			} else {
+				suite.Error(err)
+			}
+		})
+	}
+}
