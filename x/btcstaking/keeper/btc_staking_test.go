@@ -405,7 +405,7 @@ func (suite *KeeperTestSuite) TestDelegate() {
 			if tc.malleate != nil {
 				tc.malleate(tc.request)
 			}
-			err := suite.keeper.Delegate(
+			err := suite.keeper.DepositBTC(
 				suite.ctx,
 				tc.request.btcStakingRecord,
 				tc.request.mintAddr,

@@ -365,3 +365,72 @@ func (suite *KeeperTestSuite) TestBurn() {
 		})
 	}
 }
+
+func (suite *KeeperTestSuite) TestRepairStaking() {
+	testCases := []struct {
+		name       string
+		request    *types.MsgRepairStaking
+		malleate   func(request *types.MsgRepairStaking)
+		validation func(request *types.MsgRepairStaking)
+		expectErr  bool
+	}{
+		{
+			name:      "fail - invalid authority",
+			request:   &types.MsgRepairStaking{Authority: "foobar"},
+			expectErr: true,
+		},
+		{
+			name: "success - valid repair request",
+			request: &types.MsgRepairStaking{
+				Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+				ReceiverInfos: []*types.ReceiverInfo{
+					{
+						Address: "lrz1tffj9qp3wpdnuds443c86wffrac4jkapkjmmcy",
+						Amount:  sdkmath.NewInt(100000000000),
+					},
+				},
+			},
+			validation: func(request *types.MsgRepairStaking) {
+				// check balance
+				for _, receiverInfo := range request.ReceiverInfos {
+					receiver, err := sdk.AccAddressFromBech32(receiverInfo.Address)
+					suite.Require().NoError(err)
+					balance := suite.lorenzoApp.BankKeeper.GetBalance(suite.ctx, receiver, types.NativeTokenDenom)
+					suite.Require().Equal(receiverInfo.Amount, balance.Amount)
+				}
+
+				// check event
+				events := suite.ctx.EventManager().Events()
+				abciEvents := events.ToABCIEvents()
+				for _, abciEvent := range abciEvents {
+					if abciEvent.Type == "lorenzo.btcstaking.v1.EventMintStBTC" {
+						eventAttribute := abciEvent.GetAttributes()
+
+						suite.Require().Equal(eventAttribute[0].Key, "amount")
+						suite.Require().Equal(eventAttribute[1].Key, "cosmos_address")
+						suite.Require().Equal(eventAttribute[2].Key, "eth_address")
+
+					}
+				}
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		suite.Run(fmt.Sprintf("MsgUpdateParams - %s", tc.name), func() {
+			suite.SetupTest()
+			if tc.malleate != nil {
+				tc.malleate(tc.request)
+			}
+			_, err := suite.msgServer.RepairStaking(suite.ctx, tc.request)
+			if tc.expectErr {
+				suite.Require().Error(err)
+			} else {
+				suite.Require().NoError(err)
+			}
+			if tc.validation != nil {
+				tc.validation(tc.request)
+			}
+		})
+	}
+}

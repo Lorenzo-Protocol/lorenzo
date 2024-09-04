@@ -3,6 +3,8 @@ package keeper
 import (
 	"math/big"
 
+	errorsmod "cosmossdk.io/errors"
+
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ethereum/go-ethereum/common"
@@ -90,15 +92,13 @@ func (k Keeper) DepositBTCB(
 	}
 
 	// mint stBTC to the bridgeAddr
-	totalStBTC := sdk.NewCoins(sdk.NewCoin(types.NativeTokenDenom, sdk.NewIntFromBigInt(totalStBTCAmt)))
-	if err := k.bankKeeper.MintCoins(ctx, types.ModuleName, totalStBTC); err != nil {
-		return err
+	mintToAddr := sdk.AccAddress(common.HexToAddress(k.GetParams(ctx).BridgeAddr).Bytes())
+	toMintAmount := math.NewIntFromBigInt(totalStBTCAmt)
+	// mint stBTC to the bridgeAddr
+	if err := k.MintStBTC(ctx, mintToAddr, toMintAmount); err != nil {
+		return errorsmod.Wrapf(types.ErrMintStBTC, "failed to mint stBTC: %v", err)
 	}
 
-	bridgeAddr := sdk.AccAddress(common.HexToAddress(k.GetParams(ctx).BridgeAddr).Bytes())
-	if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, bridgeAddr, totalStBTC); err != nil {
-		return err
-	}
 	return nil
 }
 

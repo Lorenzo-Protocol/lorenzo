@@ -20,6 +20,7 @@ const (
 	TypeMsgRemoveReceiver    = "remove_receiver"
 	TypeMsgAddReceiver       = "add_receiver"
 	TypeMsgUpdateParams      = "update_params"
+	TypeMsgRepairStaking     = "repair_staking"
 )
 
 // ensure that these message types implement the sdk.Msg interface
@@ -30,6 +31,7 @@ var (
 	_ sdk.Msg = &MsgAddReceiver{}
 	_ sdk.Msg = &MsgUpdateParams{}
 	_ sdk.Msg = &MsgCreateBTCBStaking{}
+	_ sdk.Msg = &MsgRepairStaking{}
 )
 
 var (
@@ -247,4 +249,39 @@ func (m *MsgRemoveReceiver) Route() string {
 
 func (m *MsgRemoveReceiver) Type() string {
 	return TypeMsgRemoveReceiver
+}
+
+func (m *MsgRepairStaking) GetSigners() []sdk.AccAddress {
+	addr, _ := sdk.AccAddressFromBech32(m.Authority)
+	return []sdk.AccAddress{addr}
+}
+
+func (m *MsgRepairStaking) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
+		return errorsmod.Wrap(err, "invalid authority address")
+	}
+
+	for _, a := range m.ReceiverInfos {
+		if _, err := sdk.AccAddressFromBech32(a.Address); err != nil {
+			return fmt.Errorf("invalid address: %s", a)
+		}
+		if a.Amount.IsZero() {
+			return fmt.Errorf("amount cannot be zero")
+		}
+
+	}
+
+	return nil
+}
+
+func (m *MsgRepairStaking) GetSignBytes() []byte {
+	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(m))
+}
+
+func (m *MsgRepairStaking) Route() string {
+	return RouterKey
+}
+
+func (m *MsgRepairStaking) Type() string {
+	return TypeMsgRepairStaking
 }

@@ -28,4 +28,5 @@ var (
 	ErrStakingRecordNotFound       = errorsmod.Register(ModuleName, 1120, "staking record not found")
 	ErrOpReturnLength              = errorsmod.Register(ModuleName, 1121, "invalid opReturnMsg length")
 	ErrMintAmount                  = errorsmod.Register(ModuleName, 1122, "invalid mint amount")
+	ErrMintStBTC                   = errorsmod.Register(ModuleName, 1123, "fail to mint stBTC")
 )

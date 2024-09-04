@@ -146,7 +146,7 @@ func (ms msgServer) CreateBTCStaking(goCtx context.Context, msg *types.MsgCreate
 	}
 
 	// mint stBTC to mintToAddr and record the staking
-	if err := ms.k.Delegate(ctx,
+	if err := ms.k.DepositBTC(ctx,
 		stakingRecord, mintToAddr, receiverAddr, btcAmount, planId, msg.AgentId); err != nil {
 		return nil, err
 	}
@@ -172,7 +172,7 @@ func (ms msgServer) Burn(goCtx context.Context, msg *types.MsgBurnRequest) (*typ
 
 	amount := sdk.NewCoin(types.NativeTokenDenom, msg.Amount)
 
-	if err := ms.k.Undelegate(ctx, sender, amount); err != nil {
+	if err := ms.k.Withdraw(ctx, sender, amount); err != nil {
 		return nil, err
 	}
 
@@ -184,7 +184,7 @@ func (ms msgServer) Burn(goCtx context.Context, msg *types.MsgBurnRequest) (*typ
 	return &types.MsgBurnResponse{}, nil
 }
 
-// CreateBTCStakingFromBNB implements types.MsgServer.
+// CreateBTCBStaking implements types.MsgServer.
 func (ms msgServer) CreateBTCBStaking(goctx context.Context, req *types.MsgCreateBTCBStaking) (*types.MsgCreateBTCBStakingResponse, error) {
 	depositor, err := sdk.AccAddressFromBech32(req.Signer)
 	if err != nil {
@@ -211,6 +211,21 @@ func (ms msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdatePara
 		return nil, err
 	}
 	return &types.MsgUpdateParamsResponse{}, nil
+}
+
+func (ms msgServer) RepairStaking(goCtx context.Context, msg *types.MsgRepairStaking) (*types.MsgRepairStakingResponse, error) {
+	if ms.k.authority != msg.Authority {
+		return nil, errorsmod.Wrapf(
+			govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", ms.k.authority, msg.Authority)
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if err := ms.k.Compensate(ctx, msg.ReceiverInfos); err != nil {
+		return nil, err
+	}
+
+	return &types.MsgRepairStakingResponse{}, nil
 }
 
 func (ms msgServer) AddReceiver(goCtx context.Context, req *types.MsgAddReceiver) (*types.MsgAddReceiverResponse, error) {
