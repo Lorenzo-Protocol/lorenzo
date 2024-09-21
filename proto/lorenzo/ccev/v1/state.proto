@@ -1,0 +1,40 @@
+syntax = "proto3";
+package lorenzo.ccev.v1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/v3/x/ccev/types";
+
+message TinyHeader {
+  option (gogoproto.goproto_getters) = false;
+
+  // hash defines the header hash
+  bytes hash = 1;
+  // number defines the block number
+  uint64 number = 2;
+  // receipt_root defines the receipts merkle root hash
+  bytes receipt_root = 4;
+}
+
+// Client defines the chain light client state
+message Client {
+  // chain_id defines the target chain id
+  uint32 chain_id = 1;
+  // chain_name defines the target chain name
+  string chain_name = 2;
+  // the initial block
+  lorenzo.ccev.v1.TinyHeader initial_block = 3 [ (gogoproto.nullable) = false ];
+  ;
+}
+
+// CrossChainContract defines the cross chain contract
+message CrossChainContract {
+  // chain_id defines the target chain id
+  uint32 chain_id = 1;
+  // the stake plan hub contract address
+  bytes address = 2;
+  // event_name defines the event name
+  string event_name = 3;
+  // abi defines the contract abi
+  bytes abi = 4;
+}
