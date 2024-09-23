@@ -20,7 +20,7 @@ func (gs GenesisState) Validate() error {
 		}
 
 		for _, contract := range chain.Contracts {
-			if err := ValidateContract(contract.Contract); err != nil {
+			if err := ValidateContract(contract); err != nil {
 				return err
 			}
 		}

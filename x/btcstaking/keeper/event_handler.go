@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	"fmt"
 	"math/big"
 
 	errorsmod "cosmossdk.io/errors"
@@ -31,21 +30,13 @@ type eventHandler struct {
 	keeper Keeper
 }
 
-// Execute implements types.EventHandler.
-func (e *eventHandler) Execute(ctx sdk.Context, chainID uint32, events []*ccevtypes.Event) error {
+// Process implements types.EventHandler.
+func (e *eventHandler) Process(ctx sdk.Context, chainID uint32, events []*ccevtypes.Event) error {
 	totalStBTCAmt := new(big.Int)
 	for i := range events {
 		event, err := e.parseEvent(events[i])
 		if err != nil {
 			return err
-		}
-
-		if e.keeper.hasxBTCStakingRecord(ctx, chainID, event.Contract.Bytes(), event.Identifier) {
-			return types.ErrDuplicateStakingEvent.Wrapf("duplicate event,planID %d,stakingIdx %d,contract %s",
-				event.PlanID,
-				event.Identifier,
-				event.Contract.String(),
-			)
 		}
 
 		amount := new(big.Int).SetBytes(event.StBTCAmount.Bytes())
@@ -81,13 +72,12 @@ func (e *eventHandler) Execute(ctx sdk.Context, chainID uint32, events []*ccevty
 }
 
 // GetUniqueID implements types.EventHandler.
-func (e *eventHandler) GetUniqueID(ctx sdk.Context, event *ccevtypes.Event) (string, error) {
+func (e *eventHandler) Processed(ctx sdk.Context, chainID uint32, event *ccevtypes.Event) (bool, error) {
 	stakingEvent, err := e.parseEvent(event)
 	if err != nil {
-		return "", err
+		return false, err
 	}
-
-	return fmt.Sprintf("%d", stakingEvent.Identifier), nil
+	return e.keeper.hasxBTCStakingRecord(ctx, chainID, stakingEvent.Contract.Bytes(), stakingEvent.Identifier), nil
 }
 
 func (e *eventHandler) parseEvent(event *ccevtypes.Event) (*stakingxBTCEvent, error) {

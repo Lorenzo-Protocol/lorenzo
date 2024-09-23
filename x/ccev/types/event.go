@@ -13,14 +13,13 @@ var abiCache = map[string]*abi.ABI{}
 
 // EventHandler defines an event processing interface
 type EventHandler interface {
-	// GetUniqueID takes the context, topics, and eventArgs of an event and returns the event id, which is a unique string
-	// that can be used to identify the event. The event id is used to store the event in the events store.
-	GetUniqueID(ctx sdk.Context, eventInfo *Event) (string, error)
+	// Processed returns true if the event has been processed
+	Processed(ctx sdk.Context, chainID uint32, eventInfo *Event) (bool, error)
 
-	// Execute processes the event and executes the corresponding logic.
+	// Process processes the event and executes the corresponding logic.
 	// It takes the context, chain id, address of the contract that emitted the event, the topics of the event, and the event args.
 	// It returns an error if the processing fails.
-	Execute(ctx sdk.Context, chainID uint32, events []*Event) error
+	Process(ctx sdk.Context, chainID uint32, events []*Event) error
 }
 
 // Event is a struct that contains the topics and args of an event

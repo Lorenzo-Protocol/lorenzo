@@ -150,20 +150,15 @@ func (k Keeper) handleReceipt(
 
 		eventInfo := &types.Event{
 			Address: log.Address,
-			Topics: log.Topics,
-			Args:   eventArgs,
-		}
-		identify,err := handler.GetUniqueID(ctx, eventInfo)
-		if err != nil {
-			return errorsmod.Wrapf(types.ErrInvalidEvent, "failed to get unique id: %s", err.Error())
+			Topics:  log.Topics,
+			Args:    eventArgs,
 		}
 
-		if k.hasEvent(ctx, chainID, contract.Address, identify) {
-			return errorsmod.Wrapf(types.ErrInvalidEvent, "repeated events")
+		processed, err := handler.Processed(ctx, chainID, eventInfo)
+		if err != nil || processed {
+			return errorsmod.Wrapf(types.ErrInvalidEvent, "failed to process %s event", event.Name)
 		}
-		k.setEvent(ctx, chainID, contract.Address, identify)
-
 		events = append(events, eventInfo)
 	}
-	return handler.Execute(ctx, chainID, events)
+	return handler.Process(ctx, chainID, events)
 }

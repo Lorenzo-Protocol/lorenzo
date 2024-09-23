@@ -33,10 +33,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, genState types.GenesisState) {
 		}
 
 		for _, contract := range chain.Contracts {
-			k.setContract(ctx, contract.Contract)
-			for _, identifiy := range contract.EventIdentifiers {
-				k.setEvent(ctx, chain.Client.ChainId, contract.Contract.Address, identifiy)
-			}
+			k.setContract(ctx, contract)
 		}
 	}
 }
@@ -47,14 +44,11 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *types.GenesisState {
 
 	clients := k.getAllClients(ctx)
 	for _, client := range clients {
-		var contractState []*types.ContractState
+		var contractState []*types.Contract
 
 		contracts := k.getAllContracts(ctx, client.ChainId)
 		for _, contract := range contracts {
-			contractState = append(contractState, &types.ContractState{
-				Contract:         contract,
-				EventIdentifiers: k.getAllEventIdentifiers(ctx, client.ChainId, contract.Address),
-			})
+			contractState = append(contractState, contract)
 		}
 
 		chainState := &types.ChainState{
