@@ -1,8 +1,6 @@
 syntax = "proto3";
 package lorenzo.btcstaking.v1;
 
-import "cosmos/msg/v1/msg.proto";
-import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
 // import "cosmos/staking/v1beta1/staking.proto";
 
@@ -19,8 +17,8 @@ message BTCStakingRecord {
   uint64 plan_id = 8;
 }
 
-// BTCBStakingRecord defines the message for btcb staking record
-message BTCBStakingRecord {
+// XBTCStakingRecord defines the message for btc staking record
+message XBTCStakingRecord {
   // staking_idx defines the staking index
   uint64 staking_idx = 1;
   // contract defines the contract

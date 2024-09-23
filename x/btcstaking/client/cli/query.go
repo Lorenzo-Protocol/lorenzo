@@ -25,7 +25,7 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 	btcstakingQueryCmd.AddCommand(
 		CmdGetParams(),
 		CmdGetBTCStakingRecord(),
-		CmdGetBTCBStakingRecord(),
+		CmdGetxBTCStakingRecord(),
 	)
 
 	return btcstakingQueryCmd
@@ -92,9 +92,9 @@ func CmdGetBTCStakingRecord() *cobra.Command {
 	return cmd
 }
 
-func CmdGetBTCBStakingRecord() *cobra.Command {
+func CmdGetxBTCStakingRecord() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "btcb-staking-record [chain-id] [contract] [staking-idx]",
+		Use:   "xbtc-staking-record [chain-id] [contract] [staking-idx]",
 		Short: "get the btcb staking record",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -110,8 +110,8 @@ func CmdGetBTCBStakingRecord() *cobra.Command {
 				return fmt.Errorf("invalid staking idx: %s", args[0])
 			}
 
-			res, err := queryClient.BTCBStakingRecord(cmd.Context(),
-				&types.QueryBTCBStakingRecordRequest{
+			res, err := queryClient.XBTCStakingRecord(cmd.Context(),
+				&types.QueryxBTCStakingRecordRequest{
 					ChainId:    uint32(chainID),
 					Contract:   args[1],
 					StakingIdx: stakingIdx,

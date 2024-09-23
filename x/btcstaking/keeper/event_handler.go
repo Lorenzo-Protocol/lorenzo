@@ -40,7 +40,7 @@ func (e *eventHandler) Execute(ctx sdk.Context, chainID uint32, events []*ccevty
 			return err
 		}
 
-		if e.keeper.hasBTCBStakingRecord(ctx, chainID, event.Contract.Bytes(), event.Identifier) {
+		if e.keeper.hasxBTCStakingRecord(ctx, chainID, event.Contract.Bytes(), event.Identifier) {
 			return types.ErrDuplicateStakingEvent.Wrapf("duplicate event,planID %d,stakingIdx %d,contract %s",
 				event.PlanID,
 				event.Identifier,
@@ -52,7 +52,7 @@ func (e *eventHandler) Execute(ctx sdk.Context, chainID uint32, events []*ccevty
 		result := ""
 		totalStBTCAmt = totalStBTCAmt.Add(totalStBTCAmt, amount)
 
-		btcbStakingRecord := &types.BTCBStakingRecord{
+		xbtcStakingRecord := &types.XBTCStakingRecord{
 			StakingIdx:    event.Identifier,
 			Contract:      event.Contract.Bytes(),
 			ReceiverAddr:  event.Sender.String(),
@@ -62,9 +62,9 @@ func (e *eventHandler) Execute(ctx sdk.Context, chainID uint32, events []*ccevty
 			PlanId:        event.PlanID,
 		}
 
-		e.keeper.addBTCBStakingRecord(ctx, btcbStakingRecord)
+		e.keeper.addxBTCStakingRecord(ctx, xbtcStakingRecord)
 		// emit an event
-		ctx.EventManager().EmitTypedEvent(types.NewEventBTCBStakingCreated(btcbStakingRecord)) //nolint:errcheck,gosec
+		ctx.EventManager().EmitTypedEvent(types.NewEventXBTCStakingCreated(xbtcStakingRecord)) //nolint:errcheck,gosec
 	}
 
 	// mint stBTC to the bridgeAddr

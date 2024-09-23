@@ -42,25 +42,25 @@ func (k Keeper) StakingRecord(c context.Context, req *types.QueryStakingRecordRe
 	return &types.QueryStakingRecordResponse{Record: stakingRecord}, nil
 }
 
-// BTCBStakingRecord retrieves the BTCB staking record for the given contract and staking index.
+// XBTCStakingRecord retrieves the xBTC staking record for the given contract and staking index.
 //
 // Parameters:
 // - c: The context.Context object for the request.
-// - req: The QueryBTCBStakingRecordRequest object containing the contract address and staking index.
+// - req: The QueryxBTCStakingRecordRequest object containing the contract address and staking index.
 //
 // Returns:
-// - *types.QueryBTCBStakingRecordResponse: The BTCB staking record response.
+// - *types.QueryxBTCStakingRecordResponse: The BTCB staking record response.
 // - error: An error if the staking record retrieval fails.
-func (k Keeper) BTCBStakingRecord(c context.Context, req *types.QueryBTCBStakingRecordRequest) (*types.QueryBTCBStakingRecordResponse, error) {
+func (k Keeper) XBTCStakingRecord(c context.Context, req *types.QueryxBTCStakingRecordRequest) (*types.QueryxBTCStakingRecordResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
 	contract := common.HexToAddress(req.Contract)
 	// get the staking record
-	stakingRecord, err := k.getBTCBStakingRecord(ctx, req.ChainId, contract[:], req.StakingIdx)
+	stakingRecord, err := k.getxBTCBtakingRecord(ctx, req.ChainId, contract[:], req.StakingIdx)
 	if err != nil {
 		return nil, err
 	}
-	return &types.QueryBTCBStakingRecordResponse{Record: stakingRecord}, nil
+	return &types.QueryxBTCStakingRecordResponse{Record: stakingRecord}, nil
 }
 
 // NewQuerierImpl returns an implementation of the captains QueryServer interface.

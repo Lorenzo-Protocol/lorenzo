@@ -11,7 +11,13 @@ func NewEventBTCStakingCreated(record *BTCStakingRecord) *EventBTCStakingCreated
 	}
 }
 
-func NewEventBTCBStakingCreated(record *BTCBStakingRecord) *EventBTCBStakingCreated {
+func NewEventBTCBStakingCreated(record *XBTCStakingRecord) *EventBTCBStakingCreated {
+	return &EventBTCBStakingCreated{
+		Record: record,
+	}
+}
+
+func NewEventXBTCStakingCreated(record *XBTCStakingRecord) *EventBTCBStakingCreated {
 	return &EventBTCBStakingCreated{
 		Record: record,
 	}
