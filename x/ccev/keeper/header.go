@@ -135,19 +135,19 @@ func (k Keeper) GetHeader(ctx sdk.Context, chainID uint32, number uint64) (*type
 //
 // Returns:
 // - headers: a slice of Header objects
-// func (k Keeper) GetAllHeaders(ctx sdk.Context) (headers []*types.TinyHeader) {
-// 	store := ctx.KVStore(k.storeKey)
+func (k Keeper) GetAllHeaders(ctx sdk.Context,chainID uint32) (headers []*types.TinyHeader) {
+	store := k.clientStore(ctx, chainID)
 
-// 	it := sdk.KVStorePrefixIterator(store, types.KeyPrefixHeader)
-// 	defer it.Close() //nolint:errcheck
+	it := sdk.KVStorePrefixIterator(store, types.KeyPrefixHeader)
+	defer it.Close() //nolint:errcheck
 
-// 	for ; it.Valid(); it.Next() {
-// 		var header types.TinyHeader
-// 		k.cdc.MustUnmarshal(it.Value(), &header)
-// 		headers = append(headers, &header)
-// 	}
-// 	return
-// }
+	for ; it.Valid(); it.Next() {
+		var header types.TinyHeader
+		k.cdc.MustUnmarshal(it.Value(), &header)
+		headers = append(headers, &header)
+	}
+	return
+}
 
 // GetHeaderByHash retrieves a header from the store based on its hash.
 //
@@ -158,7 +158,7 @@ func (k Keeper) GetHeader(ctx sdk.Context, chainID uint32, number uint64) (*type
 // Returns:
 // - *types.Header: the header object, or nil if not found
 // - bool: true if the header was found, false otherwise
-func (k Keeper) GetHeaderByHash(ctx sdk.Context, chainID uint32, hash []byte) (*types.TinyHeader, bool) {
+func (k Keeper) GetHeaderByHash(ctx sdk.Context, chainID uint32, hash string) (*types.TinyHeader, bool) {
 	store := k.clientStore(ctx, chainID)
 	bz := store.Get(types.KeyHeaderHash(hash))
 	if bz == nil {

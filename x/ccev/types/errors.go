@@ -24,4 +24,8 @@ var (
 	ErrNotFoundClient = errorsmod.Register(ModuleName, 8, "client not found")
 	// ErrNotFoundContract is returned when contract is not found
 	ErrNotFoundContract = errorsmod.Register(ModuleName, 9, "contract not found")
+	// ErrInvalidClient is returned when client is not valid
+	ErrInvalidClient = errorsmod.Register(ModuleName, 10, "invalid client")
+	// ErrInvalidContract is returned when contract is not valid
+	ErrInvalidContract = errorsmod.Register(ModuleName, 11, "invalid contract")
 )

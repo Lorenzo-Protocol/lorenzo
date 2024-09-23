@@ -13,7 +13,18 @@ import (
 var _ types.MsgServer = msgServer{}
 
 type msgServer struct {
-	*Keeper
+	Keeper
+}
+
+// NewMsgServerImpl returns a new instance of msgServer with the provided Keeper.
+//
+// Parameter(s):
+// - k: Keeper
+// Return type(s): msgServer
+func NewMsgServerImpl(k Keeper) types.MsgServer {
+	return msgServer{
+		Keeper: k,
+	}
 }
 
 // CreateClient implements types.MsgServer.

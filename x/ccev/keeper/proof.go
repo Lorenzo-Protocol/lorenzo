@@ -86,7 +86,7 @@ func (k Keeper) VerifyReceipt(
 		return errorsmod.Wrapf(types.ErrHeaderNotFound, "header %d not found", number)
 	}
 
-	val, err := trie.VerifyProof(common.Hash(header.ReceiptRoot), proof.Index, &proof.Path)
+	val, err := trie.VerifyProof(common.HexToHash(header.ReceiptRoot), proof.Index, &proof.Path)
 	if err != nil {
 		return errorsmod.Wrapf(types.ErrInvalidProof, "invalid receipt proof")
 	}

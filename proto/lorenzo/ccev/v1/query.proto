@@ -86,7 +86,7 @@ message QueryHeaderResponse { lorenzo.ccev.v1.TinyHeader header = 1; }
 // method.
 message QueryHeaderByHashRequest {
   uint32 chain_id = 1;
-  bytes hash = 2;
+  string hash = 2;
 }
 
 // QueryHeaderByHashResponse is the response type for the Query/HeaderByHash RPC
