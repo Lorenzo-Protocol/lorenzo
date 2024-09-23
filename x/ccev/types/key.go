@@ -24,10 +24,8 @@ var (
 	KeyPrefixLatestNumber = []byte{0x04}
 	// KeyPrefixHeadHash defines the prefix to retrieve the head hash
 	KeyPrefixHeadHash = []byte{0x05}
-	// KeyPrefixEvent defines the prefix to retrieve the event
-	KeyPrefixEvent = []byte{0x06}
 	// KeyPrefixCrossChainContract defines the prefix to retrieve the cross chain contract
-	KeyPrefixCrossChainContract = []byte{0x07}
+	KeyPrefixCrossChainContract = []byte{0x06}
 )
 
 // KeyClient returns the key for a client
@@ -50,12 +48,6 @@ func KeyHeaderHash(hash string) []byte {
 // KeyLatestHeaderNumber returns the key for the latest header number
 func KeyLatestHeaderNumber() []byte {
 	return KeyPrefixLatestNumber
-}
-
-// KeyEvent returns the key for the event
-func KeyEvent(contract string, identify string) []byte {
-	temp := append(common.Hex2Bytes(contract), []byte(identify)...)
-	return append(KeyPrefixHeadHash, temp...)
 }
 
 // KeyCrossChainContract returns the key for the CrossChainContract

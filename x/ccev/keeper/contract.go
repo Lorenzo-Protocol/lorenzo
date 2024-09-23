@@ -60,24 +60,3 @@ func (k Keeper) getAllContracts(ctx sdk.Context,chainID uint32) (contracts []*ty
 	}
 	return
 }
-
-func (k Keeper) setEvent(ctx sdk.Context, chainID uint32, contract string, identify string) {
-	store := k.clientStore(ctx, chainID)
-	store.Set(types.KeyEvent(contract, identify), []byte(identify))
-}
-
-func (k Keeper) hasEvent(ctx sdk.Context, chainID uint32, contract string, identify string) bool {
-	store := k.clientStore(ctx, chainID)
-	return store.Has(types.KeyEvent(contract, identify))
-}
-
-func (k Keeper) getAllEventIdentifiers(ctx sdk.Context, chainID uint32, contract string) (identifiers []string) {
-	store := k.clientStore(ctx, chainID)
-	it := sdk.KVStorePrefixIterator(store, types.KeyEvent(contract, ""))
-	defer it.Close() //nolint:errcheck
-	for ; it.Valid(); it.Next() {
-		identifier := string(it.Value())
-		identifiers = append(identifiers, identifier)
-	}
-	return
-}
