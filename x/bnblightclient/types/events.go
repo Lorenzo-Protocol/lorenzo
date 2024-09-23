@@ -10,13 +10,13 @@ import (
 )
 
 //go:embed stake_plan_hub_abi.json
-var stakePlanHubContractABIJSON []byte //nolint: golint
+var StakePlanHubContractABIJSON []byte //nolint: golint
 
 var stakePlanHubContractABI abi.ABI
 
 func init() {
 	// unmarshal the StakePlanHubContractABI
-	err := json.Unmarshal(stakePlanHubContractABIJSON, &stakePlanHubContractABI)
+	err := json.Unmarshal(StakePlanHubContractABIJSON, &stakePlanHubContractABI)
 	if err != nil {
 		panic(err)
 	}

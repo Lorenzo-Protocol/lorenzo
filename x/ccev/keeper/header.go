@@ -22,6 +22,8 @@ func (k Keeper) CreateClient(ctx sdk.Context, client *types.Client) error {
 		return errorsmod.Wrapf(types.ErrDuplicateClient, "client %d already exists", client.ChainId)
 	}
 	k.setClient(ctx, client)
+	k.setHeader(ctx, client.ChainId, &client.InitialBlock)
+	k.setLatestNumber(ctx, client.ChainId, client.InitialBlock.Number)
 	return nil
 }
 
@@ -135,7 +137,7 @@ func (k Keeper) GetHeader(ctx sdk.Context, chainID uint32, number uint64) (*type
 //
 // Returns:
 // - headers: a slice of Header objects
-func (k Keeper) GetAllHeaders(ctx sdk.Context,chainID uint32) (headers []*types.TinyHeader) {
+func (k Keeper) GetAllHeaders(ctx sdk.Context, chainID uint32) (headers []*types.TinyHeader) {
 	store := k.clientStore(ctx, chainID)
 
 	it := sdk.KVStorePrefixIterator(store, types.KeyPrefixHeader)
@@ -204,8 +206,6 @@ func (k Keeper) setClient(ctx sdk.Context, client *types.Client) {
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshal(client)
 	store.Set(types.KeyClient(client.ChainId), bz)
-
-	k.setHeader(ctx, client.ChainId, &client.InitialBlock)
 }
 
 func (k Keeper) hasClient(ctx sdk.Context, chainID uint32) bool {

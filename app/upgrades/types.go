@@ -4,6 +4,7 @@ import (
 	agentkeeper "github.com/Lorenzo-Protocol/lorenzo/v3/x/agent/keeper"
 	bnblightclientkeeper "github.com/Lorenzo-Protocol/lorenzo/v3/x/bnblightclient/keeper"
 	btcstakingkeeper "github.com/Lorenzo-Protocol/lorenzo/v3/x/btcstaking/keeper"
+	ccevkeeper "github.com/Lorenzo-Protocol/lorenzo/v3/x/ccev/keeper"
 	feekeeper "github.com/Lorenzo-Protocol/lorenzo/v3/x/fee/keeper"
 	plankeeper "github.com/Lorenzo-Protocol/lorenzo/v3/x/plan/keeper"
 	tokenkeeper "github.com/Lorenzo-Protocol/lorenzo/v3/x/token/keeper"
@@ -59,6 +60,7 @@ type AppKeepers struct {
 	PlanKeeper           *plankeeper.Keeper
 	TokenKeeper          *tokenkeeper.Keeper
 	BNBLightClientKeeper *bnblightclientkeeper.Keeper
+	CCEVkeeper           ccevkeeper.Keeper
 	FeeKeeper            *feekeeper.Keeper
 
 	ConsensusParamsKeeper consensuskeeper.Keeper

@@ -6,6 +6,7 @@ import (
 	"github.com/Lorenzo-Protocol/lorenzo/v3/app/upgrades"
 	v200 "github.com/Lorenzo-Protocol/lorenzo/v3/app/upgrades/v200"
 	v300 "github.com/Lorenzo-Protocol/lorenzo/v3/app/upgrades/v300"
+	v400 "github.com/Lorenzo-Protocol/lorenzo/v3/app/upgrades/v400"
 
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 )
@@ -17,6 +18,8 @@ func init() {
 	router.Register(v200.Upgrade)
 	// register v3.0 upgrade plan
 	router.Register(v300.Upgrade)
+	// register v4.0 upgrade plan
+	router.Register(v400.Upgrade)
 }
 
 // RegisterUpgradePlans register a handler of upgrade plan

@@ -39,7 +39,7 @@ func NewKeeper(
 	bankKeeper bankkeeper.Keeper,
 	planKeeper types.PlanKeeper,
 	evmKeeper types.EvmKeeper,
-
+	ccevKeeper  types.CCEVKeeper,
 	authority string,
 ) Keeper {
 	return Keeper{
@@ -52,7 +52,7 @@ func NewKeeper(
 		bankKeeper:  bankKeeper,
 		planKeeper:  planKeeper,
 		evmKeeper:   evmKeeper,
-
+		ccevKeeper:  ccevKeeper,
 		authority: authority,
 	}
 }

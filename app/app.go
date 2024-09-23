@@ -107,13 +107,14 @@ import (
 	btclightclienttypes "github.com/Lorenzo-Protocol/lorenzo/v3/x/btclightclient/types"
 	btcstakingkeeper "github.com/Lorenzo-Protocol/lorenzo/v3/x/btcstaking/keeper"
 	btcstakingtypes "github.com/Lorenzo-Protocol/lorenzo/v3/x/btcstaking/types"
+	ccevkeeper "github.com/Lorenzo-Protocol/lorenzo/v3/x/ccev/keeper"
+	ccevtypes "github.com/Lorenzo-Protocol/lorenzo/v3/x/ccev/types"
 	feekeeper "github.com/Lorenzo-Protocol/lorenzo/v3/x/fee/keeper"
 	feetypes "github.com/Lorenzo-Protocol/lorenzo/v3/x/fee/types"
-	plankeeper "github.com/Lorenzo-Protocol/lorenzo/v3/x/plan/keeper"
-	plantypes "github.com/Lorenzo-Protocol/lorenzo/v3/x/plan/types"
-
 	ics20wrapper "github.com/Lorenzo-Protocol/lorenzo/v3/x/ibctransfer"
 	ics20wrapperkeeper "github.com/Lorenzo-Protocol/lorenzo/v3/x/ibctransfer/keeper"
+	plankeeper "github.com/Lorenzo-Protocol/lorenzo/v3/x/plan/keeper"
+	plantypes "github.com/Lorenzo-Protocol/lorenzo/v3/x/plan/types"
 	"github.com/Lorenzo-Protocol/lorenzo/v3/x/token"
 	tokenkeeper "github.com/Lorenzo-Protocol/lorenzo/v3/x/token/keeper"
 	tokentypes "github.com/Lorenzo-Protocol/lorenzo/v3/x/token/types"
@@ -183,6 +184,7 @@ type LorenzoApp struct {
 	PlanKeeper           *plankeeper.Keeper
 	TokenKeeper          *tokenkeeper.Keeper
 	BNBLightClientKeeper bnblightclientkeeper.Keeper
+	CCEVkeeper ccevkeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
@@ -271,6 +273,7 @@ func NewLorenzoApp(
 
 		// lorenzo module keys
 		plantypes.StoreKey,
+		ccevtypes.StoreKey,
 		tokentypes.StoreKey,
 		bnblightclienttypes.StoreKey,
 	)
@@ -474,6 +477,12 @@ func NewLorenzoApp(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
+	app.CCEVkeeper = ccevkeeper.NewKeeper(
+		appCodec,
+		keys[ccevtypes.StoreKey],
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
 	app.FeeKeeper = feekeeper.NewKeeper(
 		appCodec,
 		keys[feetypes.StoreKey],
@@ -507,6 +516,7 @@ func NewLorenzoApp(
 		app.BankKeeper,
 		app.PlanKeeper,
 		app.EvmKeeper,
+		app.CCEVkeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
