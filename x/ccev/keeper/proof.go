@@ -117,6 +117,7 @@ func (k Keeper) handleReceipt(
 		return errorsmod.Wrapf(types.ErrInvalidEvent, "no event log found")
 	}
 
+	var events []*types.Event
 	for _, log := range receipt.Logs {
 		contract := k.getContract(ctx, chainID, log.Address)
 		if contract == nil {
@@ -128,7 +129,7 @@ func (k Keeper) handleReceipt(
 		}
 
 		eventID := log.Topics[0]
-		abi, err := types.DecodeABI(contract.Abi)
+		abi, err := types.DecodeABI(contract.Address, contract.Abi)
 		if err != nil {
 			continue
 		}
@@ -147,15 +148,22 @@ func (k Keeper) handleReceipt(
 			return errorsmod.Wrapf(types.ErrInvalidEvent, "failed to unpack %s event", event.Name)
 		}
 
-		identify := handler.GetUniqueID(ctx, log.Topics, eventArgs)
+		eventInfo := &types.Event{
+			Address: log.Address,
+			Topics: log.Topics,
+			Args:   eventArgs,
+		}
+		identify,err := handler.GetUniqueID(ctx, eventInfo)
+		if err != nil {
+			return errorsmod.Wrapf(types.ErrInvalidEvent, "failed to get unique id: %s", err.Error())
+		}
+
 		if k.hasEvent(ctx, chainID, contract.Address, identify) {
 			return errorsmod.Wrapf(types.ErrInvalidEvent, "repeated events")
 		}
-
-		if err := handler.Execute(ctx, chainID, log.Address, log.Topics, eventArgs); err != nil {
-			return err
-		}
 		k.setEvent(ctx, chainID, contract.Address, identify)
+
+		events = append(events, eventInfo)
 	}
-	return nil
+	return handler.Execute(ctx, chainID, events)
 }

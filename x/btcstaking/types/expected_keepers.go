@@ -11,6 +11,7 @@ import (
 	agenttypes "github.com/Lorenzo-Protocol/lorenzo/v3/x/agent/types"
 	"github.com/Lorenzo-Protocol/lorenzo/v3/x/bnblightclient/types"
 	btclctypes "github.com/Lorenzo-Protocol/lorenzo/v3/x/btclightclient/types"
+	ccevtypes "github.com/Lorenzo-Protocol/lorenzo/v3/x/ccev/types"
 	plantypes "github.com/Lorenzo-Protocol/lorenzo/v3/x/plan/types"
 	"github.com/btcsuite/btcd/chaincfg"
 )
@@ -25,6 +26,10 @@ type BTCLightClientKeeper interface {
 
 type BNBLightClientKeeper interface {
 	VerifyReceiptProof(ctx sdk.Context, number uint64, receipt *evmtypes.Receipt, proof *types.Proof) ([]types.CrossChainEvent, error)
+}
+
+type CCEVKeeper interface {
+	VerifyAndCallback(ctx sdk.Context, chainID uint32, number uint64, receiptBz []byte, proofBz []byte, handler ccevtypes.EventHandler) error
 }
 
 type PlanKeeper interface {

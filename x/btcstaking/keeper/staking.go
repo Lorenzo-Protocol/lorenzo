@@ -102,6 +102,30 @@ func (k Keeper) DepositBTCB(
 	return nil
 }
 
+// DepositxBTC verifies the receipt of a transaction using the provided proof, and
+// if the verification is successful, mints stBTC to the depositor's account.
+//
+// Parameters:
+// - ctx: The SDK context.
+// - depositor: The depositor's account address.
+// - chainID: The chain ID.
+// - number: The block number.
+// - receiptBz: The receipt to be verified.
+// - proofBz: The proof to verify the receipt.
+//
+// Returns:
+// - error: An error if the verification fails.
+func (k Keeper) DepositxBTC(
+	ctx sdk.Context,
+	depositor sdk.AccAddress,
+	chainID uint32,
+	number uint64,
+	receiptBz,
+	proofBz []byte,
+) error {
+	return k.ccevKeeper.VerifyAndCallback(ctx, chainID, number, receiptBz, proofBz, &eventHandler{k})
+}
+
 func (k Keeper) addBTCBStakingRecord(ctx sdk.Context, record *types.BTCBStakingRecord) {
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshal(record)

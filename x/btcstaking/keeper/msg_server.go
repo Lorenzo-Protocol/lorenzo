@@ -198,6 +198,20 @@ func (ms msgServer) CreateBTCBStaking(goctx context.Context, req *types.MsgCreat
 	return &types.MsgCreateBTCBStakingResponse{}, nil
 }
 
+// CreatexBTCStaking implements types.MsgServer.
+func (ms msgServer) CreatexBTCStaking(goctx context.Context, req *types.MsgCreatexBTCStaking) (*types.MsgCreatexBTCStakingResponse, error) {
+	depositor, err := sdk.AccAddressFromBech32(req.Signer)
+	if err != nil {
+		return nil, err
+	}
+
+	ctx := sdk.UnwrapSDKContext(goctx)
+	if err = ms.k.DepositxBTC(ctx, depositor, req.ChainId, req.Number, req.Receipt, req.Proof); err != nil {
+		return nil, err
+	}
+	return &types.MsgCreatexBTCStakingResponse{}, nil
+}
+
 func (ms msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
 	if ms.k.authority != msg.Authority {
 		return nil, errorsmod.Wrapf(

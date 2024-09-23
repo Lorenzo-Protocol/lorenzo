@@ -16,6 +16,7 @@ import (
 const (
 	TypeMsgCreateBTCStaking  = "create_btc_staking"
 	TypeMsgCreateBTCBStaking = "create_btc_b_staking"
+	TypeMsgCreatexBTCStaking = "create_btc_b_staking"
 	TypeMsgBurnRequest       = "burn_request"
 	TypeMsgRemoveReceiver    = "remove_receiver"
 	TypeMsgAddReceiver       = "add_receiver"
@@ -193,6 +194,40 @@ func (m *MsgCreateBTCBStaking) Route() string {
 
 func (m *MsgCreateBTCBStaking) Type() string {
 	return TypeMsgCreateBTCBStaking
+}
+
+// GetSigners implements sdk.Msg
+func (m *MsgCreatexBTCStaking) GetSigners() []sdk.AccAddress {
+	addr, _ := sdk.AccAddressFromBech32(m.Signer)
+	return []sdk.AccAddress{addr}
+}
+
+func (m *MsgCreatexBTCStaking) GetSignBytes() []byte {
+	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(m))
+}
+
+func (m *MsgCreatexBTCStaking) Route() string {
+	return RouterKey
+}
+
+func (m *MsgCreatexBTCStaking) Type() string {
+	return TypeMsgCreatexBTCStaking
+}
+
+// ValidateBasic implements sdk.Msg
+func (m *MsgCreatexBTCStaking) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(m.Signer); err != nil {
+		return errorsmod.Wrap(err, "invalid signer address")
+	}
+
+	if len(m.Receipt) == 0 {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "staking receipt cannot be empty")
+	}
+
+	if len(m.Proof) == 0 {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "staking proof cannot be empty")
+	}
+	return nil
 }
 
 func (m *MsgAddReceiver) GetSigners() []sdk.AccAddress {

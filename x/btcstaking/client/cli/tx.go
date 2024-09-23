@@ -129,31 +129,37 @@ func NewBurnCmd() *cobra.Command {
 // The function adds transaction flags to the command and returns the command.
 func NewCreateBTCBStaking() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "btcbstaking [bnb-number] [receipt-rlp-file] [proof-rlp-file]",
-		Short: "Create a new btcb staking request with proof and receipt from bnb chain",
-		Args:  cobra.ExactArgs(3),
+		Use:   "xbtcstaking [chain-id] [number] [receipt-rlp-file] [proof-rlp-file]",
+		Short: "Create a new xbtc staking request with proof and receipt from evm chain",
+		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			number, err := strconv.ParseUint(args[0], 10, 64)
+			chainID, err := strconv.ParseUint(args[0], 10, 32)
+			if err != nil {
+				return fmt.Errorf("failed to parse chainID(%s): %w", args[0], err)
+			}
+
+			number, err := strconv.ParseUint(args[1], 10, 64)
 			if err != nil {
 				return fmt.Errorf("failed to parse number(%s): %w", args[0], err)
 			}
 
-			receiptRLP, err := os.ReadFile(args[1])
+			receiptRLP, err := os.ReadFile(args[2])
 			if err != nil {
 				return fmt.Errorf("failed to read receipt from file: %w", err)
 			}
 
-			proofRLP, err := os.ReadFile(args[2])
+			proofRLP, err := os.ReadFile(args[3])
 			if err != nil {
 				return fmt.Errorf("failed to read proof from file: %w", err)
 			}
 
-			msg := types.MsgCreateBTCBStaking{
+			msg := types.MsgCreatexBTCStaking{
+				ChainId: uint32(chainID),
 				Signer:  clientCtx.GetFromAddress().String(),
 				Number:  number,
 				Receipt: receiptRLP,

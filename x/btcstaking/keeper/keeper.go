@@ -21,8 +21,8 @@ type Keeper struct {
 	bnblcKeeper types.BNBLightClientKeeper
 	agentKeeper types.AgentKeeper
 	planKeeper  types.PlanKeeper
-
-	evmKeeper types.EvmKeeper
+	ccevKeeper  types.CCEVKeeper
+	evmKeeper   types.EvmKeeper
 
 	// the address capable of executing a MsgUpdateParams message. Typically, this
 	// should be the x/gov module account.
