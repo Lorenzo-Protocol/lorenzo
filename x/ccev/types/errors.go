@@ -20,4 +20,6 @@ var (
 	ErrInvalidEvent = errorsmod.Register(ModuleName, 7, "invalid event")
 	// ErrDuplicateClient is returned when client is already registered
 	ErrDuplicateClient = errorsmod.Register(ModuleName, 8, "duplicate client")
+	// ErrNotFoundClient is returned when client is not found
+	ErrNotFoundClient = errorsmod.Register(ModuleName, 8, "client not found")
 )

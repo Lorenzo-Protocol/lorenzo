@@ -17,22 +17,22 @@ func (k Keeper) UploadContract(
 ) {
 	contract := &types.CrossChainContract{
 		ChainId:   chainID,
-		Address:   common.Hex2Bytes(address),
+		Address:   address,
 		EventName: eventName,
 		Abi:       abi,
 	}
-	k.setCrossChainContract(ctx, contract)
+	k.setContract(ctx, contract)
 }
 
-func (k Keeper) setCrossChainContract(ctx sdk.Context, contract *types.CrossChainContract) {
+func (k Keeper) setContract(ctx sdk.Context, contract *types.CrossChainContract) {
 	store := k.clientStore(ctx, contract.ChainId)
 	store.Set(
-		types.KeyCrossChainContract(common.BytesToAddress(contract.Address)),
+		types.KeyCrossChainContract(common.HexToAddress(contract.Address)),
 		k.cdc.MustMarshal(contract),
 	)
 }
 
-func (k Keeper) getCrossChainContract(
+func (k Keeper) getContract(
 	ctx sdk.Context,
 	chainID uint32,
 	address common.Address,
@@ -47,12 +47,12 @@ func (k Keeper) getCrossChainContract(
 	return &contract
 }
 
-func (k Keeper) setEvent(ctx sdk.Context, chainID uint32, contract []byte, identify string) {
+func (k Keeper) setEvent(ctx sdk.Context, chainID uint32, contract string, identify string) {
 	store := k.clientStore(ctx, chainID)
 	store.Set(types.KeyEvent(contract, identify), []byte{0x01})
 }
 
-func (k Keeper) hasEvent(ctx sdk.Context, chainID uint32, contract []byte, identify string) bool {
+func (k Keeper) hasEvent(ctx sdk.Context, chainID uint32, contract string, identify string) bool {
 	store := k.clientStore(ctx, chainID)
 	return store.Has(types.KeyEvent(contract, identify))
 }

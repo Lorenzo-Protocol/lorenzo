@@ -118,7 +118,7 @@ func (k Keeper) handleReceipt(
 	}
 
 	for _, log := range receipt.Logs {
-		contract := k.getCrossChainContract(ctx, chainID, log.Address)
+		contract := k.getContract(ctx, chainID, log.Address)
 		if contract == nil {
 			continue
 		}

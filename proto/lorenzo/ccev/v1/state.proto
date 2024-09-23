@@ -32,7 +32,7 @@ message CrossChainContract {
   // chain_id defines the target chain id
   uint32 chain_id = 1;
   // the stake plan hub contract address
-  bytes address = 2;
+  string address = 2;
   // event_name defines the event name
   string event_name = 3;
   // abi defines the contract abi

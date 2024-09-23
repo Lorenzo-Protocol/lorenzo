@@ -17,7 +17,7 @@ import (
 //
 // Returns:
 // - error: if the client already exists, or other error occurs
-func (k Keeper) CreateClient(ctx sdk.Context,client *types.Client) error {
+func (k Keeper) CreateClient(ctx sdk.Context, client *types.Client) error {
 	if k.hasClient(ctx, client.ChainId) {
 		return errorsmod.Wrapf(types.ErrDuplicateClient, "client %d already exists", client.ChainId)
 	}
@@ -26,17 +26,27 @@ func (k Keeper) CreateClient(ctx sdk.Context,client *types.Client) error {
 }
 
 // UploadHeaders adds a batch of headers to the bnb light client chain
-func (k Keeper) UploadHeaders(ctx sdk.Context, chainID uint32, headers []*types.TinyHeader) error {
+func (k Keeper) UploadHeaders(ctx sdk.Context, chainID uint32, headers []types.TinyHeader) error {
 	if len(headers) == 0 {
 		return errorsmod.Wrap(types.ErrInvalidHeader, "header is empty")
 	}
 
-	slices.SortFunc(headers, func(a, b *types.TinyHeader) bool {
+	client := k.getClient(ctx, chainID)
+	if client == nil {
+		return errorsmod.Wrapf(types.ErrNotFoundClient, "client %d not found", chainID)
+	}
+
+	slices.SortFunc(headers, func(a, b types.TinyHeader) bool {
 		return a.Number < b.Number
 	})
 
+	if headers[0].Number < client.InitialBlock.Number {
+		return errorsmod.Wrapf(types.ErrInvalidHeader,
+			"header number %d less than initial height %d", headers[0].Number, client.InitialBlock.Number)
+	}
+
 	for _, header := range headers {
-		k.setHeader(ctx, chainID, header)
+		k.setHeader(ctx, chainID, &header)
 	}
 	k.setLatestNumber(ctx, chainID, headers[len(headers)-1].Number)
 	return nil
@@ -47,11 +57,25 @@ func (k Keeper) UploadHeaders(ctx sdk.Context, chainID uint32, headers []*types.
 // Parameters:
 // - ctx: the context object.
 // - header: the header to be updated.
-// - deleteSubsequentHeaders: whether to delete subsequent headers.
 //
 // Returns:
 // - error: an error if the header update fails.
-func (k Keeper) UpdateHeader(ctx sdk.Context, header *types.TinyHeader, deleteSubsequentHeaders bool) error {
+func (k Keeper) UpdateHeader(ctx sdk.Context, chainID uint32, header *types.TinyHeader) error {
+	client := k.getClient(ctx, chainID)
+	if client == nil {
+		return errorsmod.Wrapf(types.ErrNotFoundClient, "client %d not found, cannot update", chainID)
+	}
+
+	if header.Number < client.InitialBlock.Number {
+		return errorsmod.Wrapf(types.ErrInvalidHeader,
+			"header number %d less than initial height %d", header.Number, client.InitialBlock.Number)
+	}
+
+	if !k.HasHeader(ctx, chainID, header.Number) {
+		return errorsmod.Wrapf(types.ErrHeaderNotFound, "header %d already exists", header.Number)
+	}
+
+	k.setHeader(ctx, chainID, header)
 	return nil
 }
 
@@ -145,6 +169,17 @@ func (k Keeper) GetHeaderByHash(ctx sdk.Context, chainID uint32, hash []byte) (*
 	return k.GetHeader(ctx, chainID, number)
 }
 
+// HasHeader checks if a header with the given number exists in the store.
+//
+// Parameters:
+// - ctx: the context object
+// - number: the number of the header to check
+// Return type: bool
+func (k Keeper) HasHeader(ctx sdk.Context, chainID uint32, number uint64) bool {
+	store := k.clientStore(ctx, chainID)
+	return store.Has(types.KeyHeader(number))
+}
+
 func (k Keeper) setHeader(ctx sdk.Context, chainID uint32, header *types.TinyHeader) {
 	store := k.clientStore(ctx, chainID)
 	bz := k.cdc.MustMarshal(header)
@@ -173,7 +208,7 @@ func (k Keeper) setClient(ctx sdk.Context, client *types.Client) {
 	k.setHeader(ctx, client.ChainId, &client.InitialBlock)
 }
 
-func (k Keeper) hasClient(ctx sdk.Context,chainID uint32) bool {
+func (k Keeper) hasClient(ctx sdk.Context, chainID uint32) bool {
 	store := ctx.KVStore(k.storeKey)
 	return store.Has(types.KeyClient(chainID))
 }

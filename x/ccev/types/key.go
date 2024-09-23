@@ -53,8 +53,8 @@ func KeyLatestHeaderNumber() []byte {
 }
 
 // KeyEvent returns the key for the event
-func KeyEvent(contract []byte, identify string) []byte {
-	temp := append(contract, []byte(identify)...)
+func KeyEvent(contract string, identify string) []byte {
+	temp := append(common.Hex2Bytes(contract), []byte(identify)...)
 	return append(KeyPrefixHeadHash, temp...)
 }
 
