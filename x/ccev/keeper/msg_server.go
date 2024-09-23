@@ -56,15 +56,15 @@ func (m msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParam
 	return &types.MsgUpdateParamsResponse{}, nil
 }
 
-// UploadCrossChainContract implements types.MsgServer.
-func (m msgServer) UploadCrossChainContract(goCtx context.Context, msg *types.MsgUploadCrossChainContract) (*types.MsgUploadCrossChainContractResponse, error) {
+// UploadContract implements types.MsgServer.
+func (m msgServer) UploadContract(goCtx context.Context, msg *types.MsgUploadContract) (*types.MsgUploadContractResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	if !m.Allow(ctx, msg.Address) {
 		return nil, errorsmod.Wrapf(types.ErrUnauthorized, "address %s is not in allowlist", msg.Address)
 	}
 
-	m.UploadContract(ctx, msg.ChainId, msg.Address, msg.EventName, msg.Abi)
-	return &types.MsgUploadCrossChainContractResponse{}, nil
+	m.Keeper.UploadContract(ctx, msg.ChainId, msg.Address, msg.EventName, msg.Abi)
+	return &types.MsgUploadContractResponse{}, nil
 }
 
 // UploadHeaders implements types.MsgServer.

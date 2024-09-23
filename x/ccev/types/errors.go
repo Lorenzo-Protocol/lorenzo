@@ -22,4 +22,6 @@ var (
 	ErrDuplicateClient = errorsmod.Register(ModuleName, 8, "duplicate client")
 	// ErrNotFoundClient is returned when client is not found
 	ErrNotFoundClient = errorsmod.Register(ModuleName, 8, "client not found")
+	// ErrNotFoundContract is returned when contract is not found
+	ErrNotFoundContract = errorsmod.Register(ModuleName, 9, "contract not found")
 )

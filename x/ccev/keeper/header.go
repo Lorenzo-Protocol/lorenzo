@@ -223,3 +223,17 @@ func (k Keeper) getClient(ctx sdk.Context, chainID uint32) *types.Client {
 	k.cdc.MustUnmarshal(bz, &client)
 	return &client
 }
+
+func (k Keeper) getAllClients(ctx sdk.Context) (clients []*types.Client) {
+	store := ctx.KVStore(k.storeKey)
+
+	it := sdk.KVStorePrefixIterator(store, types.KeyPrefixClient)
+	defer it.Close() //nolint:errcheck
+
+	for ; it.Valid(); it.Next() {
+		var client types.Client
+		k.cdc.MustUnmarshal(it.Value(), &client)
+		clients = append(clients, &client)
+	}
+	return
+}

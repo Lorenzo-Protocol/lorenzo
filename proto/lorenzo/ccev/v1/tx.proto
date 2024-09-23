@@ -17,10 +17,9 @@ service Msg {
   // chain
   rpc CreateClient(MsgCreateClient) returns (MsgCreateClientResponse) {};
 
-  // UploadCrossChainContract defines the message for uploading a
+  // UploadContract defines the message for uploading a
   // CrossChainContract
-  rpc UploadCrossChainContract(MsgUploadCrossChainContract)
-      returns (MsgUploadCrossChainContractResponse) {};
+  rpc UploadContract(MsgUploadContract) returns (MsgUploadContractResponse) {};
 
   // UploadHeaders adds a batch of headers to the bnb light client chain
   rpc UploadHeaders(MsgUploadHeaders) returns (MsgUploadHeadersResponse) {};
@@ -48,7 +47,7 @@ message MsgCreateClientResponse {}
 
 // MsgUploadCrossChainContract defines the message for uploading a
 // CrossChainContract
-message MsgUploadCrossChainContract {
+message MsgUploadContract {
   option (cosmos.msg.v1.signer) = "sender";
 
   uint32 chain_id = 1;
@@ -58,7 +57,7 @@ message MsgUploadCrossChainContract {
   string sender = 5 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
 
-message MsgUploadCrossChainContractResponse {}
+message MsgUploadContractResponse {}
 
 // MsgUploadHeaders defines the message for multiple incoming header bytes
 message MsgUploadHeaders {

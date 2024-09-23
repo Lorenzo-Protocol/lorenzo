@@ -15,7 +15,7 @@ func (k Keeper) UploadContract(
 	eventName string,
 	abi []byte,
 ) {
-	contract := &types.CrossChainContract{
+	contract := &types.Contract{
 		ChainId:   chainID,
 		Address:   address,
 		EventName: eventName,
@@ -24,7 +24,7 @@ func (k Keeper) UploadContract(
 	k.setContract(ctx, contract)
 }
 
-func (k Keeper) setContract(ctx sdk.Context, contract *types.CrossChainContract) {
+func (k Keeper) setContract(ctx sdk.Context, contract *types.Contract) {
 	store := k.clientStore(ctx, contract.ChainId)
 	store.Set(
 		types.KeyCrossChainContract(common.HexToAddress(contract.Address)),
@@ -36,13 +36,13 @@ func (k Keeper) getContract(
 	ctx sdk.Context,
 	chainID uint32,
 	address common.Address,
-) *types.CrossChainContract {
+) *types.Contract {
 	store := k.clientStore(ctx, chainID)
 	bz := store.Get(types.KeyCrossChainContract(address))
 	if bz == nil {
 		return nil
 	}
-	var contract types.CrossChainContract
+	var contract types.Contract
 	k.cdc.MustUnmarshal(bz, &contract)
 	return &contract
 }

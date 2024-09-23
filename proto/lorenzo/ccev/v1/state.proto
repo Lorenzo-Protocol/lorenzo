@@ -27,8 +27,8 @@ message Client {
   ;
 }
 
-// CrossChainContract defines the cross chain contract
-message CrossChainContract {
+// Contract defines the cross chain contract
+message Contract {
   // chain_id defines the target chain id
   uint32 chain_id = 1;
   // the stake plan hub contract address
