@@ -13,9 +13,9 @@ import (
 // p - Params object to be set.
 // error - Returns an error if validation fails.
 func (k Keeper) SetParams(ctx sdk.Context, params *types.Params) error {
-	// if err := params.Validate(); err != nil {
-	// 	return err
-	// }
+	if err := params.Validate(); err != nil {
+		return err
+	}
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshal(params)
 	store.Set(types.ParamsKey, bz)

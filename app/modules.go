@@ -139,6 +139,7 @@ var (
 		agent.AppModuleBasic{},
 		plan.AppModuleBasic{},
 		token.AppModuleBasic{},
+		ccev.AppModuleBasic{},
 	)
 
 	// module account permissions

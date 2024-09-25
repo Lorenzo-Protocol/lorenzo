@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	"github.com/Lorenzo-Protocol/lorenzo/v3/x/ccev/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ethereum/go-ethereum/common"
@@ -14,7 +15,10 @@ func (k Keeper) UploadContract(
 	address string,
 	eventName string,
 	abi []byte,
-) {
+) error {
+	if !k.hasClient(ctx, chainID) {
+		return errorsmod.Wrapf(types.ErrNotFoundClient, "client %d not found", chainID)
+	}
 	contract := &types.Contract{
 		ChainId:   chainID,
 		Address:   address,
@@ -22,6 +26,7 @@ func (k Keeper) UploadContract(
 		Abi:       abi,
 	}
 	k.setContract(ctx, contract)
+	return nil
 }
 
 func (k Keeper) setContract(ctx sdk.Context, contract *types.Contract) {
@@ -47,7 +52,7 @@ func (k Keeper) getContract(
 	return &contract
 }
 
-func (k Keeper) getAllContracts(ctx sdk.Context,chainID uint32) (contracts []*types.Contract) {
+func (k Keeper) getAllContracts(ctx sdk.Context, chainID uint32) (contracts []*types.Contract) {
 	store := k.clientStore(ctx, chainID)
 
 	it := sdk.KVStorePrefixIterator(store, types.KeyPrefixCrossChainContract)

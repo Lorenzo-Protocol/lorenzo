@@ -70,11 +70,13 @@ func (m msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParam
 // UploadContract implements types.MsgServer.
 func (m msgServer) UploadContract(goCtx context.Context, msg *types.MsgUploadContract) (*types.MsgUploadContractResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	if !m.Allow(ctx, msg.Address) {
+	if !m.Allow(ctx, msg.Sender) {
 		return nil, errorsmod.Wrapf(types.ErrUnauthorized, "address %s is not in allowlist", msg.Address)
 	}
 
-	m.Keeper.UploadContract(ctx, msg.ChainId, msg.Address, msg.EventName, msg.Abi)
+	if err := m.Keeper.UploadContract(ctx, msg.ChainId, msg.Address, msg.EventName, msg.Abi); err != nil {
+		return nil, err
+	}
 	return &types.MsgUploadContractResponse{}, nil
 }
 

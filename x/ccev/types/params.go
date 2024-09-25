@@ -1,9 +1,9 @@
 package types
 
 import (
-	fmt "fmt"
-
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // Validate validates the Params struct.
@@ -22,12 +22,12 @@ func ValidateAllowList(allowList []string) error {
 	seenAddr := make(map[string]bool)
 	for _, addr := range allowList {
 		if seenAddr[addr] {
-			return fmt.Errorf("duplicate address: %s", addr)
+			return errorsmod.Wrapf(ErrDuplicateAddress, "duplicate address: %s", addr)
 		}
 
 		// check that the address is valid
 		if _, err := sdk.AccAddressFromBech32(addr); err != nil {
-			return fmt.Errorf("invalid address: %s", addr)
+			return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid address: %s", addr)
 		}
 		seenAddr[addr] = true
 	}

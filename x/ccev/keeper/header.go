@@ -48,6 +48,9 @@ func (k Keeper) UploadHeaders(ctx sdk.Context, chainID uint32, headers []types.T
 	}
 
 	for _, header := range headers {
+		if k.HasHeader(ctx, chainID, header.Number) {
+			return errorsmod.Wrapf(types.ErrDuplicateHeader, "header %d already exists", header.Number)
+		}
 		k.setHeader(ctx, chainID, &header)
 	}
 	k.setLatestNumber(ctx, chainID, headers[len(headers)-1].Number)
