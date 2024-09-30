@@ -34,7 +34,7 @@ func (q Querier) Client(goCtx context.Context, req *types.QueryClientRequest) (*
 
 	client := q.getClient(ctx, req.ChainId)
 	if client == nil {
-		return &types.QueryClientResponse{}, errorsmod.Wrapf(types.ErrNotFoundClient, "client %d not found, cannot update", req.ChainId)
+		return &types.QueryClientResponse{}, errorsmod.Wrapf(types.ErrNotFoundClient, "client %d not found", req.ChainId)
 	}
 	return &types.QueryClientResponse{Client: client}, nil
 }

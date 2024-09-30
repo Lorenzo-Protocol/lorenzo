@@ -65,3 +65,13 @@ func (suite *KeeperTestSuite) CreateClient(chainID uint32, chainName string, ini
 	})
 	suite.Require().NoError(err)
 }
+
+func (suite *KeeperTestSuite) UploadContract(chainID uint32,address string,eventName string,abi []byte) {
+	err := suite.keeper.UploadContract(suite.ctx, chainID, address, eventName, abi)
+	suite.Require().NoError(err)
+}
+
+func (suite *KeeperTestSuite) UploadHeaders(chainID uint32, headers []types.TinyHeader) {
+	err := suite.keeper.UploadHeaders(suite.ctx, chainID, headers)
+	suite.Require().NoError(err)
+}
