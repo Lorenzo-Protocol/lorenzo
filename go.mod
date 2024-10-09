@@ -2,8 +2,6 @@ module github.com/Lorenzo-Protocol/lorenzo/v3
 
 go 1.21
 
-toolchain go1.22.2
-
 require (
 	cosmossdk.io/errors v1.0.1
 	cosmossdk.io/log v1.3.1
