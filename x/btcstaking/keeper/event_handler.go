@@ -72,12 +72,19 @@ func (e *eventHandler) Process(ctx sdk.Context, chainID uint32, events []*ccevty
 }
 
 // GetUniqueID implements types.EventHandler.
-func (e *eventHandler) Processed(ctx sdk.Context, chainID uint32, event *ccevtypes.Event) (bool, error) {
+func (e *eventHandler) PreProcessed(ctx sdk.Context, chainID uint32, event *ccevtypes.Event) error {
 	stakingEvent, err := e.parseEvent(event)
 	if err != nil {
-		return false, err
+		return err
 	}
-	return e.keeper.hasxBTCStakingRecord(ctx, chainID, stakingEvent.Contract.Bytes(), stakingEvent.Identifier), nil
+	if e.keeper.hasxBTCStakingRecord(ctx, chainID, stakingEvent.Contract.Bytes(), stakingEvent.Identifier) {
+		return types.ErrDuplicateStakingEvent.Wrapf("duplicate event,planID %d,stakingIdx %d,contract %s",
+			stakingEvent.PlanID,
+			stakingEvent.Identifier,
+			stakingEvent.Contract.String(),
+		)
+	}
+	return nil
 }
 
 func (e *eventHandler) parseEvent(event *ccevtypes.Event) (*stakingxBTCEvent, error) {

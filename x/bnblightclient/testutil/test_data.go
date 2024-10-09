@@ -89,6 +89,7 @@ var proofRLP = `f909190ab9034802f903440183113d2db9010000000000000000000000001000
 
 // ProvedReceipt is the struct for proving receipt
 type ProvedReceipt struct {
+  
 	Receipt *evmtypes.Receipt
 	Number  uint64
 	Proof   *types.Proof

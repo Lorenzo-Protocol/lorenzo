@@ -75,6 +75,11 @@ type ProvedReceipt struct {
 	Proof   *types.Proof
 }
 
+// HeaderPool is the pool for headers
+type HeaderPool struct {
+	headers []*types.TinyHeader
+}
+
 // GetTestHeaders returns the test headers
 func GetTestHeaders(t *testing.T) []*types.TinyHeader {
 	var headers []*types.TinyHeader
@@ -82,6 +87,30 @@ func GetTestHeaders(t *testing.T) []*types.TinyHeader {
 	require.NoError(t, err)
 
 	return headers
+}
+
+// GetTestHeaderPool returns the test header GetTestHeaderPool
+func GetTestHeaderPool(t *testing.T) *HeaderPool {
+	headers := GetTestHeaders(t)
+	return &HeaderPool{headers: headers}
+}
+
+// GetTestHeader returns the test header with the given number
+func (hp *HeaderPool) GetTestHeader(number uint64) *types.TinyHeader {
+	for _, header := range hp.headers {
+		if header.Number == number {
+			return header
+		}
+	}
+	panic("header not found")
+}
+
+// GetTestHeaderByIndex returns the test header with the given index
+func (hp *HeaderPool) GetTestHeaderByIndex( index int) *types.TinyHeader {
+	if index >= len(hp.headers) {
+		panic("header not found")
+	}
+	return hp.headers[index]
 }
 
 // GetTestProvedReceipts returns the test proved receipts

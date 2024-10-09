@@ -14,7 +14,7 @@ var abiCache = map[string]*abi.ABI{}
 // EventHandler defines an event processing interface
 type EventHandler interface {
 	// Processed returns true if the event has been processed
-	Processed(ctx sdk.Context, chainID uint32, eventInfo *Event) (bool, error)
+	PreProcessed(ctx sdk.Context, chainID uint32, eventInfo *Event) error
 
 	// Process processes the event and executes the corresponding logic.
 	// It takes the context, chain id, address of the contract that emitted the event, the topics of the event, and the event args.
