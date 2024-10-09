@@ -51,6 +51,10 @@ func (q Querier) Clients(goCtx context.Context, req *types.QueryClientsRequest) 
 func (q Querier) Contract(goCtx context.Context, req *types.QueryContractRequest) (*types.QueryContractResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	if !q.hasClient(ctx, req.ChainId) {
+		return nil, errorsmod.Wrapf(types.ErrNotFoundClient, "client %d not found", req.ChainId)
+	}
+
 	contract := q.getContract(ctx, req.ChainId, common.HexToAddress(req.Address))
 	if contract == nil {
 		return &types.QueryContractResponse{}, errorsmod.Wrapf(types.ErrNotFoundContract, "contract %d not found, cannot update", req.ChainId)
@@ -61,6 +65,10 @@ func (q Querier) Contract(goCtx context.Context, req *types.QueryContractRequest
 // Header implements types.QueryServer.
 func (q Querier) Header(goCtx context.Context, req *types.QueryHeaderRequest) (*types.QueryHeaderResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if !q.hasClient(ctx, req.ChainId) {
+		return nil, errorsmod.Wrapf(types.ErrNotFoundClient, "client %d not found", req.ChainId)
+	}
 
 	header, found := q.GetHeader(ctx, req.ChainId, req.Number)
 	if !found {
@@ -73,6 +81,10 @@ func (q Querier) Header(goCtx context.Context, req *types.QueryHeaderRequest) (*
 func (q Querier) HeaderByHash(goCtx context.Context, req *types.QueryHeaderByHashRequest) (*types.QueryHeaderByHashResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	if !q.hasClient(ctx, req.ChainId) {
+		return nil, errorsmod.Wrapf(types.ErrNotFoundClient, "client %d not found", req.ChainId)
+	}
+
 	header, found := q.GetHeaderByHash(ctx, req.ChainId, req.Hash)
 	if !found {
 		return nil, errorsmod.Wrapf(types.ErrHeaderNotFound, "header %x not found", req.Hash)
@@ -83,6 +95,10 @@ func (q Querier) HeaderByHash(goCtx context.Context, req *types.QueryHeaderByHas
 // LatestHeader implements types.QueryServer.
 func (q Querier) LatestHeader(goCtx context.Context, req *types.QueryLatestHeaderRequest) (*types.QueryLatestHeaderResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if !q.hasClient(ctx, req.ChainId) {
+		return nil, errorsmod.Wrapf(types.ErrNotFoundClient, "client %d not found", req.ChainId)
+	}
 
 	header, found := q.GetLatestHeader(ctx, req.ChainId)
 	if !found {

@@ -13,54 +13,54 @@ import (
 
 var testHeaders = `[
   {
-    "hash": "5pzSSKjPxobzBo8qT8/NTMkSR0DQQla6dVQiyqvOnGo=",
+    "hash": "0xe69cd248a8cfc686f3068f2a4fcfcd4cc9124740d04256ba755422caabce9c6a",
     "number": 42768115,
-    "receipt_root": "oVj2iQpuYg8+ljmso1u1i30v5nmoUlFHDkfuyDaNPjA="
+    "receipt_root": "0xa158f6890a6e620f3e9639aca35bb58b7d2fe679a85251470e47eec8368d3e30"
   },
   {
-    "hash": "hrYymksY4TjTZRlpSBN0GQta8po7gfsycIKbcASY2d4=",
+    "hash": "0x86b6329a4b18e138d3651969481374190b5af29a3b81fb3270829b700498d9de",
     "number": 42768116,
-    "receipt_root": "fJ+698rHJSO4J1h5H/bacUU18rXb/Yjq9f1X4YPPF7Q="
+    "receipt_root": "0x7c9fbaf7cac72523b82758791ff6da714535f2b5dbfd88eaf5fd57e183cf17b4"
   },
   {
-    "hash": "U/mYpWMaVqz/2izhMV/kbJXZt6RH7aq92myHgc0N65A=",
+    "hash": "0x53f998a5631a56acffda2ce1315fe46c95d9b7a447edaabdda6c8781cd0deb90",
     "number": 42768117,
-    "receipt_root": "ssyoH5lRvQD/61OFYpgG0MGr3B2cdz+h6llMi0AKGJk="
+    "receipt_root": "0xb2cca81f9951bd00ffeb5385629806d0c1abdc1d9c773fa1ea594c8b400a1899"
   },
   {
-    "hash": "/tffHEYRQNF7S07ZQqJMFPMls1TYuVup7y2wXK1JNXQ=",
+    "hash": "0xfed7df1c461140d17b4b4ed942a24c14f325b354d8b95ba9ef2db05cad493574",
     "number": 42768118,
-    "receipt_root": "eQEl5Rt87fpbS8/epeYjqlj22TiGzvMJ+k/GBA+3lps="
+    "receipt_root": "0x790125e51b7cedfa5b4bcfdea5e623aa58f6d93886cef309fa4fc6040fb7969b"
   },
   {
-    "hash": "mRmD8fUj+wLdgmjChs9NU4CING9IrQNI47lXajutYSU=",
+    "hash": "0x991983f1f523fb02dd8268c286cf4d538088346f48ad0348e3b9576a3bad6125",
     "number": 42768119,
-    "receipt_root": "oLjRQ8UPcH4Itw3DoJVvSZTJcHsesNTTI4cTjn30PUg="
+    "receipt_root": "0xa0b8d143c50f707e08b70dc3a0956f4994c9707b1eb0d4d32387138e7df43d48"
   },
   {
-    "hash": "oVNGVaqjKSwk3SFXDPKSCsQUFOT5x4TvLjkVGNcv0cY=",
+    "hash": "0xa1534655aaa3292c24dd21570cf2920ac41414e4f9c784ef2e391518d72fd1c6",
     "number": 42768120,
-    "receipt_root": "HOelxLHsQ8H/u7AWhRkbojcSKVK48QUOV119D0+XQ98="
+    "receipt_root": "0x1ce7a5c4b1ec43c1ffbbb01685191ba237122952b8f1050e575d7d0f4f9743df"
   },
   {
-    "hash": "vev78tC4b4tzzDHiEeR8w4nyEi4zjFBIQI74AVIpwyE=",
+    "hash": "0xbdebfbf2d0b86f8b73cc31e211e47cc389f2122e338c5048408ef8015229c321",
     "number": 42768121,
-    "receipt_root": "R1pe5mrbeNQHFagpCFoSihdSNeGvoZpXGvkFIT+\nMD1g="
+    "receipt_root": "0x475a5ee66adb78d40715a829085a128a175235e1afa19a571af905213f8c0f58"
   },
   {
-    "hash": "DAsmidyvJU+ODhrSjT4skBCp7ZMHf+1SAgdMEK9VP18=",
+    "hash": "0x0c0b2689dcaf254f8e0e1ad28d3e2c9010a9ed93077fed5202074c10af553f5f",
     "number": 42768122,
-    "receipt_root": "qru8pflpPAVYpL0zU0xv0C82bVIy+lUr4vXlYYpjBrc="
+    "receipt_root": "0xaabbbca5f9693c0558a4bd33534c6fd02f366d5232fa552be2f5e5618a6306b7"
   },
   {
-    "hash": "7YIw2+1/P+TxeKWlo8Hz6eXn2qlCokjWXHB18PjIbHQ=",
+    "hash": "0xed8230dbed7f3fe4f178a5a5a3c1f3e9e5e7daa942a248d65c7075f0f8c86c74",
     "number": 42768123,
-    "receipt_root": "tG6vk+KUKJ075wMQcnIx8R02htdyU3uHkhwyodSOyGY="
+    "receipt_root": "0xb46eaf93e294289d3be70310727231f11d3686d772537b87921c32a1d48ec866"
   },
   {
-    "hash": "AapiOfFbavBdm8vyJsKTSoJ6pC7LItyN/Mfy2lIKLU8=",
+    "hash": "0x01aa6239f15b6af05d9bcbf226c2934a827aa42ecb22dc8dfcc7f2da520a2d4f",
     "number": 42768124,
-    "receipt_root": "D+KXfE4FSRLqG+FLROw/JHC8y2id21fkQT1/2JIOpA0="
+    "receipt_root": "0x0fe2977c4e054912ea1be14b44ec3f2470bccb689ddb57e4413d7fd8920ea40d"
   }
 ]`
 

@@ -218,6 +218,7 @@ func (suite *KeeperTestSuite) TestHeader() {
 			name: "success",
 			msg: &types.QueryHeaderRequest{
 				ChainId: 56,
+				Number: headers[1].Number,
 			},
 			setup: func() {
 				suite.CreateClient(56, "Binance Smart Chain", *headers[0])
@@ -242,6 +243,119 @@ func (suite *KeeperTestSuite) TestHeader() {
 		})
 	}
 }
-func (suite *KeeperTestSuite) TestHeaderByHash() {}
-func (suite *KeeperTestSuite) TestLatestHeader() {}
-func (suite *KeeperTestSuite) TestParams()       {}
+func (suite *KeeperTestSuite) TestHeaderByHash() {
+	headers := testutil.GetTestHeaders(suite.T())
+	testCases := []struct {
+		name         string
+		msg          *types.QueryHeaderByHashRequest
+		setup        func()
+		expect       *types.TinyHeader
+		expectErr    bool
+		expectErrMsg string
+	}{
+		{
+			name: "client not found",
+			msg: &types.QueryHeaderByHashRequest{
+				ChainId: 56,
+			},
+			setup:        func() {},
+			expectErr:    true,
+			expectErrMsg: "client not found",
+		},
+		{
+			name: "header not found",
+			msg: &types.QueryHeaderByHashRequest{
+				ChainId: 56,
+			},
+			setup: func() {
+				suite.CreateClient(56, "Binance Smart Chain", *headers[0])
+			},
+			expectErr:    true,
+			expectErrMsg: "header not found",
+		},
+		{
+			name: "success",
+			msg: &types.QueryHeaderByHashRequest{
+				ChainId: 56,
+				Hash: headers[1].Hash,
+			},
+			setup: func() {
+				suite.CreateClient(56, "Binance Smart Chain", *headers[0])
+				suite.UploadHeaders(56, []types.TinyHeader{*headers[1]})
+			},
+			expect: headers[1],
+		},
+
+	}
+	for _, tc := range testCases {
+		suite.Run(tc.name, func() {
+			suite.SetupTest()
+			tc.setup()
+			res, err := suite.queryClient.HeaderByHash(suite.ctx, tc.msg)
+			if tc.expectErr {
+				suite.Require().Error(err)
+				suite.Require().Contains(err.Error(), tc.expectErrMsg)
+			} else {
+				suite.Require().NoError(err)
+				suite.Require().Equal(tc.expect, res.Header)
+			}
+		})
+	}
+}
+func (suite *KeeperTestSuite) TestLatestHeader() {
+	headers := testutil.GetTestHeaders(suite.T())
+	testCases := []struct {
+		name         string
+		msg          *types.QueryLatestHeaderRequest
+		setup        func()
+		expect       *types.TinyHeader
+		expectErr    bool
+		expectErrMsg string
+	}{
+		{
+			name: "client not found",
+			msg: &types.QueryLatestHeaderRequest{
+				ChainId: 56,
+			},
+			setup:        func() {},
+			expectErr:    true,
+			expectErrMsg: "client not found",
+		},
+		{
+			name: "success",
+			msg: &types.QueryLatestHeaderRequest{
+				ChainId: 56,
+			},
+			setup: func() {
+				suite.CreateClient(56, "Binance Smart Chain", *headers[0])
+			},
+			expect: headers[0],
+		},
+		{
+			name: "success(upload multiple headers)",
+			msg: &types.QueryLatestHeaderRequest{
+				ChainId: 56,
+			},
+			setup: func() {
+				suite.CreateClient(56, "Binance Smart Chain", *headers[0])
+				suite.UploadHeaders(56, []types.TinyHeader{*headers[1]})
+			},
+			expect: headers[1],
+		},
+
+	}
+	for _, tc := range testCases {
+		suite.Run(tc.name, func() {
+			suite.SetupTest()
+			tc.setup()
+			res, err := suite.queryClient.LatestHeader(suite.ctx, tc.msg)
+			if tc.expectErr {
+				suite.Require().Error(err)
+				suite.Require().Contains(err.Error(), tc.expectErrMsg)
+			} else {
+				suite.Require().NoError(err)
+				suite.Require().Equal(tc.expect, res.Header)
+			}
+		})
+	}
+}

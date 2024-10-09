@@ -42,7 +42,7 @@ func KeyHeader(blockNumber uint64) []byte {
 
 // KeyHeaderHash returns the key for the header hash
 func KeyHeaderHash(hash string) []byte {
-	return append(KeyPrefixHeadHash, common.Hex2Bytes(hash)...)
+	return append(KeyPrefixHeadHash, common.FromHex(hash)...)
 }
 
 // KeyLatestHeaderNumber returns the key for the latest header number
