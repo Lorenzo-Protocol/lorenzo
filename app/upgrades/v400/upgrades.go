@@ -37,11 +37,6 @@ func upgradeHandlerConstructor(
 		if err := mergeBnbClient(ctx, app); err != nil {
 			return nil, err
 		}
-
-		// create ethereum light client
-		// if err := createEthereumClient(ctx, app); err != nil {
-		// 	return nil, err
-		// }
 		return app.ModuleManager.RunMigrations(ctx, c, fromVM)
 	}
 }
@@ -80,30 +75,6 @@ func mergeBnbClient(ctx sdk.Context, app upgrades.AppKeepers) error {
 		bnbclient.ChainId,
 		bnbclient.StakePlanHubAddress,
 		bnbclient.EventName,
-		bnblightclienttypes.StakePlanHubContractABIJSON,
-	)
-}
-
-// TODO
-func createEthereumClient(ctx sdk.Context, app upgrades.AppKeepers) error {
-	client := &ccevtypes.Client{
-		ChainId:   1,
-		ChainName: "Ethereum Mainnet",
-		InitialBlock: ccevtypes.TinyHeader{
-			Hash:        "",
-			Number:      0,
-			ReceiptRoot: "",
-		},
-	}
-	if err := app.CCEVkeeper.CreateClient(ctx, client); err != nil {
-		return errors.New("failed to create ethereum light client")
-	}
-
-	return app.CCEVkeeper.UploadContract(
-		ctx,
-		client.ChainId,
-		"",
-		"StakeBTC2JoinStakePlan",
 		bnblightclienttypes.StakePlanHubContractABIJSON,
 	)
 }

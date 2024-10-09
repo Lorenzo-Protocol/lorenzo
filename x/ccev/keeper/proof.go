@@ -154,7 +154,7 @@ func (k Keeper) handleReceipt(
 			Args:    eventArgs,
 		}
 
-		if err := handler.PreProcessed(ctx, chainID, eventInfo); err != nil{
+		if err := handler.PreProcessed(ctx, chainID, eventInfo); err != nil {
 			return errorsmod.Wrapf(types.ErrInvalidEvent, "failed to process %s event", event.Name)
 		}
 		events = append(events, eventInfo)

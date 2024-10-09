@@ -47,9 +47,7 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *types.GenesisState {
 		var contractState []*types.Contract
 
 		contracts := k.getAllContracts(ctx, client.ChainId)
-		for _, contract := range contracts {
-			contractState = append(contractState, contract)
-		}
+		contractState = append(contractState, contracts...)
 
 		chainState := &types.ChainState{
 			Client:    client,

@@ -181,7 +181,7 @@ func (suite *KeeperTestSuite) TestUploadHeaders() {
 			expectErrMsg: "client not found",
 		},
 		{
-			name:  "header number less than initial height",
+			name: "header number less than initial height",
 			setup: func() {
 				suite.CreateClient(56, "Binance Smart Chain", *headers[1])
 			},
@@ -194,7 +194,7 @@ func (suite *KeeperTestSuite) TestUploadHeaders() {
 			expectErrMsg: "invalid header",
 		},
 		{
-			name:  "duplicate header",
+			name: "duplicate header",
 			setup: func() {
 				suite.CreateClient(56, "Binance Smart Chain", *headers[0])
 			},
@@ -207,7 +207,7 @@ func (suite *KeeperTestSuite) TestUploadHeaders() {
 			expectErrMsg: "duplicate header",
 		},
 		{
-			name:  "successful upload headers(single)",
+			name: "successful upload headers(single)",
 			setup: func() {
 				suite.CreateClient(56, "Binance Smart Chain", *headers[0])
 			},
@@ -216,19 +216,19 @@ func (suite *KeeperTestSuite) TestUploadHeaders() {
 				ChainId: 56,
 				Headers: []types.TinyHeader{*headers[1]},
 			},
-			expectErr:    false,
+			expectErr: false,
 		},
 		{
-			name:  "successful upload headers(multiple)",
+			name: "successful upload headers(multiple)",
 			setup: func() {
 				suite.CreateClient(56, "Binance Smart Chain", *headers[0])
 			},
 			msg: &types.MsgUploadHeaders{
 				Sender:  testAccounts[0].String(),
 				ChainId: 56,
-				Headers: []types.TinyHeader{*headers[1],*headers[2]},
+				Headers: []types.TinyHeader{*headers[1], *headers[2]},
 			},
-			expectErr:    false,
+			expectErr: false,
 		},
 	}
 
@@ -259,7 +259,7 @@ func (suite *KeeperTestSuite) TestUpdateParams() {
 			msg: &types.MsgUpdateParams{
 				Authority: testAccounts[1].String(),
 				Params: types.Params{
-					AllowList : []string{testAccounts[0].String()},
+					AllowList: []string{testAccounts[0].String()},
 				},
 			},
 			expectErr:    true,
@@ -270,7 +270,7 @@ func (suite *KeeperTestSuite) TestUpdateParams() {
 			msg: &types.MsgUpdateParams{
 				Authority: "lrz10d07y265gmmuvt4z0w9aw880jnsr700jq84749",
 				Params: types.Params{
-					AllowList : []string{testAccounts[0].String(),testAccounts[0].String()},
+					AllowList: []string{testAccounts[0].String(), testAccounts[0].String()},
 				},
 			},
 			expectErr:    true,
@@ -281,7 +281,7 @@ func (suite *KeeperTestSuite) TestUpdateParams() {
 			msg: &types.MsgUpdateParams{
 				Authority: "lrz10d07y265gmmuvt4z0w9aw880jnsr700jq84749",
 				Params: types.Params{
-					AllowList : []string{"lrz10d07y265gmmuvt4z0w9aw880jnsr700jq8474"},
+					AllowList: []string{"lrz10d07y265gmmuvt4z0w9aw880jnsr700jq8474"},
 				},
 			},
 			expectErr:    true,
@@ -292,7 +292,7 @@ func (suite *KeeperTestSuite) TestUpdateParams() {
 			msg: &types.MsgUpdateParams{
 				Authority: "lrz10d07y265gmmuvt4z0w9aw880jnsr700jq84749",
 				Params: types.Params{
-					AllowList : []string{testAccounts[0].String()},
+					AllowList: []string{testAccounts[0].String()},
 				},
 			},
 			expectErr: false,
@@ -330,7 +330,7 @@ func (suite *KeeperTestSuite) TestUpdateHeader() {
 			msg: &types.MsgUpdateHeader{
 				Sender:  testAccounts[1].String(),
 				ChainId: 56,
-				Header: *headers[1],
+				Header:  *headers[1],
 			},
 			expectErr:    true,
 			expectErrMsg: "tx unauthorized",
@@ -341,48 +341,48 @@ func (suite *KeeperTestSuite) TestUpdateHeader() {
 			msg: &types.MsgUpdateHeader{
 				Sender:  testAccounts[0].String(),
 				ChainId: 56,
-				Header: *headers[1],
+				Header:  *headers[1],
 			},
 			expectErr:    true,
 			expectErrMsg: "client not found",
 		},
 		{
-			name:  "invalid header",
+			name: "invalid header",
 			setup: func() {
 				suite.CreateClient(56, "Binance Smart Chain", *headers[1])
 			},
 			msg: &types.MsgUpdateHeader{
 				Sender:  testAccounts[0].String(),
 				ChainId: 56,
-				Header: *headers[0],
+				Header:  *headers[0],
 			},
 			expectErr:    true,
 			expectErrMsg: "invalid header",
 		},
 		{
-			name:  "header not found",
+			name: "header not found",
 			setup: func() {
 				suite.CreateClient(56, "Binance Smart Chain", *headers[1])
 			},
 			msg: &types.MsgUpdateHeader{
 				Sender:  testAccounts[0].String(),
 				ChainId: 56,
-				Header: *headers[2],
+				Header:  *headers[2],
 			},
 			expectErr:    true,
 			expectErrMsg: "header not found",
 		},
 		{
-			name:  "header not found",
+			name: "header not found",
 			setup: func() {
 				suite.CreateClient(56, "Binance Smart Chain", *headers[1])
 			},
 			msg: &types.MsgUpdateHeader{
 				Sender:  testAccounts[0].String(),
 				ChainId: 56,
-				Header: *headers[1],
+				Header:  *headers[1],
 			},
-			expectErr:    false,
+			expectErr: false,
 		},
 	}
 
@@ -399,5 +399,4 @@ func (suite *KeeperTestSuite) TestUpdateHeader() {
 			}
 		})
 	}
-
 }

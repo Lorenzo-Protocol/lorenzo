@@ -66,7 +66,7 @@ func (suite *KeeperTestSuite) CreateClient(chainID uint32, chainName string, ini
 	suite.Require().NoError(err)
 }
 
-func (suite *KeeperTestSuite) UploadContract(chainID uint32,address string,eventName string,abi []byte) {
+func (suite *KeeperTestSuite) UploadContract(chainID uint32, address string, eventName string, abi []byte) {
 	err := suite.keeper.UploadContract(suite.ctx, chainID, address, eventName, abi)
 	suite.Require().NoError(err)
 }

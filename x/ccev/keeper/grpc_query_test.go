@@ -66,8 +66,8 @@ func (suite *KeeperTestSuite) TestClients() {
 		expectErrMsg string
 	}{
 		{
-			name:         "success(no clients)",
-			setup:        func() {},
+			name:  "success(no clients)",
+			setup: func() {},
 		},
 		{
 			name: "success(one client)",
@@ -119,7 +119,7 @@ func (suite *KeeperTestSuite) TestClients() {
 	}
 }
 
-func (suite *KeeperTestSuite) TestContract()     {
+func (suite *KeeperTestSuite) TestContract() {
 	headers := testutil.GetTestHeaders(suite.T())
 	testCases := []struct {
 		name         string
@@ -137,7 +137,7 @@ func (suite *KeeperTestSuite) TestContract()     {
 			},
 			setup:        func() {},
 			expectErr:    true,
-			expectErrMsg: "contract not found",
+			expectErrMsg: "client not found",
 		},
 		{
 			name: "contract not found",
@@ -184,6 +184,7 @@ func (suite *KeeperTestSuite) TestContract()     {
 		})
 	}
 }
+
 func (suite *KeeperTestSuite) TestHeader() {
 	headers := testutil.GetTestHeaders(suite.T())
 	testCases := []struct {
@@ -218,7 +219,7 @@ func (suite *KeeperTestSuite) TestHeader() {
 			name: "success",
 			msg: &types.QueryHeaderRequest{
 				ChainId: 56,
-				Number: headers[1].Number,
+				Number:  headers[1].Number,
 			},
 			setup: func() {
 				suite.CreateClient(56, "Binance Smart Chain", *headers[0])
@@ -226,7 +227,6 @@ func (suite *KeeperTestSuite) TestHeader() {
 			},
 			expect: headers[1],
 		},
-
 	}
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
@@ -243,6 +243,7 @@ func (suite *KeeperTestSuite) TestHeader() {
 		})
 	}
 }
+
 func (suite *KeeperTestSuite) TestHeaderByHash() {
 	headers := testutil.GetTestHeaders(suite.T())
 	testCases := []struct {
@@ -277,7 +278,7 @@ func (suite *KeeperTestSuite) TestHeaderByHash() {
 			name: "success",
 			msg: &types.QueryHeaderByHashRequest{
 				ChainId: 56,
-				Hash: headers[1].Hash,
+				Hash:    headers[1].Hash,
 			},
 			setup: func() {
 				suite.CreateClient(56, "Binance Smart Chain", *headers[0])
@@ -285,7 +286,6 @@ func (suite *KeeperTestSuite) TestHeaderByHash() {
 			},
 			expect: headers[1],
 		},
-
 	}
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
@@ -302,6 +302,7 @@ func (suite *KeeperTestSuite) TestHeaderByHash() {
 		})
 	}
 }
+
 func (suite *KeeperTestSuite) TestLatestHeader() {
 	headers := testutil.GetTestHeaders(suite.T())
 	testCases := []struct {
@@ -342,7 +343,6 @@ func (suite *KeeperTestSuite) TestLatestHeader() {
 			},
 			expect: headers[1],
 		},
-
 	}
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {

@@ -189,8 +189,6 @@ func CmdTxUploadHeaders() *cobra.Command {
 	return cmd
 }
 
-
-
 // CmdTxUpdateHeader creates a new Cobra command for updating a light client header.
 //
 // It takes a single argument, which is the path to a JSON file containing the header.
@@ -227,8 +225,8 @@ func CmdTxUpdateHeader() *cobra.Command {
 
 			msg := types.MsgUpdateHeader{
 				ChainId: chainID,
-				Sender: clientCtx.GetFromAddress().String(),
-				Header: *header,
+				Sender:  clientCtx.GetFromAddress().String(),
+				Header:  *header,
 			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},

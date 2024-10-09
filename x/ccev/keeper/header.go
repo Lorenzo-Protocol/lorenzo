@@ -47,7 +47,8 @@ func (k Keeper) UploadHeaders(ctx sdk.Context, chainID uint32, headers []types.T
 			"header number %d less than initial height %d", headers[0].Number, client.InitialBlock.Number)
 	}
 
-	for _, header := range headers {
+	for i := range headers {
+		header := headers[i]
 		if k.HasHeader(ctx, chainID, header.Number) {
 			return errorsmod.Wrapf(types.ErrDuplicateHeader, "header %d already exists", header.Number)
 		}

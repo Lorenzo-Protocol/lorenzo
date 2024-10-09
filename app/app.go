@@ -184,7 +184,7 @@ type LorenzoApp struct {
 	PlanKeeper           *plankeeper.Keeper
 	TokenKeeper          *tokenkeeper.Keeper
 	BNBLightClientKeeper bnblightclientkeeper.Keeper
-	CCEVkeeper ccevkeeper.Keeper
+	CCEVkeeper           ccevkeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper

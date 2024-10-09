@@ -71,7 +71,8 @@ func (m *MsgUploadHeaders) ValidateBasic() error {
 		return errorsmod.Wrapf(ErrInvalidHeader, "headers cannot be empty")
 	}
 
-	for _, header := range m.Headers {
+	for i := range m.Headers {
+		header := m.Headers[i]
 		if err := ValidateHeader(&header); err != nil {
 			return err
 		}

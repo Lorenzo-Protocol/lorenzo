@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	amino    = codec.NewLegacyAmino()
+	amino = codec.NewLegacyAmino()
 	// AminoCdc is the amino codec used for serialization.
 	AminoCdc = codec.NewAminoCodec(amino)
 )

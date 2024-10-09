@@ -106,7 +106,7 @@ func (hp *HeaderPool) GetTestHeader(number uint64) *types.TinyHeader {
 }
 
 // GetTestHeaderByIndex returns the test header with the given index
-func (hp *HeaderPool) GetTestHeaderByIndex( index int) *types.TinyHeader {
+func (hp *HeaderPool) GetTestHeaderByIndex(index int) *types.TinyHeader {
 	if index >= len(hp.headers) {
 		panic("header not found")
 	}

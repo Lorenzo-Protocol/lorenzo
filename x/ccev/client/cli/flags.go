@@ -13,13 +13,13 @@ const (
 	// FlagHeaderNumber is the flag for the header number of the block
 	FlagHeaderNumber = "header-number"
 	// FlagReceiptRoot is the flag for the receipt root of the block
-	FlagReceiptRoot     = "receipt-root"
+	FlagReceiptRoot = "receipt-root"
 	// FlagContractAddress is the flag for the contract address
 	FlagContractAddress = "contract-address"
 	// FlagContractABI is the flag for the contract ABI
-	FlagContractABI     = "contract-abi"
+	FlagContractABI = "contract-abi"
 	// FlagEventName is the flag for the event name
-	FlagEventName       = "event-name"
+	FlagEventName = "event-name"
 )
 
 // FsCreateClient defines the flags for creating a new client
@@ -27,9 +27,12 @@ var FsCreateClient = pflag.NewFlagSet("", pflag.ContinueOnError)
 
 // FsUploadContract defines the flags for uploading a contract
 var FsUploadContract = pflag.NewFlagSet("", pflag.ContinueOnError)
+
 // FsUploadHeaders defines the flags for uploading headers
-var FsUploadHeaders = pflag.NewFlagSet("", pflag.ContinueOnError)
-var FsUpdateHeaders = pflag.NewFlagSet("", pflag.ContinueOnError)
+var (
+	FsUploadHeaders = pflag.NewFlagSet("", pflag.ContinueOnError)
+	FsUpdateHeaders = pflag.NewFlagSet("", pflag.ContinueOnError)
+)
 
 func init() {
 	FsCreateClient.String(FlagHeaderHash, "", "The hash of the header")
