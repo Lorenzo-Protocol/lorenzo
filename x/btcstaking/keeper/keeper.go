@@ -21,8 +21,8 @@ type Keeper struct {
 	bnblcKeeper types.BNBLightClientKeeper
 	agentKeeper types.AgentKeeper
 	planKeeper  types.PlanKeeper
-
-	evmKeeper types.EvmKeeper
+	ccevKeeper  types.CCEVKeeper
+	evmKeeper   types.EvmKeeper
 
 	// the address capable of executing a MsgUpdateParams message. Typically, this
 	// should be the x/gov module account.
@@ -39,7 +39,7 @@ func NewKeeper(
 	bankKeeper bankkeeper.Keeper,
 	planKeeper types.PlanKeeper,
 	evmKeeper types.EvmKeeper,
-
+	ccevKeeper types.CCEVKeeper,
 	authority string,
 ) Keeper {
 	return Keeper{
@@ -52,8 +52,8 @@ func NewKeeper(
 		bankKeeper:  bankKeeper,
 		planKeeper:  planKeeper,
 		evmKeeper:   evmKeeper,
-
-		authority: authority,
+		ccevKeeper:  ccevKeeper,
+		authority:   authority,
 	}
 }
 

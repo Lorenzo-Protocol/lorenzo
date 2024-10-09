@@ -19,6 +19,9 @@ service Msg {
   rpc CreateBTCBStaking(MsgCreateBTCBStaking)
       returns (MsgCreateBTCBStakingResponse);
 
+  rpc CreatexBTCStaking(MsgCreatexBTCStaking)
+      returns (MsgCreatexBTCStakingResponse);
+
   rpc Burn(MsgBurnRequest) returns (MsgBurnResponse);
 
   rpc AddReceiver(MsgAddReceiver) returns (MsgAddReceiverResponse);
@@ -77,6 +80,19 @@ message MsgCreateBTCBStaking {
 }
 
 message MsgCreateBTCBStakingResponse {}
+
+message MsgCreatexBTCStaking {
+  option (cosmos.msg.v1.signer) = "signer";
+  option (amino.name) = "lorenzo/btcstaking/MsgCreatexBTCStaking";
+
+  uint32 chain_id = 1;
+  uint64 number = 2;
+  bytes receipt = 3;
+  bytes proof = 4;
+  string signer = 5 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
+
+message MsgCreatexBTCStakingResponse {}
 
 message MsgBurnRequest {
   option (cosmos.msg.v1.signer) = "signer";

@@ -65,12 +65,13 @@ import (
 	btclightclienttypes "github.com/Lorenzo-Protocol/lorenzo/v3/x/btclightclient/types"
 	"github.com/Lorenzo-Protocol/lorenzo/v3/x/btcstaking"
 	btcstakingtypes "github.com/Lorenzo-Protocol/lorenzo/v3/x/btcstaking/types"
+	"github.com/Lorenzo-Protocol/lorenzo/v3/x/ccev"
+	ccevtypes "github.com/Lorenzo-Protocol/lorenzo/v3/x/ccev/types"
 	"github.com/Lorenzo-Protocol/lorenzo/v3/x/fee"
 	feetypes "github.com/Lorenzo-Protocol/lorenzo/v3/x/fee/types"
+	ics20wrapper "github.com/Lorenzo-Protocol/lorenzo/v3/x/ibctransfer"
 	"github.com/Lorenzo-Protocol/lorenzo/v3/x/plan"
 	plantypes "github.com/Lorenzo-Protocol/lorenzo/v3/x/plan/types"
-
-	ics20wrapper "github.com/Lorenzo-Protocol/lorenzo/v3/x/ibctransfer"
 	"github.com/Lorenzo-Protocol/lorenzo/v3/x/token"
 	tokentypes "github.com/Lorenzo-Protocol/lorenzo/v3/x/token/types"
 )
@@ -138,6 +139,7 @@ var (
 		agent.AppModuleBasic{},
 		plan.AppModuleBasic{},
 		token.AppModuleBasic{},
+		ccev.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -250,6 +252,7 @@ func appModules(
 		plan.NewAppModule(appCodec, app.PlanKeeper),
 		token.NewAppModule(appCodec, app.TokenKeeper),
 		bnblightclient.NewAppModule(appCodec, app.BNBLightClientKeeper),
+		ccev.NewAppModule(appCodec, app.CCEVkeeper),
 	}
 }
 
@@ -296,6 +299,7 @@ func orderBeginBlockers() []string {
 		plantypes.ModuleName,
 		tokentypes.ModuleName,
 		bnblightclienttypes.ModuleName,
+		ccevtypes.ModuleName,
 	}
 }
 
@@ -339,6 +343,7 @@ func orderEndBlockers() []string {
 		plantypes.ModuleName,
 		tokentypes.ModuleName,
 		bnblightclienttypes.ModuleName,
+		ccevtypes.ModuleName,
 	}
 }
 
@@ -385,6 +390,8 @@ func orderInitBlockers() []string {
 		plantypes.ModuleName,
 		tokentypes.ModuleName,
 		bnblightclienttypes.ModuleName,
+		ccevtypes.ModuleName,
+		ccevtypes.ModuleName,
 
 		// NOTE: crisis module must go at the end to check for invariants on each module
 		crisistypes.ModuleName,

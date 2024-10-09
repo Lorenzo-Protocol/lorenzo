@@ -44,7 +44,7 @@ func (k Keeper) DepositBTCB(
 	totalStBTCAmt := new(big.Int)
 	for i := range events {
 		event := events[i]
-		if k.hasBTCBStakingRecord(ctx, event.ChainID, event.Contract.Bytes(), event.Identifier) {
+		if k.hasxBTCStakingRecord(ctx, event.ChainID, event.Contract.Bytes(), event.Identifier) {
 			return types.ErrDuplicateStakingEvent.Wrapf("duplicate event,planID %d,stakingIdx %d,contract %s",
 				event.PlanID,
 				event.Identifier,
@@ -72,7 +72,7 @@ func (k Keeper) DepositBTCB(
 
 		totalStBTCAmt = totalStBTCAmt.Add(totalStBTCAmt, amount)
 
-		btcbStakingRecord := &types.BTCBStakingRecord{
+		btcbStakingRecord := &types.XBTCStakingRecord{
 			StakingIdx:    event.Identifier,
 			Contract:      event.Contract.Bytes(),
 			ReceiverAddr:  event.Sender.String(),
@@ -82,7 +82,7 @@ func (k Keeper) DepositBTCB(
 			PlanId:        event.PlanID,
 		}
 
-		k.addBTCBStakingRecord(ctx, btcbStakingRecord)
+		k.addxBTCStakingRecord(ctx, btcbStakingRecord)
 
 		// emit an event
 		ctx.EventManager().EmitTypedEvent(types.NewEventBTCBStakingCreated(btcbStakingRecord)) //nolint:errcheck,gosec
@@ -102,26 +102,50 @@ func (k Keeper) DepositBTCB(
 	return nil
 }
 
-func (k Keeper) addBTCBStakingRecord(ctx sdk.Context, record *types.BTCBStakingRecord) {
-	store := ctx.KVStore(k.storeKey)
-	bz := k.cdc.MustMarshal(record)
-	store.Set(types.KeyBTCBStakingRecord(record.ChainId, record.Contract, record.StakingIdx), bz)
+// DepositxBTC verifies the receipt of a transaction using the provided proof, and
+// if the verification is successful, mints stBTC to the depositor's account.
+//
+// Parameters:
+// - ctx: The SDK context.
+// - depositor: The depositor's account address.
+// - chainID: The chain ID.
+// - number: The block number.
+// - receiptBz: The receipt to be verified.
+// - proofBz: The proof to verify the receipt.
+//
+// Returns:
+// - error: An error if the verification fails.
+func (k Keeper) DepositxBTC(
+	ctx sdk.Context,
+	depositor sdk.AccAddress,
+	chainID uint32,
+	number uint64,
+	receiptBz,
+	proofBz []byte,
+) error {
+	return k.ccevKeeper.VerifyAndCallback(ctx, chainID, number, receiptBz, proofBz, &eventHandler{k})
 }
 
-func (k Keeper) hasBTCBStakingRecord(ctx sdk.Context, chainID uint32, contract []byte, stakingIdx uint64) bool {
+func (k Keeper) addxBTCStakingRecord(ctx sdk.Context, record *types.XBTCStakingRecord) {
 	store := ctx.KVStore(k.storeKey)
-	key := types.KeyBTCBStakingRecord(chainID, contract, stakingIdx)
+	bz := k.cdc.MustMarshal(record)
+	store.Set(types.KeyxBTCStakingRecord(record.ChainId, record.Contract, record.StakingIdx), bz)
+}
+
+func (k Keeper) hasxBTCStakingRecord(ctx sdk.Context, chainID uint32, contract []byte, stakingIdx uint64) bool {
+	store := ctx.KVStore(k.storeKey)
+	key := types.KeyxBTCStakingRecord(chainID, contract, stakingIdx)
 	return store.Has(key)
 }
 
-func (k Keeper) getBTCBStakingRecord(ctx sdk.Context, chainID uint32, contract []byte, stakingIdx uint64) (*types.BTCBStakingRecord, error) {
+func (k Keeper) getxBTCBtakingRecord(ctx sdk.Context, chainID uint32, contract []byte, stakingIdx uint64) (*types.XBTCStakingRecord, error) {
 	store := ctx.KVStore(k.storeKey)
-	key := types.KeyBTCBStakingRecord(chainID, contract, stakingIdx)
+	key := types.KeyxBTCStakingRecord(chainID, contract, stakingIdx)
 	bz := store.Get(key)
 	if len(bz) == 0 {
 		return nil, types.ErrStakingRecordNotFound
 	}
-	var record types.BTCBStakingRecord
+	var record types.XBTCStakingRecord
 	k.cdc.MustUnmarshal(bz, &record)
 	return &record, nil
 }

@@ -1,0 +1,112 @@
+syntax = "proto3";
+package lorenzo.ccev.v1;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "lorenzo/ccev/v1/params.proto";
+import "lorenzo/ccev/v1/state.proto";
+
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/v3/x/ccev/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Params queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/lorenzo/ccev/v1/params";
+  }
+
+  // Client queries the client of the specified chain_id.
+  rpc Client(QueryClientRequest) returns (QueryClientResponse) {
+    option (google.api.http).get = "/lorenzo/ccev/v1/client/{chain_id}";
+  }
+
+  // Clients queries all clients.
+  rpc Clients(QueryClientsRequest) returns (QueryClientsResponse) {
+    option (google.api.http).get = "/lorenzo/ccev/v1/clients";
+  }
+
+  // Header queries the header of the specified chain_id and number.
+  rpc Header(QueryHeaderRequest) returns (QueryHeaderResponse) {
+    option (google.api.http).get =
+        "/lorenzo/ccev/v1/client/{chain_id}/header/{number}";
+  }
+
+  // HeaderByHash queries the header of the specified chain_id and hash.
+  rpc HeaderByHash(QueryHeaderByHashRequest)
+      returns (QueryHeaderByHashResponse) {
+    option (google.api.http).get =
+        "/lorenzo/ccev/v1/client/{chain_id}/header/{hash}/hash";
+  }
+
+  // LatestHeader returns the latest header of the specified chain_id.
+  rpc LatestHeader(QueryLatestHeaderRequest)
+      returns (QueryLatestHeaderResponse) {
+    option (google.api.http).get =
+        "/lorenzo/ccev/v1/client/{chain_id}/latest_header";
+  }
+
+  // Contract queries the contract of the specified chain_id and address.
+  rpc Contract(QueryContractRequest) returns (QueryContractResponse) {
+    option (google.api.http).get =
+        "/lorenzo/ccev/v1/client/{chain_id}/contract/{address}";
+  }
+}
+
+// QueryParamsRequest is the request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is the response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [ (gogoproto.nullable) = false ];
+}
+
+// QueryClientRequest is the request type for the Query/Client RPC method.
+message QueryClientRequest { uint32 chain_id = 1; }
+
+// QueryClientResponse is the response type for the Query/Client RPC method.
+message QueryClientResponse { lorenzo.ccev.v1.Client client = 1; }
+
+// QueryClientsRequest is the request type for the Query/Clients RPC method.
+message QueryClientsRequest {}
+
+// QueryClientsResponse is the response type for the Query/Clients RPC method.
+message QueryClientsResponse { repeated lorenzo.ccev.v1.Client clients = 1; }
+
+// QueryHeaderRequest is the request type for the Query/Header RPC method.
+message QueryHeaderRequest {
+  uint32 chain_id = 1;
+  uint64 number = 2;
+}
+
+// QueryHeaderResponse is the response type for the Query/Header RPC method.
+message QueryHeaderResponse { lorenzo.ccev.v1.TinyHeader header = 1; }
+
+// QueryHeaderByHashRequest is the request type for the Query/HeaderByHash RPC
+// method.
+message QueryHeaderByHashRequest {
+  uint32 chain_id = 1;
+  string hash = 2;
+}
+
+// QueryHeaderByHashResponse is the response type for the Query/HeaderByHash RPC
+// method.
+message QueryHeaderByHashResponse { lorenzo.ccev.v1.TinyHeader header = 1; }
+
+// QueryLatestHeaderRequest is the request type for the Query/LatestHeader
+// RPC method.
+message QueryLatestHeaderRequest { uint32 chain_id = 1; }
+
+// QueryLatestHeaderResponse is the response type for the Query/LatestHeader
+// RPC method.
+message QueryLatestHeaderResponse { lorenzo.ccev.v1.TinyHeader header = 1; }
+
+// QueryContractRequest is the request type for the Query/Contract RPC method.
+message QueryContractRequest {
+  uint32 chain_id = 1;
+  string address = 2;
+}
+
+// QueryContractResponse is the response type for the Query/Contract
+// RPC method.
+message QueryContractResponse { lorenzo.ccev.v1.Contract contract = 1; }

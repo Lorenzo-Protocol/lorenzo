@@ -1,0 +1,106 @@
+syntax = "proto3";
+package lorenzo.ccev.v1;
+
+import "gogoproto/gogo.proto";
+import "cosmos/msg/v1/msg.proto";
+import "lorenzo/ccev/v1/params.proto";
+import "lorenzo/ccev/v1/state.proto";
+import "cosmos_proto/cosmos.proto";
+
+option go_package = "github.com/Lorenzo-Protocol/lorenzo/v3/x/ccev/types";
+
+// Msg defines the Msg service.
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+
+  // CreateClient defines the message for creating a lightclient for target
+  // chain
+  rpc CreateClient(MsgCreateClient) returns (MsgCreateClientResponse) {};
+
+  // UploadContract defines the message for uploading a
+  // CrossChainContract
+  rpc UploadContract(MsgUploadContract) returns (MsgUploadContractResponse) {};
+
+  // UploadHeaders adds a batch of headers to the bnb light client chain
+  rpc UploadHeaders(MsgUploadHeaders) returns (MsgUploadHeadersResponse) {};
+
+  // UpdateParams defines a method for updating bnb light client module
+  // parameters.
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+
+  // UpdateHeader defines a method for updating bnb light client header.
+  rpc UpdateHeader(MsgUpdateHeader) returns (MsgUpdateHeaderResponse);
+}
+
+// MsgCreateClient defines the message for creating a lightclient for target
+// chain
+message MsgCreateClient {
+  option (cosmos.msg.v1.signer) = "sender";
+
+  lorenzo.ccev.v1.Client client = 1 [ (gogoproto.nullable) = false ];
+  string sender = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
+
+// MsgCreateClientResponse defines the response for the CreateClient
+// transaction
+message MsgCreateClientResponse {}
+
+// MsgUploadCrossChainContract defines the message for uploading a
+// CrossChainContract
+message MsgUploadContract {
+  option (cosmos.msg.v1.signer) = "sender";
+
+  uint32 chain_id = 1;
+  string address = 2;
+  string event_name = 3;
+  bytes abi = 4;
+  string sender = 5 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
+
+message MsgUploadContractResponse {}
+
+// MsgUploadHeaders defines the message for multiple incoming header bytes
+message MsgUploadHeaders {
+  option (cosmos.msg.v1.signer) = "sender";
+
+  uint32 chain_id = 1;
+  repeated lorenzo.ccev.v1.TinyHeader headers = 2
+      [ (gogoproto.nullable) = false ];
+  string sender = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
+
+// MsgUploadHeadersResponse defines the response for the UploadHeaders
+// transaction
+message MsgUploadHeadersResponse {}
+
+// MsgUpdateHeader defines the message for updating bnb light client header.
+message MsgUpdateHeader {
+  option (cosmos.msg.v1.signer) = "sender";
+
+  uint32 chain_id = 1;
+  lorenzo.ccev.v1.TinyHeader header = 2 [ (gogoproto.nullable) = false ];
+  string sender = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
+
+// MsgUpdateHeaderResponse defines the response for the UpdateHeader
+// transaction
+message MsgUpdateHeaderResponse {}
+
+// MsgUpdateParams defines a message for updating fee module parameters.
+message MsgUpdateParams {
+  option (cosmos.msg.v1.signer) = "authority";
+
+  // authority is the address of the governance account.
+  // just FYI: cosmos.AddressString marks that this field should use type alias
+  // for AddressString instead of string, but the functionality is not yet
+  // implemented in cosmos-proto
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // params defines the bnb light client parameters.
+  //
+  // NOTE: All parameters must be supplied.
+  lorenzo.ccev.v1.Params params = 2 [ (gogoproto.nullable) = false ];
+}
+
+// MsgUpdateParamsResponse is the response to the MsgUpdateParams message.
+message MsgUpdateParamsResponse {}
