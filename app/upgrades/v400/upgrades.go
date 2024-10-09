@@ -11,7 +11,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
-	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common/hexutil"
 )
 
 // Upgrade defines a struct containing necessary fields that a SoftwareUpgradeProposal
@@ -39,9 +39,9 @@ func upgradeHandlerConstructor(
 		}
 
 		// create ethereum light client
-		if err := createEthereumClient(ctx, app); err != nil {
-			return nil, err
-		}
+		// if err := createEthereumClient(ctx, app); err != nil {
+		// 	return nil, err
+		// }
 		return app.ModuleManager.RunMigrations(ctx, c, fromVM)
 	}
 }
@@ -64,9 +64,9 @@ func mergeBnbClient(ctx sdk.Context, app upgrades.AppKeepers) error {
 			ChainId:   bnbclient.ChainId,
 			ChainName: "Binance Smart Chain",
 			InitialBlock: ccevtypes.TinyHeader{
-				Hash:        common.Bytes2Hex(latestHeader.Hash),
+				Hash:        hexutil.Encode(latestHeader.Hash),
 				Number:      latestHeader.Number,
-				ReceiptRoot: common.Bytes2Hex(latestHeader.ReceiptRoot),
+				ReceiptRoot: hexutil.Encode(latestHeader.ReceiptRoot),
 			},
 		}
 		if err := app.CCEVkeeper.CreateClient(ctx, client); err != nil {
@@ -75,14 +75,13 @@ func mergeBnbClient(ctx sdk.Context, app upgrades.AppKeepers) error {
 	}
 
 	// 3. merge bnb staking plan contract
-	app.CCEVkeeper.UploadContract(
+	return app.CCEVkeeper.UploadContract(
 		ctx,
 		bnbclient.ChainId,
 		bnbclient.StakePlanHubAddress,
 		bnbclient.EventName,
 		bnblightclienttypes.StakePlanHubContractABIJSON,
 	)
-	return nil
 }
 
 // TODO
@@ -100,12 +99,11 @@ func createEthereumClient(ctx sdk.Context, app upgrades.AppKeepers) error {
 		return errors.New("failed to create ethereum light client")
 	}
 
-	app.CCEVkeeper.UploadContract(
+	return app.CCEVkeeper.UploadContract(
 		ctx,
 		client.ChainId,
 		"",
 		"StakeBTC2JoinStakePlan",
 		bnblightclienttypes.StakePlanHubContractABIJSON,
 	)
-	return nil
 }
